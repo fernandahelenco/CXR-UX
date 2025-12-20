@@ -7,7 +7,6 @@ import {
   RefreshCw, 
   Zap, 
   Package, 
-  GitBranch,
   CheckCircle,
   ArrowRight
 } from "lucide-react";
@@ -27,34 +26,34 @@ export default function ArchitecturePage() {
         </p>
       </header>
 
-      <Section title="Overview">
-        <p className="text-foreground mb-4">
+      <Section title="Overview" className="mb-16">
+        <p className="text-foreground mb-6">
           The WEX Design System provides two complementary packages that work together to deliver 
           a consistent, brand-compliant UI experience across all WEX applications:
         </p>
-        <div className="grid md:grid-cols-2 gap-4 mb-6">
-          <WexCard className="p-4">
-            <div className="flex items-start gap-3">
-              <div className="p-2 rounded-lg bg-primary/10">
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          <WexCard className="p-5">
+            <div className="flex items-start gap-4">
+              <div className="p-2.5 rounded-lg bg-primary/10">
                 <Package className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <WexCard.Title className="text-base mb-1">@wex/components</WexCard.Title>
-                <WexCard.Description>
+                <WexCard.Title className="text-base mb-2">@wex/components</WexCard.Title>
+                <WexCard.Description className="leading-relaxed">
                   Full component library with WEX-branded variants, namespace patterns, 
                   and curated updates from upstream dependencies.
                 </WexCard.Description>
               </div>
             </div>
           </WexCard>
-          <WexCard className="p-4">
-            <div className="flex items-start gap-3">
-              <div className="p-2 rounded-lg bg-info/10">
+          <WexCard className="p-5">
+            <div className="flex items-start gap-4">
+              <div className="p-2.5 rounded-lg bg-info/10">
                 <Zap className="h-5 w-5 text-info" />
               </div>
               <div>
-                <WexCard.Title className="text-base mb-1">@wex/design-tokens</WexCard.Title>
-                <WexCard.Description>
+                <WexCard.Title className="text-base mb-2">@wex/design-tokens</WexCard.Title>
+                <WexCard.Description className="leading-relaxed">
                   Theme-only package with CSS variables, Tailwind preset, and shadcn bridge 
                   for teams needing more control.
                 </WexCard.Description>
@@ -72,8 +71,8 @@ export default function ArchitecturePage() {
         </WexAlert>
       </Section>
 
-      <Section title="Why WEX Components?" description="Enterprise benefits of using the WEX component library.">
-        <div className="grid md:grid-cols-2 gap-6">
+      <Section title="Why WEX Components?" description="Enterprise benefits of using the WEX component library." className="mb-16">
+        <div className="grid md:grid-cols-2 gap-6 mt-2">
           <BenefitCard
             icon={<Building2 className="h-5 w-5" />}
             iconColor="text-primary"
@@ -105,9 +104,9 @@ export default function ArchitecturePage() {
         </div>
       </Section>
 
-      <Section title="Dependency Model" description="How WEX components relate to underlying libraries.">
-        <div className="bg-muted/30 border border-border rounded-lg p-6 mb-6">
-          <div className="flex flex-col items-center gap-4">
+      <Section title="Dependency Model" description="How WEX components relate to underlying libraries." className="mb-16">
+        <div className="bg-muted/30 border border-border rounded-lg p-8 mb-6 mt-2">
+          <div className="flex flex-col items-center gap-5">
             {/* Your Application */}
             <DependencyNode 
               label="Your Application" 
@@ -115,23 +114,23 @@ export default function ArchitecturePage() {
               highlight 
             />
             
-            <ArrowRight className="h-4 w-4 text-muted-foreground rotate-90" />
+            <ArrowRight className="h-5 w-5 text-muted-foreground rotate-90" />
             
             {/* WEX Layer */}
-            <div className="flex gap-4 items-center">
+            <div className="flex gap-6 items-center">
               <DependencyNode 
                 label="@wex/components" 
                 sublabel="Component Library" 
                 primary
               />
-              <span className="text-muted-foreground text-sm">or</span>
+              <span className="text-muted-foreground text-sm font-medium">or</span>
               <DependencyNode 
                 label="@wex/design-tokens" 
                 sublabel="Theme Only" 
               />
             </div>
             
-            <ArrowRight className="h-4 w-4 text-muted-foreground rotate-90" />
+            <ArrowRight className="h-5 w-5 text-muted-foreground rotate-90" />
             
             {/* shadcn Layer */}
             <DependencyNode 
@@ -139,7 +138,7 @@ export default function ArchitecturePage() {
               sublabel="Component Primitives" 
             />
             
-            <ArrowRight className="h-4 w-4 text-muted-foreground rotate-90" />
+            <ArrowRight className="h-5 w-5 text-muted-foreground rotate-90" />
             
             {/* Radix Layer */}
             <DependencyNode 
@@ -149,15 +148,15 @@ export default function ArchitecturePage() {
           </div>
         </div>
         
-        <p className="text-muted-foreground text-sm">
+        <p className="text-muted-foreground">
           WEX components wrap shadcn/ui, which wraps Radix UI primitives. This layered approach 
           means you get accessibility, keyboard navigation, and proper ARIA attributes out of the box, 
           with WEX branding applied on top.
         </p>
       </Section>
 
-      <Section title="Update Path" description="How upstream improvements reach your application.">
-        <div className="space-y-4">
+      <Section title="Update Path" description="How upstream improvements reach your application." className="mb-16">
+        <div className="space-y-5 mt-2">
           <UpdateStep 
             number={1}
             title="Upstream Release"
@@ -185,7 +184,7 @@ export default function ArchitecturePage() {
           />
         </div>
         
-        <WexAlert className="mt-6" intent="success">
+        <WexAlert className="mt-8" intent="success">
           <WexAlert.Title>You're not locked in</WexAlert.Title>
           <WexAlert.Description>
             WEX components wrap upstream libraries—they don't fork them. You still get all 
@@ -195,7 +194,7 @@ export default function ArchitecturePage() {
       </Section>
 
       <Section title="Package Comparison" description="Choose the right package for your team's needs.">
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto mt-2">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">
@@ -244,9 +243,9 @@ export default function ArchitecturePage() {
           </table>
         </div>
         
-        <div className="mt-6 p-4 rounded-lg bg-muted/30 border border-border">
-          <h4 className="font-medium mb-2">When to use @wex/design-tokens alone:</h4>
-          <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
+        <div className="mt-8 p-5 rounded-lg bg-muted/30 border border-border">
+          <h4 className="font-medium mb-3">When to use @wex/design-tokens alone:</h4>
+          <ul className="list-disc list-inside text-sm text-muted-foreground space-y-2">
             <li>You need to customize component behavior beyond what WEX provides</li>
             <li>You're integrating with an existing shadcn setup</li>
             <li>You require specific shadcn versions for compatibility reasons</li>
@@ -272,14 +271,14 @@ function BenefitCard({
   description: string;
 }) {
   return (
-    <div className="p-4 rounded-lg border border-border bg-card">
-      <div className="flex items-start gap-3">
-        <div className={`p-2 rounded-lg bg-muted ${iconColor}`}>
+    <div className="p-5 rounded-lg border border-border bg-card">
+      <div className="flex items-start gap-4">
+        <div className={`p-2.5 rounded-lg bg-muted ${iconColor}`}>
           {icon}
         </div>
         <div>
-          <h3 className="font-medium text-foreground mb-1">{title}</h3>
-          <p className="text-sm text-muted-foreground">{description}</p>
+          <h3 className="font-medium text-foreground mb-2">{title}</h3>
+          <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
         </div>
       </div>
     </div>
@@ -299,12 +298,12 @@ function DependencyNode({
 }) {
   return (
     <div className={`
-      px-4 py-2 rounded-lg border text-center min-w-[180px]
+      px-5 py-3 rounded-lg border text-center min-w-[200px]
       ${highlight ? 'bg-primary/10 border-primary/30' : ''}
       ${primary ? 'bg-info/10 border-info/30' : ''}
       ${!highlight && !primary ? 'bg-card border-border' : ''}
     `}>
-      <div className="font-medium text-sm">{label}</div>
+      <div className="font-medium text-sm mb-0.5">{label}</div>
       <div className="text-xs text-muted-foreground">{sublabel}</div>
     </div>
   );
@@ -320,13 +319,13 @@ function UpdateStep({
   description: string;
 }) {
   return (
-    <div className="flex gap-4">
-      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 text-primary font-medium flex items-center justify-center text-sm">
+    <div className="flex gap-5">
+      <div className="flex-shrink-0 w-9 h-9 rounded-full bg-primary/10 text-primary font-semibold flex items-center justify-center text-sm">
         {number}
       </div>
-      <div>
-        <h4 className="font-medium text-foreground">{title}</h4>
-        <p className="text-sm text-muted-foreground">{description}</p>
+      <div className="pt-0.5">
+        <h4 className="font-medium text-foreground mb-1">{title}</h4>
+        <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
       </div>
     </div>
   );
@@ -343,15 +342,15 @@ function ComparisonRow({
 }) {
   return (
     <tr>
-      <td className="py-3 px-4">{feature}</td>
-      <td className="py-3 px-4">
+      <td className="py-4 px-4">{feature}</td>
+      <td className="py-4 px-4">
         {components ? (
           <CheckCircle className="h-4 w-4 text-success" />
         ) : (
           <span className="text-muted-foreground">—</span>
         )}
       </td>
-      <td className="py-3 px-4">
+      <td className="py-4 px-4">
         {tokens ? (
           <CheckCircle className="h-4 w-4 text-success" />
         ) : (

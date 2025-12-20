@@ -17,7 +17,7 @@ export default function ChangelogPage() {
       <div className="space-y-8">
         <ChangelogEntry
           version="0.10.0"
-          date="December 21, 2024"
+          date="December 20, 2025"
           title="Architecture Documentation & Dialog Fix"
           changes={[
             "Fix: Resolved Dialog/Sheet component conflict caused by shared Radix primitive mutation",
@@ -34,7 +34,7 @@ export default function ChangelogPage() {
 
         <ChangelogEntry
           version="0.9.0"
-          date="December 21, 2024"
+          date="December 20, 2025"
           title="Contributing Components Guide"
           changes={[
             "Docs: Added CONTRIBUTING.md with step-by-step guide for creating WEX components",
@@ -50,7 +50,7 @@ export default function ChangelogPage() {
 
         <ChangelogEntry
           version="0.8.0"
-          date="December 21, 2024"
+          date="December 20, 2025"
           title="Semantic Variants & Navigation"
           changes={[
             "Components: Added success, warning, and info intent variants to WexAlert",
@@ -68,7 +68,7 @@ export default function ChangelogPage() {
 
         <ChangelogEntry
           version="0.7.0"
-          date="December 20, 2024"
+          date="December 20, 2025"
           title="Unit Test Suite"
           changes={[
             "Testing: Added Vitest + React Testing Library test infrastructure",
@@ -91,7 +91,7 @@ export default function ChangelogPage() {
 
         <ChangelogEntry
           version="0.6.0"
-          date="December 20, 2024"
+          date="December 19, 2025"
           title="Story Page & Home Redesign"
           changes={[
             "Story: Added new 'Story' page with conversational narrative about how the system was built",
@@ -117,7 +117,7 @@ export default function ChangelogPage() {
 
         <ChangelogEntry
           version="0.5.0"
-          date="December 20, 2024"
+          date="December 19, 2025"
           title="Hardening Pass"
           changes={[
             "Charts: Updated docs to use WexChart namespace (not raw ChartContainer)",
@@ -139,7 +139,7 @@ export default function ChangelogPage() {
 
         <ChangelogEntry
           version="0.4.1"
-          date="December 20, 2024"
+          date="December 19, 2025"
           title="Dark Mode Accessibility Fixes"
           changes={[
             "Colors: Added MutationObserver to re-compute contrast when theme changes",
@@ -153,7 +153,7 @@ export default function ChangelogPage() {
 
         <ChangelogEntry
           version="0.4.0"
-          date="December 20, 2024"
+          date="December 19, 2025"
           title="Charts, Colors & Governance"
           changes={[
             "Charts: Added 4 rendered examples (bar, line, multi-series, area, pie/donut)",
@@ -172,7 +172,7 @@ export default function ChangelogPage() {
 
         <ChangelogEntry
           version="0.3.0"
-          date="December 19, 2024"
+          date="December 19, 2025"
           title="Accessibility & Polish Update"
           changes={[
             "WCAG 2.2 AA compliance notes added to all component pages",
@@ -189,7 +189,7 @@ export default function ChangelogPage() {
 
         <ChangelogEntry
           version="0.2.0"
-          date="December 2024"
+          date="December 2025"
           title="Component Library Expansion"
           changes={[
             "All shadcn/ui components installed and wrapped as Wex* components",
@@ -204,7 +204,7 @@ export default function ChangelogPage() {
 
         <ChangelogEntry
           version="0.1.0"
-          date="December 2024"
+          date="December 2025"
           title="Initial Release"
           changes={[
             "WexButton component with 5 intent variants and 3 sizes",
