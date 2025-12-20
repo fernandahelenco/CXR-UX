@@ -90,10 +90,10 @@ const ISSUE_REFERENCE: Record<string, IssueInfo> = {
   },
   "color-contrast": {
     title: "Color Contrast",
-    description: "Text or UI elements don't meet WCAG contrast ratio requirements (4.5:1 for normal text, 3:1 for large text).",
-    fixable: "yes",
-    fixableLabel: "Fixable",
-    guidance: "Adjust foreground/background color pairings using semantic tokens. Often requires updating --muted-foreground or component variant colors.",
+    description: "Text doesn't meet WCAG contrast ratios (4.5:1 normal text, 3:1 large text). Note: Disabled elements are WCAG-exempt per SC 1.4.3.",
+    fixable: "partial",
+    fixableLabel: "Partially fixable",
+    guidance: "Adjust tokens or component colors. Disabled states are exempt. Most issues are in dark mode—check --muted-foreground token.",
   },
   "button-name": {
     title: "Button Name",
@@ -243,11 +243,37 @@ export default function AccessibilityPage() {
       </header>
 
       {/* KPI Tiles */}
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <KpiTile label="Tested" value={stats.total} icon={<HelpCircle className="h-5 w-5" />} />
         <KpiTile label="Passing" value={stats.pass} icon={<Check className="h-5 w-5 text-success" />} variant="success" />
         <KpiTile label="Partial" value={stats.partial} icon={<AlertTriangle className="h-5 w-5 text-warning" />} variant="warning" />
         <KpiTile label="Failing" value={stats.fail} icon={<X className="h-5 w-5 text-destructive" />} variant="destructive" />
+      </section>
+
+      {/* Compliance Progress Bar */}
+      <section className="mb-8">
+        {(() => {
+          const passRate = stats.total > 0 ? Math.round((stats.pass / stats.total) * 100) : 0;
+          return (
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-sm font-medium text-foreground">Estimated Compliance</p>
+                <p className="text-sm text-muted-foreground">
+                  {stats.pass} of {stats.total} passing ({passRate}%)
+                </p>
+              </div>
+              <div className="h-2 bg-muted rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-success transition-all duration-500"
+                  style={{ width: `${passRate}%` }}
+                />
+              </div>
+              <p className="text-[10px] text-muted-foreground mt-1.5">
+                Based on automated axe-core analysis. Not a WCAG certification.
+              </p>
+            </div>
+          );
+        })()}
       </section>
 
       {/* Top Issues */}
@@ -267,6 +293,28 @@ export default function AccessibilityPage() {
           </div>
         </section>
       )}
+
+      {/* WCAG Exemptions Info */}
+      <details className="mb-8 text-sm bg-muted/30 rounded-lg border border-border">
+        <summary className="p-4 font-medium text-foreground cursor-pointer hover:bg-muted/50 rounded-lg select-none">
+          About WCAG Contrast Exemptions
+        </summary>
+        <div className="px-4 pb-4 space-y-3 text-sm text-muted-foreground">
+          <p>
+            <strong className="text-foreground">WCAG 2.1 SC 1.4.3</strong> provides exemptions for certain elements:
+          </p>
+          <ul className="list-disc list-inside space-y-1.5 pl-2">
+            <li><strong className="text-foreground">Disabled elements:</strong> Inactive UI components have no contrast requirement</li>
+            <li><strong className="text-foreground">Decorative text:</strong> Purely visual content is exempt</li>
+            <li><strong className="text-foreground">Incidental text:</strong> Non-essential background content</li>
+            <li><strong className="text-foreground">Logos & brand text:</strong> No contrast requirement</li>
+          </ul>
+          <p className="pt-1">
+            Some flagged <code className="bg-muted px-1 rounded text-xs">color-contrast</code> issues may fall under these exemptions. 
+            The issue details indicate whether something is fixable or a known limitation.
+          </p>
+        </div>
+      </details>
 
       {/* How to Run Tests */}
       <section className="mb-8 p-4 rounded-lg border border-border bg-card">
@@ -529,27 +577,28 @@ function ComponentDetailContent({ registryKey, data, info, onClose }: ComponentD
       </WexDialog.Header>
 
       <div className="space-y-5">
-        {/* Compact Mode Results + Stats Row */}
-        <div className="grid grid-cols-4 gap-2 text-center">
-          {/* Light Mode */}
-          <div className={`p-3 rounded-lg border ${data.modes?.light?.status === 'pass' ? 'border-success/30 bg-success/5' : data.modes?.light?.status === 'fail' ? 'border-destructive/30 bg-destructive/5' : 'border-border bg-muted/30'}`}>
-            <Sun className="h-4 w-4 mx-auto mb-1 text-muted-foreground" />
-            <p className="text-sm font-medium">{data.modes?.light?.violations ?? 0}</p>
+        {/* Horizontal Stats Bar */}
+        <div className="flex items-center justify-between py-3 px-4 bg-muted/30 rounded-lg text-sm">
+          <div className="flex items-center gap-1.5">
+            <Sun className={`h-4 w-4 ${data.modes?.light?.status === 'pass' ? 'text-success' : data.modes?.light?.status === 'fail' ? 'text-destructive' : 'text-muted-foreground'}`} />
+            <span className="font-medium">{data.modes?.light?.violations ?? 0}</span>
+            <span className="text-muted-foreground">light</span>
           </div>
-          {/* Dark Mode */}
-          <div className={`p-3 rounded-lg border ${data.modes?.dark?.status === 'pass' ? 'border-success/30 bg-success/5' : data.modes?.dark?.status === 'fail' ? 'border-destructive/30 bg-destructive/5' : 'border-border bg-muted/30'}`}>
-            <Moon className="h-4 w-4 mx-auto mb-1 text-muted-foreground" />
-            <p className="text-sm font-medium">{data.modes?.dark?.violations ?? 0}</p>
+          <div className="h-4 w-px bg-border" />
+          <div className="flex items-center gap-1.5">
+            <Moon className={`h-4 w-4 ${data.modes?.dark?.status === 'pass' ? 'text-success' : data.modes?.dark?.status === 'fail' ? 'text-destructive' : 'text-muted-foreground'}`} />
+            <span className="font-medium">{data.modes?.dark?.violations ?? 0}</span>
+            <span className="text-muted-foreground">dark</span>
           </div>
-          {/* WCAG Level */}
-          <div className="p-3 rounded-lg border border-border bg-muted/30">
-            <p className="text-xs text-muted-foreground mb-1">Level</p>
-            <p className="text-sm font-medium">{data.levelAchieved || '—'}</p>
+          <div className="h-4 w-px bg-border" />
+          <div className="flex items-center gap-1.5">
+            <span className="text-muted-foreground">Level</span>
+            <span className="font-medium">{data.levelAchieved || '—'}</span>
           </div>
-          {/* Variants Count */}
-          <div className="p-3 rounded-lg border border-border bg-muted/30">
-            <p className="text-xs text-muted-foreground mb-1">Variants</p>
-            <p className="text-sm font-medium">{variants.length || data.examplesFound}</p>
+          <div className="h-4 w-px bg-border" />
+          <div className="flex items-center gap-1.5">
+            <span className="font-medium">{variants.length || data.examplesFound}</span>
+            <span className="text-muted-foreground">variants</span>
           </div>
         </div>
 
