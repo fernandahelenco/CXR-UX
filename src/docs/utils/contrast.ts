@@ -240,3 +240,21 @@ export function formatContrastRatio(ratio: number): string {
   return `${ratio.toFixed(2)}:1`;
 }
 
+/**
+ * Determine if dark text should be used on a given background
+ * Based on relative luminance calculation (WCAG standard)
+ * 
+ * @param bgVar - CSS variable name for the background color
+ * @returns true if dark text should be used, false for light/white text
+ */
+export function shouldUseDarkText(bgVar: string): boolean {
+  const bgValue = resolveColorVariable(bgVar);
+  if (!bgValue) return false;
+  
+  const bgRgb = hslToRgb(bgValue);
+  if (!bgRgb) return false;
+  
+  const luminance = getRelativeLuminance(bgRgb);
+  return luminance > 0.5; // Light backgrounds need dark text
+}
+

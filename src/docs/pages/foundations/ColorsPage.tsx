@@ -3,7 +3,7 @@ import { Section } from "@/docs/components/Section";
 import { Guidance } from "@/docs/components/ProseBlock";
 import { ContrastBadge, ContrastIndicator } from "@/docs/components/ContrastBadge";
 import { WexTooltip } from "@/components/wex";
-import { getContrastData, formatContrastRatio, type ContrastRating } from "@/docs/utils/contrast";
+import { getContrastData, formatContrastRatio, shouldUseDarkText, type ContrastRating } from "@/docs/utils/contrast";
 
 /**
  * Colors foundation page
@@ -338,7 +338,7 @@ export default function ColorsPage() {
           <Guidance>
             These palette tokens are provided for subtle variations and should generally NOT be used 
             directly in components unless explicitly approved. Use semantic tokens (bg-primary, bg-success, etc.) 
-            for component styling. Contrast indicators show white text on each shade.
+            for component styling. Contrast indicators show the recommended text color (dark or white) based on each shade's luminance.
           </Guidance>
 
           <div className="space-y-8 mt-6">
@@ -715,20 +715,21 @@ interface PaletteSwatchWithScoreProps {
 
 function PaletteSwatchWithScore({ colorName, step }: PaletteSwatchWithScoreProps) {
   const bgVar = `--wex-palette-${colorName}-${step}`;
-  // Use white text for darker shades (step >= 500), dark text for lighter
-  const useDarkText = step < 500;
   
   const [contrastData, setContrastData] = React.useState<{
     ratio: number;
     rating: ContrastRating;
+    useDarkText: boolean;
   } | null>(null);
 
   React.useEffect(() => {
-    // Compute contrast of white text on this background
+    // Compute contrast using adaptive text color based on luminance
     const computeContrast = () => {
-      const data = getContrastData("--wex-primary-contrast", bgVar);
+      const useDark = shouldUseDarkText(bgVar);
+      const fgVar = useDark ? "--wex-text" : "--wex-primary-contrast";
+      const data = getContrastData(fgVar, bgVar);
       if (data) {
-        setContrastData({ ratio: data.ratio, rating: data.rating });
+        setContrastData({ ratio: data.ratio, rating: data.rating, useDarkText: useDark });
       }
     };
 
@@ -750,6 +751,7 @@ function PaletteSwatchWithScore({ colorName, step }: PaletteSwatchWithScoreProps
 
   const ratingLabel = contrastData?.rating || "...";
   const ratingColor = getRatingColorForPalette(contrastData?.rating);
+  const useDarkText = contrastData?.useDarkText ?? false;
 
   return (
     <WexTooltip.Provider>
@@ -775,7 +777,7 @@ function PaletteSwatchWithScore({ colorName, step }: PaletteSwatchWithScoreProps
           <div className="space-y-1">
             <p className="font-semibold">{colorName}-{step}</p>
             <p className="text-muted-foreground">
-              White text contrast: {contrastData ? formatContrastRatio(contrastData.ratio) : "..."}
+              {useDarkText ? "Dark" : "White"} text contrast: {contrastData ? formatContrastRatio(contrastData.ratio) : "..."}
             </p>
             <p className="text-muted-foreground">
               Rating: {ratingLabel}
