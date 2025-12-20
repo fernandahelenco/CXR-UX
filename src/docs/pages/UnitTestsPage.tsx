@@ -6,8 +6,8 @@
  */
 
 import React from "react";
-import { CheckCircle, XCircle, Clock, FileCode, Layers, Wrench, RefreshCw } from "lucide-react";
-import { WexCard, WexBadge, WexProgress, WexTabs, WexButton } from "@/components/wex";
+import { CheckCircle, XCircle, Clock, Layers, Wrench, RefreshCw, Info, FileText } from "lucide-react";
+import { WexCard, WexBadge, WexTabs, WexAlert } from "@/components/wex";
 import { Section } from "@/docs/components/Section";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 
@@ -61,74 +61,73 @@ function formatDuration(ms: number): string {
   return `${(ms / 1000).toFixed(2)}s`;
 }
 
-function StatusBadge({ status }: { status: string }) {
-  if (status === "passed") {
-    return (
-      <WexBadge variant="outline" className="bg-success/10 text-success border-success/30">
-        <CheckCircle className="h-3 w-3 mr-1" />
-        Passed
-      </WexBadge>
-    );
-  }
-  return (
-    <WexBadge variant="outline" className="bg-destructive/10 text-destructive border-destructive/30">
-      <XCircle className="h-3 w-3 mr-1" />
-      Failed
-    </WexBadge>
-  );
-}
+// Color-coded category config
+const categoryConfig = {
+  components: {
+    icon: Layers,
+    color: "text-blue-500",
+    bgColor: "bg-blue-500/10",
+  },
+  utils: {
+    icon: Wrench,
+    color: "text-amber-500",
+    bgColor: "bg-amber-500/10",
+  },
+  hooks: {
+    icon: RefreshCw,
+    color: "text-violet-500",
+    bgColor: "bg-violet-500/10",
+  },
+} as const;
 
 function CategoryCard({ 
   title, 
-  icon: Icon, 
+  categoryKey,
   category 
 }: { 
   title: string; 
-  icon: React.ElementType; 
+  categoryKey: keyof typeof categoryConfig;
   category: CategoryData;
 }) {
-  const passRate = category.total > 0 
-    ? Math.round((category.passed / category.total) * 100) 
-    : 0;
+  const config = categoryConfig[categoryKey];
+  const Icon = config.icon;
 
   return (
     <WexCard className="overflow-hidden">
-      <WexCard.Header className="pb-3">
-        <div className="flex items-center gap-2">
-          <div className="p-2 rounded-lg bg-primary/10">
-            <Icon className="h-4 w-4 text-primary" />
+      <WexCard.Content className="pt-6">
+        <div className="flex items-center gap-3 mb-4">
+          <div className={`p-2.5 rounded-lg ${config.bgColor}`}>
+            <Icon className={`h-5 w-5 ${config.color}`} />
           </div>
-          <WexCard.Title className="text-base">{title}</WexCard.Title>
+          <div>
+            <p className="font-semibold text-foreground">{title}</p>
+            <p className="text-xs text-muted-foreground">{category.files.length} test files</p>
+          </div>
         </div>
-      </WexCard.Header>
-      <WexCard.Content className="space-y-3">
-        <div className="flex items-baseline justify-between">
-          <span className="text-2xl font-bold text-foreground">
-            {category.passed}/{category.total}
+        <div className="flex items-baseline gap-3">
+          <span className="text-3xl font-bold text-foreground">
+            {category.passed}
           </span>
           <span className="text-sm text-muted-foreground">
-            {passRate}% pass rate
+            / {category.total} tests
           </span>
-        </div>
-        <WexProgress value={passRate} className="h-2" />
-        <div className="flex gap-4 text-sm">
-          <span className="text-success flex items-center gap-1">
-            <CheckCircle className="h-3 w-3" />
-            {category.passed} passed
-          </span>
-          {category.failed > 0 && (
-            <span className="text-destructive flex items-center gap-1">
-              <XCircle className="h-3 w-3" />
-              {category.failed} failed
-            </span>
+          {category.passed === category.total && category.total > 0 && (
+            <CheckCircle className="h-4 w-4 text-success ml-auto" />
           )}
         </div>
+        {category.failed > 0 && (
+          <p className="text-sm text-destructive mt-2 flex items-center gap-1">
+            <XCircle className="h-3.5 w-3.5" />
+            {category.failed} failed
+          </p>
+        )}
       </WexCard.Content>
     </WexCard>
   );
 }
 
-function FilesList({ files }: { files: CategoryData["files"] }) {
+function FilesList({ files, categoryKey }: { files: CategoryData["files"]; categoryKey: keyof typeof categoryConfig }) {
+  const config = categoryConfig[categoryKey];
   const sorted = [...files].sort((a, b) => {
     // Failed first, then by name
     if (a.status !== b.status) {
@@ -138,21 +137,26 @@ function FilesList({ files }: { files: CategoryData["files"] }) {
   });
 
   return (
-    <div className="divide-y divide-border">
+    <div className="grid gap-2">
       {sorted.map((file) => (
         <div 
           key={file.path} 
-          className="py-3 flex items-center justify-between hover:bg-muted/50 px-2 -mx-2 rounded"
+          className="flex items-center gap-3 p-3 rounded-lg border border-border/50 bg-card hover:bg-muted/30 transition-colors"
         >
-          <div className="flex items-center gap-3 min-w-0">
-            <StatusBadge status={file.status} />
-            <div className="min-w-0">
-              <p className="font-mono text-sm truncate">{file.name}</p>
-              <p className="text-xs text-muted-foreground">
-                {file.passed}/{file.passed + file.failed} tests • {formatDuration(file.duration)}
-              </p>
-            </div>
+          <div className={`p-1.5 rounded ${config.bgColor}`}>
+            <FileText className={`h-3.5 w-3.5 ${config.color}`} />
           </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-mono text-sm truncate text-foreground">{file.name}</p>
+            <p className="text-xs text-muted-foreground">
+              {file.passed} test{file.passed !== 1 ? 's' : ''} • {formatDuration(file.duration)}
+            </p>
+          </div>
+          {file.status === "passed" ? (
+            <CheckCircle className="h-4 w-4 text-success shrink-0" />
+          ) : (
+            <XCircle className="h-4 w-4 text-destructive shrink-0" />
+          )}
         </div>
       ))}
     </div>
@@ -166,7 +170,7 @@ export default function UnitTestsPage() {
 
   return (
     <article>
-      <header className="mb-8">
+      <header className="mb-10">
         <h1 className="text-3xl font-display font-bold text-foreground mb-2">
           Unit Test Results
         </h1>
@@ -175,86 +179,110 @@ export default function UnitTestsPage() {
         </p>
       </header>
 
-      {/* Summary Stats */}
-      <Section title="Test Summary" className="mb-12">
+      {/* Quick Stats Bar */}
+      <Section title="Test Summary" className="mb-16">
         <div className="flex items-center gap-2 mb-6 text-sm text-muted-foreground">
           <Clock className="h-4 w-4" />
           Last run: {testedAt}
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-          <WexCard className="text-center py-5">
-            <p className="text-3xl font-bold text-foreground">{data.totals.tests}</p>
-            <p className="text-sm text-muted-foreground mt-1">Total Tests</p>
-          </WexCard>
-          <WexCard className="text-center py-5">
-            <p className="text-3xl font-bold text-success">{data.totals.passed}</p>
-            <p className="text-sm text-muted-foreground mt-1">Passed</p>
-          </WexCard>
-          <WexCard className="text-center py-5">
-            <p className="text-3xl font-bold text-destructive">{data.totals.failed}</p>
-            <p className="text-sm text-muted-foreground mt-1">Failed</p>
-          </WexCard>
-          <WexCard className="text-center py-5">
-            <p className="text-3xl font-bold text-foreground">{data.totals.passRate}%</p>
-            <p className="text-sm text-muted-foreground mt-1">Pass Rate</p>
-          </WexCard>
+        <div className="flex flex-wrap items-center gap-6 p-4 rounded-lg bg-muted/30 border border-border/50">
+          <div className="flex items-center gap-2">
+            <span className="text-2xl font-bold text-foreground">{data.totals.tests}</span>
+            <span className="text-sm text-muted-foreground">total tests</span>
+          </div>
+          <div className="h-8 w-px bg-border hidden sm:block" />
+          <div className="flex items-center gap-2">
+            <CheckCircle className="h-5 w-5 text-success" />
+            <span className="text-2xl font-bold text-success">{data.totals.passed}</span>
+            <span className="text-sm text-muted-foreground">passed</span>
+          </div>
+          {data.totals.failed > 0 && (
+            <>
+              <div className="h-8 w-px bg-border hidden sm:block" />
+              <div className="flex items-center gap-2">
+                <XCircle className="h-5 w-5 text-destructive" />
+                <span className="text-2xl font-bold text-destructive">{data.totals.failed}</span>
+                <span className="text-sm text-muted-foreground">failed</span>
+              </div>
+            </>
+          )}
+          <div className="h-8 w-px bg-border hidden sm:block" />
+          <div className="flex items-center gap-2">
+            <span className="text-2xl font-bold text-foreground">{data.totals.passRate}%</span>
+            <span className="text-sm text-muted-foreground">pass rate</span>
+          </div>
         </div>
+      </Section>
 
-        <WexProgress value={data.totals.passRate} className="h-3" />
+      {/* Test Coverage Notes */}
+      <Section title="Test Coverage Notes" className="mb-16">
+        <WexAlert>
+          <Info className="h-4 w-4" />
+          <WexAlert.Title>Current Test Scope</WexAlert.Title>
+          <WexAlert.Description>
+            These tests focus on <strong>basic rendering and prop forwarding</strong> for each component. 
+            They verify that components mount without errors, accept expected props, and render accessible elements. 
+            More comprehensive tests covering interactions, edge cases, and accessibility compliance are planned for future iterations.
+          </WexAlert.Description>
+        </WexAlert>
       </Section>
 
       {/* Category Breakdown */}
-      <Section title="Test Categories" className="mb-12">
+      <Section title="Test Categories" className="mb-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <CategoryCard 
             title="Components" 
-            icon={Layers} 
+            categoryKey="components"
             category={data.categories.components} 
           />
           <CategoryCard 
             title="Utilities" 
-            icon={Wrench} 
+            categoryKey="utils"
             category={data.categories.utils} 
           />
           <CategoryCard 
             title="Hooks" 
-            icon={RefreshCw} 
+            categoryKey="hooks"
             category={data.categories.hooks} 
           />
         </div>
       </Section>
 
       {/* Test Files */}
-      <Section title="Test Files" className="mb-12">
+      <Section title="Test Files" className="mb-16">
         <WexTabs defaultValue="components" className="w-full">
-          <WexTabs.List className="mb-4">
-            <WexTabs.Trigger value="components">
+          <WexTabs.List className="mb-6">
+            <WexTabs.Trigger value="components" className="gap-2">
+              <Layers className="h-4 w-4 text-blue-500" />
               Components ({data.categories.components.files.length})
             </WexTabs.Trigger>
-            <WexTabs.Trigger value="utils">
+            <WexTabs.Trigger value="utils" className="gap-2">
+              <Wrench className="h-4 w-4 text-amber-500" />
               Utilities ({data.categories.utils.files.length})
             </WexTabs.Trigger>
-            <WexTabs.Trigger value="hooks">
+            <WexTabs.Trigger value="hooks" className="gap-2">
+              <RefreshCw className="h-4 w-4 text-violet-500" />
               Hooks ({data.categories.hooks.files.length})
             </WexTabs.Trigger>
             {data.failures.length > 0 && (
-              <WexTabs.Trigger value="failures" className="text-destructive">
+              <WexTabs.Trigger value="failures" className="text-destructive gap-2">
+                <XCircle className="h-4 w-4" />
                 Failures ({data.failures.length})
               </WexTabs.Trigger>
             )}
           </WexTabs.List>
 
           <WexTabs.Content value="components">
-            <FilesList files={data.categories.components.files} />
+            <FilesList files={data.categories.components.files} categoryKey="components" />
           </WexTabs.Content>
 
           <WexTabs.Content value="utils">
-            <FilesList files={data.categories.utils.files} />
+            <FilesList files={data.categories.utils.files} categoryKey="utils" />
           </WexTabs.Content>
 
           <WexTabs.Content value="hooks">
-            <FilesList files={data.categories.hooks.files} />
+            <FilesList files={data.categories.hooks.files} categoryKey="hooks" />
           </WexTabs.Content>
 
           {data.failures.length > 0 && (
@@ -285,25 +313,25 @@ export default function UnitTestsPage() {
       </Section>
 
       {/* How to Run */}
-      <Section title="How to Run Tests" className="mb-8">
+      <Section title="How to Run Tests">
         <div className="space-y-6">
           <p className="text-muted-foreground">
             Run unit tests locally using the following commands:
           </p>
 
-          <div className="space-y-3">
+          <div className="space-y-4">
             <div>
-              <p className="text-sm font-medium mb-1">Run all tests once:</p>
+              <p className="text-sm font-medium mb-2">Run all tests once:</p>
               <CodeBlock code="npm run test:unit" language="bash" />
             </div>
 
             <div>
-              <p className="text-sm font-medium mb-1">Run tests in watch mode:</p>
+              <p className="text-sm font-medium mb-2">Run tests in watch mode:</p>
               <CodeBlock code="npm run test:unit:watch" language="bash" />
             </div>
 
             <div>
-              <p className="text-sm font-medium mb-1">Generate test report:</p>
+              <p className="text-sm font-medium mb-2">Generate test report:</p>
               <CodeBlock code="npm run test:unit:report" language="bash" />
             </div>
           </div>
@@ -318,4 +346,3 @@ export default function UnitTestsPage() {
     </article>
   );
 }
-
