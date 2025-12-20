@@ -32,15 +32,35 @@ import {
  * </WexSheet>
  */
 
-export const WexSheet = Object.assign(Sheet, {
-  Portal: SheetPortal,
-  Overlay: SheetOverlay,
-  Trigger: SheetTrigger,
-  Close: SheetClose,
-  Content: SheetContent,
-  Header: SheetHeader,
-  Footer: SheetFooter,
-  Title: SheetTitle,
-  Description: SheetDescription,
-});
+import * as React from "react";
+
+// Create a wrapper component that renders Sheet but with namespace properties
+// IMPORTANT: Do NOT use Object.assign on Sheet directly - it shares the same
+// Radix primitive as Dialog, causing Content to be overwritten.
+const WexSheetRoot: typeof Sheet & {
+  Portal: typeof SheetPortal;
+  Overlay: typeof SheetOverlay;
+  Trigger: typeof SheetTrigger;
+  Close: typeof SheetClose;
+  Content: typeof SheetContent;
+  Header: typeof SheetHeader;
+  Footer: typeof SheetFooter;
+  Title: typeof SheetTitle;
+  Description: typeof SheetDescription;
+} = Object.assign(
+  ((props: React.ComponentProps<typeof Sheet>) => <Sheet {...props} />) as typeof Sheet,
+  {
+    Portal: SheetPortal,
+    Overlay: SheetOverlay,
+    Trigger: SheetTrigger,
+    Close: SheetClose,
+    Content: SheetContent,
+    Header: SheetHeader,
+    Footer: SheetFooter,
+    Title: SheetTitle,
+    Description: SheetDescription,
+  }
+);
+
+export const WexSheet = WexSheetRoot;
 

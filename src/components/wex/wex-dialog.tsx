@@ -1,3 +1,4 @@
+import * as React from "react";
 import {
   Dialog,
   DialogPortal,
@@ -35,28 +36,34 @@ import {
  * </WexDialog>
  */
 
-// Re-export vendor components with Wex namespace
-const WexDialogRoot = Dialog;
-const WexDialogPortal = DialogPortal;
-const WexDialogOverlay = DialogOverlay;
-const WexDialogTrigger = DialogTrigger;
-const WexDialogClose = DialogClose;
-const WexDialogContent = DialogContent;
-const WexDialogHeader = DialogHeader;
-const WexDialogFooter = DialogFooter;
-const WexDialogTitle = DialogTitle;
-const WexDialogDescription = DialogDescription;
+// Create a wrapper component that renders Dialog but with namespace properties
+// IMPORTANT: Do NOT use Object.assign on Dialog directly - it mutates the shared
+// Radix primitive which is also used by Sheet, causing Content to be overwritten.
+const WexDialogRoot: typeof Dialog & {
+  Portal: typeof DialogPortal;
+  Overlay: typeof DialogOverlay;
+  Trigger: typeof DialogTrigger;
+  Close: typeof DialogClose;
+  Content: typeof DialogContent;
+  Header: typeof DialogHeader;
+  Footer: typeof DialogFooter;
+  Title: typeof DialogTitle;
+  Description: typeof DialogDescription;
+} = Object.assign(
+  // Create a new function that wraps Dialog, not mutates it
+  ((props: React.ComponentProps<typeof Dialog>) => <Dialog {...props} />) as typeof Dialog,
+  {
+    Portal: DialogPortal,
+    Overlay: DialogOverlay,
+    Trigger: DialogTrigger,
+    Close: DialogClose,
+    Content: DialogContent,
+    Header: DialogHeader,
+    Footer: DialogFooter,
+    Title: DialogTitle,
+    Description: DialogDescription,
+  }
+);
 
-// Namespace pattern
-export const WexDialog = Object.assign(WexDialogRoot, {
-  Portal: WexDialogPortal,
-  Overlay: WexDialogOverlay,
-  Trigger: WexDialogTrigger,
-  Close: WexDialogClose,
-  Content: WexDialogContent,
-  Header: WexDialogHeader,
-  Footer: WexDialogFooter,
-  Title: WexDialogTitle,
-  Description: WexDialogDescription,
-});
+export const WexDialog = WexDialogRoot;
 
