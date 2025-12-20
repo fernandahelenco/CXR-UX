@@ -278,7 +278,7 @@ export default function AccessibilityPage() {
 
       {/* Reference Tabs: Top Issues, Exemptions, How to Test */}
       <section className="mb-8">
-        <WexTabs.Root defaultValue="issues" className="w-full">
+        <WexTabs defaultValue="issues" className="w-full">
           <WexTabs.List className="grid w-full grid-cols-3">
             <WexTabs.Trigger value="issues" className="text-sm">
               Top Issues {stats.topIssues.length > 0 && <span className="ml-1.5 text-muted-foreground">({stats.topIssues.length})</span>}
@@ -339,7 +339,7 @@ export default function AccessibilityPage() {
               Tests run in both light and dark modes using Playwright + axe-core.
             </p>
           </WexTabs.Content>
-        </WexTabs.Root>
+        </WexTabs>
       </section>
 
       {/* Components Table */}
