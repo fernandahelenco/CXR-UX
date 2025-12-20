@@ -6,8 +6,10 @@ import * as path from "path";
 /**
  * Accessibility Test Suite for WEX Design System
  *
- * This test iterates over all documented components and runs axe-core analysis.
- * Results are written to individual JSON files for later aggregation.
+ * SCOPED TO COMPONENT EXAMPLES ONLY
+ * 
+ * This test scans ONLY elements with data-testid="component-example",
+ * excluding docs UI (sidebar, headers, guidance text, code blocks).
  *
  * THRESHOLD RULES:
  * - pass: 0 violations
@@ -18,6 +20,12 @@ import * as path from "path";
  * - 0 violations → "AA" (we run wcag2aa rules)
  * - Some violations → "A" or undefined
  */
+
+// WCAG tags to test against
+const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
+
+// Selector for component example containers
+const EXAMPLE_SELECTOR = '[data-testid="component-example"]';
 
 // Component registry - must match src/docs/registry/components.ts
 // We define the routes here directly to avoid ESM/CJS import issues
@@ -81,7 +89,14 @@ const componentRoutes = [
 // Ensure output directory exists
 const outputDir = path.join(process.cwd(), "test-results", "a11y-components");
 
-test.describe("Component Accessibility Tests", () => {
+interface ViolationSummary {
+  id: string;
+  impact: string;
+  description: string;
+  exampleId: string;
+}
+
+test.describe("Component Accessibility Tests (Scoped to Examples)", () => {
   test.beforeAll(() => {
     // Create output directory for individual results
     if (!fs.existsSync(outputDir)) {
@@ -97,31 +112,111 @@ test.describe("Component Accessibility Tests", () => {
       // Wait for page to be fully loaded
       await page.waitForLoadState("networkidle");
       
-      // Run axe-core accessibility analysis
-      const accessibilityScanResults = await new AxeBuilder({ page })
-        .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
-        .analyze();
-
-      // Count violations by impact
-      const criticalViolations = accessibilityScanResults.violations.filter(
-        (v) => v.impact === "critical"
-      ).length;
-      const seriousViolations = accessibilityScanResults.violations.filter(
-        (v) => v.impact === "serious"
-      ).length;
-      const totalViolations = accessibilityScanResults.violations.length;
-
-      // Collect issue IDs
-      const issues = accessibilityScanResults.violations.map((v) => v.id);
-
-      // Write individual result file (safe for parallel execution)
+      // Find all example containers on the page
+      const exampleContainers = await page.locator(EXAMPLE_SELECTOR).all();
+      const exampleCount = exampleContainers.length;
+      
+      // Track aggregated results
+      let totalViolations = 0;
+      let criticalViolations = 0;
+      let seriousViolations = 0;
+      const allIssues: string[] = [];
+      const allViolationDetails: ViolationSummary[] = [];
+      const examplesTested: string[] = [];
+      
+      // Handle case where no examples are found
+      if (exampleCount === 0) {
+        console.warn(`\n⚠️  ${component.name}: No example containers found! Page may be missing data-testid="component-example"`);
+        
+        const result = {
+          key: component.key,
+          name: component.name,
+          violations: 0,
+          criticalViolations: 0,
+          seriousViolations: 0,
+          issues: [],
+          examplesTested: [],
+          examplesFound: 0,
+          scope: "component-examples-only",
+          status: "no_examples",
+          testedAt: new Date().toISOString(),
+        };
+        
+        const resultPath = path.join(outputDir, `${component.key}.json`);
+        fs.writeFileSync(resultPath, JSON.stringify(result, null, 2));
+        
+        // Record but don't fail - we can iteratively add ExampleCard to pages
+        // The report will show "no_examples" status for these components
+        expect(true).toBe(true);
+        return;
+      }
+      
+      // Scan each example container individually
+      for (let i = 0; i < exampleContainers.length; i++) {
+        const container = exampleContainers[i];
+        
+        // Get the example ID from data attribute, or use index-based fallback
+        const exampleId = await container.getAttribute("data-example-id") || `example-${i}`;
+        examplesTested.push(exampleId);
+        
+        try {
+          // Run axe-core scoped to this specific example container
+          const accessibilityScanResults = await new AxeBuilder({ page })
+            .include(EXAMPLE_SELECTOR + `[data-example-id="${exampleId}"]`)
+            .withTags(WCAG_TAGS)
+            .analyze();
+          
+          // Aggregate violations
+          for (const violation of accessibilityScanResults.violations) {
+            totalViolations++;
+            
+            if (violation.impact === "critical") criticalViolations++;
+            if (violation.impact === "serious") seriousViolations++;
+            
+            if (!allIssues.includes(violation.id)) {
+              allIssues.push(violation.id);
+            }
+            
+            allViolationDetails.push({
+              id: violation.id,
+              impact: violation.impact || "unknown",
+              description: violation.description,
+              exampleId,
+            });
+          }
+        } catch (error) {
+          // If scoped selector fails, try scanning by index
+          console.warn(`  Retrying scan for example ${i} with index-based approach`);
+          
+          // Use nth selector as fallback
+          const nthSelector = `${EXAMPLE_SELECTOR} >> nth=${i}`;
+          const accessibilityScanResults = await new AxeBuilder({ page })
+            .include(EXAMPLE_SELECTOR)
+            .withTags(WCAG_TAGS)
+            .analyze();
+          
+          // Note: This scans all examples, but we still track the attempt
+          for (const violation of accessibilityScanResults.violations) {
+            if (!allIssues.includes(violation.id)) {
+              allIssues.push(violation.id);
+            }
+          }
+          totalViolations += accessibilityScanResults.violations.length;
+          break; // Exit loop since we scanned all at once
+        }
+      }
+      
+      // Write result file
       const result = {
         key: component.key,
         name: component.name,
         violations: totalViolations,
         criticalViolations,
         seriousViolations,
-        issues,
+        issues: allIssues,
+        examplesTested,
+        examplesFound: exampleCount,
+        scope: "component-examples-only",
         testedAt: new Date().toISOString(),
       };
 
@@ -130,13 +225,16 @@ test.describe("Component Accessibility Tests", () => {
 
       // Log violations for debugging
       if (totalViolations > 0) {
-        console.log(`\n${component.name}: ${totalViolations} violations found`);
-        accessibilityScanResults.violations.forEach((violation) => {
-          console.log(`  - [${violation.impact}] ${violation.id}: ${violation.description}`);
+        console.log(`\n${component.name}: ${totalViolations} violations in ${exampleCount} examples`);
+        allViolationDetails.forEach((v) => {
+          console.log(`  - [${v.impact}] ${v.id} in "${v.exampleId}": ${v.description}`);
         });
+      } else {
+        console.log(`✅ ${component.name}: 0 violations in ${exampleCount} examples`);
       }
 
       // Test always passes - we collect results for the report
+      // (unless no examples were found, which is handled above)
       expect(true).toBe(true);
     });
   }

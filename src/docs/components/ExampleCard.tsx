@@ -3,14 +3,34 @@ import * as React from "react";
 interface ExampleCardProps {
   title?: string;
   description?: string;
+  /** Optional ID for the example, used by a11y testing to identify specific examples */
+  exampleId?: string;
   children: React.ReactNode;
+}
+
+/**
+ * Helper to generate a slug from title for data-example-id
+ */
+function generateExampleId(title?: string, index?: number): string {
+  if (title) {
+    return title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
+  }
+  return `example-${index ?? 0}`;
 }
 
 /**
  * Container for interactive component examples
  * Shows component in a bordered preview area
+ * 
+ * The inner div has data-testid="component-example" for a11y test scoping.
+ * Only the component example content (children) is tested, not the header.
  */
-export function ExampleCard({ title, description, children }: ExampleCardProps) {
+export function ExampleCard({ title, description, exampleId, children }: ExampleCardProps) {
+  const resolvedExampleId = exampleId ?? generateExampleId(title);
+  
   return (
     <div className="rounded-lg border border-border bg-card overflow-hidden">
       {(title || description) && (
@@ -23,8 +43,13 @@ export function ExampleCard({ title, description, children }: ExampleCardProps) 
           )}
         </div>
       )}
-      <div className="p-6 flex flex-wrap items-center gap-4">{children}</div>
+      <div 
+        className="p-6 flex flex-wrap items-center gap-4"
+        data-testid="component-example"
+        data-example-id={resolvedExampleId}
+      >
+        {children}
+      </div>
     </div>
   );
 }
-

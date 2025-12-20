@@ -49,7 +49,7 @@ interface BadgeWithTooltipProps {
 }
 
 function BadgeWithTooltip({ compliance }: BadgeWithTooltipProps) {
-  const { status, levelAchieved, violations, testedAt, issues, subject } = compliance;
+  const { status, levelAchieved, violations, testedAt, issues, subject, examplesFound, scope } = compliance;
 
   // Determine badge appearance based on status
   const config = getBadgeConfig(status, levelAchieved);
@@ -74,6 +74,8 @@ function BadgeWithTooltip({ compliance }: BadgeWithTooltipProps) {
             testedDate={testedDate}
             issues={issues}
             levelAchieved={levelAchieved}
+            examplesFound={examplesFound}
+            scope={scope}
           />
         </WexTooltip.Content>
       </WexTooltip>
@@ -88,6 +90,8 @@ interface TooltipContentProps {
   testedDate: string;
   issues: string[];
   levelAchieved: string | null;
+  examplesFound: number;
+  scope: string;
 }
 
 function TooltipContent({
@@ -97,21 +101,31 @@ function TooltipContent({
   testedDate,
   issues,
   levelAchieved,
+  examplesFound,
+  scope,
 }: TooltipContentProps) {
+  const isNoExamples = status === "no_examples";
+  
   return (
     <div className="space-y-2 text-xs">
       <p className="font-semibold text-foreground">Accessibility Test Signal</p>
       <p className="text-muted-foreground">
-        Automated axe-core results for documented examples.
-        This is a test signal, not a compliance certification.
+        {isNoExamples 
+          ? "No component examples found on this page. Check that ExampleCard components have data-testid attributes."
+          : "Automated axe-core results for component examples only. Docs UI is excluded. This is a test signal, not a compliance certification."
+        }
       </p>
       <div className="border-t border-border pt-2 space-y-1">
-        <p><span className="text-muted-foreground">Scope:</span> {subject}</p>
+        <p><span className="text-muted-foreground">Subject:</span> {subject}</p>
+        <p><span className="text-muted-foreground">Scope:</span> {scope}</p>
+        <p><span className="text-muted-foreground">Examples found:</span> {examplesFound}</p>
         <p><span className="text-muted-foreground">Status:</span> {status}</p>
         {levelAchieved && (
           <p><span className="text-muted-foreground">Level:</span> {levelAchieved} (target, not certified)</p>
         )}
-        <p><span className="text-muted-foreground">Violations:</span> {violations ?? "N/A"}</p>
+        {!isNoExamples && (
+          <p><span className="text-muted-foreground">Violations:</span> {violations ?? "N/A"}</p>
+        )}
         <p><span className="text-muted-foreground">Last tested:</span> {testedDate}</p>
         {issues.length > 0 && (
           <div>
@@ -159,6 +173,12 @@ function getBadgeConfig(
         label: "A11y: Fail",
         className: `${baseClasses} border-destructive/50 bg-destructive/10 text-destructive`,
         icon: <X className="h-3 w-3" />,
+      };
+    case "no_examples":
+      return {
+        label: "A11y: No Examples",
+        className: `${baseClasses} border-warning/50 bg-warning/10 text-warning-foreground`,
+        icon: <AlertTriangle className="h-3 w-3" />,
       };
     case "pending":
     default:
