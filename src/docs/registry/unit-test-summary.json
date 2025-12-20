@@ -1,0 +1,575 @@
+{
+  "_meta": {
+    "generatedAt": "2025-12-20T18:18:40.114Z",
+    "testRunner": "vitest",
+    "totalDuration": 6659.458984375
+  },
+  "totals": {
+    "suites": 149,
+    "tests": 244,
+    "passed": 233,
+    "failed": 11,
+    "pending": 0,
+    "passRate": 95
+  },
+  "categories": {
+    "components": {
+      "passed": 167,
+      "failed": 11,
+      "total": 178,
+      "files": [
+        {
+          "name": "_template.test.tsx",
+          "path": "tests/components/_template.test.tsx",
+          "status": "passed",
+          "passed": 4,
+          "failed": 0,
+          "duration": 1.197265625
+        },
+        {
+          "name": "wex-accordion.test.tsx",
+          "path": "tests/components/wex-accordion.test.tsx",
+          "status": "passed",
+          "passed": 3,
+          "failed": 0,
+          "duration": 169.96630859375
+        },
+        {
+          "name": "wex-alert-dialog.test.tsx",
+          "path": "tests/components/wex-alert-dialog.test.tsx",
+          "status": "passed",
+          "passed": 2,
+          "failed": 0,
+          "duration": 232.0263671875
+        },
+        {
+          "name": "wex-alert.test.tsx",
+          "path": "tests/components/wex-alert.test.tsx",
+          "status": "passed",
+          "passed": 7,
+          "failed": 0,
+          "duration": 161.392578125
+        },
+        {
+          "name": "wex-aspect-ratio.test.tsx",
+          "path": "tests/components/wex-aspect-ratio.test.tsx",
+          "status": "passed",
+          "passed": 2,
+          "failed": 0,
+          "duration": 21.103271484375
+        },
+        {
+          "name": "wex-avatar.test.tsx",
+          "path": "tests/components/wex-avatar.test.tsx",
+          "status": "passed",
+          "passed": 3,
+          "failed": 0,
+          "duration": 25.96630859375
+        },
+        {
+          "name": "wex-badge.test.tsx",
+          "path": "tests/components/wex-badge.test.tsx",
+          "status": "passed",
+          "passed": 6,
+          "failed": 0,
+          "duration": 28.2919921875
+        },
+        {
+          "name": "wex-breadcrumb.test.tsx",
+          "path": "tests/components/wex-breadcrumb.test.tsx",
+          "status": "passed",
+          "passed": 2,
+          "failed": 0,
+          "duration": 121.243408203125
+        },
+        {
+          "name": "wex-button-group.test.tsx",
+          "path": "tests/components/wex-button-group.test.tsx",
+          "status": "passed",
+          "passed": 2,
+          "failed": 0,
+          "duration": 23.4794921875
+        },
+        {
+          "name": "wex-button.test.tsx",
+          "path": "tests/components/wex-button.test.tsx",
+          "status": "passed",
+          "passed": 11,
+          "failed": 0,
+          "duration": 249.324951171875
+        },
+        {
+          "name": "wex-calendar.test.tsx",
+          "path": "tests/components/wex-calendar.test.tsx",
+          "status": "passed",
+          "passed": 3,
+          "failed": 0,
+          "duration": 293.513427734375
+        },
+        {
+          "name": "wex-card.test.tsx",
+          "path": "tests/components/wex-card.test.tsx",
+          "status": "passed",
+          "passed": 9,
+          "failed": 0,
+          "duration": 34.960205078125
+        },
+        {
+          "name": "wex-carousel.test.tsx",
+          "path": "tests/components/wex-carousel.test.tsx",
+          "status": "passed",
+          "passed": 2,
+          "failed": 0,
+          "duration": 139.00146484375
+        },
+        {
+          "name": "wex-chart.test.tsx",
+          "path": "tests/components/wex-chart.test.tsx",
+          "status": "passed",
+          "passed": 2,
+          "failed": 0,
+          "duration": 31.455810546875
+        },
+        {
+          "name": "wex-checkbox.test.tsx",
+          "path": "tests/components/wex-checkbox.test.tsx",
+          "status": "passed",
+          "passed": 5,
+          "failed": 0,
+          "duration": 244.638427734375
+        },
+        {
+          "name": "wex-collapsible.test.tsx",
+          "path": "tests/components/wex-collapsible.test.tsx",
+          "status": "passed",
+          "passed": 2,
+          "failed": 0,
+          "duration": 125.32568359375
+        },
+        {
+          "name": "wex-command.test.tsx",
+          "path": "tests/components/wex-command.test.tsx",
+          "status": "failed",
+          "passed": 0,
+          "failed": 2,
+          "duration": 120.074462890625
+        },
+        {
+          "name": "wex-context-menu.test.tsx",
+          "path": "tests/components/wex-context-menu.test.tsx",
+          "status": "passed",
+          "passed": 1,
+          "failed": 0,
+          "duration": 25.56884765625
+        },
+        {
+          "name": "wex-dialog.test.tsx",
+          "path": "tests/components/wex-dialog.test.tsx",
+          "status": "passed",
+          "passed": 3,
+          "failed": 0,
+          "duration": 260.212158203125
+        },
+        {
+          "name": "wex-drawer.test.tsx",
+          "path": "tests/components/wex-drawer.test.tsx",
+          "status": "passed",
+          "passed": 1,
+          "failed": 0,
+          "duration": 28.181396484375
+        },
+        {
+          "name": "wex-dropdown-menu.test.tsx",
+          "path": "tests/components/wex-dropdown-menu.test.tsx",
+          "status": "passed",
+          "passed": 2,
+          "failed": 0,
+          "duration": 292.175048828125
+        },
+        {
+          "name": "wex-empty.test.tsx",
+          "path": "tests/components/wex-empty.test.tsx",
+          "status": "failed",
+          "passed": 1,
+          "failed": 2,
+          "duration": 33.110107421875
+        },
+        {
+          "name": "wex-field.test.tsx",
+          "path": "tests/components/wex-field.test.tsx",
+          "status": "passed",
+          "passed": 3,
+          "failed": 0,
+          "duration": 30.8837890625
+        },
+        {
+          "name": "wex-form.test.tsx",
+          "path": "tests/components/wex-form.test.tsx",
+          "status": "passed",
+          "passed": 2,
+          "failed": 0,
+          "duration": 127.055908203125
+        },
+        {
+          "name": "wex-hover-card.test.tsx",
+          "path": "tests/components/wex-hover-card.test.tsx",
+          "status": "passed",
+          "passed": 2,
+          "failed": 0,
+          "duration": 148.823974609375
+        },
+        {
+          "name": "wex-input-group.test.tsx",
+          "path": "tests/components/wex-input-group.test.tsx",
+          "status": "passed",
+          "passed": 2,
+          "failed": 0,
+          "duration": 48.116943359375
+        },
+        {
+          "name": "wex-input-otp.test.tsx",
+          "path": "tests/components/wex-input-otp.test.tsx",
+          "status": "passed",
+          "passed": 1,
+          "failed": 0,
+          "duration": 180.86572265625
+        },
+        {
+          "name": "wex-input.test.tsx",
+          "path": "tests/components/wex-input.test.tsx",
+          "status": "passed",
+          "passed": 7,
+          "failed": 0,
+          "duration": 186.02294921875
+        },
+        {
+          "name": "wex-item.test.tsx",
+          "path": "tests/components/wex-item.test.tsx",
+          "status": "passed",
+          "passed": 3,
+          "failed": 0,
+          "duration": 27.041259765625
+        },
+        {
+          "name": "wex-kbd.test.tsx",
+          "path": "tests/components/wex-kbd.test.tsx",
+          "status": "passed",
+          "passed": 3,
+          "failed": 0,
+          "duration": 26.162109375
+        },
+        {
+          "name": "wex-label.test.tsx",
+          "path": "tests/components/wex-label.test.tsx",
+          "status": "passed",
+          "passed": 3,
+          "failed": 0,
+          "duration": 24.370361328125
+        },
+        {
+          "name": "wex-menubar.test.tsx",
+          "path": "tests/components/wex-menubar.test.tsx",
+          "status": "passed",
+          "passed": 2,
+          "failed": 0,
+          "duration": 149.239501953125
+        },
+        {
+          "name": "wex-navigation-menu.test.tsx",
+          "path": "tests/components/wex-navigation-menu.test.tsx",
+          "status": "passed",
+          "passed": 2,
+          "failed": 0,
+          "duration": 139.14892578125
+        },
+        {
+          "name": "wex-pagination.test.tsx",
+          "path": "tests/components/wex-pagination.test.tsx",
+          "status": "passed",
+          "passed": 2,
+          "failed": 0,
+          "duration": 83.737548828125
+        },
+        {
+          "name": "wex-popover.test.tsx",
+          "path": "tests/components/wex-popover.test.tsx",
+          "status": "passed",
+          "passed": 2,
+          "failed": 0,
+          "duration": 251.326416015625
+        },
+        {
+          "name": "wex-progress.test.tsx",
+          "path": "tests/components/wex-progress.test.tsx",
+          "status": "failed",
+          "passed": 2,
+          "failed": 3,
+          "duration": 249.38232421875
+        },
+        {
+          "name": "wex-radio-group.test.tsx",
+          "path": "tests/components/wex-radio-group.test.tsx",
+          "status": "passed",
+          "passed": 3,
+          "failed": 0,
+          "duration": 183.11474609375
+        },
+        {
+          "name": "wex-resizable.test.tsx",
+          "path": "tests/components/wex-resizable.test.tsx",
+          "status": "failed",
+          "passed": 0,
+          "failed": 2,
+          "duration": 35.654296875
+        },
+        {
+          "name": "wex-scroll-area.test.tsx",
+          "path": "tests/components/wex-scroll-area.test.tsx",
+          "status": "passed",
+          "passed": 2,
+          "failed": 0,
+          "duration": 38.708251953125
+        },
+        {
+          "name": "wex-select.test.tsx",
+          "path": "tests/components/wex-select.test.tsx",
+          "status": "passed",
+          "passed": 3,
+          "failed": 0,
+          "duration": 122.6826171875
+        },
+        {
+          "name": "wex-separator.test.tsx",
+          "path": "tests/components/wex-separator.test.tsx",
+          "status": "failed",
+          "passed": 2,
+          "failed": 2,
+          "duration": 208.337890625
+        },
+        {
+          "name": "wex-sheet.test.tsx",
+          "path": "tests/components/wex-sheet.test.tsx",
+          "status": "passed",
+          "passed": 2,
+          "failed": 0,
+          "duration": 181.207763671875
+        },
+        {
+          "name": "wex-sidebar.test.tsx",
+          "path": "tests/components/wex-sidebar.test.tsx",
+          "status": "passed",
+          "passed": 1,
+          "failed": 0,
+          "duration": 20.071533203125
+        },
+        {
+          "name": "wex-skeleton.test.tsx",
+          "path": "tests/components/wex-skeleton.test.tsx",
+          "status": "passed",
+          "passed": 3,
+          "failed": 0,
+          "duration": 21.381103515625
+        },
+        {
+          "name": "wex-slider.test.tsx",
+          "path": "tests/components/wex-slider.test.tsx",
+          "status": "passed",
+          "passed": 5,
+          "failed": 0,
+          "duration": 298.344970703125
+        },
+        {
+          "name": "wex-sonner.test.tsx",
+          "path": "tests/components/wex-sonner.test.tsx",
+          "status": "passed",
+          "passed": 1,
+          "failed": 0,
+          "duration": 58.505126953125
+        },
+        {
+          "name": "wex-spinner.test.tsx",
+          "path": "tests/components/wex-spinner.test.tsx",
+          "status": "passed",
+          "passed": 4,
+          "failed": 0,
+          "duration": 70.655517578125
+        },
+        {
+          "name": "wex-switch.test.tsx",
+          "path": "tests/components/wex-switch.test.tsx",
+          "status": "passed",
+          "passed": 5,
+          "failed": 0,
+          "duration": 162.38623046875
+        },
+        {
+          "name": "wex-table.test.tsx",
+          "path": "tests/components/wex-table.test.tsx",
+          "status": "passed",
+          "passed": 4,
+          "failed": 0,
+          "duration": 86.6708984375
+        },
+        {
+          "name": "wex-tabs.test.tsx",
+          "path": "tests/components/wex-tabs.test.tsx",
+          "status": "passed",
+          "passed": 4,
+          "failed": 0,
+          "duration": 163.049560546875
+        },
+        {
+          "name": "wex-textarea.test.tsx",
+          "path": "tests/components/wex-textarea.test.tsx",
+          "status": "passed",
+          "passed": 6,
+          "failed": 0,
+          "duration": 185.70458984375
+        },
+        {
+          "name": "wex-toast.test.tsx",
+          "path": "tests/components/wex-toast.test.tsx",
+          "status": "passed",
+          "passed": 5,
+          "failed": 0,
+          "duration": 2.059814453125
+        },
+        {
+          "name": "wex-toggle-group.test.tsx",
+          "path": "tests/components/wex-toggle-group.test.tsx",
+          "status": "passed",
+          "passed": 3,
+          "failed": 0,
+          "duration": 104.466064453125
+        },
+        {
+          "name": "wex-toggle.test.tsx",
+          "path": "tests/components/wex-toggle.test.tsx",
+          "status": "passed",
+          "passed": 4,
+          "failed": 0,
+          "duration": 183.45849609375
+        },
+        {
+          "name": "wex-tooltip.test.tsx",
+          "path": "tests/components/wex-tooltip.test.tsx",
+          "status": "passed",
+          "passed": 1,
+          "failed": 0,
+          "duration": 26.71533203125
+        }
+      ]
+    },
+    "utils": {
+      "passed": 58,
+      "failed": 0,
+      "total": 58,
+      "files": [
+        {
+          "name": "chartColors.test.ts",
+          "path": "tests/utils/chartColors.test.ts",
+          "status": "passed",
+          "passed": 13,
+          "failed": 0,
+          "duration": 152.32763671875
+        },
+        {
+          "name": "cn.test.ts",
+          "path": "tests/utils/cn.test.ts",
+          "status": "passed",
+          "passed": 8,
+          "failed": 0,
+          "duration": 6.14306640625
+        },
+        {
+          "name": "contrast.test.ts",
+          "path": "tests/utils/contrast.test.ts",
+          "status": "passed",
+          "passed": 25,
+          "failed": 0,
+          "duration": 6.054443359375
+        },
+        {
+          "name": "theme.test.ts",
+          "path": "tests/utils/theme.test.ts",
+          "status": "passed",
+          "passed": 12,
+          "failed": 0,
+          "duration": 5.176025390625
+        }
+      ]
+    },
+    "hooks": {
+      "passed": 8,
+      "failed": 0,
+      "total": 8,
+      "files": [
+        {
+          "name": "useA11yCompliance.test.ts",
+          "path": "tests/hooks/useA11yCompliance.test.ts",
+          "status": "passed",
+          "passed": 8,
+          "failed": 0,
+          "duration": 2.1962890625
+        }
+      ]
+    }
+  },
+  "failures": [
+    {
+      "file": "wex-command.test.tsx",
+      "test": "WexCommand renders without crashing",
+      "message": "TypeError: i.scrollIntoView is not a function\n    at ne (file:///Users/w504233/Projects/wex-brand/node_modules/cmdk/dist/index.mjs:1:4187)\n    at file:///Users/w504233/Projects/wex-brand/node_modules/"
+    },
+    {
+      "file": "wex-command.test.tsx",
+      "test": "WexCommand renders command items",
+      "message": "TypeError: e.scrollIntoView is not a function\n    at ne (file:///Users/w504233/Projects/wex-brand/node_modules/cmdk/dist/index.mjs:1:4224)\n    at file:///Users/w504233/Projects/wex-brand/node_modules/"
+    },
+    {
+      "file": "wex-empty.test.tsx",
+      "test": "WexEmpty renders without crashing",
+      "message": "TestingLibraryElementError: Unable to find an element with the text: /no data/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your tex"
+    },
+    {
+      "file": "wex-empty.test.tsx",
+      "test": "WexEmpty renders with custom message",
+      "message": "TestingLibraryElementError: Unable to find an element with the text: No items found. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your"
+    },
+    {
+      "file": "wex-progress.test.tsx",
+      "test": "WexProgress accepts value prop",
+      "message": "Error: expect(element).toHaveAttribute(\"aria-valuenow\", \"75\") // element.getAttribute(\"aria-valuenow\") === \"75\"\n\nExpected the element to have attribute:\n  aria-valuenow=\"75\"\nReceived:\n  null\n    at Pr"
+    },
+    {
+      "file": "wex-progress.test.tsx",
+      "test": "WexProgress handles zero value",
+      "message": "Error: expect(element).toHaveAttribute(\"aria-valuenow\", \"0\") // element.getAttribute(\"aria-valuenow\") === \"0\"\n\nExpected the element to have attribute:\n  aria-valuenow=\"0\"\nReceived:\n  null\n    at Proxy"
+    },
+    {
+      "file": "wex-progress.test.tsx",
+      "test": "WexProgress handles 100 value",
+      "message": "Error: expect(element).toHaveAttribute(\"aria-valuenow\", \"100\") // element.getAttribute(\"aria-valuenow\") === \"100\"\n\nExpected the element to have attribute:\n  aria-valuenow=\"100\"\nReceived:\n  null\n    at"
+    },
+    {
+      "file": "wex-resizable.test.tsx",
+      "test": "WexResizable renders without crashing",
+      "message": "Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file "
+    },
+    {
+      "file": "wex-resizable.test.tsx",
+      "test": "WexResizable renders panels with content",
+      "message": "Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file "
+    },
+    {
+      "file": "wex-separator.test.tsx",
+      "test": "WexSeparator renders without crashing",
+      "message": "TestingLibraryElementError: Unable to find an accessible element with the role \"separator\"\n\nHere are the accessible roles:\n\n  none:\n\n  Name \"\":\n  \u001b[36m<div\u001b[39m\n    \u001b[33mclass\u001b[39m=\u001b[32m\"shrink-0 bg-b"
+    },
+    {
+      "file": "wex-separator.test.tsx",
+      "test": "WexSeparator accepts className prop",
+      "message": "TestingLibraryElementError: Unable to find an accessible element with the role \"separator\"\n\nHere are the accessible roles:\n\n  none:\n\n  Name \"\":\n  \u001b[36m<div\u001b[39m\n    \u001b[33mclass\u001b[39m=\u001b[32m\"shrink-0 bg-b"
+    }
+  ]
+}

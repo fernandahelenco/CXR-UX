@@ -16,6 +16,29 @@ export default function ChangelogPage() {
 
       <div className="space-y-8">
         <ChangelogEntry
+          version="0.7.0"
+          date="December 20, 2024"
+          title="Unit Test Suite"
+          changes={[
+            "Testing: Added Vitest + React Testing Library test infrastructure",
+            "Testing: Created 244 unit tests across components, utilities, and hooks",
+            "Testing: 95% pass rate with 233 passing tests on initial run",
+            "Testing: Created vitest.config.ts with JSDOM environment and JSON reporter",
+            "Testing: Added tests/setup.ts with jest-dom matchers and browser API mocks",
+            "Components: Basic render tests for all 54 WEX components",
+            "Utils: Tests for cn(), contrast utilities, theme utilities, and chart colors",
+            "Hooks: Tests for useA11yCompliance hook",
+            "Scripts: Added generate-unit-test-report.js for dashboard-friendly output",
+            "Dashboard: Added Unit Tests page under Resources showing pass/fail metrics",
+            "Dashboard: Category breakdown for components, utilities, and hooks",
+            "Dashboard: Test file list with status badges and duration",
+            "Dashboard: Failure details tab for quick debugging",
+            "NPM Scripts: Added test:unit, test:unit:watch, test:unit:report",
+            "Dependencies: Added vitest, @testing-library/react, @testing-library/jest-dom, jsdom",
+          ]}
+        />
+
+        <ChangelogEntry
           version="0.6.0"
           date="December 20, 2024"
           title="Story Page & Home Redesign"
