@@ -1,6 +1,9 @@
+import * as React from "react";
 import { Section } from "@/docs/components/Section";
 import { Guidance } from "@/docs/components/ProseBlock";
 import { ContrastBadge, ContrastIndicator } from "@/docs/components/ContrastBadge";
+import { WexTooltip } from "@/components/wex";
+import { getContrastData, formatContrastRatio, type ContrastRating } from "@/docs/utils/contrast";
 
 /**
  * Colors foundation page
@@ -24,9 +27,35 @@ export default function ColorsPage() {
           title="Contrast Signals"
           description="Computed contrast ratios for common text/background pairings. These are test signals, not certifications."
         >
+          {/* Rating Definitions - Education Section */}
+          <div className="rounded-lg border border-border bg-card p-4 mb-6">
+            <h4 className="font-semibold text-foreground mb-3">What These Ratings Mean</h4>
+            <dl className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <div className="flex gap-2">
+                <dt className="font-medium text-success min-w-[70px]">AAA</dt>
+                <dd className="text-muted-foreground">≥7.0:1 ratio — Highest readability, ideal for all text</dd>
+              </div>
+              <div className="flex gap-2">
+                <dt className="font-medium text-success min-w-[70px]">AA</dt>
+                <dd className="text-muted-foreground">≥4.5:1 ratio — Minimum for normal text (body copy)</dd>
+              </div>
+              <div className="flex gap-2">
+                <dt className="font-medium text-warning min-w-[70px]">AA-large</dt>
+                <dd className="text-muted-foreground">≥3.0:1 ratio — Only for large text (≥18pt or 14pt bold)</dd>
+              </div>
+              <div className="flex gap-2">
+                <dt className="font-medium text-destructive min-w-[70px]">Fail</dt>
+                <dd className="text-muted-foreground">Below thresholds — Not accessible for text use</dd>
+              </div>
+            </dl>
+            <p className="text-xs text-muted-foreground mt-4 pt-3 border-t border-border">
+              These are contrast signals for specific foreground/background pairings, not a compliance certification.
+              Always verify in context with real content.
+            </p>
+          </div>
+
           <Guidance>
-            These ratings are based on WCAG 2.1 contrast requirements for text readability:
-            AAA (≥7:1), AA (≥4.5:1 normal text), AA-large (≥3:1 large text only).
+            Hover over any contrast badge below to see the computed ratio and pairing details.
           </Guidance>
 
           <div className="space-y-4 mt-6">
@@ -114,6 +143,7 @@ export default function ColorsPage() {
                   value="0 0% 100%"
                   valueDark="216 10% 90%"
                   usage="Text on primary backgrounds"
+                  contrastBgVar="--wex-primary"
                 />
                 <TokenSwatch
                   token="--wex-primary-hover"
@@ -121,6 +151,7 @@ export default function ColorsPage() {
                   value="208 100% 26%"
                   valueDark="201 73% 41%"
                   usage="Hover state for primary actions"
+                  contrastFgVar="--wex-primary-contrast"
                 />
               </div>
             </div>
@@ -141,12 +172,14 @@ export default function ColorsPage() {
                   name="Danger Foreground"
                   value="0 0% 100%"
                   usage="Text on danger backgrounds"
+                  contrastBgVar="--wex-danger-bg"
                 />
                 <TokenSwatch
                   token="--wex-danger-hover"
                   name="Danger Hover"
                   value="350 62% 48%"
                   usage="Hover state for destructive actions"
+                  contrastFgVar="--wex-danger-fg"
                 />
               </div>
             </div>
@@ -168,6 +201,7 @@ export default function ColorsPage() {
                   name="Success Foreground"
                   value="0 0% 100%"
                   usage="Text on success backgrounds"
+                  contrastBgVar="--wex-success-bg"
                 />
                 <TokenSwatch
                   token="--wex-success-hover"
@@ -175,6 +209,7 @@ export default function ColorsPage() {
                   value="142 76% 30%"
                   valueDark="142 76% 34%"
                   usage="Hover state for success actions"
+                  contrastFgVar="--wex-success-fg"
                 />
               </div>
             </div>
@@ -196,6 +231,7 @@ export default function ColorsPage() {
                   name="Warning Foreground"
                   value="0 0% 0%"
                   usage="Text on warning backgrounds"
+                  contrastBgVar="--wex-warning-bg"
                 />
                 <TokenSwatch
                   token="--wex-warning-hover"
@@ -203,6 +239,7 @@ export default function ColorsPage() {
                   value="38 92% 44%"
                   valueDark="38 92% 48%"
                   usage="Hover state for warning actions"
+                  contrastFgVar="--wex-warning-fg"
                 />
               </div>
             </div>
@@ -224,6 +261,7 @@ export default function ColorsPage() {
                   name="Info Foreground"
                   value="0 0% 100%"
                   usage="Text on info backgrounds"
+                  contrastBgVar="--wex-info-bg"
                 />
                 <TokenSwatch
                   token="--wex-info-hover"
@@ -231,6 +269,7 @@ export default function ColorsPage() {
                   value="198 87% 40%"
                   valueDark="198 87% 48%"
                   usage="Hover state for info actions"
+                  contrastFgVar="--wex-info-fg"
                 />
               </div>
             </div>
@@ -253,6 +292,7 @@ export default function ColorsPage() {
                   value="216 10% 90%"
                   valueDark="206 32% 21%"
                   usage="Borders, secondary surfaces"
+                  contrastFgVar="--wex-text"
                 />
                 <TokenSwatchWithContrast
                   token="--wex-surface-subtle"
@@ -275,6 +315,7 @@ export default function ColorsPage() {
                   value="206 32% 21%"
                   valueDark="0 0% 100%"
                   usage="Primary text color"
+                  contrastBgVar="--wex-content-bg"
                 />
                 <TokenSwatch
                   token="--wex-text-muted"
@@ -282,6 +323,7 @@ export default function ColorsPage() {
                   value="208 14% 37%"
                   valueDark="216 10% 90%"
                   usage="Secondary/muted text"
+                  contrastBgVar="--wex-content-bg"
                 />
               </div>
             </div>
@@ -498,7 +540,7 @@ export default function ColorsPage() {
             </div>
 
             <div className="rounded-lg border border-warning/50 bg-warning/5 p-4">
-              <h3 className="font-medium mb-2 text-warning-foreground">
+              <h3 className="font-medium mb-2 text-warning">
                 Palette Tokens (Use Sparingly)
               </h3>
               <p className="text-sm text-muted-foreground">
@@ -551,9 +593,18 @@ interface TokenSwatchProps {
   value: string;
   valueDark?: string;
   usage: string;
+  /** For foreground colors: the background they're designed for */
+  contrastBgVar?: string;
+  /** For background colors: the foreground they're designed for */
+  contrastFgVar?: string;
 }
 
-function TokenSwatch({ token, name, value, valueDark, usage }: TokenSwatchProps) {
+function TokenSwatch({ token, name, value, valueDark, usage, contrastBgVar, contrastFgVar }: TokenSwatchProps) {
+  // Determine contrast pairing - either this is a fg color tested on a bg, or a bg color tested with a fg
+  const hasPairing = contrastBgVar || contrastFgVar;
+  const fgVar = contrastFgVar || token; // If this IS a foreground color, use it as fg
+  const bgVar = contrastBgVar || token; // If this IS a background color, use it as bg
+  
   return (
     <div className="rounded-lg border border-border overflow-hidden">
       {/* Actual color preview */}
@@ -562,8 +613,15 @@ function TokenSwatch({ token, name, value, valueDark, usage }: TokenSwatchProps)
         style={{ backgroundColor: `hsl(var(${token}))` }}
       />
       <div className="p-3 bg-card">
-        <p className="font-medium text-sm text-foreground">{name}</p>
-        <code className="text-xs text-muted-foreground">{token}</code>
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex-1">
+            <p className="font-medium text-sm text-foreground">{name}</p>
+            <code className="text-xs text-muted-foreground">{token}</code>
+          </div>
+          {hasPairing && (
+            <ContrastIndicator fgVar={fgVar} bgVar={bgVar} />
+          )}
+        </div>
         <div className="mt-2 space-y-1 text-xs text-muted-foreground">
           <div>Light: <code className="bg-muted px-1 rounded">{value}</code></div>
           {valueDark && (
@@ -590,21 +648,19 @@ function TokenSwatchWithContrast({
 }: TokenSwatchWithContrastProps) {
   return (
     <div className="rounded-lg border border-border overflow-hidden">
-      {/* Color preview with contrast indicator */}
+      {/* Color preview - no overlay, clean swatch */}
       <div 
-        className="h-16 border-b border-border relative"
+        className="h-16 border-b border-border"
         style={{ backgroundColor: `hsl(var(${token}))` }}
-      >
-        <div className="absolute bottom-1 right-1">
-          <ContrastIndicator fgVar={contrastFgVar} bgVar={token} />
-        </div>
-      </div>
+      />
       <div className="p-3 bg-card">
         <div className="flex items-start justify-between gap-2">
-          <div>
+          <div className="flex-1">
             <p className="font-medium text-sm text-foreground">{name}</p>
             <code className="text-xs text-muted-foreground">{token}</code>
           </div>
+          {/* Contrast indicator in card area for better readability */}
+          <ContrastIndicator fgVar={contrastFgVar} bgVar={token} />
         </div>
         <div className="mt-2 space-y-1 text-xs text-muted-foreground">
           <div>Light: <code className="bg-muted px-1 rounded">{value}</code></div>
@@ -645,26 +701,103 @@ interface PaletteRampProps {
 function PaletteRamp({ colorName }: PaletteRampProps) {
   return (
     <div className="grid grid-cols-5 md:grid-cols-10 gap-1">
-      {paletteSteps.map((step) => {
-        const bgVar = `--wex-palette-${colorName}-${step}`;
-        // Use white text for darker shades, black for lighter
-        const useDarkText = step < 400;
-        
-        return (
-          <div key={step} className="text-center">
+      {paletteSteps.map((step) => (
+        <PaletteSwatchWithScore key={step} colorName={colorName} step={step} />
+      ))}
+    </div>
+  );
+}
+
+interface PaletteSwatchWithScoreProps {
+  colorName: string;
+  step: number;
+}
+
+function PaletteSwatchWithScore({ colorName, step }: PaletteSwatchWithScoreProps) {
+  const bgVar = `--wex-palette-${colorName}-${step}`;
+  // Use white text for darker shades (step >= 500), dark text for lighter
+  const useDarkText = step < 500;
+  
+  const [contrastData, setContrastData] = React.useState<{
+    ratio: number;
+    rating: ContrastRating;
+  } | null>(null);
+
+  React.useEffect(() => {
+    // Compute contrast of white text on this background
+    const computeContrast = () => {
+      const data = getContrastData("--wex-primary-contrast", bgVar);
+      if (data) {
+        setContrastData({ ratio: data.ratio, rating: data.rating });
+      }
+    };
+
+    computeContrast();
+
+    // Listen for theme changes (dark mode toggle)
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === "class") {
+          computeContrast();
+        }
+      });
+    });
+
+    observer.observe(document.documentElement, { attributes: true });
+
+    return () => observer.disconnect();
+  }, [bgVar]);
+
+  const ratingLabel = contrastData?.rating || "...";
+  const ratingColor = getRatingColorForPalette(contrastData?.rating);
+
+  return (
+    <WexTooltip.Provider>
+      <WexTooltip>
+        <WexTooltip.Trigger asChild>
+          <div className="text-center cursor-help">
             <div
-              className="h-10 rounded-md border border-border relative flex items-center justify-center"
+              className="h-10 rounded-t-md border border-b-0 border-border relative flex items-center justify-center"
               style={{ backgroundColor: `hsl(var(${bgVar}))` }}
             >
               <span 
-                className={`text-[8px] font-medium ${useDarkText ? "text-black/70" : "text-white/90"}`}
+                className={`text-[8px] font-medium ${useDarkText ? "text-foreground/70" : "text-primary-foreground/90"}`}
               >
                 {step}
               </span>
             </div>
+            <div className={`text-[8px] font-semibold py-0.5 rounded-b-md border border-t-0 border-border bg-card ${ratingColor}`}>
+              {ratingLabel}
+            </div>
           </div>
-        );
-      })}
-    </div>
+        </WexTooltip.Trigger>
+        <WexTooltip.Content side="top" className="text-xs">
+          <div className="space-y-1">
+            <p className="font-semibold">{colorName}-{step}</p>
+            <p className="text-muted-foreground">
+              White text contrast: {contrastData ? formatContrastRatio(contrastData.ratio) : "..."}
+            </p>
+            <p className="text-muted-foreground">
+              Rating: {ratingLabel}
+            </p>
+          </div>
+        </WexTooltip.Content>
+      </WexTooltip>
+    </WexTooltip.Provider>
   );
+}
+
+function getRatingColorForPalette(rating: ContrastRating | undefined): string {
+  switch (rating) {
+    case "AAA":
+    case "AA":
+      return "text-success";
+    case "AA-large":
+      // Use foreground text which adapts to light/dark mode
+      return "text-foreground";
+    case "Fail":
+      return "text-destructive";
+    default:
+      return "text-muted-foreground";
+  }
 }

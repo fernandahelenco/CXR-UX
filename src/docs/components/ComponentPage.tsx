@@ -1,6 +1,7 @@
 import * as React from "react";
 import { StatusBadge } from "./StatusBadge";
 import { A11ySignalBadge } from "./A11ySignalBadge";
+import { A11yResultsSection } from "./A11yResultsSection";
 import type { ComponentStatus } from "@/docs/registry/types";
 
 interface ComponentPageProps {
@@ -23,6 +24,7 @@ interface ComponentPageProps {
  * - Status badge (Alpha/Beta/Stable)
  * - A11y signal badge (from automated testing)
  * - Description
+ * - Accessibility results summary section
  */
 export function ComponentPage({
   title,
@@ -43,6 +45,10 @@ export function ComponentPage({
         </div>
         <p className="text-lg text-muted-foreground">{description}</p>
       </header>
+      
+      {/* Accessibility Results Section - summary with link to dashboard */}
+      <A11yResultsSection registryKey={registryKey} />
+      
       <div className="space-y-12">{children}</div>
     </article>
   );

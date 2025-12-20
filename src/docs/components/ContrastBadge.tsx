@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Check, AlertTriangle, X } from "lucide-react";
 import {
   getContrastData,
   formatContrastRatio,
@@ -38,10 +39,28 @@ export function ContrastBadge({ fgVar, bgVar, compact = false }: ContrastBadgePr
 
   React.useEffect(() => {
     // Compute contrast on client-side only
-    const data = getContrastData(fgVar, bgVar);
-    if (data) {
-      setContrastData({ ratio: data.ratio, rating: data.rating });
-    }
+    const computeContrast = () => {
+      const data = getContrastData(fgVar, bgVar);
+      if (data) {
+        setContrastData({ ratio: data.ratio, rating: data.rating });
+      }
+    };
+
+    computeContrast();
+
+    // Listen for theme changes (dark mode toggle)
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === "class") {
+          // Re-compute when .dark class changes
+          computeContrast();
+        }
+      });
+    });
+
+    observer.observe(document.documentElement, { attributes: true });
+
+    return () => observer.disconnect();
   }, [fgVar, bgVar]);
 
   if (!contrastData) {
@@ -55,16 +74,19 @@ export function ContrastBadge({ fgVar, bgVar, compact = false }: ContrastBadgePr
   const { ratio, rating } = contrastData;
   const config = getBadgeConfig(rating);
 
+  const RatingIcon = getRatingIcon(rating);
+
   return (
     <WexTooltip.Provider>
       <WexTooltip>
         <WexTooltip.Trigger asChild>
           <span className={config.className}>
+            <RatingIcon className="h-3 w-3" />
             {compact ? (
-              `Contrast: ${rating}`
+              rating
             ) : (
               <>
-                {formatContrastRatio(ratio)} ({rating})
+                {formatContrastRatio(ratio)} {rating}
               </>
             )}
           </span>
@@ -103,7 +125,7 @@ function TooltipContentComponent({ ratio, rating, fgVar, bgVar }: TooltipContent
         <p><span className="text-muted-foreground">Foreground:</span> {fgVar}</p>
         <p><span className="text-muted-foreground">Background:</span> {bgVar}</p>
         {rating === "AA-large" && (
-          <p className="text-warning-foreground bg-warning/10 px-1 py-0.5 rounded text-[10px]">
+          <p className="text-warning bg-warning/10 px-1 py-0.5 rounded text-[10px]">
             Passes AA for large text (≥18pt or 14pt bold) only
           </p>
         )}
@@ -122,31 +144,48 @@ interface BadgeConfig {
 }
 
 function getBadgeConfig(rating: ContrastRating): BadgeConfig {
-  const baseClasses = "inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium tracking-wide rounded cursor-help";
+  // Improved styling: larger text, better padding, clear visual hierarchy
+  // Use semantic colors that work in both light and dark modes
+  const baseClasses = "inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded cursor-help transition-colors";
 
   switch (rating) {
     case "AAA":
       return {
-        className: `${baseClasses} bg-success/10 text-success border border-success/30`,
+        // Green badge - text-success is green, visible in both modes
+        className: `${baseClasses} bg-success/20 text-success border border-success/50`,
       };
     case "AA":
       return {
-        className: `${baseClasses} bg-success/10 text-success border border-success/30`,
+        className: `${baseClasses} bg-success/20 text-success border border-success/50`,
       };
     case "AA-large":
       return {
-        className: `${baseClasses} bg-warning/10 text-warning-foreground border border-warning/30`,
+        // Amber badge - use foreground for text which adapts to theme
+        className: `${baseClasses} bg-warning/25 text-foreground border border-warning/50`,
       };
     case "Fail":
       return {
-        className: `${baseClasses} bg-destructive/10 text-destructive border border-destructive/30`,
+        // Red badge - text-destructive is red, visible in both modes
+        className: `${baseClasses} bg-destructive/20 text-destructive border border-destructive/50`,
       };
+  }
+}
+
+function getRatingIcon(rating: ContrastRating): React.ComponentType<{ className?: string }> {
+  switch (rating) {
+    case "AAA":
+    case "AA":
+      return Check;
+    case "AA-large":
+      return AlertTriangle;
+    case "Fail":
+      return X;
   }
 }
 
 /**
  * Inline contrast indicator for use within swatch components
- * Shows just the rating as a small label
+ * Shows the rating as a compact badge with icon
  */
 export function ContrastIndicator({ fgVar, bgVar }: Omit<ContrastBadgeProps, "compact">) {
   const [contrastData, setContrastData] = React.useState<{
@@ -155,10 +194,27 @@ export function ContrastIndicator({ fgVar, bgVar }: Omit<ContrastBadgeProps, "co
   } | null>(null);
 
   React.useEffect(() => {
-    const data = getContrastData(fgVar, bgVar);
-    if (data) {
-      setContrastData({ ratio: data.ratio, rating: data.rating });
-    }
+    const computeContrast = () => {
+      const data = getContrastData(fgVar, bgVar);
+      if (data) {
+        setContrastData({ ratio: data.ratio, rating: data.rating });
+      }
+    };
+
+    computeContrast();
+
+    // Listen for theme changes (dark mode toggle)
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === "class") {
+          computeContrast();
+        }
+      });
+    });
+
+    observer.observe(document.documentElement, { attributes: true });
+
+    return () => observer.disconnect();
   }, [fgVar, bgVar]);
 
   if (!contrastData) {
@@ -166,14 +222,16 @@ export function ContrastIndicator({ fgVar, bgVar }: Omit<ContrastBadgeProps, "co
   }
 
   const { ratio, rating } = contrastData;
-  const colorClass = getRatingColorClass(rating);
+  const config = getIndicatorConfig(rating);
+  const RatingIcon = getRatingIcon(rating);
 
   return (
     <WexTooltip.Provider>
       <WexTooltip>
         <WexTooltip.Trigger asChild>
-          <span className={`text-[9px] font-medium cursor-help ${colorClass}`}>
-            {rating}
+          <span className={config.className}>
+            <RatingIcon className="h-2.5 w-2.5" />
+            <span>{rating}</span>
           </span>
         </WexTooltip.Trigger>
         <WexTooltip.Content side="top" className="max-w-xs">
@@ -189,14 +247,17 @@ export function ContrastIndicator({ fgVar, bgVar }: Omit<ContrastBadgeProps, "co
   );
 }
 
-function getRatingColorClass(rating: ContrastRating): string {
+function getIndicatorConfig(rating: ContrastRating): { className: string } {
+  const baseClasses = "inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-bold rounded cursor-help";
+
   switch (rating) {
     case "AAA":
     case "AA":
-      return "text-success";
+      return { className: `${baseClasses} bg-success/25 text-success` };
     case "AA-large":
-      return "text-warning-foreground";
+      // Use foreground text which adapts to light/dark mode
+      return { className: `${baseClasses} bg-warning/30 text-foreground` };
     case "Fail":
-      return "text-destructive";
+      return { className: `${baseClasses} bg-destructive/25 text-destructive` };
   }
 }

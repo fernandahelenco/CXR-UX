@@ -6,6 +6,7 @@ import { DocsLayout } from "./layout/DocsLayout";
 const OverviewPage = React.lazy(() => import("@/docs/pages/OverviewPage"));
 const GettingStartedPage = React.lazy(() => import("@/docs/pages/GettingStartedPage"));
 const ChangelogPage = React.lazy(() => import("@/docs/pages/ChangelogPage"));
+const AccessibilityPage = React.lazy(() => import("@/docs/pages/AccessibilityPage"));
 
 // Foundation pages
 const TokensPage = React.lazy(() => import("@/docs/pages/foundations/TokensPage"));
@@ -94,6 +95,7 @@ export function DocsRoutes() {
           <Route index element={<OverviewPage />} />
           <Route path="getting-started" element={<GettingStartedPage />} />
           <Route path="changelog" element={<ChangelogPage />} />
+          <Route path="accessibility" element={<AccessibilityPage />} />
 
           {/* Foundation pages */}
           <Route path="foundations/tokens" element={<TokensPage />} />

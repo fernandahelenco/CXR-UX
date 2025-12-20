@@ -190,3 +190,76 @@ Before any PR or commit, verify:
 - [ ] All components use forwardRef with displayName
 - [ ] Any new state colors follow the extension process (Section 5.3)
 
+---
+
+## 7. Changelog Requirements (MANDATORY)
+
+Any Cursor execution or implementation run that changes code MUST include a Changelog update.
+
+### 7.1 Required Fields
+
+Each changelog entry MUST include:
+- **Date**: When the change was made
+- **Summary**: Brief description of what changed
+- **Pages/Components Affected**: List of files or features touched
+- **Breaking Changes**: If any, explicitly noted
+- **Accessibility Signal Changes**: If a11y tests were affected, note here
+
+### 7.2 Update Location
+
+Update `src/docs/pages/ChangelogPage.tsx` by adding a new `ChangelogEntry` at the top of the entries list.
+
+### 7.3 Version Numbering
+
+- Patch (0.0.X): Bug fixes, minor styling adjustments
+- Minor (0.X.0): New features, new components, significant improvements
+- Major (X.0.0): Breaking changes, major refactors
+
+---
+
+## 8. Component Introduction Requirements (MANDATORY)
+
+Any new UI component, wrapper, or reusable abstraction MUST:
+
+1. **Use WEX prefix** - Named `Wex{ComponentName}` (e.g., WexChart, WexButton)
+2. **Live in WEX layer** - Located in `src/components/wex/`
+3. **Be registered** - Added to component registry for docs navigation
+4. **Have docs page** - Include examples in `src/docs/pages/components/`
+5. **Participate in a11y** - Examples wrapped in ExampleCard for scanning
+6. **Update Changelog** - Document addition in ChangelogPage
+
+### 8.1 Third-Party Wrappers
+
+Components wrapping third-party libraries (e.g., Recharts, date-fns) MUST:
+
+- Expose only the WEX-prefixed public API in docs
+- NOT demonstrate raw third-party APIs directly in documentation
+- Document any third-party dependencies in the component file header
+
+### 8.2 Namespace Pattern
+
+For compound components (e.g., Dialog with Trigger, Content, etc.), use the namespace pattern:
+
+```tsx
+// Export as namespace object
+export const WexComponent = {
+  Root: ComponentRoot,
+  Trigger: ComponentTrigger,
+  Content: ComponentContent,
+};
+
+// Usage
+<WexComponent.Root>
+  <WexComponent.Trigger>Open</WexComponent.Trigger>
+  <WexComponent.Content>...</WexComponent.Content>
+</WexComponent.Root>
+```
+
+### 8.3 Non-Compliant Components
+
+If a vendor component cannot be wrapped without breaking functionality:
+
+1. Document the exception in the component file
+2. Add to the registry with status: "alpha"
+3. Open a tracking issue for future compliance
+

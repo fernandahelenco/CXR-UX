@@ -264,9 +264,9 @@ export default function FormPage() {
             </div>
 
             <div className="space-y-2">
-              <WexLabel>Account Type</WexLabel>
+              <WexLabel id="account-type-label">Account Type</WexLabel>
               <WexSelect>
-                <WexSelect.Trigger>
+                <WexSelect.Trigger aria-labelledby="account-type-label">
                   <WexSelect.Value placeholder="Choose account type" />
                 </WexSelect.Trigger>
                 <WexSelect.Content>

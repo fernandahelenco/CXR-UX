@@ -20,7 +20,7 @@ export default function ResizablePage() {
                 <span className="font-semibold">One</span>
               </div>
             </WexResizable.Panel>
-            <WexResizable.Handle />
+            <WexResizable.Handle aria-label="Resize panels" />
             <WexResizable.Panel defaultSize={50}>
               <div className="flex h-full items-center justify-center p-6">
                 <span className="font-semibold">Two</span>
