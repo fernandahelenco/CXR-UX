@@ -3,14 +3,7 @@ import { Section } from "@/docs/components/Section";
 import { Guidance } from "@/docs/components/ProseBlock";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { ExampleCard } from "@/docs/components/ExampleCard";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  ChartLegend,
-  ChartLegendContent,
-  type ChartConfig,
-} from "@/components/ui/chart";
+import { WexChart, type WexChartConfig } from "@/components/wex/wex-chart";
 import {
   Bar,
   BarChart,
@@ -108,9 +101,9 @@ const data = [
         />
       </Section>
 
-      <Section title="Chart Configuration" description="Define colors and labels via ChartConfig.">
+      <Section title="Chart Configuration" description="Define colors and labels via WexChartConfig.">
         <CodeBlock
-          code={`import { ChartConfig } from "@/components/ui/chart";
+          code={`import { WexChart, type WexChartConfig } from "@/components/wex/wex-chart";
 
 const chartConfig = {
   revenue: {
@@ -121,15 +114,15 @@ const chartConfig = {
     label: "Expenses",
     color: "hsl(var(--chart-2))",
   },
-} satisfies ChartConfig;
+} satisfies WexChartConfig;
 
-// Use with ChartContainer
-<ChartContainer config={chartConfig}>
+// Use with WexChart.Container
+<WexChart.Container config={chartConfig}>
   <BarChart data={data}>
     <Bar dataKey="revenue" fill="var(--color-revenue)" />
     <Bar dataKey="expenses" fill="var(--color-expenses)" />
   </BarChart>
-</ChartContainer>`}
+</WexChart.Container>`}
         />
       </Section>
 
@@ -166,13 +159,7 @@ const chartConfig = {
 
       <Section title="Usage">
         <CodeBlock
-          code={`import { 
-  ChartContainer, 
-  ChartTooltip, 
-  ChartTooltipContent,
-  ChartLegend,
-  ChartLegendContent,
-} from "@/components/ui/chart";
+          code={`import { WexChart, type WexChartConfig } from "@/components/wex/wex-chart";
 import { Bar, BarChart, XAxis, YAxis } from "recharts";
 
 const data = [
@@ -185,18 +172,18 @@ const chartConfig = {
     label: "Sales",
     color: "hsl(var(--chart-1))",
   },
-};
+} satisfies WexChartConfig;
 
 function MyChart() {
   return (
-    <ChartContainer config={chartConfig} className="h-[300px]">
+    <WexChart.Container config={chartConfig} className="h-[300px]">
       <BarChart data={data}>
         <XAxis dataKey="month" />
         <YAxis />
-        <ChartTooltip content={<ChartTooltipContent />} />
+        <WexChart.Tooltip content={<WexChart.TooltipContent />} />
         <Bar dataKey="value" fill="var(--color-value)" radius={4} />
       </BarChart>
-    </ChartContainer>
+    </WexChart.Container>
   );
 }`}
         />
@@ -214,11 +201,11 @@ const barChartConfig = {
     label: "Value",
     color: chartColorVars.chart1,
   },
-} satisfies ChartConfig;
+} satisfies WexChartConfig;
 
 function BasicBarChartExample() {
   return (
-    <ChartContainer config={barChartConfig} className="h-[250px] w-full">
+    <WexChart.Container config={barChartConfig} className="h-[250px] w-full">
       <BarChart data={sampleData.monthly} accessibilityLayer>
         <CartesianGrid vertical={false} />
         <XAxis
@@ -228,10 +215,10 @@ function BasicBarChartExample() {
           axisLine={false}
         />
         <YAxis tickLine={false} axisLine={false} />
-        <ChartTooltip content={<ChartTooltipContent />} />
+        <WexChart.Tooltip content={<WexChart.TooltipContent />} />
         <Bar dataKey="value" fill="var(--color-value)" radius={4} />
       </BarChart>
-    </ChartContainer>
+    </WexChart.Container>
   );
 }
 
@@ -240,11 +227,11 @@ const lineChartConfig = {
     label: "Value",
     color: chartColorVars.chart2,
   },
-} satisfies ChartConfig;
+} satisfies WexChartConfig;
 
 function LineChartExample() {
   return (
-    <ChartContainer config={lineChartConfig} className="h-[250px] w-full">
+    <WexChart.Container config={lineChartConfig} className="h-[250px] w-full">
       <LineChart data={sampleData.monthly} accessibilityLayer>
         <CartesianGrid vertical={false} />
         <XAxis
@@ -254,7 +241,7 @@ function LineChartExample() {
           axisLine={false}
         />
         <YAxis tickLine={false} axisLine={false} />
-        <ChartTooltip content={<ChartTooltipContent />} />
+        <WexChart.Tooltip content={<WexChart.TooltipContent />} />
         <Line
           type="monotone"
           dataKey="value"
@@ -263,7 +250,7 @@ function LineChartExample() {
           dot={{ fill: "var(--color-value)" }}
         />
       </LineChart>
-    </ChartContainer>
+    </WexChart.Container>
   );
 }
 
@@ -276,11 +263,11 @@ const multiSeriesConfig = {
     label: "Expenses",
     color: chartColorVars.chart3,
   },
-} satisfies ChartConfig;
+} satisfies WexChartConfig;
 
 function MultiSeriesBarChartExample() {
   return (
-    <ChartContainer config={multiSeriesConfig} className="h-[250px] w-full">
+    <WexChart.Container config={multiSeriesConfig} className="h-[250px] w-full">
       <BarChart data={sampleData.multiSeries} accessibilityLayer>
         <CartesianGrid vertical={false} />
         <XAxis
@@ -290,12 +277,12 @@ function MultiSeriesBarChartExample() {
           axisLine={false}
         />
         <YAxis tickLine={false} axisLine={false} />
-        <ChartTooltip content={<ChartTooltipContent />} />
-        <ChartLegend content={<ChartLegendContent />} />
+        <WexChart.Tooltip content={<WexChart.TooltipContent />} />
+        <WexChart.Legend content={<WexChart.LegendContent />} />
         <Bar dataKey="revenue" fill="var(--color-revenue)" radius={4} />
         <Bar dataKey="expenses" fill="var(--color-expenses)" radius={4} />
       </BarChart>
-    </ChartContainer>
+    </WexChart.Container>
   );
 }
 
@@ -304,11 +291,11 @@ const areaChartConfig = {
     label: "Value",
     color: chartColorVars.chart4,
   },
-} satisfies ChartConfig;
+} satisfies WexChartConfig;
 
 function AreaChartExample() {
   return (
-    <ChartContainer config={areaChartConfig} className="h-[250px] w-full">
+    <WexChart.Container config={areaChartConfig} className="h-[250px] w-full">
       <AreaChart data={sampleData.monthly} accessibilityLayer>
         <CartesianGrid vertical={false} />
         <XAxis
@@ -318,7 +305,7 @@ function AreaChartExample() {
           axisLine={false}
         />
         <YAxis tickLine={false} axisLine={false} />
-        <ChartTooltip content={<ChartTooltipContent />} />
+        <WexChart.Tooltip content={<WexChart.TooltipContent />} />
         <Area
           type="monotone"
           dataKey="value"
@@ -327,7 +314,7 @@ function AreaChartExample() {
           fillOpacity={0.3}
         />
       </AreaChart>
-    </ChartContainer>
+    </WexChart.Container>
   );
 }
 
@@ -348,14 +335,14 @@ const pieChartConfig = {
     label: "Other",
     color: chartColorVars.chart4,
   },
-} satisfies ChartConfig;
+} satisfies WexChartConfig;
 
 function PieChartExample() {
   return (
-    <ChartContainer config={pieChartConfig} className="h-[250px] w-full">
+    <WexChart.Container config={pieChartConfig} className="h-[250px] w-full">
       <PieChart accessibilityLayer>
-        <ChartTooltip content={<ChartTooltipContent />} />
-        <ChartLegend content={<ChartLegendContent />} />
+        <WexChart.Tooltip content={<WexChart.TooltipContent />} />
+        <WexChart.Legend content={<WexChart.LegendContent />} />
         <Pie
           data={sampleData.distribution}
           dataKey="value"
@@ -371,6 +358,6 @@ function PieChartExample() {
           ))}
         </Pie>
       </PieChart>
-    </ChartContainer>
+    </WexChart.Container>
   );
 }

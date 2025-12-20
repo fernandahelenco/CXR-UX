@@ -28,6 +28,7 @@ export function getInitialTheme(): Theme {
 }
 
 export function setTheme(theme: Theme): void {
+  if (typeof window === "undefined") return;
   localStorage.setItem(THEME_KEY, theme);
   if (theme === "dark") {
     document.documentElement.classList.add("dark");
@@ -37,6 +38,7 @@ export function setTheme(theme: Theme): void {
 }
 
 export function toggleTheme(): Theme {
+  if (typeof window === "undefined") return "light";
   const current = document.documentElement.classList.contains("dark")
     ? "dark"
     : "light";
@@ -50,6 +52,7 @@ export function toggleTheme(): Theme {
  * Call this once in main.tsx or App.tsx
  */
 export function initializeTheme(): void {
+  if (typeof window === "undefined") return;
   const theme = getInitialTheme();
   setTheme(theme);
 }

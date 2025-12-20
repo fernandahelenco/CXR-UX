@@ -761,7 +761,7 @@ function PaletteSwatchWithScore({ colorName, step }: PaletteSwatchWithScoreProps
               style={{ backgroundColor: `hsl(var(${bgVar}))` }}
             >
               <span 
-                className={`text-[8px] font-medium ${useDarkText ? "text-black/70" : "text-white/90"}`}
+                className={`text-[8px] font-medium ${useDarkText ? "text-foreground/70" : "text-primary-foreground/90"}`}
               >
                 {step}
               </span>

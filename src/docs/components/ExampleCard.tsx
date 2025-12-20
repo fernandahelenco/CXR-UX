@@ -11,14 +11,14 @@ interface ExampleCardProps {
 /**
  * Helper to generate a slug from title for data-example-id
  */
-function generateExampleId(title?: string, index?: number): string {
+function generateExampleId(title?: string): string {
   if (title) {
     return title
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-|-$/g, "");
   }
-  return `example-${index ?? 0}`;
+  return "";
 }
 
 /**
@@ -29,7 +29,9 @@ function generateExampleId(title?: string, index?: number): string {
  * Only the component example content (children) is tested, not the header.
  */
 export function ExampleCard({ title, description, exampleId, children }: ExampleCardProps) {
-  const resolvedExampleId = exampleId ?? generateExampleId(title);
+  // Use React's useId for guaranteed unique IDs when no explicit ID or title is provided
+  const reactId = React.useId();
+  const resolvedExampleId = exampleId ?? (generateExampleId(title) || `example-${reactId.replace(/:/g, "")}`);
   
   return (
     <div className="rounded-lg border border-border bg-card overflow-hidden">

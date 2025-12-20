@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useSearchParams, Link } from "react-router-dom";
-import { Check, AlertTriangle, X, HelpCircle, Search, ArrowRight, FileText, Info, Sun, Moon } from "lucide-react";
+import { Check, AlertTriangle, X, HelpCircle, Search, ArrowRight, Sun, Moon } from "lucide-react";
 import complianceData from "@/docs/registry/compliance.json";
 import { componentRegistry } from "@/docs/registry/components";
 import { WexInput, WexButton, WexDialog } from "@/components/wex";
@@ -258,16 +258,17 @@ export default function AccessibilityPage() {
                 >
                   Total {sortBy === "violations" && (sortOrder === "asc" ? "↑" : "↓")}
                 </th>
-                <th className="text-left px-4 py-3 text-sm font-medium text-foreground">
-                  Actions
-                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
               {filteredComponents.map((comp) => (
                 <tr
                   key={comp.key}
-                  className={`hover:bg-muted/30 ${selectedComponent === comp.key ? "bg-primary/5" : ""}`}
+                  tabIndex={0}
+                  role="button"
+                  onClick={() => openDetails(comp.key)}
+                  onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && openDetails(comp.key)}
+                  className={`hover:bg-muted/50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset ${selectedComponent === comp.key ? "bg-primary/5" : ""}`}
                 >
                   <td className="px-4 py-3 text-sm text-foreground font-medium">
                     {comp.name}
@@ -292,30 +293,11 @@ export default function AccessibilityPage() {
                   <td className="px-4 py-3 text-sm text-foreground">
                     {comp.violations}
                   </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <button
-                        onClick={() => openDetails(comp.key)}
-                        className="inline-flex items-center gap-1 text-sm text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
-                      >
-                        <Info className="h-3 w-3" />
-                        Details
-                      </button>
-                      <Link
-                        to={comp.route}
-                        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
-                        title="View component documentation"
-                      >
-                        <FileText className="h-3 w-3" />
-                        <span className="sr-only">View docs</span>
-                      </Link>
-                    </div>
-                  </td>
                 </tr>
               ))}
               {filteredComponents.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">
+                  <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">
                     No components found matching "{searchQuery}"
                   </td>
                 </tr>

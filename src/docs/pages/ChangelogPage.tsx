@@ -16,6 +16,28 @@ export default function ChangelogPage() {
 
       <div className="space-y-8">
         <ChangelogEntry
+          version="0.5.0"
+          date="December 20, 2024"
+          title="Hardening Pass"
+          changes={[
+            "Charts: Updated docs to use WexChart namespace (not raw ChartContainer)",
+            "Charts: All chart examples now use WexChart.Container, WexChart.Tooltip, etc.",
+            "Governance: Added Section 8 to WEX_COMPONENT_RULES.md (Component Introduction Requirements)",
+            "Governance: All new components must use WEX prefix, be registered, have docs, and participate in a11y",
+            "Dark Mode: Fixed text-black/70 in ColorsPage palette swatches to use semantic text-foreground",
+            "A11y Dashboard: Made table rows fully clickable (removed Actions column)",
+            "A11y Dashboard: Added keyboard navigation (Tab + Enter/Space to open details)",
+            "Dialog: Fixed animation origin (replaced zoom with slide-in-from-top)",
+            "A11y: Fixed scrollable-region-focusable in ScrollArea (added tabIndex=0)",
+            "A11y: Fixed aria-required-children in Item (added role='listitem')",
+            "A11y: Fixed button-name in Select and Form examples (added aria-labelledby)",
+            "A11y: Added aria-label to Resizable handle (library aria-allowed-attr issue noted)",
+            "A11y: ExampleCard now uses React.useId() for guaranteed unique data-example-id",
+            "A11y Tests: Regenerated compliance.json (38 passing, 16 failing)",
+          ]}
+        />
+
+        <ChangelogEntry
           version="0.4.1"
           date="December 20, 2024"
           title="Dark Mode Accessibility Fixes"

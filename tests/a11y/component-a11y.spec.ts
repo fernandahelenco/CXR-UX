@@ -130,8 +130,6 @@ test.describe("Component Accessibility Tests (Light + Dark Modes)", () => {
         dark: null,
       };
       
-      let hasExamples = true;
-      
       for (const mode of COLOR_MODES) {
         // Navigate to component page
         await page.goto(component.route);
@@ -167,7 +165,6 @@ test.describe("Component Accessibility Tests (Light + Dark Modes)", () => {
         
         // Handle case where no examples are found
         if (exampleCount === 0) {
-          hasExamples = false;
           console.warn(`\n⚠️  ${component.name} [${mode}]: No example containers found!`);
           
           modeResults[mode] = {
@@ -255,6 +252,10 @@ test.describe("Component Accessibility Tests (Light + Dark Modes)", () => {
       }
       
       // Write combined result file (both modes in one file)
+      // Determine hasExamples per mode based on examplesFound
+      const lightHasExamples = (modeResults.light?.examplesFound ?? 0) > 0;
+      const darkHasExamples = (modeResults.dark?.examplesFound ?? 0) > 0;
+      
       const result = {
         key: component.key,
         name: component.name,
@@ -263,11 +264,11 @@ test.describe("Component Accessibility Tests (Light + Dark Modes)", () => {
         modes: {
           light: modeResults.light ? {
             ...modeResults.light,
-            status: hasExamples ? undefined : "no_examples",
+            status: lightHasExamples ? undefined : "no_examples",
           } : null,
           dark: modeResults.dark ? {
             ...modeResults.dark,
-            status: hasExamples ? undefined : "no_examples",
+            status: darkHasExamples ? undefined : "no_examples",
           } : null,
         },
         // Legacy fields for backwards compatibility (use light mode as default)
@@ -277,7 +278,7 @@ test.describe("Component Accessibility Tests (Light + Dark Modes)", () => {
         issues: modeResults.light?.issues ?? [],
         examplesTested: modeResults.light?.examplesTested ?? [],
         examplesFound: modeResults.light?.examplesFound ?? 0,
-        hasExamples,
+        hasExamples: lightHasExamples && darkHasExamples,
       };
 
       const resultPath = path.join(outputDir, `${component.key}.json`);

@@ -146,9 +146,9 @@ export default function SelectPage() {
 
           <ExampleCard title="Disabled Option" description="Individual options can be disabled.">
             <div className="w-full max-w-sm space-y-2">
-              <WexLabel>Subscription Plan</WexLabel>
+              <WexLabel id="subscription-label">Subscription Plan</WexLabel>
               <WexSelect>
-                <WexSelect.Trigger>
+                <WexSelect.Trigger aria-labelledby="subscription-label">
                   <WexSelect.Value placeholder="Select a plan" />
                 </WexSelect.Trigger>
                 <WexSelect.Content>
