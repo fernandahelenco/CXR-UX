@@ -86,6 +86,9 @@ function PageLoader() {
  * All routes wrapped in DocsLayout for consistent shell
  */
 export function DocsRoutes() {
+  // #region agent log
+  fetch('http://127.0.0.1:7243/ingest/cfb597a8-c124-40f4-8323-a95d1a296ffa',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'routes.tsx:89',message:'DocsRoutes rendering',data:{},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'H4'})}).catch(()=>{});
+  // #endregion
   return (
     <React.Suspense fallback={<PageLoader />}>
       <Routes>
