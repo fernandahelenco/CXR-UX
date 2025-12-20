@@ -568,11 +568,14 @@ function ComponentDetailContent({ registryKey, data, info, onClose }: ComponentD
             <p className="font-medium text-foreground">{data.violations}</p>
           </div>
           {(() => {
-            const variantCount = data.scenariosTested.filter(s => !/^example-\d+$/.test(s)).length;
+            // Filter: exclude example-_r_xxx_ (React.useId) and example-N (numeric fallback)
+            const variants = data.scenariosTested.filter(s => 
+              !s.startsWith("example-_r_") && !/^example-\d+$/.test(s)
+            );
             return (
               <div className="p-3 rounded-lg bg-muted/50">
                 <p className="text-xs text-muted-foreground mb-1">Variants Tested</p>
-                <p className="font-medium text-foreground">{variantCount || data.examplesFound}</p>
+                <p className="font-medium text-foreground">{variants.length || data.examplesFound}</p>
               </div>
             );
           })()}
@@ -584,9 +587,12 @@ function ComponentDetailContent({ registryKey, data, info, onClose }: ComponentD
           <p className="text-foreground">{testedDate}</p>
         </div>
 
-        {/* Variants Tested - filter out auto-generated "example-X" IDs */}
+        {/* Variants Tested - filter out auto-generated example IDs */}
         {(() => {
-          const variants = data.scenariosTested.filter(s => !/^example-\d+$/.test(s));
+          // Filter: exclude example-_r_xxx_ (React.useId) and example-N (numeric fallback)
+          const variants = data.scenariosTested.filter(s => 
+            !s.startsWith("example-_r_") && !/^example-\d+$/.test(s)
+          );
           return variants.length > 0 ? (
             <div>
               <p className="text-xs text-muted-foreground mb-2">Variants</p>
