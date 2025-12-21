@@ -222,27 +222,37 @@ export function TokenRowWithPicker({
   const displayValue = formatPaletteValue(value);
   
   return (
-    <PaletteSwatchPicker value={value} onSelect={onChange}>
-      <button 
-        type="button"
-        className={cn(
-          "w-full flex items-center justify-between py-2 px-1 rounded-md transition-colors cursor-pointer hover:bg-muted/30",
-          className
-        )}
-        title={`Edit ${label}`}
-      >
-        {/* Label and value */}
-        <div className="flex flex-col items-start">
+    <div className={cn("flex items-center justify-between py-2 px-1", className)}>
+      {/* Left side: Swatch + Label/Value */}
+      <div className="flex items-center gap-3">
+        <SwatchDisplay value={value} size="md" className="ring-1 ring-border/50" />
+        <div className="flex flex-col">
           <span className="text-sm font-medium">{label}</span>
           <span className="text-xs text-muted-foreground font-mono">
             {displayValue}
           </span>
         </div>
-        
-        {/* Swatch */}
-        <SwatchDisplay value={value} size="md" className="ring-1 ring-border/50" />
-      </button>
-    </PaletteSwatchPicker>
+      </div>
+      
+      {/* Right side: Edit button */}
+      <PaletteSwatchPicker value={value} onSelect={onChange}>
+        <button 
+          type="button"
+          className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+          title={`Edit ${label}`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <svg 
+            className="w-4 h-4" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+          </svg>
+        </button>
+      </PaletteSwatchPicker>
+    </div>
   );
 }
 
