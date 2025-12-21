@@ -16,6 +16,31 @@ export default function ChangelogPage() {
 
       <div className="space-y-8">
         <ChangelogEntry
+          version="0.11.0"
+          date="December 20, 2025"
+          title="Theme Builder Redesign"
+          changes={[
+            "Theme Builder: Complete redesign with professional app-style layout",
+            "Layout: Full-width three-region design (top bar, center workspace, right properties panel)",
+            "Layout: Removed docs page constraints for full viewport usage",
+            "Properties: Collapsible token groups organized by semantic purpose",
+            "Properties: Added Surfaces, Borders, Focus tokens sections",
+            "Properties: Each token shows WEX → Tailwind utility mapping inline",
+            "Preview: Live component preview with buttons, badges, alerts, forms, cards",
+            "Preview: Contrast validation panel with WCAG rating badges",
+            "A11y Tab: Integrated compliance.json data showing all 54 components",
+            "A11y Tab: Summary bar with passing/failing counts",
+            "A11y Tab: Filter to show only failing components",
+            "A11y Tab: Color-contrast failures link to Properties panel guidance",
+            "A11y Tab: Mode-specific results (light/dark) from dual-mode testing",
+            "Export: Download theme overrides as Style Dictionary compatible JSON",
+            "UX: Mode toggle (light/dark) in top bar for editing either mode",
+            "UX: Unsaved changes indicator with reset button",
+            "Palette: Cascade controls for updating entire ramp from H/S values",
+          ]}
+        />
+
+        <ChangelogEntry
           version="0.10.0"
           date="December 20, 2025"
           title="Architecture Documentation & Dialog Fix"

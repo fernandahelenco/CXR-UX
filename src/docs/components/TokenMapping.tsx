@@ -173,6 +173,36 @@ export const TOKEN_MAPPINGS: Record<string, TokenMappingData> = {
     tailwindUtilities: ["text-muted-foreground"],
     components: ["Labels", "Descriptions", "Placeholders"],
   },
+  "--wex-input-border": {
+    token: "--wex-input-border",
+    tailwindUtilities: ["border-input"],
+    components: ["WexInput", "WexSelect", "WexTextarea"],
+  },
+  "--wex-focus-ring-color": {
+    token: "--wex-focus-ring-color",
+    tailwindUtilities: ["ring-ring"],
+    components: ["All focusable elements"],
+  },
+  "--wex-danger-hover": {
+    token: "--wex-danger-hover",
+    tailwindUtilities: ["hover:bg-destructive-hover"],
+    components: ["WexButton (destructive)"],
+  },
+  "--wex-success-hover": {
+    token: "--wex-success-hover",
+    tailwindUtilities: ["hover:bg-success-hover"],
+    components: ["WexButton (success)"],
+  },
+  "--wex-warning-hover": {
+    token: "--wex-warning-hover",
+    tailwindUtilities: ["hover:bg-warning-hover"],
+    components: ["WexButton (warning)"],
+  },
+  "--wex-info-hover": {
+    token: "--wex-info-hover",
+    tailwindUtilities: ["hover:bg-info-hover"],
+    components: ["WexButton (info)"],
+  },
 };
 
 /**

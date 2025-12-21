@@ -47,8 +47,8 @@ export function DocsLayout() {
       )}
       
       <main 
-        className={`relative z-10 min-h-[calc(100vh-3.5rem)] p-8 overflow-x-hidden ${
-          isHome ? "ml-0" : "ml-64"
+        className={`relative z-10 min-h-[calc(100vh-3.5rem)] overflow-x-hidden ${
+          isHome ? "ml-0 p-8" : isFullWidth ? "ml-64 p-0" : "ml-64 p-8"
         }`}
       >
         <div className={isHome ? "mx-auto max-w-6xl" : isFullWidth ? "" : "mx-auto max-w-4xl"}>
