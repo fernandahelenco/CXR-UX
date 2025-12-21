@@ -10,9 +10,13 @@ import { ScrollToTop } from "@/docs/components/ScrollToTop";
  * - Fixed sidebar on left
  * - Scrollable main content area
  */
+// Pages that need full-width layout (no max-width constraint)
+const FULL_WIDTH_PAGES = ["/theme-builder"];
+
 export function DocsLayout() {
   const location = useLocation();
   const isHome = location.pathname === "/";
+  const isFullWidth = FULL_WIDTH_PAGES.includes(location.pathname);
 
   return (
     <div className="min-h-screen bg-background text-foreground relative">
@@ -47,7 +51,7 @@ export function DocsLayout() {
           isHome ? "ml-0" : "ml-64"
         }`}
       >
-        <div className={isHome ? "mx-auto max-w-6xl" : "mx-auto max-w-4xl"}>
+        <div className={isHome ? "mx-auto max-w-6xl" : isFullWidth ? "" : "mx-auto max-w-4xl"}>
           <Outlet />
         </div>
       </main>
