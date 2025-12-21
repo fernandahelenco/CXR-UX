@@ -32,7 +32,7 @@ import {
   type TokenDefinition,
   type PaletteRamp,
 } from "@/docs/data/tokenRegistry";
-import { PaletteSwatchPicker, formatPaletteValue } from "./PaletteSwatchPicker";
+import { PaletteSwatchPicker, SwatchDisplay, formatPaletteValue } from "./PaletteSwatchPicker";
 
 // ============================================================================
 // Types
@@ -364,23 +364,49 @@ function PaletteRampRow({
     ? `${ramp.hue} ${ramp.saturation}% ${shade500.lightness}%`
     : "0 0% 50%";
 
+  // #region agent log
+  React.useEffect(() => {
+    const swatches = [200, 500, 800].map((shade) => {
+      const shadeData = ramp.shades.find((s) => s.shade === shade);
+      return {
+        shade,
+        lightness: shadeData?.lightness,
+        color: `hsl(${ramp.hue} ${ramp.saturation}% ${shadeData?.lightness ?? 50}%)`,
+      };
+    });
+    fetch("http://127.0.0.1:7243/ingest/cfb597a8-c124-40f4-8323-a95d1a296ffa", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        location: "ThemeBuilderNav.tsx:PaletteRampRow",
+        message: "Ramp swatches computed",
+        data: { ramp: ramp.name, swatches },
+        timestamp: Date.now(),
+        sessionId: "debug-session",
+        hypothesisId: "F",
+      }),
+    }).catch(() => {});
+  }, [ramp.name, ramp.hue, ramp.saturation, ramp.shades]);
+  // #endregion
+
+  const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
+
   return (
     <div
       className={cn(
-        "flex items-center gap-2 px-1 py-1.5 rounded cursor-pointer transition-colors",
+        "flex items-center gap-2 px-1 py-1.5 rounded transition-colors group",
         isSelected ? "bg-primary/10 ring-1 ring-primary/30" : "hover:bg-muted/50"
       )}
-      onClick={onSelect}
     >
       {/* Mini ramp preview - show 3 key shades */}
-      <div className="flex gap-px">
+      <div className="flex gap-px cursor-pointer" onClick={onSelect}>
         {[200, 500, 800].map((shade) => {
           const shadeData = ramp.shades.find((s) => s.shade === shade);
           const l = shadeData?.lightness ?? 50;
           return (
             <div
               key={shade}
-              className="w-3 h-4 first:rounded-l-sm last:rounded-r-sm"
+              className="w-3 h-4 first:rounded-l-sm last:rounded-r-sm border border-border/30"
               style={{
                 backgroundColor: `hsl(${ramp.hue} ${ramp.saturation}% ${l}%)`,
               }}
@@ -388,7 +414,33 @@ function PaletteRampRow({
           );
         })}
       </div>
-      <span className="text-xs font-medium">{ramp.label}</span>
+      <span className="text-xs font-medium flex-1 cursor-pointer" onClick={onSelect}>
+        {ramp.label}
+      </span>
+      
+      {/* Edit button */}
+      <WexPopover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+        <WexPopover.Trigger asChild>
+          <button
+            className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-muted transition-opacity"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsPopoverOpen(true);
+            }}
+          >
+            <Pencil className="h-3 w-3 text-muted-foreground" />
+          </button>
+        </WexPopover.Trigger>
+        <WexPopover.Content side="right" align="start" className="w-auto p-0">
+          <PaletteSwatchPicker
+            value={`${ramp.name}-500`}
+            onSelect={(newValue) => {
+              // TODO: Generate ramp and apply - needs integration with ThemeBuilderPage
+              setIsPopoverOpen(false);
+            }}
+          />
+        </WexPopover.Content>
+      </WexPopover>
     </div>
   );
 }
@@ -418,10 +470,11 @@ function TokenRow({
 }: TokenRowProps) {
   const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
 
-  // Get current color for swatch - compute HSL directly from token data for reliability
-  const getSwatchColor = () => {
+  const displayValue = value ? formatPaletteValue(value) : "—";
+
+  // Compute HSL directly inline (same pattern as palette ramps)
+  const swatchBgColor = React.useMemo(() => {
     if (value) {
-      // Parse palette reference like "blue-700" or "white"/"black"
       if (value === "white") return "hsl(0 0% 100%)";
       if (value === "black") return "hsl(0 0% 0%)";
       
@@ -438,15 +491,10 @@ function TokenRow({
         }
       }
     }
-    // Fall back to the token's default HSL value
-    const hsl =
-      editMode === "light"
-        ? token.lightValue
-        : token.darkValue || token.lightValue;
+    // Fallback to token default
+    const hsl = editMode === "light" ? token.lightValue : (token.darkValue || token.lightValue);
     return `hsl(${hsl})`;
-  };
-
-  const displayValue = value ? formatPaletteValue(value) : "—";
+  }, [value, editMode, token.lightValue, token.darkValue]);
 
   return (
     <div
@@ -458,10 +506,10 @@ function TokenRow({
       )}
       onClick={onSelect}
     >
-      {/* Color swatch */}
+      {/* Color swatch - compute HSL directly like palette ramps do */}
       <div
-        className="w-4 h-4 rounded-sm ring-1 ring-border/50 flex-shrink-0"
-        style={{ backgroundColor: getSwatchColor() }}
+        className="w-4 h-4 rounded-sm border border-border/50 flex-shrink-0"
+        style={{ backgroundColor: swatchBgColor }}
       />
 
       {/* Label and value */}

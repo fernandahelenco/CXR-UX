@@ -75,6 +75,9 @@ export default function ThemeBuilderPage() {
           }
         }
       });
+      // #region agent log
+      fetch('http://127.0.0.1:7243/ingest/cfb597a8-c124-40f4-8323-a95d1a296ffa',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'ThemeBuilderPage.tsx:assignments-init',message:'Initial assignments created',data:{assignmentKeys:Object.keys(initial),sampleAssignments:{'--wex-primary':initial['--wex-primary'],'--wex-destructive':initial['--wex-destructive'],'--wex-content-bg':initial['--wex-content-bg']}},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'E'})}).catch(()=>{});
+      // #endregion
       return initial;
     }
   );

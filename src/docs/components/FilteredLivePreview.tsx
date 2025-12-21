@@ -35,6 +35,7 @@ import {
   getHardUsagesForToken,
   type ComponentUsage 
 } from "@/docs/data/tokenComponentMap";
+import { PALETTE_RAMPS } from "@/docs/data/tokenRegistry";
 import { addDays } from "date-fns";
 import type { DateRange } from "react-day-picker";
 import { PaletteSwatchPicker, SwatchDisplay, formatPaletteValue } from "./PaletteSwatchPicker";
@@ -1349,15 +1350,30 @@ function PaletteTokenPreview({ tokenName }: { tokenName: string }) {
   // Extract ramp name and shade from token like "--wex-palette-blue-500"
   const match = tokenName.match(/--wex-palette-(\w+)-?(\d+)?/);
   const rampName = match?.[1] || "unknown";
-  const shade = match?.[2] || "";
+  const shade = match?.[2] ? parseInt(match[2], 10) : null;
+
+  // Compute color from PALETTE_RAMPS (same as nav swatches)
+  const swatchColor = React.useMemo(() => {
+    if (rampName === "white") return "hsl(0 0% 100%)";
+    if (rampName === "black") return "hsl(0 0% 0%)";
+    if (!shade) return "hsl(0 0% 50%)";
+    
+    const ramp = PALETTE_RAMPS.find((r) => r.name === rampName);
+    if (!ramp) return "hsl(0 0% 50%)";
+    
+    const shadeData = ramp.shades.find((s) => s.shade === shade);
+    if (!shadeData) return "hsl(0 0% 50%)";
+    
+    return `hsl(${ramp.hue} ${ramp.saturation}% ${shadeData.lightness}%)`;
+  }, [rampName, shade]);
 
   return (
     <div className="space-y-6">
       <PreviewCard title={`Palette Token: ${rampName}${shade ? ` ${shade}` : ""}`}>
         <div className="flex items-center gap-4">
           <div 
-            className="w-16 h-16 rounded-lg ring-1 ring-border"
-            style={{ backgroundColor: `var(${tokenName})` }}
+            className="w-16 h-16 rounded-lg border border-border"
+            style={{ backgroundColor: swatchColor }}
           />
           <div>
             <div className="font-mono text-sm">{tokenName}</div>

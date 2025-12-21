@@ -170,16 +170,29 @@ export function SwatchDisplay({ value, size = "md", className }: SwatchDisplayPr
   // Handle neutral tokens (white/black) which don't have a shade number
   const isNeutral = value === "white" || value === "black";
   const token = isNeutral ? `--wex-palette-${value}` : `--wex-palette-${value}`;
+  const bgColor = `hsl(var(${token}))`;
+
+  // #region agent log
+  React.useEffect(() => {
+    fetch('http://127.0.0.1:7243/ingest/cfb597a8-c124-40f4-8323-a95d1a296ffa',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'PaletteSwatchPicker.tsx:SwatchDisplay',message:'SwatchDisplay rendered',data:{value,token,bgColor},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'F'})}).catch(()=>{});
+  }, [value, token, bgColor]);
+  // #endregion
 
   return (
     <div
       className={cn(
         sizeClasses[size],
-        "rounded-sm border border-border/50 flex-shrink-0",
+        "rounded-sm border-2 border-border flex-shrink-0",
         className
       )}
-      style={{ backgroundColor: `hsl(var(${token}))` }}
+      style={{ 
+        backgroundColor: bgColor,
+        minWidth: size === 'sm' ? '16px' : size === 'md' ? '24px' : '32px',
+        minHeight: size === 'sm' ? '16px' : size === 'md' ? '24px' : '32px',
+      }}
       title={value}
+      data-debug-swatch-value={value}
+      data-debug-swatch-token={token}
     />
   );
 }
