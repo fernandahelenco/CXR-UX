@@ -345,7 +345,7 @@ function LivePreview() {
 
 export default function ThemeBuilderPage() {
   const { editMode, setEditMode, setSelectedToken } = useThemeBuilder();
-  const { overrides, resetAll, exportAsJSON, hasOverrides } = useThemeOverrides();
+  const { resetAll, exportAsJSON, hasOverrides, removeToken } = useThemeOverrides();
   
   // Current workspace view
   const [view, setView] = React.useState<WorkspaceView>("semantic");
@@ -368,24 +368,25 @@ export default function ThemeBuilderPage() {
   
   // Handle reset all
   const confirmReset = React.useCallback(() => {
+    // resetAll clears localStorage and removes CSS overrides from DOM
     resetAll();
-    for (const token of Object.keys(overrides)) {
-      document.documentElement.style.removeProperty(token);
-    }
     setShowResetDialog(false);
     setSelectedToken(null);
-  }, [resetAll, overrides, setSelectedToken]);
+    // Force page reload to ensure CSS reverts to stylesheet defaults
+    window.location.reload();
+  }, [resetAll, setSelectedToken]);
   
   // Handle reset individual palette to defaults
   const handleResetPalette = React.useCallback((paletteName: string) => {
     const ramp = PALETTE_RAMPS.find(r => r.name === paletteName);
     if (!ramp) return;
     
-    // Remove custom properties for this palette
+    // Remove custom properties for this palette from both modes and localStorage
     ramp.shades.forEach(shade => {
-      document.documentElement.style.removeProperty(shade.token);
+      removeToken(shade.token, "light");
+      removeToken(shade.token, "dark");
     });
-  }, []);
+  }, [removeToken]);
   
   return (
     <div className="min-h-[calc(100vh-4rem)] flex flex-col">
