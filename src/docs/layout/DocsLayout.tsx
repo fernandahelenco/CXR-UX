@@ -4,24 +4,8 @@ import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
 import { SidebarNav } from "./SidebarNav";
 import { ScrollToTop } from "@/docs/components/ScrollToTop";
-import { ThemeBuilderNav } from "@/docs/components/ThemeBuilderNav";
 import { TokenMapModal } from "@/docs/components/TokenMapModal";
 import { ThemeBuilderProvider } from "@/docs/context/ThemeBuilderContext";
-
-/**
- * Check if there are unsaved theme overrides in localStorage
- */
-function hasThemeOverrides(): boolean {
-  if (typeof window === "undefined") return false;
-  try {
-    const stored = localStorage.getItem("wex-theme-overrides");
-    if (!stored) return false;
-    const parsed = JSON.parse(stored);
-    return Object.keys(parsed.light || {}).length > 0 || Object.keys(parsed.dark || {}).length > 0;
-  } catch {
-    return false;
-  }
-}
 
 /**
  * Main layout shell for docs site
@@ -35,21 +19,8 @@ export function DocsLayout() {
   const isHome = location.pathname === "/";
   const isThemeBuilder = location.pathname === "/theme-builder";
   
-  // Token Map modal state
+  // Token Map modal state (can be opened from Theme Builder)
   const [tokenMapOpen, setTokenMapOpen] = React.useState(false);
-  
-  // Check for unsaved theme changes (for exit warning)
-  const [hasUnsavedChanges, setHasUnsavedChanges] = React.useState(false);
-  
-  React.useEffect(() => {
-    if (isThemeBuilder) {
-      // Check periodically while in Theme Builder
-      const checkChanges = () => setHasUnsavedChanges(hasThemeOverrides());
-      checkChanges();
-      const interval = setInterval(checkChanges, 500);
-      return () => clearInterval(interval);
-    }
-  }, [isThemeBuilder]);
 
   return (
     <div className="min-h-screen bg-background text-foreground relative">
@@ -72,24 +43,16 @@ export function DocsLayout() {
 
       <Header />
       
-      {/* Sidebar - hidden on home page for full-bleed landing experience */}
-      {/* Theme Builder gets wrapped in its own context provider */}
+      {/* Sidebar - hidden on home page and theme builder */}
+      {/* Theme Builder has its own full-page layout with integrated nav */}
       {isThemeBuilder ? (
         <ThemeBuilderProvider lastVisitedPage={undefined}>
-          <Sidebar>
-            <ThemeBuilderNav 
-              onOpenTokenMap={() => setTokenMapOpen(true)} 
-              hasUnsavedChanges={hasUnsavedChanges}
-            />
-          </Sidebar>
-          
-          {/* Token Map Modal */}
+          {/* Token Map Modal - can be opened from Theme Builder */}
           <TokenMapModal open={tokenMapOpen} onOpenChange={setTokenMapOpen} />
           
-          <main className="relative z-10 min-h-[calc(100vh-3.5rem)] overflow-x-hidden ml-64 p-0">
-            <div className="">
-              <Outlet />
-            </div>
+          {/* Theme Builder manages its own layout */}
+          <main className="relative z-10 min-h-[calc(100vh-3.5rem)] overflow-x-hidden">
+            <Outlet />
           </main>
         </ThemeBuilderProvider>
       ) : (

@@ -94,8 +94,21 @@ export function TokenMappingInline({ token, className }: TokenMappingInlineProps
 export const TOKEN_MAPPINGS: Record<string, TokenMappingData> = {
   "--wex-primary": {
     token: "--wex-primary",
-    tailwindUtilities: ["bg-primary", "text-primary", "border-primary", "ring-primary"],
-    components: ["WexButton (default)", "WexBadge (default)", "WexProgress", "WexSwitch"],
+    tailwindUtilities: ["bg-primary", "text-primary", "border-primary", "ring-primary", "bg-primary/10", "bg-primary/20", "bg-primary/5"],
+    components: [
+      "WexButton (default)",
+      "WexButton (link)",
+      "WexBadge (default)",
+      "WexProgress",
+      "WexSwitch (checked)",
+      "WexCheckbox (checked)",
+      "WexRadio",
+      "WexSlider",
+      "WexSkeleton",
+      "WexCalendar (selected)",
+      "WexField (checked)",
+      "Sonner (action)",
+    ],
   },
   "--wex-primary-contrast": {
     token: "--wex-primary-contrast",
@@ -109,8 +122,16 @@ export const TOKEN_MAPPINGS: Record<string, TokenMappingData> = {
   },
   "--wex-destructive": {
     token: "--wex-destructive",
-    tailwindUtilities: ["bg-destructive", "border-destructive"],
-    components: ["WexButton (destructive)", "WexBadge (destructive)", "WexAlert (destructive)"],
+    tailwindUtilities: ["bg-destructive", "text-destructive", "border-destructive", "bg-destructive/10"],
+    components: [
+      "WexButton (destructive)",
+      "WexBadge (destructive)",
+      "WexAlert (destructive)",
+      "WexField (error)",
+      "WexInputGroup (error)",
+      "WexForm (error)",
+      "Sonner (error)",
+    ],
   },
   "--wex-destructive-foreground": {
     token: "--wex-destructive-foreground",

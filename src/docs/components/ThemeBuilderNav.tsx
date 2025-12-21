@@ -1,42 +1,55 @@
 /**
- * ThemeBuilderNav Component (V4)
+ * ThemeBuilderNav Component (V5)
  * 
- * Simplified left rail navigation for Theme Builder.
- * Shows inline palette swatches that are directly clickable.
+ * Left rail navigation for Theme Builder with mode selection.
+ * Two modes: Palette Ramps (brand-level) | Semantic Tokens (theme-level)
  * 
  * Structure:
- * - Exit button (returns to last visited page)
- * - Palette rows with inline swatches (Blue, Green, Amber, Red, Cyan, Slate)
- * - Brand Colors section
- * - Token Map link
+ * - Mode selector (Palette / Semantic)
+ * - Light/Dark toggle (only in Semantic mode)
+ * - Exit, Export, Reset actions
  */
 
 import * as React from "react";
 import { WexSeparator, WexAlertDialog } from "@/components/wex";
-import { ArrowLeft, Map } from "lucide-react";
+import { 
+  ArrowLeft, 
+  Download, 
+  RotateCcw, 
+  Palette, 
+  Layers,
+  Sun,
+  Moon,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useThemeBuilder } from "@/docs/context/ThemeBuilderContext";
-import { PALETTE_RAMPS } from "@/docs/data/tokenRegistry";
-import { getSemanticTokensForPaletteWithMode } from "@/docs/components/TokenMapping";
+
+export type ThemeBuilderMode = "palette" | "semantic";
 
 interface ThemeBuilderNavProps {
-  onOpenTokenMap: () => void;
+  /** Current mode */
+  mode: ThemeBuilderMode;
+  /** Callback when mode changes */
+  onModeChange: (mode: ThemeBuilderMode) => void;
+  /** Callback for export action */
+  onExport: () => void;
+  /** Callback for reset action */
+  onReset: () => void;
+  /** Whether there are unsaved changes */
   hasUnsavedChanges?: boolean;
+  /** Whether export/reset should be disabled */
+  hasOverrides?: boolean;
 }
 
-// Shade labels for display
-const SHADE_LABELS = ["50", "100", "200", "300", "400", "500", "600", "700", "800", "900"];
-
 export function ThemeBuilderNav({ 
-  onOpenTokenMap, 
+  mode,
+  onModeChange,
+  onExport,
+  onReset,
   hasUnsavedChanges = false,
+  hasOverrides = false,
 }: ThemeBuilderNavProps) {
-  const { 
-    exitThemeBuilder, 
-    editMode, 
-    selectedToken, 
-    setSelectedToken 
-  } = useThemeBuilder();
+  const { exitThemeBuilder, editMode, setEditMode } = useThemeBuilder();
   
   // Exit confirmation dialog state
   const [showExitDialog, setShowExitDialog] = React.useState(false);
@@ -50,115 +63,101 @@ export function ThemeBuilderNav({
     }
   }, [hasUnsavedChanges, exitThemeBuilder]);
 
-  // Check if a palette shade is referenced by any semantic token in current mode
-  const getShadeReferences = React.useCallback((paletteToken: string) => {
-    return getSemanticTokensForPaletteWithMode(paletteToken);
-  }, []);
-
-  const isShadeUsed = React.useCallback((paletteToken: string) => {
-    const refs = getShadeReferences(paletteToken);
-    return refs.some(ref => ref.mode === editMode || ref.mode === "both");
-  }, [getShadeReferences, editMode]);
-
   return (
-    <div className="h-full flex flex-col">
-      {/* Exit Button */}
-      <div className="p-3 border-b border-border">
-        <button
-          onClick={handleExit}
-          className="flex items-center gap-2 w-full px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-md transition-colors"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Exit Theme Builder
-          {hasUnsavedChanges && (
-            <span className="ml-auto text-[10px] text-warning">●</span>
-          )}
-        </button>
+    <div className="h-full flex flex-col bg-muted/30 border-r border-border">
+      {/* Header */}
+      <div className="p-4 border-b border-border">
+        <div className="flex items-center gap-2">
+          <Palette className="h-5 w-5 text-primary" />
+          <span className="font-semibold">Theme Builder</span>
+        </div>
       </div>
 
-      {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-4">
-        {/* Color Palettes */}
-        <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 px-1">
-          Color Palettes
+      {/* Mode Selector */}
+      <div className="p-3 space-y-1">
+        <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
+          Mode
         </div>
         
-        {PALETTE_RAMPS.map((ramp) => (
-          <div key={ramp.name} className="space-y-1.5">
-            {/* Palette Name */}
-            <div className="flex items-center gap-2 px-1">
-              <div 
-                className="w-3 h-3 rounded-sm"
-                style={{ backgroundColor: `hsl(var(--wex-palette-${ramp.name}-500))` }}
-              />
-              <span className="text-xs font-medium text-foreground">{ramp.label}</span>
-            </div>
-            
-            {/* Inline Swatches */}
-            <div className="flex gap-0.5">
-              {SHADE_LABELS.map((shade) => {
-                const token = `--wex-palette-${ramp.name}-${shade}`;
-                const isSelected = selectedToken === token;
-                const isUsed = isShadeUsed(token);
-                
-                return (
-                  <button
-                    key={shade}
-                    onClick={() => setSelectedToken(token)}
-                    title={`${ramp.label} ${shade}${isUsed ? " (in use)" : ""}`}
-                    className={cn(
-                      "relative w-5 h-5 rounded-sm transition-all",
-                      "hover:scale-110 hover:z-10",
-                      isSelected && "ring-2 ring-primary ring-offset-1 z-10",
-                      !isUsed && "opacity-50"
-                    )}
-                    style={{ backgroundColor: `hsl(var(${token}))` }}
-                  >
-                    {/* Usage indicator dot */}
-                    {isUsed && (
-                      <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-foreground rounded-full" />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        ))}
-
-        <WexSeparator className="my-4" />
-
-        {/* Brand Colors */}
-        <div className="space-y-2">
-          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-1">
-            Brand Colors
-          </div>
-          <button
-            onClick={() => setSelectedToken("--wex-brand-red")}
-            className={cn(
-              "flex items-center gap-2 w-full px-2 py-1.5 rounded-md transition-colors",
-              selectedToken === "--wex-brand-red"
-                ? "bg-muted ring-1 ring-primary/50"
-                : "hover:bg-muted/50"
-            )}
-          >
-            <div 
-              className="w-5 h-5 rounded-sm"
-              style={{ backgroundColor: `hsl(var(--wex-brand-red))` }}
-            />
-            <span className="text-sm">WEX Red</span>
-          </button>
-        </div>
+        <ModeButton
+          active={mode === "palette"}
+          onClick={() => onModeChange("palette")}
+          icon={<Palette className="h-4 w-4" />}
+          label="Palette Ramps"
+          description="Edit brand colors"
+        />
+        
+        <ModeButton
+          active={mode === "semantic"}
+          onClick={() => onModeChange("semantic")}
+          icon={<Layers className="h-4 w-4" />}
+          label="Semantic Tokens"
+          description="Edit theme mapping"
+        />
       </div>
 
-      {/* Footer - Token Map Link */}
-      <div className="p-3 border-t border-border">
-        <button
-          onClick={onOpenTokenMap}
-          className="flex items-center gap-2 w-full px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-md transition-colors"
-        >
-          <Map className="h-4 w-4" />
-          Token Map Reference
-        </button>
+      {/* Light/Dark Toggle - Only in Semantic mode */}
+      {mode === "semantic" && (
+        <>
+          <WexSeparator />
+          <div className="p-3">
+            <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
+              Editing Mode
+            </div>
+            <div className="flex gap-1 bg-muted rounded-lg p-1">
+              <button
+                onClick={() => setEditMode("light")}
+                className={cn(
+                  "flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-all",
+                  editMode === "light" 
+                    ? "bg-background shadow-sm text-foreground" 
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                <Sun className="h-3.5 w-3.5" />
+                Light
+              </button>
+              <button
+                onClick={() => setEditMode("dark")}
+                className={cn(
+                  "flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-all",
+                  editMode === "dark" 
+                    ? "bg-background shadow-sm text-foreground" 
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                <Moon className="h-3.5 w-3.5" />
+                Dark
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Spacer */}
+      <div className="flex-1" />
+
+      {/* Actions */}
+      <div className="p-3 border-t border-border space-y-1">
+        <ActionButton
+          onClick={onReset}
+          icon={<RotateCcw className="h-4 w-4" />}
+          label="Reset All"
+          disabled={!hasOverrides}
+        />
+        <ActionButton
+          onClick={onExport}
+          icon={<Download className="h-4 w-4" />}
+          label="Export Theme"
+          disabled={!hasOverrides}
+        />
+        <WexSeparator className="my-2" />
+        <ActionButton
+          onClick={handleExit}
+          icon={<ArrowLeft className="h-4 w-4" />}
+          label="Exit Theme Builder"
+          badge={hasUnsavedChanges ? "●" : undefined}
+        />
       </div>
       
       {/* Exit Confirmation Dialog */}
@@ -180,5 +179,80 @@ export function ThemeBuilderNav({
         </WexAlertDialog.Content>
       </WexAlertDialog>
     </div>
+  );
+}
+
+/**
+ * Mode selection button
+ */
+interface ModeButtonProps {
+  active: boolean;
+  onClick: () => void;
+  icon: React.ReactNode;
+  label: string;
+  description: string;
+}
+
+function ModeButton({ active, onClick, icon, label, description }: ModeButtonProps) {
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        "w-full flex items-start gap-3 px-3 py-2.5 rounded-lg text-left transition-colors",
+        active 
+          ? "bg-primary/10 text-foreground border border-primary/30" 
+          : "hover:bg-muted/50 text-muted-foreground border border-transparent"
+      )}
+    >
+      <div className={cn(
+        "mt-0.5",
+        active ? "text-primary" : "text-muted-foreground"
+      )}>
+        {icon}
+      </div>
+      <div>
+        <div className={cn(
+          "text-sm font-medium",
+          active ? "text-foreground" : "text-muted-foreground"
+        )}>
+          {label}
+        </div>
+        <div className="text-xs text-muted-foreground">
+          {description}
+        </div>
+      </div>
+    </button>
+  );
+}
+
+/**
+ * Action button for footer
+ */
+interface ActionButtonProps {
+  onClick: () => void;
+  icon: React.ReactNode;
+  label: string;
+  disabled?: boolean;
+  badge?: string;
+}
+
+function ActionButton({ onClick, icon, label, disabled, badge }: ActionButtonProps) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className={cn(
+        "w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-colors",
+        disabled 
+          ? "text-muted-foreground/50 cursor-not-allowed"
+          : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+      )}
+    >
+      {icon}
+      <span>{label}</span>
+      {badge && (
+        <span className="ml-auto text-warning text-xs">{badge}</span>
+      )}
+    </button>
   );
 }
