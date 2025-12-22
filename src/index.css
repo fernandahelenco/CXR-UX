@@ -1,5 +1,6 @@
 @import "./styles/wex.tokens.css";
 @import "./styles/wex.shadcn-bridge.css";
+@import "./styles/wex.components-bridge.css";
 
 @tailwind base;
 @tailwind components;

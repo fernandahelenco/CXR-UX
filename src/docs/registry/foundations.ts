@@ -11,6 +11,12 @@ export const foundationRegistry: FoundationRegistryEntry[] = [
     description: "Design token reference and architecture",
   },
   {
+    name: "Token Architecture",
+    route: "/foundations/token-architecture",
+    importPath: "@/docs/pages/foundations/TokenArchitecturePage",
+    description: "4-layer token system and component slots",
+  },
+  {
     name: "Colors",
     route: "/foundations/colors",
     importPath: "@/docs/pages/foundations/ColorsPage",

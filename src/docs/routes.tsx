@@ -16,6 +16,7 @@ const ThemeExportPage = React.lazy(() => import("@/docs/pages/ThemeExportPage"))
 
 // Foundation pages
 const TokensPage = React.lazy(() => import("@/docs/pages/foundations/TokensPage"));
+const TokenArchitecturePage = React.lazy(() => import("@/docs/pages/foundations/TokenArchitecturePage"));
 const ColorsPage = React.lazy(() => import("@/docs/pages/foundations/ColorsPage"));
 const TypographyPage = React.lazy(() => import("@/docs/pages/foundations/TypographyPage"));
 const SpacingPage = React.lazy(() => import("@/docs/pages/foundations/SpacingPage"));
@@ -114,6 +115,7 @@ export function DocsRoutes() {
 
           {/* Foundation pages */}
           <Route path="foundations/tokens" element={<TokensPage />} />
+          <Route path="foundations/token-architecture" element={<TokenArchitecturePage />} />
           <Route path="foundations/colors" element={<ColorsPage />} />
           <Route path="foundations/typography" element={<TypographyPage />} />
           <Route path="foundations/spacing" element={<SpacingPage />} />

@@ -32,10 +32,11 @@
   /* ===== BRAND (1 token) ===== */
   --wex-brand-red: 350 85% 42%; /* #c8102e - Official WEX Logo Red */
 
-  /* ===== PRIMARY (3 tokens) ===== */
+  /* ===== PRIMARY (4 tokens) ===== */
   --wex-primary: var(--wex-palette-blue-700);
   --wex-primary-contrast: 0 0% 100%;
   --wex-primary-hover: var(--wex-palette-blue-800);
+  --wex-primary-active: var(--wex-palette-blue-900);
 
   /* ===== INPUT (1 token) - Now references palette ===== */
   --wex-input-border: var(--wex-palette-slate-400);
@@ -185,6 +186,7 @@
   --wex-primary: var(--wex-palette-blue-500);
   --wex-primary-contrast: 216 10% 90%;
   --wex-primary-hover: var(--wex-palette-blue-600);
+  --wex-primary-active: var(--wex-palette-blue-700);
 
   /* ===== INPUT (dark override) - Now references palette ===== */
   --wex-input-border: var(--wex-palette-slate-700);
