@@ -16,6 +16,26 @@ export default function ChangelogPage() {
 
       <div className="space-y-8">
         <ChangelogEntry
+          version="0.16.0"
+          date="January 15, 2025"
+          title="Theme Builder V5 - Production Ready & Code Cleanup"
+          changes={[
+            "Export: Export theme button now always enabled - export current theme state anytime",
+            "Export: Removed header and 'Back to Preview' button from export view for cleaner UX",
+            "Export: Added Prism.js syntax highlighting for CSS and JSON code blocks",
+            "Navigation: Fixed previous page tracking - now correctly returns to page you came from",
+            "Navigation: Remembers navigation path (homepage → page → theme builder → back to page)",
+            "UX: Removed unsaved changes dialog - changes are auto-saved to localStorage",
+            "UX: Streamlined exit flow - no confirmation needed since changes persist automatically",
+            "Code: Removed all debug logging and agent instrumentation code",
+            "Code: Cleaned up unused components, imports, and debug data attributes",
+            "Code: Removed temporary debug fetch calls and console.log statements",
+            "Performance: Optimized code by removing unused PaletteRampRow component",
+            "Quality: Production-ready codebase with all development artifacts removed",
+          ]}
+        />
+
+        <ChangelogEntry
           version="0.15.0"
           date="December 21, 2025"
           title="Theme Builder V4 - Clean Rebuild with Two-Layer Architecture"
