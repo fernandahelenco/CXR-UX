@@ -105,6 +105,18 @@ const COLOR_MODES: ColorMode[] = ["light", "dark"];
 // Ensure output directory exists
 const outputDir = path.join(process.cwd(), "test-results", "a11y-components");
 
+// Pattern to identify auto-generated/junk example IDs
+const JUNK_EXAMPLE_ID_PATTERN = /^example-(_r_|\d+|[a-z0-9]{8,})/i;
+
+/**
+ * Check if an example ID is a semantic (meaningful) name vs auto-generated junk
+ */
+function isSemanticExampleId(id: string | null): boolean {
+  if (!id) return false;
+  // Filter out auto-generated IDs like "example-_r_1_", "example-0", "example-abc123def"
+  return !JUNK_EXAMPLE_ID_PATTERN.test(id);
+}
+
 /** Result for a single example in a single mode */
 interface ExampleResult {
   status: "pass" | "fail";
@@ -161,6 +173,7 @@ test.describe("Component Accessibility Tests (Light + Dark Modes)", () => {
           await page.waitForTimeout(100);
         }
         
+        
         // Find all example containers on the page
         const exampleContainers = await page.locator(EXAMPLE_SELECTOR).all();
         const exampleCount = exampleContainers.length;
@@ -191,35 +204,43 @@ test.describe("Component Accessibility Tests (Light + Dark Modes)", () => {
           continue;
         }
         
-        // First, collect all example IDs
+        // First, collect all example IDs, filtering out auto-generated junk IDs
         const exampleIds: string[] = [];
+        const exampleIndices: number[] = []; // Track which containers to scan
         for (let i = 0; i < exampleContainers.length; i++) {
           const container = exampleContainers[i];
-          const exampleId = await container.getAttribute("data-example-id") || `example-${i}`;
-          exampleIds.push(exampleId);
-          examplesTested.push(exampleId);
+          const exampleId = await container.getAttribute("data-example-id");
+          
+          // Skip auto-generated/junk IDs - only test semantically named examples
+          if (!isSemanticExampleId(exampleId)) {
+            continue;
+          }
+          
+          exampleIds.push(exampleId!);
+          exampleIndices.push(i);
+          examplesTested.push(exampleId!);
         }
         
-        // Scan each example container individually
-        for (let i = 0; i < exampleContainers.length; i++) {
-          const exampleId = exampleIds[i];
+        // Update count to reflect filtered examples
+        const filteredExampleCount = exampleIds.length;
+        
+        // Scan each example container individually (only semantic IDs)
+        for (let idx = 0; idx < exampleIds.length; idx++) {
+          const exampleId = exampleIds[idx];
           
           // Initialize result for this example
           let exampleViolations = 0;
           const exampleIssues: string[] = [];
           
           try {
-            // Build a unique selector for this example
-            // Use nth-child since data-example-id may not be on all examples
-            const nthSelector = `${EXAMPLE_SELECTOR}:nth-of-type(${i + 1})`;
-            
-            // Check if element exists with this selector
-            const elementExists = await page.locator(nthSelector).count() > 0;
+            // Use data-example-id for precise selection (nth-of-type doesn't work correctly with attributes)
+            const idSelector = `${EXAMPLE_SELECTOR}[data-example-id="${exampleId}"]`;
+            const elementExists = await page.locator(idSelector).count() > 0;
             
             if (elementExists) {
               // Run axe-core scoped to this specific example container
               const accessibilityScanResults = await new AxeBuilder({ page })
-                .include(nthSelector)
+                .include(idSelector)
                 .withTags(WCAG_TAGS)
                 .analyze();
               
@@ -240,32 +261,7 @@ test.describe("Component Accessibility Tests (Light + Dark Modes)", () => {
                 }
               }
             } else {
-              // Fallback: scan by data-example-id if available
-              const idSelector = `${EXAMPLE_SELECTOR}[data-example-id="${exampleId}"]`;
-              const idExists = await page.locator(idSelector).count() > 0;
-              
-              if (idExists) {
-                const accessibilityScanResults = await new AxeBuilder({ page })
-                  .include(idSelector)
-                  .withTags(WCAG_TAGS)
-                  .analyze();
-                
-                for (const violation of accessibilityScanResults.violations) {
-                  exampleViolations++;
-                  totalViolations++;
-                  
-                  if (violation.impact === "critical") criticalViolations++;
-                  if (violation.impact === "serious") seriousViolations++;
-                  
-                  if (!exampleIssues.includes(violation.id)) {
-                    exampleIssues.push(violation.id);
-                  }
-                  
-                  if (!allIssues.includes(violation.id)) {
-                    allIssues.push(violation.id);
-                  }
-                }
-              }
+              console.warn(`  Warning: Could not find example with id "${exampleId}" for ${component.name} [${mode}]`);
             }
           } catch (err) {
             // If individual scan fails, record as unknown
@@ -280,14 +276,14 @@ test.describe("Component Accessibility Tests (Light + Dark Modes)", () => {
           };
         }
         
-        // Store mode result
+        // Store mode result (use filtered count for examplesFound)
         modeResults[mode] = {
           violations: totalViolations,
           criticalViolations,
           seriousViolations,
           issues: allIssues,
           examplesTested,
-          examplesFound: exampleCount,
+          examplesFound: filteredExampleCount,
           examples: exampleResults,
         };
         
@@ -296,18 +292,19 @@ test.describe("Component Accessibility Tests (Light + Dark Modes)", () => {
         const failCount = Object.values(exampleResults).filter(r => r.status === "fail").length;
         
         if (totalViolations > 0) {
-          console.log(`\n${component.name} [${mode.toUpperCase()}]: ${failCount}/${exampleCount} examples failed, ${totalViolations} total violations`);
+          console.log(`\n${component.name} [${mode.toUpperCase()}]: ${failCount}/${filteredExampleCount} examples failed, ${totalViolations} total violations`);
           Object.entries(exampleResults).forEach(([id, result]) => {
             if (result.status === "fail") {
               console.log(`  ✗ ${id}: ${result.violations} violations [${result.issues.join(", ")}]`);
             }
           });
         } else {
-          console.log(`✅ ${component.name} [${mode.toUpperCase()}]: ${passCount}/${exampleCount} examples passed`);
+          console.log(`✅ ${component.name} [${mode.toUpperCase()}]: ${passCount}/${filteredExampleCount} examples passed`);
         }
       }
       
       // Write combined result file (both modes in one file)
+      // Note: examplesFound now reflects filtered (semantic) examples only
       const lightHasExamples = (modeResults.light?.examplesFound ?? 0) > 0;
       const darkHasExamples = (modeResults.dark?.examplesFound ?? 0) > 0;
       

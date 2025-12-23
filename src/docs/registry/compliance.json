@@ -9,7 +9,7 @@
       "dark"
     ],
     "granularity": "per-example",
-    "lastUpdated": "2025-12-23T20:49:50.784Z",
+    "lastUpdated": "2025-12-23T21:27:29.701Z",
     "totalComponents": 57
   },
   "accordion": {
@@ -17,11 +17,10 @@
     "levelAchieved": "AA",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:48:52.036Z",
+    "testedAt": "2025-12-23T21:26:39.394Z",
     "scope": "component-examples-only",
-    "examplesFound": 3,
+    "examplesFound": 2,
     "scenariosTested": [
-      "example-_r_1_",
       "single-collapsible",
       "multiple"
     ],
@@ -32,15 +31,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 3,
-        "examplesPassed": 3,
+        "examplesFound": 2,
+        "examplesPassed": 2,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "single-collapsible": {
             "status": "pass",
             "violations": 0,
@@ -58,15 +52,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 3,
-        "examplesPassed": 3,
+        "examplesFound": 2,
+        "examplesPassed": 2,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "single-collapsible": {
             "status": "pass",
             "violations": 0,
@@ -86,11 +75,10 @@
     "levelAchieved": "AA",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:01.865Z",
+    "testedAt": "2025-12-23T21:26:48.067Z",
     "scope": "component-examples-only",
-    "examplesFound": 3,
+    "examplesFound": 2,
     "scenariosTested": [
-      "example-_r_1_",
       "confirmation",
       "destructive-action"
     ],
@@ -101,15 +89,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 3,
-        "examplesPassed": 3,
+        "examplesFound": 2,
+        "examplesPassed": 2,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "confirmation": {
             "status": "pass",
             "violations": 0,
@@ -127,15 +110,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 3,
-        "examplesPassed": 3,
+        "examplesFound": 2,
+        "examplesPassed": 2,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "confirmation": {
             "status": "pass",
             "violations": 0,
@@ -152,15 +130,14 @@
   },
   "alert": {
     "status": "fail",
-    "violations": 8,
+    "violations": 6,
     "issues": [
       "color-contrast"
     ],
-    "testedAt": "2025-12-23T20:48:58.463Z",
+    "testedAt": "2025-12-23T21:26:45.131Z",
     "scope": "component-examples-only",
-    "examplesFound": 8,
+    "examplesFound": 7,
     "scenariosTested": [
-      "example-_r_1_",
       "default",
       "destructive",
       "success",
@@ -173,25 +150,18 @@
     "modes": {
       "light": {
         "status": "fail",
-        "violations": 3,
+        "violations": 2,
         "issues": [
           "color-contrast"
         ],
-        "examplesFound": 8,
+        "examplesFound": 7,
         "examplesPassed": 5,
-        "examplesFailed": 3,
+        "examplesFailed": 2,
         "examples": {
-          "example-_r_1_": {
+          "default": {
             "status": "pass",
             "violations": 0,
             "issues": []
-          },
-          "default": {
-            "status": "fail",
-            "violations": 1,
-            "issues": [
-              "color-contrast"
-            ]
           },
           "destructive": {
             "status": "pass",
@@ -231,25 +201,18 @@
       },
       "dark": {
         "status": "fail",
-        "violations": 5,
+        "violations": 4,
         "issues": [
           "color-contrast"
         ],
-        "examplesFound": 8,
+        "examplesFound": 7,
         "examplesPassed": 3,
-        "examplesFailed": 5,
+        "examplesFailed": 4,
         "examples": {
-          "example-_r_1_": {
+          "default": {
             "status": "pass",
             "violations": 0,
             "issues": []
-          },
-          "default": {
-            "status": "fail",
-            "violations": 1,
-            "issues": [
-              "color-contrast"
-            ]
           },
           "destructive": {
             "status": "fail",
@@ -298,11 +261,10 @@
     "levelAchieved": "AA",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:05.915Z",
+    "testedAt": "2025-12-23T21:26:51.614Z",
     "scope": "component-examples-only",
-    "examplesFound": 4,
+    "examplesFound": 3,
     "scenariosTested": [
-      "example-_r_1_",
       "16-9",
       "4-3",
       "1-1"
@@ -314,15 +276,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 4,
-        "examplesPassed": 4,
+        "examplesFound": 3,
+        "examplesPassed": 3,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "16-9": {
             "status": "pass",
             "violations": 0,
@@ -345,15 +302,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 4,
-        "examplesPassed": 4,
+        "examplesFound": 3,
+        "examplesPassed": 3,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "16-9": {
             "status": "pass",
             "violations": 0,
@@ -377,7 +329,7 @@
     "status": "no_examples",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:07.704Z",
+    "testedAt": "2025-12-23T21:26:53.521Z",
     "scope": "component-examples-only",
     "examplesFound": 0,
     "scenariosTested": [],
@@ -405,15 +357,14 @@
   },
   "badge": {
     "status": "fail",
-    "violations": 15,
+    "violations": 12,
     "issues": [
       "color-contrast"
     ],
-    "testedAt": "2025-12-23T20:49:14.380Z",
+    "testedAt": "2025-12-23T21:26:59.669Z",
     "scope": "component-examples-only",
-    "examplesFound": 9,
+    "examplesFound": 8,
     "scenariosTested": [
-      "example-_r_1_",
       "all-sizes",
       "sizes-with-intents",
       "default-vs-pill",
@@ -427,27 +378,18 @@
     "modes": {
       "light": {
         "status": "fail",
-        "violations": 7,
+        "violations": 5,
         "issues": [
           "color-contrast"
         ],
-        "examplesFound": 9,
-        "examplesPassed": 2,
-        "examplesFailed": 7,
+        "examplesFound": 8,
+        "examplesPassed": 3,
+        "examplesFailed": 5,
         "examples": {
-          "example-_r_1_": {
-            "status": "fail",
-            "violations": 1,
-            "issues": [
-              "color-contrast"
-            ]
-          },
           "all-sizes": {
-            "status": "fail",
-            "violations": 1,
-            "issues": [
-              "color-contrast"
-            ]
+            "status": "pass",
+            "violations": 0,
+            "issues": []
           },
           "sizes-with-intents": {
             "status": "fail",
@@ -498,21 +440,14 @@
       },
       "dark": {
         "status": "fail",
-        "violations": 8,
+        "violations": 7,
         "issues": [
           "color-contrast"
         ],
-        "examplesFound": 9,
+        "examplesFound": 8,
         "examplesPassed": 1,
-        "examplesFailed": 8,
+        "examplesFailed": 7,
         "examples": {
-          "example-_r_1_": {
-            "status": "fail",
-            "violations": 1,
-            "issues": [
-              "color-contrast"
-            ]
-          },
           "all-sizes": {
             "status": "fail",
             "violations": 1,
@@ -572,60 +507,32 @@
     }
   },
   "breadcrumb": {
-    "status": "pass",
-    "levelAchieved": "AA",
+    "status": "no_examples",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:17.601Z",
+    "testedAt": "2025-12-23T21:27:01.488Z",
     "scope": "component-examples-only",
-    "examplesFound": 2,
-    "scenariosTested": [
-      "example-_r_1_",
-      "example-_r_2_"
-    ],
+    "examplesFound": 0,
+    "scenariosTested": [],
     "subject": "Component examples for Breadcrumb",
     "modes": {
       "light": {
-        "status": "pass",
-        "levelAchieved": "AA",
+        "status": "no_examples",
         "violations": 0,
         "issues": [],
-        "examplesFound": 2,
-        "examplesPassed": 2,
+        "examplesFound": 0,
+        "examplesPassed": 0,
         "examplesFailed": 0,
-        "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_2_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          }
-        }
+        "examples": {}
       },
       "dark": {
-        "status": "pass",
-        "levelAchieved": "AA",
+        "status": "no_examples",
         "violations": 0,
         "issues": [],
-        "examplesFound": 2,
-        "examplesPassed": 2,
+        "examplesFound": 0,
+        "examplesPassed": 0,
         "examplesFailed": 0,
-        "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_2_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          }
-        }
+        "examples": {}
       }
     }
   },
@@ -634,11 +541,10 @@
     "levelAchieved": "AA",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:28.899Z",
+    "testedAt": "2025-12-23T21:27:10.896Z",
     "scope": "component-examples-only",
-    "examplesFound": 4,
+    "examplesFound": 3,
     "scenariosTested": [
-      "example-_r_1_",
       "horizontal",
       "vertical",
       "with-separator"
@@ -650,15 +556,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 4,
-        "examplesPassed": 4,
+        "examplesFound": 3,
+        "examplesPassed": 3,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "horizontal": {
             "status": "pass",
             "violations": 0,
@@ -681,15 +582,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 4,
-        "examplesPassed": 4,
+        "examplesFound": 3,
+        "examplesPassed": 3,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "horizontal": {
             "status": "pass",
             "violations": 0,
@@ -712,22 +608,20 @@
   "button": {
     "status": "partial",
     "levelAchieved": "A",
-    "violations": 5,
+    "violations": 3,
     "issues": [
       "color-contrast"
     ],
-    "testedAt": "2025-12-23T20:49:24.636Z",
+    "testedAt": "2025-12-23T21:27:07.365Z",
     "scope": "component-examples-only",
-    "examplesFound": 9,
+    "examplesFound": 7,
     "scenariosTested": [
-      "example-_r_1_",
       "all-severities",
       "with-icons",
       "ghost-outline",
       "link-style",
       "rounded-pill",
       "loading-buttons",
-      "example-_r_8_",
       "icon-size"
     ],
     "subject": "Component examples for Button",
@@ -737,15 +631,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 9,
-        "examplesPassed": 9,
+        "examplesFound": 7,
+        "examplesPassed": 7,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "all-severities": {
             "status": "pass",
             "violations": 0,
@@ -772,11 +661,6 @@
             "issues": []
           },
           "loading-buttons": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_8_": {
             "status": "pass",
             "violations": 0,
             "issues": []
@@ -790,21 +674,14 @@
       },
       "dark": {
         "status": "fail",
-        "violations": 5,
+        "violations": 3,
         "issues": [
           "color-contrast"
         ],
-        "examplesFound": 9,
+        "examplesFound": 7,
         "examplesPassed": 4,
-        "examplesFailed": 5,
+        "examplesFailed": 3,
         "examples": {
-          "example-_r_1_": {
-            "status": "fail",
-            "violations": 1,
-            "issues": [
-              "color-contrast"
-            ]
-          },
           "all-severities": {
             "status": "fail",
             "violations": 1,
@@ -835,13 +712,6 @@
             ]
           },
           "loading-buttons": {
-            "status": "fail",
-            "violations": 1,
-            "issues": [
-              "color-contrast"
-            ]
-          },
-          "example-_r_8_": {
             "status": "fail",
             "violations": 1,
             "issues": [
@@ -860,15 +730,14 @@
   "calendar": {
     "status": "partial",
     "levelAchieved": "A",
-    "violations": 5,
+    "violations": 4,
     "issues": [
       "color-contrast"
     ],
-    "testedAt": "2025-12-23T20:49:42.814Z",
+    "testedAt": "2025-12-23T21:27:20.252Z",
     "scope": "component-examples-only",
-    "examplesFound": 8,
+    "examplesFound": 7,
     "scenariosTested": [
-      "example-_r_1_",
       "single-date",
       "multiple-dates",
       "date-range",
@@ -884,15 +753,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 8,
-        "examplesPassed": 8,
+        "examplesFound": 7,
+        "examplesPassed": 7,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "single-date": {
             "status": "pass",
             "violations": 0,
@@ -932,21 +796,14 @@
       },
       "dark": {
         "status": "fail",
-        "violations": 5,
+        "violations": 4,
         "issues": [
           "color-contrast"
         ],
-        "examplesFound": 8,
+        "examplesFound": 7,
         "examplesPassed": 3,
-        "examplesFailed": 5,
+        "examplesFailed": 4,
         "examples": {
-          "example-_r_1_": {
-            "status": "fail",
-            "violations": 1,
-            "issues": [
-              "color-contrast"
-            ]
-          },
           "single-date": {
             "status": "fail",
             "violations": 1,
@@ -996,16 +853,15 @@
   },
   "card": {
     "status": "fail",
-    "violations": 10,
+    "violations": 5,
     "issues": [
       "button-name",
       "color-contrast"
     ],
-    "testedAt": "2025-12-23T20:49:48.925Z",
+    "testedAt": "2025-12-23T21:27:27.867Z",
     "scope": "component-examples-only",
-    "examplesFound": 9,
+    "examplesFound": 8,
     "scenariosTested": [
-      "example-_r_1_",
       "default",
       "elevated",
       "outlined",
@@ -1019,27 +875,19 @@
     "modes": {
       "light": {
         "status": "fail",
-        "violations": 4,
+        "violations": 2,
         "issues": [
           "button-name",
           "color-contrast"
         ],
-        "examplesFound": 9,
+        "examplesFound": 8,
         "examplesPassed": 6,
-        "examplesFailed": 3,
+        "examplesFailed": 2,
         "examples": {
-          "example-_r_1_": {
+          "default": {
             "status": "pass",
             "violations": 0,
             "issues": []
-          },
-          "default": {
-            "status": "fail",
-            "violations": 2,
-            "issues": [
-              "button-name",
-              "color-contrast"
-            ]
           },
           "elevated": {
             "status": "pass",
@@ -1084,29 +932,19 @@
       },
       "dark": {
         "status": "fail",
-        "violations": 6,
+        "violations": 3,
         "issues": [
           "color-contrast",
           "button-name"
         ],
-        "examplesFound": 9,
-        "examplesPassed": 4,
-        "examplesFailed": 5,
+        "examplesFound": 8,
+        "examplesPassed": 5,
+        "examplesFailed": 3,
         "examples": {
-          "example-_r_1_": {
-            "status": "fail",
-            "violations": 1,
-            "issues": [
-              "color-contrast"
-            ]
-          },
           "default": {
-            "status": "fail",
-            "violations": 2,
-            "issues": [
-              "button-name",
-              "color-contrast"
-            ]
+            "status": "pass",
+            "violations": 0,
+            "issues": []
           },
           "elevated": {
             "status": "pass",
@@ -1154,59 +992,42 @@
     }
   },
   "carousel": {
-    "status": "pass",
-    "levelAchieved": "AA",
+    "status": "no_examples",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:48:52.771Z",
+    "testedAt": "2025-12-23T21:26:39.895Z",
     "scope": "component-examples-only",
-    "examplesFound": 1,
-    "scenariosTested": [
-      "example-_r_1_"
-    ],
+    "examplesFound": 0,
+    "scenariosTested": [],
     "subject": "Component examples for Carousel",
     "modes": {
       "light": {
-        "status": "pass",
-        "levelAchieved": "AA",
+        "status": "no_examples",
         "violations": 0,
         "issues": [],
-        "examplesFound": 1,
-        "examplesPassed": 1,
+        "examplesFound": 0,
+        "examplesPassed": 0,
         "examplesFailed": 0,
-        "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          }
-        }
+        "examples": {}
       },
       "dark": {
-        "status": "pass",
-        "levelAchieved": "AA",
+        "status": "no_examples",
         "violations": 0,
         "issues": [],
-        "examplesFound": 1,
-        "examplesPassed": 1,
+        "examplesFound": 0,
+        "examplesPassed": 0,
         "examplesFailed": 0,
-        "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          }
-        }
+        "examples": {}
       }
     }
   },
   "chart": {
     "status": "fail",
-    "violations": 4,
+    "violations": 2,
     "issues": [
       "svg-img-alt"
     ],
-    "testedAt": "2025-12-23T20:48:58.007Z",
+    "testedAt": "2025-12-23T21:26:44.918Z",
     "scope": "component-examples-only",
     "examplesFound": 5,
     "scenariosTested": [
@@ -1220,13 +1041,13 @@
     "modes": {
       "light": {
         "status": "fail",
-        "violations": 2,
+        "violations": 1,
         "issues": [
           "svg-img-alt"
         ],
         "examplesFound": 5,
-        "examplesPassed": 3,
-        "examplesFailed": 2,
+        "examplesPassed": 4,
+        "examplesFailed": 1,
         "examples": {
           "basic-bar-chart": {
             "status": "pass",
@@ -1234,11 +1055,9 @@
             "issues": []
           },
           "line-chart": {
-            "status": "fail",
-            "violations": 1,
-            "issues": [
-              "svg-img-alt"
-            ]
+            "status": "pass",
+            "violations": 0,
+            "issues": []
           },
           "multi-series-bar-chart": {
             "status": "pass",
@@ -1261,13 +1080,13 @@
       },
       "dark": {
         "status": "fail",
-        "violations": 2,
+        "violations": 1,
         "issues": [
           "svg-img-alt"
         ],
         "examplesFound": 5,
-        "examplesPassed": 3,
-        "examplesFailed": 2,
+        "examplesPassed": 4,
+        "examplesFailed": 1,
         "examples": {
           "basic-bar-chart": {
             "status": "pass",
@@ -1275,11 +1094,9 @@
             "issues": []
           },
           "line-chart": {
-            "status": "fail",
-            "violations": 1,
-            "issues": [
-              "svg-img-alt"
-            ]
+            "status": "pass",
+            "violations": 0,
+            "issues": []
           },
           "multi-series-bar-chart": {
             "status": "pass",
@@ -1307,18 +1124,16 @@
     "levelAchieved": "AA",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:04.190Z",
+    "testedAt": "2025-12-23T21:26:49.864Z",
     "scope": "component-examples-only",
-    "examplesFound": 8,
+    "examplesFound": 6,
     "scenariosTested": [
-      "example-_r_1_",
       "unchecked",
       "checked",
       "disabled-unchecked",
       "disabled-checked",
       "vertical-group",
-      "inline-group",
-      "example-_r_8_"
+      "inline-group"
     ],
     "subject": "Component examples for Checkbox",
     "modes": {
@@ -1327,15 +1142,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 8,
-        "examplesPassed": 8,
+        "examplesFound": 6,
+        "examplesPassed": 6,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "unchecked": {
             "status": "pass",
             "violations": 0,
@@ -1362,11 +1172,6 @@
             "issues": []
           },
           "inline-group": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_8_": {
             "status": "pass",
             "violations": 0,
             "issues": []
@@ -1378,15 +1183,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 8,
-        "examplesPassed": 8,
+        "examplesFound": 6,
+        "examplesPassed": 6,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "unchecked": {
             "status": "pass",
             "violations": 0,
@@ -1413,11 +1213,6 @@
             "issues": []
           },
           "inline-group": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_8_": {
             "status": "pass",
             "violations": 0,
             "issues": []
@@ -1427,49 +1222,32 @@
     }
   },
   "collapsible": {
-    "status": "pass",
-    "levelAchieved": "AA",
+    "status": "no_examples",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:06.635Z",
+    "testedAt": "2025-12-23T21:26:51.825Z",
     "scope": "component-examples-only",
-    "examplesFound": 1,
-    "scenariosTested": [
-      "example-_r_1_"
-    ],
+    "examplesFound": 0,
+    "scenariosTested": [],
     "subject": "Component examples for Collapsible",
     "modes": {
       "light": {
-        "status": "pass",
-        "levelAchieved": "AA",
+        "status": "no_examples",
         "violations": 0,
         "issues": [],
-        "examplesFound": 1,
-        "examplesPassed": 1,
+        "examplesFound": 0,
+        "examplesPassed": 0,
         "examplesFailed": 0,
-        "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          }
-        }
+        "examples": {}
       },
       "dark": {
-        "status": "pass",
-        "levelAchieved": "AA",
+        "status": "no_examples",
         "violations": 0,
         "issues": [],
-        "examplesFound": 1,
-        "examplesPassed": 1,
+        "examplesFound": 0,
+        "examplesPassed": 0,
         "examplesFailed": 0,
-        "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          }
-        }
+        "examples": {}
       }
     }
   },
@@ -1477,7 +1255,7 @@
     "status": "no_examples",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:08.379Z",
+    "testedAt": "2025-12-23T21:26:53.678Z",
     "scope": "component-examples-only",
     "examplesFound": 0,
     "scenariosTested": [],
@@ -1504,37 +1282,27 @@
     }
   },
   "command": {
-    "status": "fail",
-    "violations": 2,
-    "issues": [
-      "aria-required-children"
-    ],
-    "testedAt": "2025-12-23T20:49:11.463Z",
+    "status": "pass",
+    "levelAchieved": "AA",
+    "violations": 0,
+    "issues": [],
+    "testedAt": "2025-12-23T21:26:56.168Z",
     "scope": "component-examples-only",
-    "examplesFound": 2,
+    "examplesFound": 1,
     "scenariosTested": [
-      "example-_r_1_",
       "press-k-to-open"
     ],
     "subject": "Component examples for Command",
     "modes": {
       "light": {
-        "status": "fail",
-        "violations": 1,
-        "issues": [
-          "aria-required-children"
-        ],
-        "examplesFound": 2,
+        "status": "pass",
+        "levelAchieved": "AA",
+        "violations": 0,
+        "issues": [],
+        "examplesFound": 1,
         "examplesPassed": 1,
-        "examplesFailed": 1,
+        "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "fail",
-            "violations": 1,
-            "issues": [
-              "aria-required-children"
-            ]
-          },
           "press-k-to-open": {
             "status": "pass",
             "violations": 0,
@@ -1543,22 +1311,14 @@
         }
       },
       "dark": {
-        "status": "fail",
-        "violations": 1,
-        "issues": [
-          "aria-required-children"
-        ],
-        "examplesFound": 2,
+        "status": "pass",
+        "levelAchieved": "AA",
+        "violations": 0,
+        "issues": [],
+        "examplesFound": 1,
         "examplesPassed": 1,
-        "examplesFailed": 1,
+        "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "fail",
-            "violations": 1,
-            "issues": [
-              "aria-required-children"
-            ]
-          },
           "press-k-to-open": {
             "status": "pass",
             "violations": 0,
@@ -1569,60 +1329,32 @@
     }
   },
   "context-menu": {
-    "status": "pass",
-    "levelAchieved": "AA",
+    "status": "no_examples",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:14.283Z",
+    "testedAt": "2025-12-23T21:26:57.987Z",
     "scope": "component-examples-only",
-    "examplesFound": 2,
-    "scenariosTested": [
-      "example-_r_1_",
-      "example-_r_2_"
-    ],
+    "examplesFound": 0,
+    "scenariosTested": [],
     "subject": "Component examples for Context Menu",
     "modes": {
       "light": {
-        "status": "pass",
-        "levelAchieved": "AA",
+        "status": "no_examples",
         "violations": 0,
         "issues": [],
-        "examplesFound": 2,
-        "examplesPassed": 2,
+        "examplesFound": 0,
+        "examplesPassed": 0,
         "examplesFailed": 0,
-        "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_2_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          }
-        }
+        "examples": {}
       },
       "dark": {
-        "status": "pass",
-        "levelAchieved": "AA",
+        "status": "no_examples",
         "violations": 0,
         "issues": [],
-        "examplesFound": 2,
-        "examplesPassed": 2,
+        "examplesFound": 0,
+        "examplesPassed": 0,
         "examplesFailed": 0,
-        "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_2_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          }
-        }
+        "examples": {}
       }
     }
   },
@@ -1630,7 +1362,7 @@
     "status": "no_examples",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:50.609Z",
+    "testedAt": "2025-12-23T21:27:29.546Z",
     "scope": "component-examples-only",
     "examplesFound": 0,
     "scenariosTested": [],
@@ -1660,7 +1392,7 @@
     "status": "no_examples",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:48:50.284Z",
+    "testedAt": "2025-12-23T21:26:38.033Z",
     "scope": "component-examples-only",
     "examplesFound": 0,
     "scenariosTested": [],
@@ -1687,82 +1419,32 @@
     }
   },
   "dialog": {
-    "status": "pass",
-    "levelAchieved": "AA",
+    "status": "no_examples",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:18.637Z",
+    "testedAt": "2025-12-23T21:26:59.886Z",
     "scope": "component-examples-only",
-    "examplesFound": 4,
-    "scenariosTested": [
-      "example-_r_1_",
-      "example-_r_13_",
-      "example-_r_17_",
-      "example-_r_1b_"
-    ],
+    "examplesFound": 0,
+    "scenariosTested": [],
     "subject": "Component examples for Dialog",
     "modes": {
       "light": {
-        "status": "pass",
-        "levelAchieved": "AA",
+        "status": "no_examples",
         "violations": 0,
         "issues": [],
-        "examplesFound": 4,
-        "examplesPassed": 4,
+        "examplesFound": 0,
+        "examplesPassed": 0,
         "examplesFailed": 0,
-        "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_13_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_17_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_1b_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          }
-        }
+        "examples": {}
       },
       "dark": {
-        "status": "pass",
-        "levelAchieved": "AA",
+        "status": "no_examples",
         "violations": 0,
         "issues": [],
-        "examplesFound": 4,
-        "examplesPassed": 4,
+        "examplesFound": 0,
+        "examplesPassed": 0,
         "examplesFailed": 0,
-        "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_13_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_17_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_1b_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          }
-        }
+        "examples": {}
       }
     }
   },
@@ -1771,11 +1453,10 @@
     "levelAchieved": "AA",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:23.239Z",
+    "testedAt": "2025-12-23T21:27:04.030Z",
     "scope": "component-examples-only",
-    "examplesFound": 5,
+    "examplesFound": 4,
     "scenariosTested": [
-      "example-_r_1_",
       "simple",
       "with-form",
       "with-footer-actions",
@@ -1788,15 +1469,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 5,
-        "examplesPassed": 5,
+        "examplesFound": 4,
+        "examplesPassed": 4,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "simple": {
             "status": "pass",
             "violations": 0,
@@ -1824,15 +1500,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 5,
-        "examplesPassed": 5,
+        "examplesFound": 4,
+        "examplesPassed": 4,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "simple": {
             "status": "pass",
             "violations": 0,
@@ -1862,11 +1533,10 @@
     "levelAchieved": "AA",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:28.970Z",
+    "testedAt": "2025-12-23T21:27:09.019Z",
     "scope": "component-examples-only",
-    "examplesFound": 7,
+    "examplesFound": 6,
     "scenariosTested": [
-      "example-_r_1_",
       "with-keyboard-shortcuts",
       "with-submenus",
       "with-checkboxes",
@@ -1881,15 +1551,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 7,
-        "examplesPassed": 7,
+        "examplesFound": 6,
+        "examplesPassed": 6,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "with-keyboard-shortcuts": {
             "status": "pass",
             "violations": 0,
@@ -1927,15 +1592,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 7,
-        "examplesPassed": 7,
+        "examplesFound": 6,
+        "examplesPassed": 6,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "with-keyboard-shortcuts": {
             "status": "pass",
             "violations": 0,
@@ -1971,17 +1631,14 @@
     }
   },
   "empty": {
-    "status": "partial",
-    "levelAchieved": "A",
-    "violations": 1,
-    "issues": [
-      "color-contrast"
-    ],
-    "testedAt": "2025-12-23T20:49:32.643Z",
+    "status": "pass",
+    "levelAchieved": "AA",
+    "violations": 0,
+    "issues": [],
+    "testedAt": "2025-12-23T21:27:11.954Z",
     "scope": "component-examples-only",
-    "examplesFound": 3,
+    "examplesFound": 2,
     "scenariosTested": [
-      "example-_r_1_",
       "search-empty",
       "file-not-found"
     ],
@@ -1992,15 +1649,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 3,
-        "examplesPassed": 3,
+        "examplesFound": 2,
+        "examplesPassed": 2,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "search-empty": {
             "status": "pass",
             "violations": 0,
@@ -2014,22 +1666,14 @@
         }
       },
       "dark": {
-        "status": "fail",
-        "violations": 1,
-        "issues": [
-          "color-contrast"
-        ],
-        "examplesFound": 3,
+        "status": "pass",
+        "levelAchieved": "AA",
+        "violations": 0,
+        "issues": [],
+        "examplesFound": 2,
         "examplesPassed": 2,
-        "examplesFailed": 1,
+        "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "fail",
-            "violations": 1,
-            "issues": [
-              "color-contrast"
-            ]
-          },
           "search-empty": {
             "status": "pass",
             "violations": 0,
@@ -2051,11 +1695,10 @@
     "issues": [
       "color-contrast"
     ],
-    "testedAt": "2025-12-23T20:48:53.403Z",
+    "testedAt": "2025-12-23T21:26:40.472Z",
     "scope": "component-examples-only",
-    "examplesFound": 5,
+    "examplesFound": 4,
     "scenariosTested": [
-      "example-_r_1_",
       "with-error",
       "horizontal-layout",
       "field-group",
@@ -2068,15 +1711,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 5,
-        "examplesPassed": 5,
+        "examplesFound": 4,
+        "examplesPassed": 4,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "with-error": {
             "status": "pass",
             "violations": 0,
@@ -2105,15 +1743,10 @@
         "issues": [
           "color-contrast"
         ],
-        "examplesFound": 5,
-        "examplesPassed": 4,
+        "examplesFound": 4,
+        "examplesPassed": 3,
         "examplesFailed": 1,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "with-error": {
             "status": "fail",
             "violations": 1,
@@ -2141,17 +1774,14 @@
     }
   },
   "form": {
-    "status": "partial",
-    "levelAchieved": "A",
-    "violations": 2,
-    "issues": [
-      "color-contrast"
-    ],
-    "testedAt": "2025-12-23T20:49:05.557Z",
+    "status": "pass",
+    "levelAchieved": "AA",
+    "violations": 0,
+    "issues": [],
+    "testedAt": "2025-12-23T21:26:50.823Z",
     "scope": "component-examples-only",
-    "examplesFound": 18,
+    "examplesFound": 16,
     "scenariosTested": [
-      "example-_r_1_",
       "text-input",
       "email-input",
       "password-input",
@@ -2167,8 +1797,7 @@
       "basic-radio-group",
       "basic-switch",
       "switch-with-default-on",
-      "disabled-switch",
-      "example-_r_n_"
+      "disabled-switch"
     ],
     "subject": "Component examples for Form",
     "modes": {
@@ -2177,15 +1806,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 18,
-        "examplesPassed": 18,
+        "examplesFound": 16,
+        "examplesPassed": 16,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "text-input": {
             "status": "pass",
             "violations": 0,
@@ -2262,11 +1886,6 @@
             "issues": []
           },
           "disabled-switch": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_n_": {
             "status": "pass",
             "violations": 0,
             "issues": []
@@ -2274,22 +1893,14 @@
         }
       },
       "dark": {
-        "status": "fail",
-        "violations": 2,
-        "issues": [
-          "color-contrast"
-        ],
-        "examplesFound": 18,
+        "status": "pass",
+        "levelAchieved": "AA",
+        "violations": 0,
+        "issues": [],
+        "examplesFound": 16,
         "examplesPassed": 16,
-        "examplesFailed": 2,
+        "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "fail",
-            "violations": 1,
-            "issues": [
-              "color-contrast"
-            ]
-          },
           "text-input": {
             "status": "pass",
             "violations": 0,
@@ -2369,13 +1980,6 @@
             "status": "pass",
             "violations": 0,
             "issues": []
-          },
-          "example-_r_n_": {
-            "status": "fail",
-            "violations": 1,
-            "issues": [
-              "color-contrast"
-            ]
           }
         }
       }
@@ -2384,15 +1988,14 @@
   "hover-card": {
     "status": "partial",
     "levelAchieved": "A",
-    "violations": 4,
+    "violations": 3,
     "issues": [
       "color-contrast"
     ],
-    "testedAt": "2025-12-23T20:49:10.073Z",
+    "testedAt": "2025-12-23T21:26:54.957Z",
     "scope": "component-examples-only",
-    "examplesFound": 5,
+    "examplesFound": 4,
     "scenariosTested": [
-      "example-_r_1_",
       "user-profile",
       "link-preview",
       "repository-info",
@@ -2405,15 +2008,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 5,
-        "examplesPassed": 5,
+        "examplesFound": 4,
+        "examplesPassed": 4,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "user-profile": {
             "status": "pass",
             "violations": 0,
@@ -2438,21 +2036,14 @@
       },
       "dark": {
         "status": "fail",
-        "violations": 4,
+        "violations": 3,
         "issues": [
           "color-contrast"
         ],
-        "examplesFound": 5,
+        "examplesFound": 4,
         "examplesPassed": 1,
-        "examplesFailed": 4,
+        "examplesFailed": 3,
         "examples": {
-          "example-_r_1_": {
-            "status": "fail",
-            "violations": 1,
-            "issues": [
-              "color-contrast"
-            ]
-          },
           "user-profile": {
             "status": "fail",
             "violations": 1,
@@ -2488,11 +2079,10 @@
     "levelAchieved": "AA",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:26.598Z",
+    "testedAt": "2025-12-23T21:27:10.044Z",
     "scope": "component-examples-only",
-    "examplesFound": 5,
+    "examplesFound": 4,
     "scenariosTested": [
-      "example-_r_1_",
       "with-icon-start",
       "with-icon-end",
       "with-text",
@@ -2505,15 +2095,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 5,
-        "examplesPassed": 5,
+        "examplesFound": 4,
+        "examplesPassed": 4,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "with-icon-start": {
             "status": "pass",
             "violations": 0,
@@ -2541,15 +2126,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 5,
-        "examplesPassed": 5,
+        "examplesFound": 4,
+        "examplesPassed": 4,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "with-icon-start": {
             "status": "pass",
             "violations": 0,
@@ -2575,64 +2155,46 @@
     }
   },
   "input-otp": {
-    "status": "pass",
-    "levelAchieved": "AA",
+    "status": "no_examples",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:29.227Z",
+    "testedAt": "2025-12-23T21:27:11.836Z",
     "scope": "component-examples-only",
-    "examplesFound": 1,
-    "scenariosTested": [
-      "example-_r_1_"
-    ],
+    "examplesFound": 0,
+    "scenariosTested": [],
     "subject": "Component examples for Input OTP",
     "modes": {
       "light": {
-        "status": "pass",
-        "levelAchieved": "AA",
+        "status": "no_examples",
         "violations": 0,
         "issues": [],
-        "examplesFound": 1,
-        "examplesPassed": 1,
+        "examplesFound": 0,
+        "examplesPassed": 0,
         "examplesFailed": 0,
-        "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          }
-        }
+        "examples": {}
       },
       "dark": {
-        "status": "pass",
-        "levelAchieved": "AA",
+        "status": "no_examples",
         "violations": 0,
         "issues": [],
-        "examplesFound": 1,
-        "examplesPassed": 1,
+        "examplesFound": 0,
+        "examplesPassed": 0,
         "examplesFailed": 0,
-        "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          }
-        }
+        "examples": {}
       }
     }
   },
   "input": {
     "status": "fail",
-    "violations": 7,
+    "violations": 4,
     "issues": [
       "label",
       "color-contrast"
     ],
-    "testedAt": "2025-12-23T20:49:21.962Z",
+    "testedAt": "2025-12-23T21:27:06.010Z",
     "scope": "component-examples-only",
-    "examplesFound": 18,
+    "examplesFound": 17,
     "scenariosTested": [
-      "example-_r_1_",
       "all-sizes",
       "default-outlined",
       "filled",
@@ -2655,25 +2217,18 @@
     "modes": {
       "light": {
         "status": "fail",
-        "violations": 2,
+        "violations": 1,
         "issues": [
           "label"
         ],
-        "examplesFound": 18,
+        "examplesFound": 17,
         "examplesPassed": 16,
-        "examplesFailed": 2,
+        "examplesFailed": 1,
         "examples": {
-          "example-_r_1_": {
+          "all-sizes": {
             "status": "pass",
             "violations": 0,
             "issues": []
-          },
-          "all-sizes": {
-            "status": "fail",
-            "violations": 1,
-            "issues": [
-              "label"
-            ]
           },
           "default-outlined": {
             "status": "pass",
@@ -2761,27 +2316,19 @@
       },
       "dark": {
         "status": "fail",
-        "violations": 5,
+        "violations": 3,
         "issues": [
           "color-contrast",
           "label"
         ],
-        "examplesFound": 18,
+        "examplesFound": 17,
         "examplesPassed": 14,
-        "examplesFailed": 4,
+        "examplesFailed": 3,
         "examples": {
-          "example-_r_1_": {
+          "all-sizes": {
             "status": "pass",
             "violations": 0,
             "issues": []
-          },
-          "all-sizes": {
-            "status": "fail",
-            "violations": 2,
-            "issues": [
-              "color-contrast",
-              "label"
-            ]
           },
           "default-outlined": {
             "status": "pass",
@@ -2878,11 +2425,10 @@
     "levelAchieved": "AA",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:33.412Z",
+    "testedAt": "2025-12-23T21:27:15.171Z",
     "scope": "component-examples-only",
-    "examplesFound": 4,
+    "examplesFound": 3,
     "scenariosTested": [
-      "example-_r_1_",
       "with-icon-media",
       "multiple-items",
       "with-header-and-footer"
@@ -2894,15 +2440,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 4,
-        "examplesPassed": 4,
+        "examplesFound": 3,
+        "examplesPassed": 3,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "with-icon-media": {
             "status": "pass",
             "violations": 0,
@@ -2925,15 +2466,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 4,
-        "examplesPassed": 4,
+        "examplesFound": 3,
+        "examplesPassed": 3,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "with-icon-media": {
             "status": "pass",
             "violations": 0,
@@ -2958,11 +2494,10 @@
     "levelAchieved": "AA",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:37.219Z",
+    "testedAt": "2025-12-23T21:27:18.370Z",
     "scope": "component-examples-only",
-    "examplesFound": 4,
+    "examplesFound": 3,
     "scenariosTested": [
-      "example-_r_1_",
       "single-key",
       "modifier-keys",
       "key-combinations"
@@ -2974,15 +2509,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 4,
-        "examplesPassed": 4,
+        "examplesFound": 3,
+        "examplesPassed": 3,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "single-key": {
             "status": "pass",
             "violations": 0,
@@ -3005,15 +2535,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 4,
-        "examplesPassed": 4,
+        "examplesFound": 3,
+        "examplesPassed": 3,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "single-key": {
             "status": "pass",
             "violations": 0,
@@ -3038,11 +2563,10 @@
     "levelAchieved": "AA",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:40.439Z",
+    "testedAt": "2025-12-23T21:27:21.454Z",
     "scope": "component-examples-only",
-    "examplesFound": 3,
+    "examplesFound": 2,
     "scenariosTested": [
-      "example-_r_1_",
       "with-input",
       "required-field"
     ],
@@ -3053,15 +2577,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 3,
-        "examplesPassed": 3,
+        "examplesFound": 2,
+        "examplesPassed": 2,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "with-input": {
             "status": "pass",
             "violations": 0,
@@ -3079,15 +2598,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 3,
-        "examplesPassed": 3,
+        "examplesFound": 2,
+        "examplesPassed": 2,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "with-input": {
             "status": "pass",
             "violations": 0,
@@ -3103,60 +2617,32 @@
     }
   },
   "menubar": {
-    "status": "pass",
-    "levelAchieved": "AA",
+    "status": "no_examples",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:43.233Z",
+    "testedAt": "2025-12-23T21:27:24.245Z",
     "scope": "component-examples-only",
-    "examplesFound": 2,
-    "scenariosTested": [
-      "example-_r_1_",
-      "example-_r_a_"
-    ],
+    "examplesFound": 0,
+    "scenariosTested": [],
     "subject": "Component examples for Menubar",
     "modes": {
       "light": {
-        "status": "pass",
-        "levelAchieved": "AA",
+        "status": "no_examples",
         "violations": 0,
         "issues": [],
-        "examplesFound": 2,
-        "examplesPassed": 2,
+        "examplesFound": 0,
+        "examplesPassed": 0,
         "examplesFailed": 0,
-        "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_a_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          }
-        }
+        "examples": {}
       },
       "dark": {
-        "status": "pass",
-        "levelAchieved": "AA",
+        "status": "no_examples",
         "violations": 0,
         "issues": [],
-        "examplesFound": 2,
-        "examplesPassed": 2,
+        "examplesFound": 0,
+        "examplesPassed": 0,
         "examplesFailed": 0,
-        "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_a_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          }
-        }
+        "examples": {}
       }
     }
   },
@@ -3165,11 +2651,10 @@
     "levelAchieved": "AA",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:46.017Z",
+    "testedAt": "2025-12-23T21:27:26.531Z",
     "scope": "component-examples-only",
-    "examplesFound": 2,
+    "examplesFound": 1,
     "scenariosTested": [
-      "example-_r_5_",
       "focus-state"
     ],
     "subject": "Component examples for Navigation Menu",
@@ -3179,15 +2664,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 2,
-        "examplesPassed": 2,
+        "examplesFound": 1,
+        "examplesPassed": 1,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_5_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "focus-state": {
             "status": "pass",
             "violations": 0,
@@ -3200,15 +2680,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 2,
-        "examplesPassed": 2,
+        "examplesFound": 1,
+        "examplesPassed": 1,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_5_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "focus-state": {
             "status": "pass",
             "violations": 0,
@@ -3222,7 +2697,7 @@
     "status": "no_examples",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:47.765Z",
+    "testedAt": "2025-12-23T21:27:28.241Z",
     "scope": "component-examples-only",
     "examplesFound": 0,
     "scenariosTested": [],
@@ -3253,17 +2728,14 @@
     "levelAchieved": "AA",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:48:54.374Z",
+    "testedAt": "2025-12-23T21:26:40.634Z",
     "scope": "component-examples-only",
-    "examplesFound": 7,
+    "examplesFound": 4,
     "scenariosTested": [
-      "example-_r_1_",
       "simple-content",
       "date-picker",
       "with-form",
-      "user-card",
-      "example-_r_b_",
-      "example-_r_g_"
+      "user-card"
     ],
     "subject": "Component examples for Popover",
     "modes": {
@@ -3272,15 +2744,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 7,
-        "examplesPassed": 7,
+        "examplesFound": 4,
+        "examplesPassed": 4,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "simple-content": {
             "status": "pass",
             "violations": 0,
@@ -3297,16 +2764,6 @@
             "issues": []
           },
           "user-card": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_b_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_g_": {
             "status": "pass",
             "violations": 0,
             "issues": []
@@ -3318,15 +2775,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 7,
-        "examplesPassed": 7,
+        "examplesFound": 4,
+        "examplesPassed": 4,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "simple-content": {
             "status": "pass",
             "violations": 0,
@@ -3346,16 +2798,6 @@
             "status": "pass",
             "violations": 0,
             "issues": []
-          },
-          "example-_r_b_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_g_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
           }
         }
       }
@@ -3364,15 +2806,14 @@
   "progress": {
     "status": "partial",
     "levelAchieved": "A",
-    "violations": 2,
+    "violations": 1,
     "issues": [
       "color-contrast"
     ],
-    "testedAt": "2025-12-23T20:49:00.569Z",
+    "testedAt": "2025-12-23T21:26:46.242Z",
     "scope": "component-examples-only",
-    "examplesFound": 8,
+    "examplesFound": 7,
     "scenariosTested": [
-      "example-_r_1_",
       "indeterminate-progress",
       "labeled-progress",
       "custom-label-format",
@@ -3388,15 +2829,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 8,
-        "examplesPassed": 8,
+        "examplesFound": 7,
+        "examplesPassed": 7,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "indeterminate-progress": {
             "status": "pass",
             "violations": 0,
@@ -3436,25 +2872,18 @@
       },
       "dark": {
         "status": "fail",
-        "violations": 2,
+        "violations": 1,
         "issues": [
           "color-contrast"
         ],
-        "examplesFound": 8,
+        "examplesFound": 7,
         "examplesPassed": 6,
-        "examplesFailed": 2,
+        "examplesFailed": 1,
         "examples": {
-          "example-_r_1_": {
+          "indeterminate-progress": {
             "status": "pass",
             "violations": 0,
             "issues": []
-          },
-          "indeterminate-progress": {
-            "status": "fail",
-            "violations": 1,
-            "issues": [
-              "color-contrast"
-            ]
           },
           "labeled-progress": {
             "status": "pass",
@@ -3497,14 +2926,12 @@
     "levelAchieved": "AA",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:05.110Z",
+    "testedAt": "2025-12-23T21:26:49.218Z",
     "scope": "component-examples-only",
-    "examplesFound": 4,
+    "examplesFound": 2,
     "scenariosTested": [
-      "example-_r_1_",
       "horizontal",
-      "with-disabled-options",
-      "example-_r_d_"
+      "with-disabled-options"
     ],
     "subject": "Component examples for Radio Group",
     "modes": {
@@ -3513,26 +2940,16 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 4,
-        "examplesPassed": 4,
+        "examplesFound": 2,
+        "examplesPassed": 2,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "horizontal": {
             "status": "pass",
             "violations": 0,
             "issues": []
           },
           "with-disabled-options": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_d_": {
             "status": "pass",
             "violations": 0,
             "issues": []
@@ -3544,26 +2961,16 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 4,
-        "examplesPassed": 4,
+        "examplesFound": 2,
+        "examplesPassed": 2,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "horizontal": {
             "status": "pass",
             "violations": 0,
             "issues": []
           },
           "with-disabled-options": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_d_": {
             "status": "pass",
             "violations": 0,
             "issues": []
@@ -3573,103 +2980,62 @@
     }
   },
   "resizable": {
-    "status": "fail",
-    "violations": 2,
-    "issues": [
-      "aria-allowed-attr"
-    ],
-    "testedAt": "2025-12-23T20:49:07.459Z",
+    "status": "no_examples",
+    "violations": 0,
+    "issues": [],
+    "testedAt": "2025-12-23T21:26:51.051Z",
     "scope": "component-examples-only",
-    "examplesFound": 1,
-    "scenariosTested": [
-      "example-_r_1_"
-    ],
+    "examplesFound": 0,
+    "scenariosTested": [],
     "subject": "Component examples for Resizable",
     "modes": {
       "light": {
-        "status": "fail",
-        "violations": 1,
-        "issues": [
-          "aria-allowed-attr"
-        ],
-        "examplesFound": 1,
+        "status": "no_examples",
+        "violations": 0,
+        "issues": [],
+        "examplesFound": 0,
         "examplesPassed": 0,
-        "examplesFailed": 1,
-        "examples": {
-          "example-_r_1_": {
-            "status": "fail",
-            "violations": 1,
-            "issues": [
-              "aria-allowed-attr"
-            ]
-          }
-        }
+        "examplesFailed": 0,
+        "examples": {}
       },
       "dark": {
-        "status": "fail",
-        "violations": 1,
-        "issues": [
-          "aria-allowed-attr"
-        ],
-        "examplesFound": 1,
+        "status": "no_examples",
+        "violations": 0,
+        "issues": [],
+        "examplesFound": 0,
         "examplesPassed": 0,
-        "examplesFailed": 1,
-        "examples": {
-          "example-_r_1_": {
-            "status": "fail",
-            "violations": 1,
-            "issues": [
-              "aria-allowed-attr"
-            ]
-          }
-        }
+        "examplesFailed": 0,
+        "examples": {}
       }
     }
   },
   "scroll-area": {
-    "status": "pass",
-    "levelAchieved": "AA",
+    "status": "no_examples",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:09.876Z",
+    "testedAt": "2025-12-23T21:26:52.876Z",
     "scope": "component-examples-only",
-    "examplesFound": 1,
-    "scenariosTested": [
-      "example-_r_1_"
-    ],
+    "examplesFound": 0,
+    "scenariosTested": [],
     "subject": "Component examples for Scroll Area",
     "modes": {
       "light": {
-        "status": "pass",
-        "levelAchieved": "AA",
+        "status": "no_examples",
         "violations": 0,
         "issues": [],
-        "examplesFound": 1,
-        "examplesPassed": 1,
+        "examplesFound": 0,
+        "examplesPassed": 0,
         "examplesFailed": 0,
-        "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          }
-        }
+        "examples": {}
       },
       "dark": {
-        "status": "pass",
-        "levelAchieved": "AA",
+        "status": "no_examples",
         "violations": 0,
         "issues": [],
-        "examplesFound": 1,
-        "examplesPassed": 1,
+        "examplesFound": 0,
+        "examplesPassed": 0,
         "examplesFailed": 0,
-        "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          }
-        }
+        "examples": {}
       }
     }
   },
@@ -3678,11 +3044,10 @@
     "levelAchieved": "AA",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:16.505Z",
+    "testedAt": "2025-12-23T21:26:58.660Z",
     "scope": "component-examples-only",
-    "examplesFound": 8,
+    "examplesFound": 7,
     "scenariosTested": [
-      "example-_r_1_",
       "basic-select",
       "grouped-options",
       "with-default-value",
@@ -3698,15 +3063,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 8,
-        "examplesPassed": 8,
+        "examplesFound": 7,
+        "examplesPassed": 7,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "basic-select": {
             "status": "pass",
             "violations": 0,
@@ -3749,15 +3109,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 8,
-        "examplesPassed": 8,
+        "examplesFound": 7,
+        "examplesPassed": 7,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "basic-select": {
             "status": "pass",
             "violations": 0,
@@ -3802,11 +3157,10 @@
     "levelAchieved": "AA",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:19.954Z",
+    "testedAt": "2025-12-23T21:27:01.592Z",
     "scope": "component-examples-only",
-    "examplesFound": 3,
+    "examplesFound": 2,
     "scenariosTested": [
-      "example-_r_1_",
       "horizontal",
       "vertical"
     ],
@@ -3817,15 +3171,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 3,
-        "examplesPassed": 3,
+        "examplesFound": 2,
+        "examplesPassed": 2,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "horizontal": {
             "status": "pass",
             "violations": 0,
@@ -3843,15 +3192,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 3,
-        "examplesPassed": 3,
+        "examplesFound": 2,
+        "examplesPassed": 2,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "horizontal": {
             "status": "pass",
             "violations": 0,
@@ -3867,140 +3211,62 @@
     }
   },
   "sheet": {
-    "status": "pass",
-    "levelAchieved": "AA",
+    "status": "no_examples",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:23.981Z",
+    "testedAt": "2025-12-23T21:27:03.474Z",
     "scope": "component-examples-only",
-    "examplesFound": 4,
-    "scenariosTested": [
-      "example-_r_1_",
-      "example-_r_10_",
-      "example-_r_14_",
-      "example-_r_18_"
-    ],
+    "examplesFound": 0,
+    "scenariosTested": [],
     "subject": "Component examples for Sheet",
     "modes": {
       "light": {
-        "status": "pass",
-        "levelAchieved": "AA",
+        "status": "no_examples",
         "violations": 0,
         "issues": [],
-        "examplesFound": 4,
-        "examplesPassed": 4,
+        "examplesFound": 0,
+        "examplesPassed": 0,
         "examplesFailed": 0,
-        "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_10_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_14_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_18_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          }
-        }
+        "examples": {}
       },
       "dark": {
-        "status": "pass",
-        "levelAchieved": "AA",
+        "status": "no_examples",
         "violations": 0,
         "issues": [],
-        "examplesFound": 4,
-        "examplesPassed": 4,
+        "examplesFound": 0,
+        "examplesPassed": 0,
         "examplesFailed": 0,
-        "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_10_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_14_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_18_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          }
-        }
+        "examples": {}
       }
     }
   },
   "sidebar": {
-    "status": "pass",
-    "levelAchieved": "AA",
+    "status": "no_examples",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:27.116Z",
+    "testedAt": "2025-12-23T21:27:05.309Z",
     "scope": "component-examples-only",
-    "examplesFound": 2,
-    "scenariosTested": [
-      "example-_r_1_",
-      "example-_r_2_"
-    ],
+    "examplesFound": 0,
+    "scenariosTested": [],
     "subject": "Component examples for Sidebar",
     "modes": {
       "light": {
-        "status": "pass",
-        "levelAchieved": "AA",
+        "status": "no_examples",
         "violations": 0,
         "issues": [],
-        "examplesFound": 2,
-        "examplesPassed": 2,
+        "examplesFound": 0,
+        "examplesPassed": 0,
         "examplesFailed": 0,
-        "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_2_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          }
-        }
+        "examples": {}
       },
       "dark": {
-        "status": "pass",
-        "levelAchieved": "AA",
+        "status": "no_examples",
         "violations": 0,
         "issues": [],
-        "examplesFound": 2,
-        "examplesPassed": 2,
+        "examplesFound": 0,
+        "examplesPassed": 0,
         "examplesFailed": 0,
-        "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_2_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          }
-        }
+        "examples": {}
       }
     }
   },
@@ -4008,7 +3274,7 @@
     "status": "no_examples",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:28.962Z",
+    "testedAt": "2025-12-23T21:27:07.154Z",
     "scope": "component-examples-only",
     "examplesFound": 0,
     "scenariosTested": [],
@@ -4036,15 +3302,14 @@
   },
   "slider": {
     "status": "fail",
-    "violations": 10,
+    "violations": 8,
     "issues": [
       "aria-input-field-name"
     ],
-    "testedAt": "2025-12-23T20:49:34.737Z",
+    "testedAt": "2025-12-23T21:27:12.232Z",
     "scope": "component-examples-only",
-    "examplesFound": 7,
+    "examplesFound": 6,
     "scenariosTested": [
-      "example-_r_1_",
       "basic-slider",
       "price-range",
       "time-range",
@@ -4056,21 +3321,14 @@
     "modes": {
       "light": {
         "status": "fail",
-        "violations": 5,
+        "violations": 4,
         "issues": [
           "aria-input-field-name"
         ],
-        "examplesFound": 7,
+        "examplesFound": 6,
         "examplesPassed": 2,
-        "examplesFailed": 5,
+        "examplesFailed": 4,
         "examples": {
-          "example-_r_1_": {
-            "status": "fail",
-            "violations": 1,
-            "issues": [
-              "aria-input-field-name"
-            ]
-          },
           "basic-slider": {
             "status": "fail",
             "violations": 1,
@@ -4113,21 +3371,14 @@
       },
       "dark": {
         "status": "fail",
-        "violations": 5,
+        "violations": 4,
         "issues": [
           "aria-input-field-name"
         ],
-        "examplesFound": 7,
+        "examplesFound": 6,
         "examplesPassed": 2,
-        "examplesFailed": 5,
+        "examplesFailed": 4,
         "examples": {
-          "example-_r_1_": {
-            "status": "fail",
-            "violations": 1,
-            "issues": [
-              "aria-input-field-name"
-            ]
-          },
           "basic-slider": {
             "status": "fail",
             "violations": 1,
@@ -4171,93 +3422,32 @@
     }
   },
   "sonner": {
-    "status": "pass",
-    "levelAchieved": "AA",
+    "status": "no_examples",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:39.126Z",
+    "testedAt": "2025-12-23T21:27:14.011Z",
     "scope": "component-examples-only",
-    "examplesFound": 5,
-    "scenariosTested": [
-      "example-_r_1_",
-      "example-_r_2_",
-      "example-_r_3_",
-      "example-_r_4_",
-      "example-_r_5_"
-    ],
+    "examplesFound": 0,
+    "scenariosTested": [],
     "subject": "Component examples for Sonner",
     "modes": {
       "light": {
-        "status": "pass",
-        "levelAchieved": "AA",
+        "status": "no_examples",
         "violations": 0,
         "issues": [],
-        "examplesFound": 5,
-        "examplesPassed": 5,
+        "examplesFound": 0,
+        "examplesPassed": 0,
         "examplesFailed": 0,
-        "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_2_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_3_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_4_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_5_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          }
-        }
+        "examples": {}
       },
       "dark": {
-        "status": "pass",
-        "levelAchieved": "AA",
+        "status": "no_examples",
         "violations": 0,
         "issues": [],
-        "examplesFound": 5,
-        "examplesPassed": 5,
+        "examplesFound": 0,
+        "examplesPassed": 0,
         "examplesFailed": 0,
-        "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_2_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_3_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_4_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_5_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          }
-        }
+        "examples": {}
       }
     }
   },
@@ -4266,11 +3456,10 @@
     "levelAchieved": "AA",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:48:52.504Z",
+    "testedAt": "2025-12-23T21:26:39.797Z",
     "scope": "component-examples-only",
-    "examplesFound": 4,
+    "examplesFound": 3,
     "scenariosTested": [
-      "example-_r_1_",
       "sizes",
       "in-button",
       "page-loading"
@@ -4282,15 +3471,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 4,
-        "examplesPassed": 4,
+        "examplesFound": 3,
+        "examplesPassed": 3,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "sizes": {
             "status": "pass",
             "violations": 0,
@@ -4313,15 +3497,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 4,
-        "examplesPassed": 4,
+        "examplesFound": 3,
+        "examplesPassed": 3,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "sizes": {
             "status": "pass",
             "violations": 0,
@@ -4346,16 +3525,14 @@
     "levelAchieved": "AA",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:48:57.734Z",
+    "testedAt": "2025-12-23T21:26:43.790Z",
     "scope": "component-examples-only",
-    "examplesFound": 6,
+    "examplesFound": 4,
     "scenariosTested": [
-      "example-_r_1_",
       "off",
       "on",
       "disabled-off",
-      "disabled-on",
-      "example-_r_6_"
+      "disabled-on"
     ],
     "subject": "Component examples for Switch",
     "modes": {
@@ -4364,15 +3541,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 6,
-        "examplesPassed": 6,
+        "examplesFound": 4,
+        "examplesPassed": 4,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "off": {
             "status": "pass",
             "violations": 0,
@@ -4389,11 +3561,6 @@
             "issues": []
           },
           "disabled-on": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_6_": {
             "status": "pass",
             "violations": 0,
             "issues": []
@@ -4405,15 +3572,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 6,
-        "examplesPassed": 6,
+        "examplesFound": 4,
+        "examplesPassed": 4,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "off": {
             "status": "pass",
             "violations": 0,
@@ -4433,11 +3595,6 @@
             "status": "pass",
             "violations": 0,
             "issues": []
-          },
-          "example-_r_6_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
           }
         }
       }
@@ -4445,15 +3602,14 @@
   },
   "table": {
     "status": "fail",
-    "violations": 4,
+    "violations": 2,
     "issues": [
       "color-contrast"
     ],
-    "testedAt": "2025-12-23T20:49:04.907Z",
+    "testedAt": "2025-12-23T21:26:49.764Z",
     "scope": "component-examples-only",
-    "examplesFound": 8,
+    "examplesFound": 7,
     "scenariosTested": [
-      "example-_r_1_",
       "striped-table",
       "table-with-gridlines",
       "striped-with-gridlines",
@@ -4466,25 +3622,18 @@
     "modes": {
       "light": {
         "status": "fail",
-        "violations": 2,
+        "violations": 1,
         "issues": [
           "color-contrast"
         ],
-        "examplesFound": 8,
+        "examplesFound": 7,
         "examplesPassed": 6,
-        "examplesFailed": 2,
+        "examplesFailed": 1,
         "examples": {
-          "example-_r_1_": {
+          "striped-table": {
             "status": "pass",
             "violations": 0,
             "issues": []
-          },
-          "striped-table": {
-            "status": "fail",
-            "violations": 1,
-            "issues": [
-              "color-contrast"
-            ]
           },
           "table-with-gridlines": {
             "status": "pass",
@@ -4522,25 +3671,18 @@
       },
       "dark": {
         "status": "fail",
-        "violations": 2,
+        "violations": 1,
         "issues": [
           "color-contrast"
         ],
-        "examplesFound": 8,
+        "examplesFound": 7,
         "examplesPassed": 6,
-        "examplesFailed": 2,
+        "examplesFailed": 1,
         "examples": {
-          "example-_r_1_": {
+          "striped-table": {
             "status": "pass",
             "violations": 0,
             "issues": []
-          },
-          "striped-table": {
-            "status": "fail",
-            "violations": 1,
-            "issues": [
-              "color-contrast"
-            ]
           },
           "table-with-gridlines": {
             "status": "pass",
@@ -4582,7 +3724,7 @@
     "status": "no_examples",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:06.715Z",
+    "testedAt": "2025-12-23T21:26:51.623Z",
     "scope": "component-examples-only",
     "examplesFound": 0,
     "scenariosTested": [],
@@ -4610,15 +3752,14 @@
   },
   "textarea": {
     "status": "fail",
-    "violations": 4,
+    "violations": 2,
     "issues": [
       "label"
     ],
-    "testedAt": "2025-12-23T20:49:13.245Z",
+    "testedAt": "2025-12-23T21:26:57.924Z",
     "scope": "component-examples-only",
-    "examplesFound": 9,
+    "examplesFound": 8,
     "scenariosTested": [
-      "example-_r_1_",
       "all-sizes",
       "auto-resize-demo",
       "with-character-count",
@@ -4632,25 +3773,18 @@
     "modes": {
       "light": {
         "status": "fail",
-        "violations": 2,
+        "violations": 1,
         "issues": [
           "label"
         ],
-        "examplesFound": 9,
+        "examplesFound": 8,
         "examplesPassed": 7,
-        "examplesFailed": 2,
+        "examplesFailed": 1,
         "examples": {
-          "example-_r_1_": {
+          "all-sizes": {
             "status": "pass",
             "violations": 0,
             "issues": []
-          },
-          "all-sizes": {
-            "status": "fail",
-            "violations": 1,
-            "issues": [
-              "label"
-            ]
           },
           "auto-resize-demo": {
             "status": "pass",
@@ -4693,25 +3827,18 @@
       },
       "dark": {
         "status": "fail",
-        "violations": 2,
+        "violations": 1,
         "issues": [
           "label"
         ],
-        "examplesFound": 9,
+        "examplesFound": 8,
         "examplesPassed": 7,
-        "examplesFailed": 2,
+        "examplesFailed": 1,
         "examples": {
-          "example-_r_1_": {
+          "all-sizes": {
             "status": "pass",
             "violations": 0,
             "issues": []
-          },
-          "all-sizes": {
-            "status": "fail",
-            "violations": 1,
-            "issues": [
-              "label"
-            ]
           },
           "auto-resize-demo": {
             "status": "pass",
@@ -4759,11 +3886,10 @@
     "levelAchieved": "AA",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:20.258Z",
+    "testedAt": "2025-12-23T21:27:04.049Z",
     "scope": "component-examples-only",
-    "examplesFound": 9,
+    "examplesFound": 8,
     "scenariosTested": [
-      "example-_r_1_",
       "default",
       "success",
       "error",
@@ -4780,15 +3906,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 9,
-        "examplesPassed": 9,
+        "examplesFound": 8,
+        "examplesPassed": 8,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "default": {
             "status": "pass",
             "violations": 0,
@@ -4836,15 +3957,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 9,
-        "examplesPassed": 9,
+        "examplesFound": 8,
+        "examplesPassed": 8,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "default": {
             "status": "pass",
             "violations": 0,
@@ -4894,11 +4010,10 @@
     "levelAchieved": "AA",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:32.767Z",
+    "testedAt": "2025-12-23T21:27:15.384Z",
     "scope": "component-examples-only",
-    "examplesFound": 3,
+    "examplesFound": 2,
     "scenariosTested": [
-      "example-_r_1_",
       "single",
       "multiple"
     ],
@@ -4909,15 +4024,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 3,
-        "examplesPassed": 3,
+        "examplesFound": 2,
+        "examplesPassed": 2,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "single": {
             "status": "pass",
             "violations": 0,
@@ -4935,15 +4045,10 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 3,
-        "examplesPassed": 3,
+        "examplesFound": 2,
+        "examplesPassed": 2,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "single": {
             "status": "pass",
             "violations": 0,
@@ -4963,7 +4068,7 @@
     "levelAchieved": "AA",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:29.000Z",
+    "testedAt": "2025-12-23T21:27:12.556Z",
     "scope": "component-examples-only",
     "examplesFound": 12,
     "scenariosTested": [
@@ -4987,7 +4092,7 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 12,
+        "examplesFound": 11,
         "examplesPassed": 11,
         "examplesFailed": 0,
         "examples": {
@@ -5053,7 +4158,7 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 12,
+        "examplesFound": 11,
         "examplesPassed": 11,
         "examplesFailed": 0,
         "examples": {
@@ -5121,13 +4226,11 @@
     "levelAchieved": "AA",
     "violations": 0,
     "issues": [],
-    "testedAt": "2025-12-23T20:49:37.620Z",
+    "testedAt": "2025-12-23T21:27:19.082Z",
     "scope": "component-examples-only",
-    "examplesFound": 6,
+    "examplesFound": 4,
     "scenariosTested": [
-      "example-_r_1_",
       "different-delays",
-      "example-_r_8_",
       "icon-buttons",
       "truncated-text",
       "disabled-button-explanation"
@@ -5139,21 +4242,11 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 6,
-        "examplesPassed": 6,
+        "examplesFound": 4,
+        "examplesPassed": 4,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "different-delays": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_8_": {
             "status": "pass",
             "violations": 0,
             "issues": []
@@ -5180,21 +4273,11 @@
         "levelAchieved": "AA",
         "violations": 0,
         "issues": [],
-        "examplesFound": 6,
-        "examplesPassed": 6,
+        "examplesFound": 4,
+        "examplesPassed": 4,
         "examplesFailed": 0,
         "examples": {
-          "example-_r_1_": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
           "different-delays": {
-            "status": "pass",
-            "violations": 0,
-            "issues": []
-          },
-          "example-_r_8_": {
             "status": "pass",
             "violations": 0,
             "issues": []

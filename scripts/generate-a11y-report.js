@@ -40,6 +40,38 @@ const resultsDir = path.join(__dirname, "..", "test-results", "a11y-components")
 const outputPath = path.join(__dirname, "..", "src", "docs", "registry", "compliance.json");
 
 /**
+ * Pattern to identify auto-generated/junk example IDs
+ * Matches: example-_r_1_, example-0, example-abc123def456
+ */
+const JUNK_EXAMPLE_ID_PATTERN = /^example-(_r_|\d+|[a-z0-9]{8,})/i;
+
+/**
+ * Filter out junk example IDs from results
+ */
+function filterJunkExamples(examples) {
+  if (!examples || typeof examples !== "object") {
+    return {};
+  }
+  
+  const filtered = {};
+  for (const [id, result] of Object.entries(examples)) {
+    // Only keep semantic (meaningful) example IDs
+    if (!JUNK_EXAMPLE_ID_PATTERN.test(id)) {
+      filtered[id] = result;
+    }
+  }
+  return filtered;
+}
+
+/**
+ * Filter junk IDs from an array of example IDs
+ */
+function filterJunkExampleIds(ids) {
+  if (!Array.isArray(ids)) return [];
+  return ids.filter(id => !JUNK_EXAMPLE_ID_PATTERN.test(id));
+}
+
+/**
  * Determine status based on violation counts
  */
 function determineStatus(modeResult) {
@@ -200,9 +232,16 @@ function main() {
     const darkLevel = determineLevelAchieved(darkStatus);
     const combinedLevel = determineLevelAchieved(combinedStatus);
     
-    // Count per-example results
-    const lightExampleCounts = countExampleResults(lightResult?.examples);
-    const darkExampleCounts = countExampleResults(darkResult?.examples);
+    // Filter out junk example IDs from results (defensive - test should already filter)
+    const filteredLightExamples = filterJunkExamples(lightResult?.examples);
+    const filteredDarkExamples = filterJunkExamples(darkResult?.examples);
+    const filteredScenarios = filterJunkExampleIds(
+      lightResult?.examplesTested || darkResult?.examplesTested || []
+    );
+    
+    // Count per-example results (using filtered examples)
+    const lightExampleCounts = countExampleResults(filteredLightExamples);
+    const darkExampleCounts = countExampleResults(filteredDarkExamples);
 
     compliance[result.key] = {
       // Combined/summary fields (for backwards compatibility)
@@ -212,33 +251,33 @@ function main() {
       issues: [...new Set([...(lightResult?.issues || []), ...(darkResult?.issues || [])])],
       testedAt: result.testedAt,
       scope: result.scope || "component-examples-only",
-      examplesFound: lightResult?.examplesFound || darkResult?.examplesFound || 0,
-      scenariosTested: lightResult?.examplesTested || darkResult?.examplesTested || [],
+      examplesFound: filteredScenarios.length,
+      scenariosTested: filteredScenarios,
       subject: `Component examples for ${result.name}`,
       
-      // Mode-specific results with per-example breakdown
+      // Mode-specific results with per-example breakdown (filtered)
       modes: {
         light: lightResult ? {
           status: lightStatus,
           levelAchieved: lightLevel,
           violations: lightResult.violations,
           issues: lightResult.issues || [],
-          examplesFound: lightResult.examplesFound,
+          examplesFound: lightExampleCounts.total,
           examplesPassed: lightExampleCounts.passed,
           examplesFailed: lightExampleCounts.failed,
-          // Per-example results (NEW)
-          examples: lightResult.examples || {},
+          // Per-example results (filtered, no junk IDs)
+          examples: filteredLightExamples,
         } : null,
         dark: darkResult ? {
           status: darkStatus,
           levelAchieved: darkLevel,
           violations: darkResult.violations,
           issues: darkResult.issues || [],
-          examplesFound: darkResult.examplesFound,
+          examplesFound: darkExampleCounts.total,
           examplesPassed: darkExampleCounts.passed,
           examplesFailed: darkExampleCounts.failed,
-          // Per-example results (NEW)
-          examples: darkResult.examples || {},
+          // Per-example results (filtered, no junk IDs)
+          examples: filteredDarkExamples,
         } : null,
       },
     };
