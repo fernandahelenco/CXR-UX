@@ -16,6 +16,25 @@ export default function ChangelogPage() {
 
       <div className="space-y-8">
         <ChangelogEntry
+          version="0.19.0"
+          date="December 23, 2025"
+          title="Code Quality & Convention Enforcement"
+          changes={[
+            "Components: Fixed WexButton asChild prop - no longer renders loading spinner when asChild is true (prevents React.Children.only error)",
+            "Components: Fixed AvatarBadge being clipped by overflow-hidden on Avatar container",
+            "A11y: Enhanced Accessibility Dashboard with per-variant pass/fail status for light and dark modes",
+            "A11y: Variant badges now show color-coded indicators (green/red) with sun/moon icons for mode",
+            "Docs: Updated 16 component pages to use Wex-prefixed imports (WexCard, WexDialog, WexTable, etc.)",
+            "Docs: All code examples now show correct @/components/wex import pattern",
+            "Wrappers: Extended WexAvatar with Group and Badge subcomponents",
+            "Wrappers: Extended WexSkeleton with Card and List subcomponents",
+            "Wrappers: Extended WexTabs with ScrollableList and ClosableTrigger subcomponents",
+            "Wrappers: Extended WexPagination with First, Last, RowsPerPage, PageReport, JumpToPage subcomponents",
+            "Convention: Enforced namespace pattern (WexTable.Row vs WexTableRow) across all compound components",
+          ]}
+        />
+
+        <ChangelogEntry
           version="0.18.0"
           date="December 22, 2025"
           title="Phase 4: PrimeNG Variant Parity & Token Architecture Polish"
