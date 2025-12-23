@@ -16,6 +16,31 @@ export default function ChangelogPage() {
 
       <div className="space-y-8">
         <ChangelogEntry
+          version="0.20.0"
+          date="December 23, 2025"
+          title="Layer 3 Complete Token Migration for axe-core Reliability"
+          changes={[
+            "Tokens: Added 60+ new Layer 3 component tokens for Alert, Avatar, Calendar, Sidebar, Field, Empty, Item, Input-Group, Chart, and DataTable",
+            "Tokens: Added Alert default and warning variant tokens (previously using Layer 2)",
+            "Tailwind: Added 40+ new wex.* utilities for Calendar, Avatar, Sidebar, Field, Empty, Item, InputGroup, Chart, and DataTable",
+            "Components: Migrated WexAlert default and warning variants from Layer 2 to Layer 3 tokens",
+            "Components: Migrated Calendar component from bg-background/text-muted-foreground to Layer 3 tokens",
+            "Components: Migrated Avatar component from bg-muted/text-muted-foreground to Layer 3 tokens",
+            "Components: Migrated Sidebar component from bg-background to Layer 3 tokens",
+            "Components: Migrated Field component from text-muted-foreground to Layer 3 tokens",
+            "Components: Migrated Empty component from bg-muted/text-muted-foreground to Layer 3 tokens",
+            "Components: Migrated Item component from bg-muted/text-muted-foreground to Layer 3 tokens",
+            "Components: Migrated InputGroup component from text-muted-foreground to Layer 3 tokens",
+            "Components: Migrated Pagination component from text-muted-foreground to Layer 3 tokens",
+            "Components: Migrated Badge component from Layer 2 to Layer 3 tokens",
+            "Components: Migrated Chart component from bg-background/text-foreground to Layer 3 tokens",
+            "Components: Migrated DataTable component from bg-background/text-muted-foreground to Layer 3 tokens",
+            "A11y: Reduced CSS variable nesting depth from 4 to 2 levels for improved axe-core compatibility",
+            "Architecture: All components now use explicit Layer 3 tokens with predictable contrast",
+          ]}
+        />
+
+        <ChangelogEntry
           version="0.19.0"
           date="December 23, 2025"
           title="Code Quality & Convention Enforcement"

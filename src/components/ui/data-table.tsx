@@ -169,7 +169,7 @@ export function DataTableColumnHeader<TData, TValue>({
       <Button
         variant="ghost"
         size="sm"
-        className="-ml-3 h-8 data-[state=open]:bg-accent"
+        className="-ml-3 h-8 data-[state=open]:bg-wex-table-row-hover-bg"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         <span>{title}</span>
@@ -232,7 +232,7 @@ export function DataTablePagination<TData>({
 }: DataTablePaginationProps<TData>) {
   return (
     <div className="flex items-center justify-between px-2">
-      <div className="flex-1 text-sm text-muted-foreground">
+      <div className="flex-1 text-sm text-wex-datatable-toolbar-fg">
         {table.getFilteredSelectedRowModel().rows.length} of{" "}
         {table.getFilteredRowModel().rows.length} row(s) selected.
       </div>
@@ -244,7 +244,7 @@ export function DataTablePagination<TData>({
             onChange={(e) => {
               table.setPageSize(Number(e.target.value))
             }}
-            className="h-8 w-[70px] rounded-md border border-input bg-background"
+            className="h-8 w-[70px] rounded-md border border-wex-datatable-filter-border bg-wex-datatable-filter-bg"
           >
             {[10, 20, 30, 40, 50].map((pageSize) => (
               <option key={pageSize} value={pageSize}>

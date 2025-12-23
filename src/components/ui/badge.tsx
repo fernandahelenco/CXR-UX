@@ -9,12 +9,12 @@ const badgeVariants = cva(
     variants: {
       variant: {
         default:
-          "border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80",
+          "border-wex-badge-neutral-border bg-wex-badge-neutral-bg text-wex-badge-neutral-fg shadow",
         secondary:
-          "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+          "border-wex-badge-neutral-border bg-wex-badge-neutral-bg text-wex-badge-neutral-fg",
         destructive:
-          "border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80",
-        outline: "text-foreground",
+          "border-wex-badge-destructive-border bg-wex-badge-destructive-bg text-wex-badge-destructive-fg shadow",
+        outline: "text-wex-badge-neutral-fg",
       },
     },
     defaultVariants: {

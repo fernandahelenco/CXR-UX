@@ -19,8 +19,13 @@ const wexAlertVariants = cva(
   {
     variants: {
       intent: {
-        // DEFAULT - Layer 2
-        default: "bg-background text-foreground [&>svg]:text-foreground",
+        // DEFAULT - Layer 3 tokens
+        default: [
+          "bg-wex-alert-default-bg",
+          "text-wex-alert-default-fg",
+          "border-wex-alert-default-border",
+          "[&>svg]:text-wex-alert-default-icon",
+        ].join(" "),
         // DESTRUCTIVE - Layer 3 tokens (tinted style)
         destructive: [
           "bg-wex-alert-destructive-bg",
@@ -35,9 +40,13 @@ const wexAlertVariants = cva(
           "border-wex-alert-success-border",
           "[&>svg]:text-wex-alert-success-icon",
         ].join(" "),
-        // WARNING - Layer 2 (no dedicated Layer 3 tokens yet)
-        warning:
-          "border-warning/50 bg-warning/10 text-warning-foreground dark:border-warning [&>svg]:text-warning",
+        // WARNING - Layer 3 tokens (tinted style)
+        warning: [
+          "bg-wex-alert-warning-bg",
+          "text-wex-alert-warning-fg",
+          "border-wex-alert-warning-border",
+          "[&>svg]:text-wex-alert-warning-icon",
+        ].join(" "),
         // INFO - Layer 3 tokens (tinted style)
         info: [
           "bg-wex-alert-info-bg",

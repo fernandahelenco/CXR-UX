@@ -271,6 +271,12 @@
      ALERT
      ============================================================ */
   
+  /* ----- Alert: Default ----- */
+  --wex-component-alert-default-bg: var(--wex-content-bg);
+  --wex-component-alert-default-fg: var(--wex-text);
+  --wex-component-alert-default-border: var(--wex-content-border);
+  --wex-component-alert-default-icon: var(--wex-text);
+  
   /* ----- Alert: Info (tinted style) ----- */
   --wex-component-alert-info-bg: var(--wex-palette-cyan-50);
   --wex-component-alert-info-fg: var(--wex-info);
@@ -282,6 +288,12 @@
   --wex-component-alert-success-fg: var(--wex-success);
   --wex-component-alert-success-border: var(--wex-palette-green-200);
   --wex-component-alert-success-icon: var(--wex-success);
+  
+  /* ----- Alert: Warning (tinted style) ----- */
+  --wex-component-alert-warning-bg: var(--wex-palette-amber-50);
+  --wex-component-alert-warning-fg: var(--wex-warning);
+  --wex-component-alert-warning-border: var(--wex-palette-amber-200);
+  --wex-component-alert-warning-icon: var(--wex-warning);
   
   /* ----- Alert: Destructive (tinted style) ----- */
   --wex-component-alert-destructive-bg: var(--wex-palette-red-50);
@@ -549,6 +561,101 @@
   --wex-component-kbd-bg: var(--wex-surface-subtle);
   --wex-component-kbd-fg: var(--wex-text);
   --wex-component-kbd-border: var(--wex-content-border);
+
+  /* ============================================================
+     AVATAR
+     ============================================================ */
+  --wex-component-avatar-bg: var(--wex-surface-subtle);
+  --wex-component-avatar-fg: var(--wex-text-muted);
+  --wex-component-avatar-border: var(--wex-content-border);
+  --wex-component-avatar-fallback-bg: var(--wex-surface-subtle);
+  --wex-component-avatar-fallback-fg: var(--wex-text-muted);
+
+  /* ============================================================
+     CALENDAR / DATE-PICKER
+     ============================================================ */
+  --wex-component-calendar-bg: var(--wex-content-bg);
+  --wex-component-calendar-fg: var(--wex-text);
+  --wex-component-calendar-header-fg: var(--wex-text);
+  --wex-component-calendar-nav-button-bg: transparent;
+  --wex-component-calendar-nav-button-hover-bg: var(--wex-surface-subtle);
+  --wex-component-calendar-day-fg: var(--wex-text);
+  --wex-component-calendar-day-hover-bg: var(--wex-surface-subtle);
+  --wex-component-calendar-day-selected-bg: var(--wex-primary);
+  --wex-component-calendar-day-selected-fg: var(--wex-primary-contrast);
+  --wex-component-calendar-day-today-bg: var(--wex-surface-subtle);
+  --wex-component-calendar-day-today-fg: var(--wex-text);
+  --wex-component-calendar-day-outside-fg: var(--wex-text-muted);
+  --wex-component-calendar-day-disabled-fg: var(--wex-text-muted);
+  --wex-component-calendar-day-range-bg: var(--wex-surface-subtle);
+  --wex-component-calendar-day-range-fg: var(--wex-text);
+
+  /* ============================================================
+     SIDEBAR
+     ============================================================ */
+  --wex-component-sidebar-bg: var(--wex-content-bg);
+  --wex-component-sidebar-fg: var(--wex-text);
+  --wex-component-sidebar-border: var(--wex-content-border);
+  --wex-component-sidebar-item-fg: var(--wex-text);
+  --wex-component-sidebar-item-hover-bg: var(--wex-surface-subtle);
+  --wex-component-sidebar-item-hover-fg: var(--wex-text);
+  --wex-component-sidebar-item-active-bg: var(--wex-surface-subtle);
+  --wex-component-sidebar-item-active-fg: var(--wex-primary);
+  --wex-component-sidebar-header-fg: var(--wex-text-muted);
+
+  /* ============================================================
+     FIELD (Form field wrapper)
+     ============================================================ */
+  --wex-component-field-label-fg: var(--wex-text);
+  --wex-component-field-description-fg: var(--wex-text-muted);
+  --wex-component-field-error-fg: var(--wex-destructive);
+  --wex-component-field-required-fg: var(--wex-destructive);
+
+  /* ============================================================
+     EMPTY STATE
+     ============================================================ */
+  --wex-component-empty-bg: transparent;
+  --wex-component-empty-fg: var(--wex-text-muted);
+  --wex-component-empty-icon-fg: var(--wex-text-muted);
+  --wex-component-empty-title-fg: var(--wex-text);
+
+  /* ============================================================
+     ITEM (Generic list item)
+     ============================================================ */
+  --wex-component-item-bg: transparent;
+  --wex-component-item-fg: var(--wex-text);
+  --wex-component-item-hover-bg: var(--wex-surface-subtle);
+  --wex-component-item-hover-fg: var(--wex-text);
+  --wex-component-item-selected-bg: var(--wex-surface-subtle);
+  --wex-component-item-selected-fg: var(--wex-primary);
+  --wex-component-item-disabled-fg: var(--wex-text-muted);
+  --wex-component-item-disabled-opacity: 0.5;
+
+  /* ============================================================
+     INPUT GROUP
+     ============================================================ */
+  --wex-component-inputgroup-addon-bg: var(--wex-surface-subtle);
+  --wex-component-inputgroup-addon-fg: var(--wex-text-muted);
+  --wex-component-inputgroup-addon-border: var(--wex-content-border);
+
+  /* ============================================================
+     CHART
+     ============================================================ */
+  --wex-component-chart-bg: var(--wex-content-bg);
+  --wex-component-chart-fg: var(--wex-text);
+  --wex-component-chart-grid-fg: var(--wex-content-border);
+  --wex-component-chart-axis-fg: var(--wex-text-muted);
+  --wex-component-chart-tooltip-bg: var(--wex-content-bg);
+  --wex-component-chart-tooltip-fg: var(--wex-text);
+  --wex-component-chart-tooltip-border: var(--wex-content-border);
+
+  /* ============================================================
+     DATA TABLE (extends Table)
+     ============================================================ */
+  --wex-component-datatable-toolbar-bg: transparent;
+  --wex-component-datatable-toolbar-fg: var(--wex-text);
+  --wex-component-datatable-filter-bg: var(--wex-content-bg);
+  --wex-component-datatable-filter-border: var(--wex-content-border);
 }
 
 /* ============================================================
@@ -581,6 +688,9 @@
   
   --wex-component-alert-success-bg: var(--wex-palette-green-900);
   --wex-component-alert-success-border: var(--wex-palette-green-700);
+  
+  --wex-component-alert-warning-bg: var(--wex-palette-amber-900);
+  --wex-component-alert-warning-border: var(--wex-palette-amber-700);
   
   --wex-component-alert-destructive-bg: var(--wex-palette-red-900);
   --wex-component-alert-destructive-border: var(--wex-palette-red-700);

@@ -156,7 +156,7 @@ const RowsPerPage = ({
   className,
 }: RowsPerPageProps) => (
   <div className={cn("flex items-center gap-2", className)}>
-    <span className="text-sm text-muted-foreground">Rows per page</span>
+    <span className="text-sm text-wex-pagination-item-fg">Rows per page</span>
     <Select value={String(value)} onValueChange={(v) => onChange(Number(v))}>
       <SelectTrigger className="h-8 w-[70px]">
         <SelectValue />
@@ -202,7 +202,7 @@ const PageReport = ({
     .replace("{pages}", String(totalPages))
 
   return (
-    <span className={cn("text-sm text-muted-foreground", className)}>
+    <span className={cn("text-sm text-wex-pagination-item-fg", className)}>
       {text}
     </span>
   )
@@ -240,7 +240,7 @@ const JumpToPage = ({
 
   return (
     <form onSubmit={handleSubmit} className={cn("flex items-center gap-2", className)}>
-      <span className="text-sm text-muted-foreground">Go to page</span>
+      <span className="text-sm text-wex-pagination-item-fg">Go to page</span>
       <Input
         type="number"
         min={1}
@@ -250,7 +250,7 @@ const JumpToPage = ({
         className="h-8 w-16 text-center"
         inputSize="sm"
       />
-      <span className="text-sm text-muted-foreground">of {totalPages}</span>
+      <span className="text-sm text-wex-pagination-item-fg">of {totalPages}</span>
     </form>
   )
 }

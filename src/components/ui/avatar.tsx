@@ -61,7 +61,7 @@ const AvatarFallback = React.forwardRef<
   <AvatarPrimitive.Fallback
     ref={ref}
     className={cn(
-      "flex h-full w-full items-center justify-center bg-muted font-medium overflow-hidden rounded-[inherit]",
+      "flex h-full w-full items-center justify-center bg-wex-avatar-fallback-bg text-wex-avatar-fallback-fg font-medium overflow-hidden rounded-[inherit]",
       className
     )}
     {...props}
@@ -97,7 +97,7 @@ const AvatarGroup = React.forwardRef<HTMLDivElement, AvatarGroupProps>(
         {visibleChildren.map((child, index) => (
           <div
             key={index}
-            className="ring-2 ring-background rounded-full"
+            className="ring-2 ring-wex-avatar-border rounded-full"
           >
             {child}
           </div>
@@ -106,7 +106,7 @@ const AvatarGroup = React.forwardRef<HTMLDivElement, AvatarGroupProps>(
           <div
             className={cn(
               avatarVariants({ size, shape: "circle" }),
-              "ring-2 ring-background flex items-center justify-center bg-muted text-muted-foreground font-medium"
+              "ring-2 ring-wex-avatar-border flex items-center justify-center bg-wex-avatar-fallback-bg text-wex-avatar-fallback-fg font-medium"
             )}
           >
             +{hiddenCount}
@@ -122,7 +122,7 @@ AvatarGroup.displayName = "AvatarGroup"
 // Avatar Badge - Status indicator overlay
 // ============================================================
 const avatarBadgeVariants = cva(
-  "absolute rounded-full border-2 border-background",
+  "absolute rounded-full border-2 border-wex-avatar-border",
   {
     variants: {
       position: {
