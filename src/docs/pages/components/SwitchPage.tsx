@@ -3,9 +3,10 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
-import { WexSwitch, WexLabel } from "@/components/wex";
+import { Switch } from "@/components/ui/switch";
+import { WexLabel } from "@/components/wex";
 
-// Token mappings for WexSwitch
+// Token mappings for Switch
 // Layer 3 component tokens
 const switchTokens: TokenRow[] = [
   { element: "Track (Off)", property: "Background", token: "--wex-component-switch-bg" },
@@ -26,40 +27,43 @@ export default function SwitchPage() {
       <Section title="Overview">
         <ExampleCard>
           <div className="flex items-center space-x-2">
-            <WexSwitch id="airplane-mode" />
+            <Switch id="airplane-mode" />
             <WexLabel htmlFor="airplane-mode">Airplane Mode</WexLabel>
           </div>
         </ExampleCard>
       </Section>
 
+      {/* ============================================================
+          STATES
+          ============================================================ */}
       <Section title="States" description="Switch supports multiple interactive states.">
         <div className="space-y-4">
-          <ExampleCard title="Off" description="Default off/unchecked state.">
+          <ExampleCard title="Off">
             <div className="flex items-center space-x-2">
-              <WexSwitch id="off-state" />
+              <Switch id="off-state" />
               <WexLabel htmlFor="off-state">Feature disabled</WexLabel>
             </div>
           </ExampleCard>
 
-          <ExampleCard title="On" description="Active on/checked state.">
+          <ExampleCard title="On">
             <div className="flex items-center space-x-2">
-              <WexSwitch id="on-state" defaultChecked />
+              <Switch id="on-state" defaultChecked />
               <WexLabel htmlFor="on-state">Feature enabled</WexLabel>
             </div>
           </ExampleCard>
 
-          <ExampleCard title="Disabled Off" description="Non-interactive disabled state.">
+          <ExampleCard title="Disabled Off">
             <div className="flex items-center space-x-2">
-              <WexSwitch id="disabled-off" disabled />
+              <Switch id="disabled-off" disabled />
               <WexLabel htmlFor="disabled-off" className="text-muted-foreground">
                 Unavailable feature
               </WexLabel>
             </div>
           </ExampleCard>
 
-          <ExampleCard title="Disabled On" description="Disabled but enabled.">
+          <ExampleCard title="Disabled On">
             <div className="flex items-center space-x-2">
-              <WexSwitch id="disabled-on" disabled defaultChecked />
+              <Switch id="disabled-on" disabled defaultChecked />
               <WexLabel htmlFor="disabled-on" className="text-muted-foreground">
                 Locked enabled
               </WexLabel>
@@ -68,6 +72,9 @@ export default function SwitchPage() {
         </div>
       </Section>
 
+      {/* ============================================================
+          SETTINGS PATTERN
+          ============================================================ */}
       <Section title="Settings Pattern" description="Common switch usage for settings.">
         <ExampleCard>
           <div className="space-y-6 w-full max-w-md">
@@ -78,7 +85,7 @@ export default function SwitchPage() {
                   Receive push notifications on your device.
                 </p>
               </div>
-              <WexSwitch id="notifications" defaultChecked />
+              <Switch id="notifications" defaultChecked />
             </div>
             
             <div className="flex items-center justify-between">
@@ -88,7 +95,7 @@ export default function SwitchPage() {
                   Receive emails about new features and products.
                 </p>
               </div>
-              <WexSwitch id="marketing" />
+              <Switch id="marketing" />
             </div>
             
             <div className="flex items-center justify-between">
@@ -98,20 +105,10 @@ export default function SwitchPage() {
                   Use dark theme across the application.
                 </p>
               </div>
-              <WexSwitch id="dark-mode" defaultChecked />
+              <Switch id="dark-mode" defaultChecked />
             </div>
           </div>
         </ExampleCard>
-      </Section>
-
-      <Section title="Sizing">
-        <div className="rounded-lg border border-border bg-card p-4">
-          <h3 className="font-medium mb-2">Switch Dimensions</h3>
-          <p className="text-sm text-muted-foreground">
-            Switch is 24px tall (h-6) and 44px wide (w-11), with a 20px (h-5, w-5) thumb.
-            Combined with the label, the total clickable area meets accessibility requirements.
-          </p>
-        </div>
       </Section>
 
       <Section title="Accessibility">
@@ -119,12 +116,9 @@ export default function SwitchPage() {
           <div className="rounded-lg border border-border bg-card p-4">
             <h3 className="font-medium mb-2">Label Association</h3>
             <p className="text-sm text-muted-foreground">
-              Always use Label with matching{" "}
-              <code className="bg-muted px-1 rounded">htmlFor</code> and{" "}
-              <code className="bg-muted px-1 rounded">id</code> attributes.
+              Always use Label with matching htmlFor and id attributes.
             </p>
           </div>
-
           <div className="rounded-lg border border-border bg-card p-4">
             <h3 className="font-medium mb-2">Keyboard Navigation</h3>
             <ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
@@ -132,12 +126,11 @@ export default function SwitchPage() {
               <li>Space: Toggle switch state</li>
             </ul>
           </div>
-
           <div className="rounded-lg border border-border bg-card p-4">
-            <h3 className="font-medium mb-2">When to Use Switch vs Checkbox</h3>
+            <h3 className="font-medium mb-2">Switch vs Checkbox</h3>
             <p className="text-sm text-muted-foreground">
-              Use Switch for binary settings that take effect immediately.
-              Use Checkbox for options in forms that require submission.
+              Use Switch for immediate-effect binary settings.
+              Use Checkbox for options requiring form submission.
             </p>
           </div>
         </div>
@@ -145,32 +138,29 @@ export default function SwitchPage() {
 
       <Section title="Usage">
         <CodeBlock
-          code={`import { WexSwitch, WexLabel } from "@/components/wex";
+          code={`import { Switch } from "@/components/ui/switch";
 
-// Basic switch
+// With label
 <div className="flex items-center space-x-2">
-  <WexSwitch id="feature" />
-  <WexLabel htmlFor="feature">Enable feature</WexLabel>
+  <Switch id="feature" />
+  <Label htmlFor="feature">Enable feature</Label>
 </div>
 
-// Controlled switch
+// Controlled
 const [enabled, setEnabled] = useState(false);
-<WexSwitch 
+<Switch 
   checked={enabled} 
   onCheckedChange={setEnabled} 
-/>
-
-// Settings pattern
-<div className="flex items-center justify-between">
-  <div>
-    <WexLabel htmlFor="setting">Setting Name</WexLabel>
-    <p className="text-sm text-muted-foreground">
-      Description of the setting.
-    </p>
-  </div>
-  <WexSwitch id="setting" />
-</div>`}
+/>`}
         />
+        <div className="mt-4 text-sm text-muted-foreground">
+          <p><strong>Props:</strong></p>
+          <ul className="list-disc list-inside mt-2 space-y-1">
+            <li><code className="bg-muted px-1 rounded">checked</code>: boolean</li>
+            <li><code className="bg-muted px-1 rounded">onCheckedChange</code>: (checked: boolean) =&gt; void</li>
+            <li><code className="bg-muted px-1 rounded">disabled</code>: boolean</li>
+          </ul>
+        </div>
       </Section>
 
       <TokenReference tokens={switchTokens} className="mt-12" />

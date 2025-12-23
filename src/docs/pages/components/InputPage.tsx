@@ -3,9 +3,11 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
-import { WexInput, WexLabel } from "@/components/wex";
+import { Input } from "@/components/ui/input";
+import { WexLabel } from "@/components/wex";
+import { Search, Mail, Eye, Lock, Calendar, Phone } from "lucide-react";
 
-// Token mappings for WexInput - Layer 3 component tokens
+// Token mappings for Input - Layer 3 component tokens
 const inputTokens: TokenRow[] = [
   { element: "Input", property: "Background", token: "--wex-component-input-bg" },
   { element: "Input", property: "Text", token: "--wex-component-input-fg" },
@@ -14,9 +16,9 @@ const inputTokens: TokenRow[] = [
   { element: "Input", property: "Border (Hover)", token: "--wex-component-input-border-hover" },
   { element: "Input", property: "Border (Focus)", token: "--wex-component-input-border-focus" },
   { element: "Focus Ring", property: "Color", token: "--wex-component-input-focus-ring" },
+  { element: "Filled", property: "Background", token: "--wex-component-input-filled-bg" },
+  { element: "Invalid", property: "Border", token: "--wex-component-input-invalid-border" },
   { element: "Disabled", property: "Background", token: "--wex-component-input-disabled-bg" },
-  { element: "Disabled", property: "Text", token: "--wex-component-input-disabled-fg" },
-  { element: "Disabled", property: "Border", token: "--wex-component-input-disabled-border" },
   { element: "Disabled", property: "Opacity", token: "--wex-component-input-disabled-opacity" },
 ];
 
@@ -24,7 +26,7 @@ export default function InputPage() {
   return (
     <ComponentPage
       title="Input"
-      description="Text input field for forms with accessible sizing and focus states."
+      description="Text input field with sizes, variants, icons, and validation states."
       status="stable"
       registryKey="input"
     >
@@ -32,132 +34,170 @@ export default function InputPage() {
         <ExampleCard>
           <div className="w-full max-w-sm space-y-2">
             <WexLabel htmlFor="demo-input">Email address</WexLabel>
-            <WexInput id="demo-input" type="email" placeholder="you@example.com" />
+            <Input id="demo-input" type="email" placeholder="you@example.com" />
           </div>
         </ExampleCard>
       </Section>
 
-      <Section title="Types" description="Input supports various HTML5 input types.">
-        <div className="space-y-4">
-          <ExampleCard title="Text" description="Default text input.">
-            <div className="w-full max-w-sm space-y-2">
-              <WexLabel htmlFor="text-type">Full Name</WexLabel>
-              <WexInput id="text-type" type="text" placeholder="John Doe" />
+      {/* ============================================================
+          SIZES
+          ============================================================ */}
+      <Section title="Sizes" description="Three sizes for different contexts.">
+        <ExampleCard title="All Sizes">
+          <div className="w-full max-w-sm space-y-4">
+            <div className="space-y-2">
+              <WexLabel>Small</WexLabel>
+              <Input inputSize="sm" placeholder="Small input" />
             </div>
-          </ExampleCard>
+            <div className="space-y-2">
+              <WexLabel>Medium (Default)</WexLabel>
+              <Input inputSize="md" placeholder="Medium input" />
+            </div>
+            <div className="space-y-2">
+              <WexLabel>Large</WexLabel>
+              <Input inputSize="lg" placeholder="Large input" />
+            </div>
+          </div>
+        </ExampleCard>
+      </Section>
 
-          <ExampleCard title="Email" description="Input optimized for email addresses.">
-            <div className="w-full max-w-sm space-y-2">
-              <WexLabel htmlFor="email-type">Email</WexLabel>
-              <WexInput id="email-type" type="email" placeholder="name@company.com" />
-            </div>
-          </ExampleCard>
+      {/* ============================================================
+          VARIANTS
+          ============================================================ */}
+      <Section title="Variants" description="Default outlined and filled styles.">
+        <ExampleCard title="Default (Outlined)">
+          <Input placeholder="Outlined input" className="max-w-sm" />
+        </ExampleCard>
 
-          <ExampleCard title="Password" description="Masked input for sensitive data.">
-            <div className="w-full max-w-sm space-y-2">
-              <WexLabel htmlFor="password-type">Password</WexLabel>
-              <WexInput id="password-type" type="password" placeholder="Enter password" />
-            </div>
-          </ExampleCard>
+        <ExampleCard title="Filled">
+          <Input variant="filled" placeholder="Filled input" className="max-w-sm" />
+        </ExampleCard>
+      </Section>
 
-          <ExampleCard title="Number" description="Numeric input with spinner controls.">
-            <div className="w-full max-w-sm space-y-2">
-              <WexLabel htmlFor="number-type">Quantity</WexLabel>
-              <WexInput id="number-type" type="number" placeholder="0" min={0} max={100} />
-            </div>
-          </ExampleCard>
+      {/* ============================================================
+          WITH ICONS
+          ============================================================ */}
+      <Section title="With Icons" description="Icons for visual context and affordance.">
+        <ExampleCard title="Left Icon">
+          <div className="max-w-sm space-y-4">
+            <Input 
+              leftIcon={<Search className="h-4 w-4" />} 
+              placeholder="Search..." 
+            />
+            <Input 
+              leftIcon={<Mail className="h-4 w-4" />} 
+              placeholder="Email address" 
+              type="email"
+            />
+            <Input 
+              leftIcon={<Phone className="h-4 w-4" />} 
+              placeholder="Phone number" 
+              type="tel"
+            />
+          </div>
+        </ExampleCard>
 
-          <ExampleCard title="Search" description="Search input with clear button support.">
-            <div className="w-full max-w-sm space-y-2">
-              <WexLabel htmlFor="search-type">Search</WexLabel>
-              <WexInput id="search-type" type="search" placeholder="Search..." />
-            </div>
-          </ExampleCard>
+        <ExampleCard title="Right Icon">
+          <div className="max-w-sm space-y-4">
+            <Input 
+              rightIcon={<Calendar className="h-4 w-4" />} 
+              placeholder="Select date" 
+            />
+            <Input 
+              rightIcon={<Eye className="h-4 w-4" />} 
+              placeholder="Password" 
+              type="password"
+            />
+          </div>
+        </ExampleCard>
 
-          <ExampleCard title="URL" description="Input for web addresses.">
-            <div className="w-full max-w-sm space-y-2">
-              <WexLabel htmlFor="url-type">Website</WexLabel>
-              <WexInput id="url-type" type="url" placeholder="https://example.com" />
-            </div>
-          </ExampleCard>
+        <ExampleCard title="Both Icons">
+          <Input 
+            leftIcon={<Lock className="h-4 w-4" />}
+            rightIcon={<Eye className="h-4 w-4" />} 
+            placeholder="Enter password" 
+            type="password"
+            className="max-w-sm"
+          />
+        </ExampleCard>
+      </Section>
 
-          <ExampleCard title="Tel" description="Input for phone numbers.">
-            <div className="w-full max-w-sm space-y-2">
-              <WexLabel htmlFor="tel-type">Phone Number</WexLabel>
-              <WexInput id="tel-type" type="tel" placeholder="+1 (555) 123-4567" />
-            </div>
-          </ExampleCard>
+      {/* ============================================================
+          INVALID STATE
+          ============================================================ */}
+      <Section title="Invalid State" description="Visual feedback for validation errors.">
+        <ExampleCard title="Invalid Input">
+          <div className="w-full max-w-sm space-y-2">
+            <WexLabel htmlFor="invalid-input">Email</WexLabel>
+            <Input 
+              id="invalid-input" 
+              invalid 
+              defaultValue="invalid-email" 
+              type="email"
+            />
+            <p className="text-sm text-destructive">
+              Please enter a valid email address.
+            </p>
+          </div>
+        </ExampleCard>
 
-          <ExampleCard title="Date" description="Date picker input.">
-            <div className="w-full max-w-sm space-y-2">
-              <WexLabel htmlFor="date-type">Date</WexLabel>
-              <WexInput id="date-type" type="date" />
-            </div>
+        <ExampleCard title="Invalid with Icon">
+          <div className="w-full max-w-sm space-y-2">
+            <WexLabel htmlFor="invalid-icon-input">Password</WexLabel>
+            <Input 
+              id="invalid-icon-input" 
+              invalid 
+              leftIcon={<Lock className="h-4 w-4" />}
+              placeholder="Enter password" 
+              type="password"
+            />
+            <p className="text-sm text-destructive">
+              Password must be at least 8 characters.
+            </p>
+          </div>
+        </ExampleCard>
+      </Section>
+
+      {/* ============================================================
+          INPUT TYPES
+          ============================================================ */}
+      <Section title="Input Types" description="Common HTML5 input types.">
+        <div className="grid gap-4 max-w-sm">
+          <ExampleCard title="Text">
+            <Input type="text" placeholder="Full name" />
+          </ExampleCard>
+          <ExampleCard title="Email">
+            <Input type="email" placeholder="email@example.com" />
+          </ExampleCard>
+          <ExampleCard title="Password">
+            <Input type="password" placeholder="Enter password" />
+          </ExampleCard>
+          <ExampleCard title="Number">
+            <Input type="number" placeholder="0" min={0} max={100} />
+          </ExampleCard>
+          <ExampleCard title="Search">
+            <Input type="search" placeholder="Search..." />
+          </ExampleCard>
+          <ExampleCard title="URL">
+            <Input type="url" placeholder="https://example.com" />
           </ExampleCard>
         </div>
       </Section>
 
+      {/* ============================================================
+          STATES
+          ============================================================ */}
       <Section title="States" description="Interactive and visual states.">
-        <div className="space-y-4">
-          <ExampleCard title="Default" description="Normal input state.">
-            <WexInput placeholder="Default input" aria-label="Default input example" className="max-w-sm" />
+        <div className="space-y-4 max-w-sm">
+          <ExampleCard title="Default">
+            <Input placeholder="Default input" />
           </ExampleCard>
-
-          <ExampleCard title="With Value" description="Input with existing value.">
-            <WexInput defaultValue="existing@email.com" aria-label="Email with value example" className="max-w-sm" />
+          <ExampleCard title="Disabled">
+            <Input disabled placeholder="Disabled input" />
           </ExampleCard>
-
-          <ExampleCard title="Focused" description="Try clicking or tabbing to this input.">
-            <WexInput placeholder="Click or tab to focus" aria-label="Focus demonstration input" className="max-w-sm" />
+          <ExampleCard title="Read Only">
+            <Input readOnly defaultValue="Read-only value" />
           </ExampleCard>
-
-          <ExampleCard title="Disabled" description="Non-interactive disabled state.">
-            <WexInput disabled placeholder="Cannot edit this field" aria-label="Disabled input example" className="max-w-sm" />
-          </ExampleCard>
-
-          <ExampleCard title="Read Only" description="Visible but not editable.">
-            <WexInput readOnly defaultValue="Read-only value" aria-label="Read-only input example" className="max-w-sm" />
-          </ExampleCard>
-        </div>
-      </Section>
-
-      <Section title="With Labels" description="Proper label association for accessibility.">
-        <div className="space-y-4">
-          <ExampleCard title="Standard Label">
-            <div className="w-full max-w-sm space-y-2">
-              <WexLabel htmlFor="labeled-input">Username</WexLabel>
-              <WexInput id="labeled-input" placeholder="Choose a username" />
-            </div>
-          </ExampleCard>
-
-          <ExampleCard title="Required Field">
-            <div className="w-full max-w-sm space-y-2">
-              <WexLabel htmlFor="required-input">
-                Email <span className="text-destructive">*</span>
-              </WexLabel>
-              <WexInput id="required-input" type="email" placeholder="Required field" required />
-            </div>
-          </ExampleCard>
-
-          <ExampleCard title="With Helper Text">
-            <div className="w-full max-w-sm space-y-2">
-              <WexLabel htmlFor="helper-input">API Key</WexLabel>
-              <WexInput id="helper-input" placeholder="sk_live_..." />
-              <p className="text-sm text-muted-foreground">
-                You can find your API key in the dashboard settings.
-              </p>
-            </div>
-          </ExampleCard>
-        </div>
-      </Section>
-
-      <Section title="Sizing">
-        <div className="rounded-lg border border-border bg-card p-4">
-          <h3 className="font-medium mb-2">Accessible Height</h3>
-          <p className="text-sm text-muted-foreground">
-            All inputs are 44px (h-11) to meet WCAG 2.5.5 touch target requirements.
-            This ensures usability on touch devices and for users with motor impairments.
-          </p>
         </div>
       </Section>
 
@@ -166,27 +206,20 @@ export default function InputPage() {
           <div className="rounded-lg border border-border bg-card p-4">
             <h3 className="font-medium mb-2">Label Association</h3>
             <p className="text-sm text-muted-foreground">
-              Always use Label with matching{" "}
-              <code className="bg-muted px-1 rounded">htmlFor</code> and{" "}
-              <code className="bg-muted px-1 rounded">id</code> attributes.
-              This enables screen readers to announce the label when the input is focused.
+              Always use Label with matching htmlFor and id attributes.
             </p>
           </div>
-
           <div className="rounded-lg border border-border bg-card p-4">
-            <h3 className="font-medium mb-2">Focus Ring</h3>
+            <h3 className="font-medium mb-2">Invalid State</h3>
             <p className="text-sm text-muted-foreground">
-              Inputs display a visible focus ring when navigated via keyboard,
-              meeting WCAG 2.4.7 requirements.
+              When invalid=true, the input is marked with aria-invalid="true" for screen readers.
             </p>
           </div>
-
           <div className="rounded-lg border border-border bg-card p-4">
-            <h3 className="font-medium mb-2">Placeholder Text</h3>
+            <h3 className="font-medium mb-2">Icons</h3>
             <p className="text-sm text-muted-foreground">
-              Placeholder text should provide examples, not instructions.
-              Important information should be in the label or helper text,
-              as placeholder text disappears when typing.
+              Icons are decorative and hidden from screen readers. Important 
+              information should be in labels or helper text.
             </p>
           </div>
         </div>
@@ -194,33 +227,51 @@ export default function InputPage() {
 
       <Section title="Usage">
         <CodeBlock
-          code={`import { WexInput, WexLabel } from "@/components/wex";
+          code={`import { Input } from "@/components/ui/input";
+import { Search, Mail, Lock, Eye } from "lucide-react";
 
-// Basic input
-<WexInput placeholder="Enter text..." />
+// Sizes
+<Input inputSize="sm" placeholder="Small" />
+<Input inputSize="md" placeholder="Medium (default)" />
+<Input inputSize="lg" placeholder="Large" />
 
-// With label (recommended)
-<div className="space-y-2">
-  <WexLabel htmlFor="email">Email</WexLabel>
-  <WexInput id="email" type="email" placeholder="you@example.com" />
-</div>
+// Variants
+<Input placeholder="Default (outlined)" />
+<Input variant="filled" placeholder="Filled" />
 
-// Controlled input
-const [value, setValue] = useState("");
-<WexInput 
-  value={value} 
-  onChange={(e) => setValue(e.target.value)} 
+// With icons
+<Input leftIcon={<Search />} placeholder="Search..." />
+<Input rightIcon={<Eye />} placeholder="Password" type="password" />
+<Input 
+  leftIcon={<Lock />} 
+  rightIcon={<Eye />} 
+  placeholder="Both icons" 
 />
 
-// With helper text
-<div className="space-y-2">
-  <WexLabel htmlFor="password">Password</WexLabel>
-  <WexInput id="password" type="password" />
-  <p className="text-sm text-muted-foreground">
-    Must be at least 8 characters.
-  </p>
-</div>`}
+// Invalid state
+<Input invalid placeholder="Invalid input" />
+<p className="text-destructive">Error message</p>
+
+// All props
+<Input
+  inputSize="md"
+  variant="default"
+  invalid={false}
+  leftIcon={<Search />}
+  rightIcon={<Eye />}
+  placeholder="Full example"
+/>`}
         />
+        <div className="mt-4 text-sm text-muted-foreground">
+          <p><strong>Props:</strong></p>
+          <ul className="list-disc list-inside mt-2 space-y-1">
+            <li><code className="bg-muted px-1 rounded">inputSize</code>: "sm" | "md" | "lg"</li>
+            <li><code className="bg-muted px-1 rounded">variant</code>: "default" | "filled"</li>
+            <li><code className="bg-muted px-1 rounded">invalid</code>: boolean</li>
+            <li><code className="bg-muted px-1 rounded">leftIcon</code>: ReactNode</li>
+            <li><code className="bg-muted px-1 rounded">rightIcon</code>: ReactNode</li>
+          </ul>
+        </div>
       </Section>
 
       <TokenReference tokens={inputTokens} className="mt-12" />

@@ -1,11 +1,13 @@
+import { useState } from "react";
 import { ComponentPage } from "@/docs/components/ComponentPage";
 import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
-import { WexTextarea, WexLabel } from "@/components/wex";
+import { Textarea } from "@/components/ui/textarea";
+import { WexLabel } from "@/components/wex";
 
-// Token mappings for WexTextarea
+// Token mappings for Textarea
 // Layer 3 component tokens
 const textareaTokens: TokenRow[] = [
   { element: "Textarea", property: "Background", token: "--wex-component-textarea-bg" },
@@ -17,10 +19,12 @@ const textareaTokens: TokenRow[] = [
 ];
 
 export default function TextareaPage() {
+  const [autoResizeValue, setAutoResizeValue] = useState("");
+
   return (
     <ComponentPage
       title="Textarea"
-      description="Multi-line text input for longer form content."
+      description="Multi-line text input with sizes and auto-resize capability."
       status="stable"
       registryKey="textarea"
     >
@@ -28,35 +32,68 @@ export default function TextareaPage() {
         <ExampleCard>
           <div className="w-full max-w-md space-y-2">
             <WexLabel htmlFor="demo-textarea">Message</WexLabel>
-            <WexTextarea id="demo-textarea" placeholder="Type your message here..." />
+            <Textarea id="demo-textarea" placeholder="Type your message here..." />
           </div>
         </ExampleCard>
       </Section>
 
+      {/* ============================================================
+          SIZES
+          ============================================================ */}
+      <Section title="Sizes" description="Three sizes for different contexts.">
+        <ExampleCard title="All Sizes">
+          <div className="w-full max-w-md space-y-4">
+            <div className="space-y-2">
+              <WexLabel>Small</WexLabel>
+              <Textarea textareaSize="sm" placeholder="Small textarea" />
+            </div>
+            <div className="space-y-2">
+              <WexLabel>Medium (Default)</WexLabel>
+              <Textarea textareaSize="md" placeholder="Medium textarea" />
+            </div>
+            <div className="space-y-2">
+              <WexLabel>Large</WexLabel>
+              <Textarea textareaSize="lg" placeholder="Large textarea" />
+            </div>
+          </div>
+        </ExampleCard>
+      </Section>
+
+      {/* ============================================================
+          AUTO-RESIZE
+          ============================================================ */}
+      <Section title="Auto-Resize" description="Textarea that grows with content.">
+        <ExampleCard title="Auto-Resize Demo">
+          <div className="w-full max-w-md space-y-2">
+            <WexLabel htmlFor="auto-textarea">Type to see auto-resize</WexLabel>
+            <Textarea 
+              id="auto-textarea"
+              autoResize
+              placeholder="Start typing... the textarea will grow as you add more lines."
+              value={autoResizeValue}
+              onChange={(e) => setAutoResizeValue(e.target.value)}
+            />
+            <p className="text-sm text-muted-foreground">
+              {autoResizeValue.split('\n').length} line(s)
+            </p>
+          </div>
+        </ExampleCard>
+        <div className="mt-4 text-sm text-muted-foreground">
+          The auto-resize feature uses CSS to dynamically adjust the textarea height 
+          based on content. This provides a better user experience for variable-length input.
+        </div>
+      </Section>
+
+      {/* ============================================================
+          EXAMPLES
+          ============================================================ */}
       <Section title="Examples" description="Common textarea use cases.">
         <div className="space-y-4">
-          <ExampleCard title="Default" description="Standard textarea with placeholder.">
+          <ExampleCard title="With Character Count">
             <div className="w-full max-w-md space-y-2">
-              <WexLabel htmlFor="default-textarea">Description</WexLabel>
-              <WexTextarea id="default-textarea" placeholder="Enter a description..." />
-            </div>
-          </ExampleCard>
-
-          <ExampleCard title="With Value" description="Pre-filled textarea content.">
-            <div className="w-full max-w-md space-y-2">
-              <WexLabel htmlFor="value-textarea">Bio</WexLabel>
-              <WexTextarea 
-                id="value-textarea" 
-                defaultValue="This is an example of pre-filled textarea content. Users can edit this text as needed."
-              />
-            </div>
-          </ExampleCard>
-
-          <ExampleCard title="With Character Limit" description="Textarea with character count guidance.">
-            <div className="w-full max-w-md space-y-2">
-              <WexLabel htmlFor="limited-textarea">Short Bio (max 200 characters)</WexLabel>
-              <WexTextarea 
-                id="limited-textarea" 
+              <WexLabel htmlFor="char-count-textarea">Bio (max 200 characters)</WexLabel>
+              <Textarea 
+                id="char-count-textarea" 
                 placeholder="Write a brief bio..."
                 maxLength={200}
               />
@@ -64,12 +101,12 @@ export default function TextareaPage() {
             </div>
           </ExampleCard>
 
-          <ExampleCard title="Required Field" description="Textarea marked as required.">
+          <ExampleCard title="Required Field">
             <div className="w-full max-w-md space-y-2">
               <WexLabel htmlFor="required-textarea">
                 Feedback <span className="text-destructive">*</span>
               </WexLabel>
-              <WexTextarea 
+              <Textarea 
                 id="required-textarea" 
                 placeholder="Please share your feedback..."
                 required
@@ -79,48 +116,31 @@ export default function TextareaPage() {
         </div>
       </Section>
 
+      {/* ============================================================
+          STATES
+          ============================================================ */}
       <Section title="States" description="Interactive and visual states.">
-        <div className="space-y-4">
-          <ExampleCard title="Focus State" description="Click or tab to see focus ring.">
-            <WexTextarea placeholder="Click or tab to focus this textarea..." className="max-w-md" />
+        <div className="space-y-4 max-w-md">
+          <ExampleCard title="Default">
+            <Textarea placeholder="Default textarea" />
           </ExampleCard>
 
-          <ExampleCard title="Disabled" description="Non-interactive disabled state.">
-            <div className="w-full max-w-md space-y-2">
-              <WexLabel htmlFor="disabled-textarea">Notes (Locked)</WexLabel>
-              <WexTextarea 
-                id="disabled-textarea" 
-                disabled 
-                placeholder="This field cannot be edited"
-              />
-            </div>
+          <ExampleCard title="Disabled">
+            <Textarea disabled placeholder="Disabled textarea" />
           </ExampleCard>
 
-          <ExampleCard title="Read Only" description="Visible content that cannot be edited.">
-            <div className="w-full max-w-md space-y-2">
-              <WexLabel htmlFor="readonly-textarea">Terms Summary</WexLabel>
-              <WexTextarea 
-                id="readonly-textarea" 
-                readOnly 
-                defaultValue="By using this service, you agree to our terms of service and privacy policy. This content is read-only and cannot be modified."
-              />
-            </div>
-          </ExampleCard>
-        </div>
-      </Section>
-
-      <Section title="Sizing" description="Textarea dimensions and resize behavior.">
-        <div className="space-y-4">
-          <ExampleCard title="Default Height" description="100px minimum height.">
-            <WexTextarea placeholder="Default size..." className="max-w-md" />
+          <ExampleCard title="Read Only">
+            <Textarea 
+              readOnly 
+              defaultValue="This content is read-only and cannot be modified."
+            />
           </ExampleCard>
 
-          <ExampleCard title="Custom Height" description="Can be customized via className.">
-            <WexTextarea placeholder="Taller textarea..." className="max-w-md min-h-[200px]" />
-          </ExampleCard>
-
-          <ExampleCard title="Non-Resizable" description="Prevent user resizing.">
-            <WexTextarea placeholder="Cannot resize..." className="max-w-md resize-none" />
+          <ExampleCard title="Non-Resizable">
+            <Textarea 
+              placeholder="Cannot resize this textarea..." 
+              className="resize-none"
+            />
           </ExampleCard>
         </div>
       </Section>
@@ -130,12 +150,9 @@ export default function TextareaPage() {
           <div className="rounded-lg border border-border bg-card p-4">
             <h3 className="font-medium mb-2">Label Association</h3>
             <p className="text-sm text-muted-foreground">
-              Always associate textareas with labels using matching{" "}
-              <code className="bg-muted px-1 rounded">htmlFor</code> and{" "}
-              <code className="bg-muted px-1 rounded">id</code> attributes.
+              Always associate textareas with labels using matching htmlFor and id attributes.
             </p>
           </div>
-
           <div className="rounded-lg border border-border bg-card p-4">
             <h3 className="font-medium mb-2">Focus Visibility</h3>
             <p className="text-sm text-muted-foreground">
@@ -143,46 +160,39 @@ export default function TextareaPage() {
               meeting WCAG 2.4.7 requirements.
             </p>
           </div>
-
-          <div className="rounded-lg border border-border bg-card p-4">
-            <h3 className="font-medium mb-2">Placeholder Guidelines</h3>
-            <p className="text-sm text-muted-foreground">
-              Use placeholder text for examples only, not instructions.
-              Important information belongs in the label or helper text.
-            </p>
-          </div>
         </div>
       </Section>
 
       <Section title="Usage">
         <CodeBlock
-          code={`import { WexTextarea, WexLabel } from "@/components/wex";
+          code={`import { Textarea } from "@/components/ui/textarea";
 
-// Basic usage
-<WexTextarea placeholder="Enter text..." />
+// Sizes
+<Textarea textareaSize="sm" placeholder="Small" />
+<Textarea textareaSize="md" placeholder="Medium (default)" />
+<Textarea textareaSize="lg" placeholder="Large" />
 
-// With label (recommended)
-<div className="space-y-2">
-  <WexLabel htmlFor="message">Message</WexLabel>
-  <WexTextarea id="message" placeholder="Type your message..." />
-</div>
-
-// Controlled textarea
-const [value, setValue] = useState("");
-<WexTextarea 
-  value={value} 
-  onChange={(e) => setValue(e.target.value)} 
-/>
-
-// Custom height
-<WexTextarea className="min-h-[200px]" />
+// Auto-resize (grows with content)
+<Textarea autoResize placeholder="Type and watch it grow..." />
 
 // Non-resizable
-<WexTextarea className="resize-none" />
+<Textarea className="resize-none" />
 
-// With character limit
-<WexTextarea maxLength={500} />`}
+// All props
+<Textarea
+  textareaSize="md"
+  autoResize
+  placeholder="Full example"
+  maxLength={500}
+/>`}
         />
+        <div className="mt-4 text-sm text-muted-foreground">
+          <p><strong>Props:</strong></p>
+          <ul className="list-disc list-inside mt-2 space-y-1">
+            <li><code className="bg-muted px-1 rounded">textareaSize</code>: "sm" | "md" | "lg"</li>
+            <li><code className="bg-muted px-1 rounded">autoResize</code>: boolean - Auto-grow with content</li>
+          </ul>
+        </div>
       </Section>
 
       <TokenReference tokens={textareaTokens} className="mt-12" />

@@ -3,9 +3,10 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
-import { WexCheckbox, WexLabel } from "@/components/wex";
+import { Checkbox } from "@/components/ui/checkbox";
+import { WexLabel } from "@/components/wex";
 
-// Token mappings for WexCheckbox
+// Token mappings for Checkbox
 // Layer 3 component tokens
 const checkboxTokens: TokenRow[] = [
   { element: "Box", property: "Background", token: "--wex-component-checkbox-bg" },
@@ -20,47 +21,50 @@ export default function CheckboxPage() {
   return (
     <ComponentPage
       title="Checkbox"
-      description="A control that allows the user to toggle between checked and not checked."
+      description="A control that allows toggling between checked and not checked."
       status="stable"
       registryKey="checkbox"
     >
       <Section title="Overview">
         <ExampleCard>
           <div className="flex items-center space-x-2">
-            <WexCheckbox id="terms" />
+            <Checkbox id="terms" />
             <WexLabel htmlFor="terms">Accept terms and conditions</WexLabel>
           </div>
         </ExampleCard>
       </Section>
 
+      {/* ============================================================
+          STATES
+          ============================================================ */}
       <Section title="States" description="Checkbox supports multiple interactive states.">
         <div className="space-y-4">
-          <ExampleCard title="Unchecked" description="Default unchecked state.">
+          <ExampleCard title="Unchecked">
             <div className="flex items-center space-x-2">
-              <WexCheckbox id="unchecked" />
+              <Checkbox id="unchecked" />
               <WexLabel htmlFor="unchecked">Unchecked option</WexLabel>
             </div>
           </ExampleCard>
 
-          <ExampleCard title="Checked" description="Activated checked state.">
+          <ExampleCard title="Checked">
             <div className="flex items-center space-x-2">
-              <WexCheckbox id="checked" defaultChecked />
+              <Checkbox id="checked" defaultChecked />
               <WexLabel htmlFor="checked">Checked option</WexLabel>
             </div>
           </ExampleCard>
 
-          <ExampleCard title="Disabled Unchecked" description="Non-interactive disabled state.">
+          <ExampleCard title="Disabled Unchecked">
             <div className="flex items-center space-x-2">
-              <WexCheckbox id="disabled-unchecked" disabled />
+              <Checkbox id="disabled-unchecked" disabled />
               <WexLabel htmlFor="disabled-unchecked" className="text-muted-foreground">
                 Disabled option
               </WexLabel>
             </div>
           </ExampleCard>
 
-          <ExampleCard title="Disabled Checked" description="Disabled but selected.">
+          <ExampleCard title="Disabled Checked">
             <div className="flex items-center space-x-2">
-              <WexCheckbox id="disabled-checked" disabled defaultChecked />
+              <Checkbox id="disabled-checked" disabled defaultChecked />
               <WexLabel htmlFor="disabled-checked" className="text-muted-foreground">
                 Locked selection
               </WexLabel>
@@ -69,58 +73,58 @@ export default function CheckboxPage() {
         </div>
       </Section>
 
+      {/* ============================================================
+          CHECKBOX GROUPS
+          ============================================================ */}
       <Section title="Checkbox Groups" description="Multiple checkboxes for multi-select scenarios.">
-        <div className="space-y-4">
-          <ExampleCard title="Vertical Group" description="Standard vertical list of options.">
-            <div className="space-y-3">
-              <WexLabel className="text-base font-medium">Select your interests</WexLabel>
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <WexCheckbox id="tech" />
-                  <WexLabel htmlFor="tech">Technology</WexLabel>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <WexCheckbox id="design" />
-                  <WexLabel htmlFor="design">Design</WexLabel>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <WexCheckbox id="business" />
-                  <WexLabel htmlFor="business">Business</WexLabel>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <WexCheckbox id="marketing" />
-                  <WexLabel htmlFor="marketing">Marketing</WexLabel>
-                </div>
-              </div>
-            </div>
-          </ExampleCard>
-
-          <ExampleCard title="Inline Group" description="Horizontal layout for compact spaces.">
+        <ExampleCard title="Vertical Group">
+          <div className="space-y-3">
+            <WexLabel className="text-base font-medium">Select your interests</WexLabel>
             <div className="space-y-2">
-              <WexLabel className="text-base font-medium">Notification preferences</WexLabel>
-              <div className="flex flex-wrap gap-4">
-                <div className="flex items-center space-x-2">
-                  <WexCheckbox id="email-notify" defaultChecked />
-                  <WexLabel htmlFor="email-notify">Email</WexLabel>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <WexCheckbox id="sms-notify" />
-                  <WexLabel htmlFor="sms-notify">SMS</WexLabel>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <WexCheckbox id="push-notify" defaultChecked />
-                  <WexLabel htmlFor="push-notify">Push</WexLabel>
-                </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox id="tech" />
+                <WexLabel htmlFor="tech">Technology</WexLabel>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox id="design" defaultChecked />
+                <WexLabel htmlFor="design">Design</WexLabel>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox id="business" />
+                <WexLabel htmlFor="business">Business</WexLabel>
               </div>
             </div>
-          </ExampleCard>
-        </div>
+          </div>
+        </ExampleCard>
+
+        <ExampleCard title="Inline Group">
+          <div className="space-y-2">
+            <WexLabel className="text-base font-medium">Notifications</WexLabel>
+            <div className="flex flex-wrap gap-4">
+              <div className="flex items-center space-x-2">
+                <Checkbox id="email-notify" defaultChecked />
+                <WexLabel htmlFor="email-notify">Email</WexLabel>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox id="sms-notify" />
+                <WexLabel htmlFor="sms-notify">SMS</WexLabel>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox id="push-notify" defaultChecked />
+                <WexLabel htmlFor="push-notify">Push</WexLabel>
+              </div>
+            </div>
+          </div>
+        </ExampleCard>
       </Section>
 
+      {/* ============================================================
+          WITH DESCRIPTION
+          ============================================================ */}
       <Section title="With Description" description="Checkbox with additional helper text.">
         <ExampleCard>
           <div className="items-top flex space-x-2">
-            <WexCheckbox id="newsletter" />
+            <Checkbox id="newsletter" />
             <div className="grid gap-1.5 leading-none">
               <WexLabel htmlFor="newsletter">Subscribe to newsletter</WexLabel>
               <p className="text-sm text-muted-foreground">
@@ -131,28 +135,14 @@ export default function CheckboxPage() {
         </ExampleCard>
       </Section>
 
-      <Section title="Sizing">
-        <div className="rounded-lg border border-border bg-card p-4">
-          <h3 className="font-medium mb-2">Checkbox Size</h3>
-          <p className="text-sm text-muted-foreground">
-            Checkboxes are 20px (h-5, w-5). When combined with their label,
-            the total clickable area meets touch target guidelines.
-          </p>
-        </div>
-      </Section>
-
       <Section title="Accessibility">
         <div className="space-y-4 text-foreground">
           <div className="rounded-lg border border-border bg-card p-4">
             <h3 className="font-medium mb-2">Label Association</h3>
             <p className="text-sm text-muted-foreground">
-              Always associate checkboxes with labels using matching{" "}
-              <code className="bg-muted px-1 rounded">id</code> and{" "}
-              <code className="bg-muted px-1 rounded">htmlFor</code> attributes.
-              This allows users to click the label to toggle the checkbox.
+              Always associate checkboxes with labels using matching id and htmlFor attributes.
             </p>
           </div>
-
           <div className="rounded-lg border border-border bg-card p-4">
             <h3 className="font-medium mb-2">Keyboard Navigation</h3>
             <ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
@@ -160,45 +150,34 @@ export default function CheckboxPage() {
               <li>Space: Toggle checkbox state</li>
             </ul>
           </div>
-
-          <div className="rounded-lg border border-border bg-card p-4">
-            <h3 className="font-medium mb-2">Focus Visibility</h3>
-            <p className="text-sm text-muted-foreground">
-              A visible focus ring appears when navigating with keyboard,
-              meeting WCAG 2.4.7 requirements.
-            </p>
-          </div>
         </div>
       </Section>
 
       <Section title="Usage">
         <CodeBlock
-          code={`import { WexCheckbox, WexLabel } from "@/components/wex";
+          code={`import { Checkbox } from "@/components/ui/checkbox";
 
-// Basic checkbox with label
+// With label
 <div className="flex items-center space-x-2">
-  <WexCheckbox id="option" />
-  <WexLabel htmlFor="option">Option label</WexLabel>
+  <Checkbox id="option" />
+  <Label htmlFor="option">Option label</Label>
 </div>
 
-// Controlled checkbox
+// Controlled
 const [checked, setChecked] = useState(false);
-<WexCheckbox 
+<Checkbox 
   checked={checked} 
   onCheckedChange={setChecked} 
-/>
-
-// With description
-<div className="items-top flex space-x-2">
-  <WexCheckbox id="terms" />
-  <div className="grid gap-1.5">
-    <WexLabel htmlFor="terms">Accept terms</WexLabel>
-    <p className="text-sm text-muted-foreground">
-      Read our terms of service.
-    </p>
-  </div>
-</div>`}
+/>`}
         />
+        <div className="mt-4 text-sm text-muted-foreground">
+          <p><strong>Props:</strong></p>
+          <ul className="list-disc list-inside mt-2 space-y-1">
+            <li><code className="bg-muted px-1 rounded">checked</code>: boolean | "indeterminate"</li>
+            <li><code className="bg-muted px-1 rounded">onCheckedChange</code>: (checked: boolean) =&gt; void</li>
+            <li><code className="bg-muted px-1 rounded">disabled</code>: boolean</li>
+          </ul>
+        </div>
       </Section>
 
       <TokenReference tokens={checkboxTokens} className="mt-12" />

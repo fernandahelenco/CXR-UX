@@ -5,9 +5,10 @@ import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { Guidance } from "@/docs/components/ProseBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
-import { WexProgress, WexButton } from "@/components/wex";
+import { Progress } from "@/components/ui/progress";
+import { WexButton } from "@/components/wex";
 
-// Token mappings for WexProgress
+// Token mappings for Progress
 // Layer 3 component tokens
 const progressTokens: TokenRow[] = [
   { element: "Track", property: "Background", token: "--wex-component-progress-track-bg" },
@@ -41,78 +42,96 @@ export default function ProgressPage() {
   return (
     <ComponentPage
       title="Progress"
-      description="Displays an indicator showing the completion progress of a task."
+      description="Displays completion progress with determinate, indeterminate, and labeled modes."
       status="stable"
       registryKey="progress"
     >
       <Section title="Overview">
         <ExampleCard>
           <div className="w-full max-w-md space-y-4">
-            <WexProgress value={33} aria-label="33% complete" />
-            <WexProgress value={66} aria-label="66% complete" />
-            <WexProgress value={100} aria-label="100% complete" />
+            <Progress value={33} aria-label="33% complete" />
+            <Progress value={66} aria-label="66% complete" />
+            <Progress value={100} aria-label="100% complete" />
           </div>
         </ExampleCard>
         <Guidance>
           Use progress bars for operations with determinate progress (e.g., file 
-          uploads). For indeterminate loading, use a Spinner or Skeleton instead.
+          uploads). For unknown durations, use indeterminate mode.
         </Guidance>
       </Section>
 
-      <Section title="Examples" description="Different progress scenarios.">
+      {/* ============================================================
+          INDETERMINATE MODE
+          ============================================================ */}
+      <Section title="Indeterminate Mode" description="For operations with unknown duration.">
+        <ExampleCard title="Indeterminate Progress">
+          <div className="w-full max-w-md space-y-4">
+            <Progress indeterminate aria-label="Loading..." />
+            <p className="text-sm text-muted-foreground text-center">
+              Loading data...
+            </p>
+          </div>
+        </ExampleCard>
+        <Guidance>
+          Use indeterminate mode when you don't know how long an operation will take.
+          The progress bar animates continuously to indicate activity.
+        </Guidance>
+      </Section>
+
+      {/* ============================================================
+          WITH LABEL
+          ============================================================ */}
+      <Section title="With Label" description="Show progress percentage inside the bar.">
+        <ExampleCard title="Labeled Progress">
+          <div className="w-full max-w-md space-y-4">
+            <Progress value={25} showLabel aria-label="25% complete" />
+            <Progress value={50} showLabel aria-label="50% complete" />
+            <Progress value={75} showLabel aria-label="75% complete" />
+            <Progress value={100} showLabel aria-label="100% complete" />
+          </div>
+        </ExampleCard>
+
+        <ExampleCard title="Custom Label Format">
+          <div className="w-full max-w-md">
+            <Progress 
+              value={67} 
+              showLabel 
+              labelFormat={(v) => `${Math.round(v)}% done`}
+              aria-label="67% complete" 
+            />
+          </div>
+        </ExampleCard>
+      </Section>
+
+      {/* ============================================================
+          INTERACTIVE DEMO
+          ============================================================ */}
+      <Section title="Interactive Demo" description="Simulated progress animation.">
+        <ExampleCard title="Click to Start">
+          <div className="w-full max-w-md space-y-4">
+            <Progress value={progress} showLabel aria-label={`${progress}% complete`} />
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">
+                {progress}% complete
+              </span>
+              <WexButton 
+                size="sm" 
+                onClick={startProgress}
+                disabled={loading}
+              >
+                {loading ? "Loading..." : "Start"}
+              </WexButton>
+            </div>
+          </div>
+        </ExampleCard>
+      </Section>
+
+      {/* ============================================================
+          USE CASES
+          ============================================================ */}
+      <Section title="Use Cases" description="Common progress scenarios.">
         <div className="space-y-6">
-          <ExampleCard title="Interactive Demo" description="Click to simulate progress.">
-            <div className="w-full max-w-md space-y-4">
-              <WexProgress value={progress} aria-label={`${progress}% complete`} />
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">
-                  {progress}% complete
-                </span>
-                <WexButton 
-                  size="sm" 
-                  onClick={startProgress}
-                  disabled={loading}
-                >
-                  {loading ? "Loading..." : "Start"}
-                </WexButton>
-              </div>
-            </div>
-          </ExampleCard>
-
-          <ExampleCard title="Different Values" description="Various progress states.">
-            <div className="w-full max-w-md space-y-4">
-              <div className="space-y-1">
-                <div className="flex justify-between text-sm">
-                  <span id="just-started-label">Just started</span>
-                  <span className="text-muted-foreground">10%</span>
-                </div>
-                <WexProgress value={10} aria-labelledby="just-started-label" />
-              </div>
-              <div className="space-y-1">
-                <div className="flex justify-between text-sm">
-                  <span id="in-progress-label">In progress</span>
-                  <span className="text-muted-foreground">45%</span>
-                </div>
-                <WexProgress value={45} aria-labelledby="in-progress-label" />
-              </div>
-              <div className="space-y-1">
-                <div className="flex justify-between text-sm">
-                  <span id="almost-done-label">Almost done</span>
-                  <span className="text-muted-foreground">80%</span>
-                </div>
-                <WexProgress value={80} aria-labelledby="almost-done-label" />
-              </div>
-              <div className="space-y-1">
-                <div className="flex justify-between text-sm">
-                  <span id="complete-label">Complete</span>
-                  <span className="text-muted-foreground">100%</span>
-                </div>
-                <WexProgress value={100} aria-labelledby="complete-label" />
-              </div>
-            </div>
-          </ExampleCard>
-
-          <ExampleCard title="File Upload" description="Common use case pattern.">
+          <ExampleCard title="File Upload">
             <div className="w-full max-w-md rounded-lg border p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <div>
@@ -121,17 +140,17 @@ export default function ProgressPage() {
                 </div>
                 <span className="text-sm text-muted-foreground">48%</span>
               </div>
-              <WexProgress value={48} aria-labelledby="file-upload-label" />
+              <Progress value={48} aria-labelledby="file-upload-label" />
             </div>
           </ExampleCard>
 
-          <ExampleCard title="Multi-step Process" description="Showing overall progress.">
+          <ExampleCard title="Multi-step Process">
             <div className="w-full max-w-md space-y-4">
               <div className="flex justify-between text-sm">
                 <span id="multi-step-label">Step 2 of 4: Configuring</span>
                 <span className="text-muted-foreground">50%</span>
               </div>
-              <WexProgress value={50} aria-labelledby="multi-step-label" />
+              <Progress value={50} aria-labelledby="multi-step-label" />
               <div className="flex gap-2">
                 <div className="flex-1 h-1 rounded-full bg-primary" />
                 <div className="flex-1 h-1 rounded-full bg-primary" />
@@ -141,12 +160,14 @@ export default function ProgressPage() {
             </div>
           </ExampleCard>
 
-          <ExampleCard title="With Label" description="Clearly labeled progress.">
+          <ExampleCard title="Loading State">
             <div className="w-full max-w-md space-y-2">
-              <label className="text-sm font-medium" id="download-label">Downloading updates...</label>
-              <WexProgress value={67} aria-labelledby="download-label" />
+              <label className="text-sm font-medium" id="download-label">
+                Downloading updates...
+              </label>
+              <Progress indeterminate aria-labelledby="download-label" />
               <p className="text-xs text-muted-foreground">
-                Estimated time remaining: 2 minutes
+                Please wait...
               </p>
             </div>
           </ExampleCard>
@@ -165,11 +186,9 @@ export default function ProgressPage() {
             </p>
           </div>
           <div className="rounded-lg border border-border bg-card p-4">
-            <h3 className="font-medium mb-2">Live Regions</h3>
+            <h3 className="font-medium mb-2">Indeterminate Mode</h3>
             <p className="text-sm text-muted-foreground">
-              For progress updates that users need to hear, add{" "}
-              <code className="bg-muted px-1 rounded">aria-live="polite"</code> to a 
-              container that announces the percentage change.
+              When indeterminate, aria-valuenow is omitted to indicate unknown progress.
             </p>
           </div>
         </div>
@@ -177,32 +196,42 @@ export default function ProgressPage() {
 
       <Section title="Usage">
         <CodeBlock
-          code={`import { WexProgress } from "@/components/wex";
+          code={`import { Progress } from "@/components/ui/progress";
 
-// Basic progress
-<WexProgress value={50} />
+// Basic determinate progress
+<Progress value={50} />
 
-// With label
-<div className="space-y-2">
-  <div className="flex justify-between text-sm">
-    <span>Uploading...</span>
-    <span>{progress}%</span>
-  </div>
-  <WexProgress value={progress} />
-</div>
+// Indeterminate (unknown duration)
+<Progress indeterminate />
 
-// Controlled progress
-const [progress, setProgress] = useState(0);
+// With visible label
+<Progress value={75} showLabel />
 
-useEffect(() => {
-  const timer = setInterval(() => {
-    setProgress((prev) => Math.min(prev + 10, 100));
-  }, 500);
-  return () => clearInterval(timer);
-}, []);
+// Custom label format
+<Progress 
+  value={67} 
+  showLabel 
+  labelFormat={(v) => \`\${Math.round(v)}% done\`}
+/>
 
-<WexProgress value={progress} />`}
+// All props
+<Progress
+  value={50}
+  indeterminate={false}
+  showLabel
+  labelFormat={(v) => \`\${v}%\`}
+  aria-label="Loading progress"
+/>`}
         />
+        <div className="mt-4 text-sm text-muted-foreground">
+          <p><strong>Props:</strong></p>
+          <ul className="list-disc list-inside mt-2 space-y-1">
+            <li><code className="bg-muted px-1 rounded">value</code>: number (0-100)</li>
+            <li><code className="bg-muted px-1 rounded">indeterminate</code>: boolean - Animating bar for unknown duration</li>
+            <li><code className="bg-muted px-1 rounded">showLabel</code>: boolean - Show percentage inside bar</li>
+            <li><code className="bg-muted px-1 rounded">labelFormat</code>: (value: number) =&gt; string - Custom label formatter</li>
+          </ul>
+        </div>
       </Section>
 
       <TokenReference tokens={progressTokens} className="mt-12" />
