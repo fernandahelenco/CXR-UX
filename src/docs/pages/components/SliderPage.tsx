@@ -7,12 +7,14 @@ import { TokenReference, type TokenRow } from "@/docs/components/TokenReference"
 import { WexSlider, WexLabel } from "@/components/wex";
 
 // Token mappings for WexSlider
+// Layer 3 component tokens
 const sliderTokens: TokenRow[] = [
-  { element: "Track", property: "Background", token: "--primary (20% opacity)" },
-  { element: "Range", property: "Background", token: "--primary" },
-  { element: "Thumb", property: "Background", token: "--background" },
-  { element: "Thumb", property: "Border", token: "--primary" },
-  { element: "Focus Ring", property: "Color", token: "--ring" },
+  { element: "Track", property: "Background", token: "--wex-component-slider-track-bg" },
+  { element: "Range", property: "Background", token: "--wex-component-slider-range-bg" },
+  { element: "Thumb", property: "Background", token: "--wex-component-slider-thumb-bg" },
+  { element: "Thumb", property: "Border", token: "--wex-component-slider-thumb-border" },
+  { element: "Focus Ring", property: "Color", token: "--wex-component-slider-focus-ring" },
+  { element: "Disabled", property: "Opacity", token: "--wex-component-slider-disabled-opacity" },
 ];
 
 export default function SliderPage() {

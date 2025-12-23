@@ -6,11 +6,12 @@ import { TokenReference, type TokenRow } from "@/docs/components/TokenReference"
 import { WexAccordion } from "@/components/wex";
 
 // Token mappings for WexAccordion
+// Layer 3 component tokens
 const accordionTokens: TokenRow[] = [
-  { element: "Item", property: "Border", token: "--border" },
-  { element: "Trigger", property: "Text", token: "--foreground" },
-  { element: "Trigger", property: "Hover", token: "underline" },
-  { element: "Content", property: "Text", token: "--muted-foreground" },
+  { element: "Item", property: "Border", token: "--wex-component-accordion-border" },
+  { element: "Trigger", property: "Text", token: "--wex-component-accordion-trigger-fg" },
+  { element: "Trigger (Hover)", property: "Background", token: "--wex-component-accordion-trigger-hover-bg" },
+  { element: "Icon", property: "Color", token: "--wex-component-accordion-icon-fg" },
 ];
 
 export default function AccordionPage() {

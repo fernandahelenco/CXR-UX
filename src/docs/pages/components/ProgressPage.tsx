@@ -8,9 +8,10 @@ import { TokenReference, type TokenRow } from "@/docs/components/TokenReference"
 import { WexProgress, WexButton } from "@/components/wex";
 
 // Token mappings for WexProgress
+// Layer 3 component tokens
 const progressTokens: TokenRow[] = [
-  { element: "Track", property: "Background", token: "--primary (10% opacity)" },
-  { element: "Indicator", property: "Background", token: "--primary" },
+  { element: "Track", property: "Background", token: "--wex-component-progress-track-bg" },
+  { element: "Indicator", property: "Background", token: "--wex-component-progress-indicator-bg" },
 ];
 
 export default function ProgressPage() {

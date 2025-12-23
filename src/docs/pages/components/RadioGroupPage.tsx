@@ -6,11 +6,13 @@ import { TokenReference, type TokenRow } from "@/docs/components/TokenReference"
 import { WexRadioGroup, WexLabel } from "@/components/wex";
 
 // Token mappings for WexRadioGroup
+// Layer 3 component tokens
 const radioGroupTokens: TokenRow[] = [
-  { element: "Radio", property: "Border", token: "--primary" },
-  { element: "Radio (selected)", property: "Fill", token: "--primary" },
-  { element: "Focus Ring", property: "Color", token: "--ring" },
-  { element: "Disabled", property: "Opacity", token: "50%" },
+  { element: "Radio", property: "Background", token: "--wex-component-radio-bg" },
+  { element: "Radio", property: "Border", token: "--wex-component-radio-border" },
+  { element: "Radio (Selected)", property: "Indicator", token: "--wex-component-radio-checked-fg" },
+  { element: "Focus Ring", property: "Color", token: "--wex-component-radio-focus-ring" },
+  { element: "Disabled", property: "Opacity", token: "--wex-component-radio-disabled-opacity" },
 ];
 
 export default function RadioGroupPage() {

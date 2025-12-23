@@ -10,11 +10,11 @@ import { format } from "date-fns";
 import { CalendarIcon, Settings, User } from "lucide-react";
 
 // Token mappings for WexPopover
+// Layer 3 component tokens
 const popoverTokens: TokenRow[] = [
-  { element: "Content", property: "Background", token: "--popover" },
-  { element: "Content", property: "Border", token: "--border" },
-  { element: "Content", property: "Text", token: "--popover-foreground" },
-  { element: "Content", property: "Shadow", token: "--shadow (md)" },
+  { element: "Content", property: "Background", token: "--wex-component-popover-bg" },
+  { element: "Content", property: "Text", token: "--wex-component-popover-fg" },
+  { element: "Content", property: "Border", token: "--wex-component-popover-border" },
 ];
 
 export default function PopoverPage() {

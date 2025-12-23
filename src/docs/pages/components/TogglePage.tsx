@@ -9,12 +9,16 @@ import { WexToggle } from "@/components/wex";
 import { Bold, Italic, Underline, AlignLeft, AlignCenter, AlignRight, Star } from "lucide-react";
 
 // Token mappings for WexToggle
+// Layer 3 component tokens
 const toggleTokens: TokenRow[] = [
-  { element: "Toggle", property: "Background", token: "transparent" },
-  { element: "Toggle (hover)", property: "Background", token: "--muted" },
-  { element: "Toggle (pressed)", property: "Background", token: "--accent" },
-  { element: "Toggle (pressed)", property: "Text", token: "--accent-foreground" },
-  { element: "Focus Ring", property: "Color", token: "--ring" },
+  { element: "Toggle", property: "Background", token: "--wex-component-toggle-bg" },
+  { element: "Toggle", property: "Text", token: "--wex-component-toggle-fg" },
+  { element: "Toggle (Hover)", property: "Background", token: "--wex-component-toggle-hover-bg" },
+  { element: "Toggle (Hover)", property: "Text", token: "--wex-component-toggle-hover-fg" },
+  { element: "Toggle (Pressed)", property: "Background", token: "--wex-component-toggle-pressed-bg" },
+  { element: "Toggle (Pressed)", property: "Text", token: "--wex-component-toggle-pressed-fg" },
+  { element: "Focus Ring", property: "Color", token: "--wex-component-toggle-focus-ring" },
+  { element: "Disabled", property: "Opacity", token: "--wex-component-toggle-disabled-opacity" },
 ];
 
 export default function TogglePage() {

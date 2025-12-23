@@ -6,12 +6,14 @@ import { TokenReference, type TokenRow } from "@/docs/components/TokenReference"
 import { WexTextarea, WexLabel } from "@/components/wex";
 
 // Token mappings for WexTextarea
+// Layer 3 component tokens
 const textareaTokens: TokenRow[] = [
-  { element: "Textarea", property: "Background", token: "--background" },
-  { element: "Textarea", property: "Border", token: "--input" },
-  { element: "Textarea", property: "Text", token: "--foreground" },
-  { element: "Placeholder", property: "Text", token: "--muted-foreground" },
-  { element: "Focus Ring", property: "Color", token: "--ring" },
+  { element: "Textarea", property: "Background", token: "--wex-component-textarea-bg" },
+  { element: "Textarea", property: "Text", token: "--wex-component-textarea-fg" },
+  { element: "Textarea", property: "Border", token: "--wex-component-textarea-border" },
+  { element: "Placeholder", property: "Text", token: "--wex-component-textarea-placeholder" },
+  { element: "Focus Ring", property: "Color", token: "--wex-component-textarea-focus-ring" },
+  { element: "Disabled", property: "Opacity", token: "--wex-component-textarea-disabled-opacity" },
 ];
 
 export default function TextareaPage() {

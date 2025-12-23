@@ -8,14 +8,16 @@ import { WexCommand, WexButton } from "@/components/wex";
 import { Calculator, Calendar, CreditCard, Settings, Smile, User } from "lucide-react";
 
 // Token mappings for WexCommand
+// Layer 3 component tokens
 const commandTokens: TokenRow[] = [
-  { element: "Container", property: "Background", token: "--popover" },
-  { element: "Container", property: "Border", token: "--border" },
-  { element: "Input", property: "Border", token: "--border" },
-  { element: "Item", property: "Text", token: "--popover-foreground" },
-  { element: "Item (selected)", property: "Background", token: "--accent" },
-  { element: "Item (selected)", property: "Text", token: "--accent-foreground" },
-  { element: "Group Heading", property: "Text", token: "--muted-foreground" },
+  { element: "Container", property: "Background", token: "--wex-component-command-bg" },
+  { element: "Container", property: "Border", token: "--wex-component-command-border" },
+  { element: "Input", property: "Placeholder", token: "--wex-component-command-input-placeholder" },
+  { element: "Item (Hover)", property: "Background", token: "--wex-component-command-item-hover-bg" },
+  { element: "Item (Selected)", property: "Background", token: "--wex-component-command-item-selected-bg" },
+  { element: "Group Heading", property: "Text", token: "--wex-component-command-group-heading" },
+  { element: "Separator", property: "Color", token: "--wex-component-command-separator" },
+  { element: "Empty", property: "Text", token: "--wex-component-command-empty-fg" },
 ];
 
 export default function CommandPage() {

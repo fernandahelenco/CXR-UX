@@ -7,9 +7,10 @@ import { TokenReference, type TokenRow } from "@/docs/components/TokenReference"
 import { WexTooltip, WexButton } from "@/components/wex";
 
 // Token mappings for WexTooltip
+// Layer 3 component tokens
 const tooltipTokens: TokenRow[] = [
-  { element: "Content", property: "Background", token: "--primary" },
-  { element: "Content", property: "Text", token: "--primary-foreground" },
+  { element: "Content", property: "Background", token: "--wex-component-tooltip-bg" },
+  { element: "Content", property: "Text", token: "--wex-component-tooltip-fg" },
 ];
 
 export default function TooltipPage() {

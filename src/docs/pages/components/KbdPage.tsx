@@ -6,10 +6,11 @@ import { TokenReference, type TokenRow } from "@/docs/components/TokenReference"
 import { WexKbd } from "@/components/wex";
 
 // Token mappings for WexKbd
+// Layer 3 component tokens
 const kbdTokens: TokenRow[] = [
-  { element: "Key", property: "Background", token: "--muted" },
-  { element: "Key", property: "Border", token: "--border" },
-  { element: "Key", property: "Text", token: "--muted-foreground" },
+  { element: "Key", property: "Background", token: "--wex-component-kbd-bg" },
+  { element: "Key", property: "Text", token: "--wex-component-kbd-fg" },
+  { element: "Key", property: "Border", token: "--wex-component-kbd-border" },
 ];
 
 export default function KbdPage() {

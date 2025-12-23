@@ -6,12 +6,13 @@ import { TokenReference, type TokenRow } from "@/docs/components/TokenReference"
 import { WexToggleGroup } from "@/components/wex";
 
 // Token mappings for WexToggleGroup
+// Layer 3 component tokens (uses toggle tokens)
 const toggleGroupTokens: TokenRow[] = [
-  { element: "Container", property: "Gap", token: "(flex container)" },
-  { element: "Item", property: "Background", token: "transparent" },
-  { element: "Item (hover)", property: "Background", token: "--muted" },
-  { element: "Item (active)", property: "Background", token: "--accent" },
-  { element: "Item (active)", property: "Text", token: "--accent-foreground" },
+  { element: "Item", property: "Background", token: "--wex-component-toggle-bg" },
+  { element: "Item", property: "Text", token: "--wex-component-toggle-fg" },
+  { element: "Item (Hover)", property: "Background", token: "--wex-component-toggle-hover-bg" },
+  { element: "Item (Active)", property: "Background", token: "--wex-component-toggle-pressed-bg" },
+  { element: "Item (Active)", property: "Text", token: "--wex-component-toggle-pressed-fg" },
 ];
 
 export default function ToggleGroupPage() {

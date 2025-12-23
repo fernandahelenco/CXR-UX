@@ -8,13 +8,13 @@ import { TokenReference, type TokenRow } from "@/docs/components/TokenReference"
 import { WexSheet, WexButton, WexInput, WexLabel } from "@/components/wex";
 
 // Token mappings for WexSheet
+// Layer 3 component tokens
 const sheetTokens: TokenRow[] = [
-  { element: "Overlay", property: "Background", token: "--background (80% opacity)" },
-  { element: "Content", property: "Background", token: "--background" },
-  { element: "Content", property: "Border", token: "--border" },
-  { element: "Title", property: "Text", token: "--foreground" },
-  { element: "Description", property: "Text", token: "--muted-foreground" },
-  { element: "Close Button", property: "Color", token: "--muted-foreground" },
+  { element: "Overlay", property: "Background", token: "--wex-component-sheet-overlay-bg" },
+  { element: "Overlay", property: "Opacity", token: "--wex-component-sheet-overlay-opacity" },
+  { element: "Content", property: "Background", token: "--wex-component-sheet-bg" },
+  { element: "Content", property: "Border", token: "--wex-component-sheet-border" },
+  { element: "Close Button", property: "Hover BG", token: "--wex-component-sheet-close-hover-bg" },
 ];
 
 export default function SheetPage() {

@@ -6,12 +6,14 @@ import { TokenReference, type TokenRow } from "@/docs/components/TokenReference"
 import { WexPagination } from "@/components/wex";
 
 // Token mappings for WexPagination
+// Layer 3 component tokens
 const paginationTokens: TokenRow[] = [
-  { element: "Link", property: "Text", token: "--foreground" },
-  { element: "Link (hover)", property: "Background", token: "--accent" },
-  { element: "Link (active)", property: "Background", token: "--primary" },
-  { element: "Link (active)", property: "Text", token: "--primary-foreground" },
-  { element: "Ellipsis", property: "Color", token: "--muted-foreground" },
+  { element: "Item", property: "Background", token: "--wex-component-pagination-item-bg" },
+  { element: "Item", property: "Text", token: "--wex-component-pagination-item-fg" },
+  { element: "Item (Hover)", property: "Background", token: "--wex-component-pagination-item-hover-bg" },
+  { element: "Item (Active)", property: "Background", token: "--wex-component-pagination-active-bg" },
+  { element: "Item (Active)", property: "Text", token: "--wex-component-pagination-active-fg" },
+  { element: "Disabled", property: "Opacity", token: "--wex-component-pagination-disabled-opacity" },
 ];
 
 export default function PaginationPage() {

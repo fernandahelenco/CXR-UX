@@ -6,8 +6,9 @@ import { TokenReference, type TokenRow } from "@/docs/components/TokenReference"
 import { WexSkeleton } from "@/components/wex";
 
 // Token mappings for WexSkeleton
+// Layer 3 component tokens
 const skeletonTokens: TokenRow[] = [
-  { element: "Skeleton", property: "Background", token: "--muted" },
+  { element: "Skeleton", property: "Background", token: "--wex-component-skeleton-bg" },
   { element: "Animation", property: "Type", token: "pulse (CSS animation)" },
 ];
 

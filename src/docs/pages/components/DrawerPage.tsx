@@ -8,13 +8,13 @@ import { TokenReference, type TokenRow } from "@/docs/components/TokenReference"
 import { WexDrawer, WexButton, WexInput, WexLabel } from "@/components/wex";
 
 // Token mappings for WexDrawer
+// Layer 3 component tokens
 const drawerTokens: TokenRow[] = [
-  { element: "Overlay", property: "Background", token: "--background (80% opacity)" },
-  { element: "Content", property: "Background", token: "--background" },
-  { element: "Content", property: "Border", token: "--border" },
-  { element: "Handle", property: "Background", token: "--muted" },
-  { element: "Title", property: "Text", token: "--foreground" },
-  { element: "Description", property: "Text", token: "--muted-foreground" },
+  { element: "Overlay", property: "Background", token: "--wex-component-drawer-overlay-bg" },
+  { element: "Overlay", property: "Opacity", token: "--wex-component-drawer-overlay-opacity" },
+  { element: "Content", property: "Background", token: "--wex-component-drawer-bg" },
+  { element: "Content", property: "Border", token: "--wex-component-drawer-border" },
+  { element: "Handle", property: "Background", token: "--wex-component-drawer-handle-bg" },
 ];
 
 export default function DrawerPage() {

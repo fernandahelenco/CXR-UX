@@ -8,14 +8,16 @@ import { TokenReference, type TokenRow } from "@/docs/components/TokenReference"
 import { WexDropdownMenu, WexButton } from "@/components/wex";
 
 // Token mappings for WexDropdownMenu
+// Layer 3 component tokens
 const dropdownMenuTokens: TokenRow[] = [
-  { element: "Content", property: "Background", token: "--popover" },
-  { element: "Content", property: "Border", token: "--border" },
-  { element: "Item", property: "Text", token: "--popover-foreground" },
-  { element: "Item (focus)", property: "Background", token: "--accent" },
-  { element: "Item (focus)", property: "Text", token: "--accent-foreground" },
-  { element: "Separator", property: "Color", token: "--muted" },
-  { element: "Shortcut", property: "Text", token: "--muted-foreground" },
+  { element: "Content", property: "Background", token: "--wex-component-menu-content-bg" },
+  { element: "Content", property: "Border", token: "--wex-component-menu-content-border" },
+  { element: "Item", property: "Text", token: "--wex-component-menu-item-fg" },
+  { element: "Item (Focus)", property: "Background", token: "--wex-component-menu-item-focus-bg" },
+  { element: "Item (Hover)", property: "Background", token: "--wex-component-menu-item-hover-bg" },
+  { element: "Separator", property: "Color", token: "--wex-component-menu-separator" },
+  { element: "Shortcut", property: "Text", token: "--wex-component-menu-shortcut-fg" },
+  { element: "Disabled", property: "Opacity", token: "--wex-component-menu-disabled-opacity" },
 ];
 
 export default function DropdownMenuPage() {

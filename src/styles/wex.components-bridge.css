@@ -227,6 +227,220 @@
   --wex-component-tabs-indicator: var(--wex-primary);
   --wex-component-tabs-divider: var(--wex-content-border);
   --wex-component-tabs-focus-ring: var(--wex-focus-ring-color);
+
+  /* ============================================================
+     CHECKBOX
+     ============================================================ */
+  --wex-component-checkbox-bg: var(--wex-content-bg);
+  --wex-component-checkbox-border: var(--wex-primary);
+  --wex-component-checkbox-checked-bg: var(--wex-primary);
+  --wex-component-checkbox-checked-fg: var(--wex-primary-contrast);
+  --wex-component-checkbox-focus-ring: var(--wex-focus-ring-color);
+  --wex-component-checkbox-disabled-opacity: 0.5;
+
+  /* ============================================================
+     RADIO GROUP
+     ============================================================ */
+  --wex-component-radio-bg: var(--wex-content-bg);
+  --wex-component-radio-border: var(--wex-primary);
+  --wex-component-radio-checked-bg: var(--wex-primary);
+  --wex-component-radio-checked-fg: var(--wex-primary);
+  --wex-component-radio-focus-ring: var(--wex-focus-ring-color);
+  --wex-component-radio-disabled-opacity: 0.5;
+
+  /* ============================================================
+     SWITCH
+     ============================================================ */
+  --wex-component-switch-bg: var(--wex-input-border);
+  --wex-component-switch-checked-bg: var(--wex-primary);
+  --wex-component-switch-thumb: var(--wex-content-bg);
+  --wex-component-switch-focus-ring: var(--wex-focus-ring-color);
+  --wex-component-switch-disabled-opacity: 0.5;
+
+  /* ============================================================
+     SLIDER
+     ============================================================ */
+  --wex-component-slider-track-bg: var(--wex-surface-subtle);
+  --wex-component-slider-range-bg: var(--wex-primary);
+  --wex-component-slider-thumb-bg: var(--wex-content-bg);
+  --wex-component-slider-thumb-border: var(--wex-primary);
+  --wex-component-slider-focus-ring: var(--wex-focus-ring-color);
+  --wex-component-slider-disabled-opacity: 0.5;
+
+  /* ============================================================
+     TEXTAREA (reuses input tokens where applicable)
+     ============================================================ */
+  --wex-component-textarea-bg: var(--wex-component-input-bg);
+  --wex-component-textarea-fg: var(--wex-component-input-fg);
+  --wex-component-textarea-border: var(--wex-component-input-border);
+  --wex-component-textarea-placeholder: var(--wex-component-input-placeholder);
+  --wex-component-textarea-focus-ring: var(--wex-component-input-focus-ring);
+  --wex-component-textarea-disabled-opacity: var(--wex-component-input-disabled-opacity);
+
+  /* ============================================================
+     INPUT OTP
+     ============================================================ */
+  --wex-component-inputotp-bg: var(--wex-content-bg);
+  --wex-component-inputotp-border: var(--wex-input-border);
+  --wex-component-inputotp-focus-ring: var(--wex-focus-ring-color);
+  --wex-component-inputotp-caret: var(--wex-text);
+  --wex-component-inputotp-disabled-opacity: 0.5;
+
+  /* ============================================================
+     PROGRESS
+     ============================================================ */
+  --wex-component-progress-track-bg: var(--wex-surface-subtle);
+  --wex-component-progress-indicator-bg: var(--wex-primary);
+
+  /* ============================================================
+     DROPDOWN MENU / CONTEXT MENU (shared tokens)
+     ============================================================ */
+  --wex-component-menu-content-bg: var(--wex-content-bg);
+  --wex-component-menu-content-border: var(--wex-content-border);
+  --wex-component-menu-item-fg: var(--wex-text);
+  --wex-component-menu-item-hover-bg: var(--wex-surface-subtle);
+  --wex-component-menu-item-focus-bg: var(--wex-surface-subtle);
+  --wex-component-menu-separator: var(--wex-content-border);
+  --wex-component-menu-shortcut-fg: var(--wex-text-muted);
+  --wex-component-menu-disabled-opacity: 0.5;
+
+  /* ============================================================
+     MENUBAR
+     ============================================================ */
+  --wex-component-menubar-bg: var(--wex-content-bg);
+  --wex-component-menubar-border: var(--wex-content-border);
+  --wex-component-menubar-trigger-hover-bg: var(--wex-surface-subtle);
+  --wex-component-menubar-trigger-focus-bg: var(--wex-surface-subtle);
+
+  /* ============================================================
+     NAVIGATION MENU
+     ============================================================ */
+  --wex-component-navmenu-trigger-hover-bg: var(--wex-surface-subtle);
+  --wex-component-navmenu-trigger-focus-bg: var(--wex-surface-subtle);
+  --wex-component-navmenu-content-bg: var(--wex-content-bg);
+  --wex-component-navmenu-link-hover-bg: var(--wex-surface-subtle);
+  --wex-component-navmenu-indicator: var(--wex-primary);
+
+  /* ============================================================
+     COMMAND
+     ============================================================ */
+  --wex-component-command-bg: var(--wex-content-bg);
+  --wex-component-command-border: var(--wex-content-border);
+  --wex-component-command-input-bg: transparent;
+  --wex-component-command-input-placeholder: var(--wex-text-muted);
+  --wex-component-command-item-hover-bg: var(--wex-surface-subtle);
+  --wex-component-command-item-selected-bg: var(--wex-surface-subtle);
+  --wex-component-command-separator: var(--wex-content-border);
+  --wex-component-command-group-heading: var(--wex-text-muted);
+  --wex-component-command-empty-fg: var(--wex-text-muted);
+
+  /* ============================================================
+     SHEET
+     ============================================================ */
+  --wex-component-sheet-overlay-bg: 0 0% 0%;
+  --wex-component-sheet-overlay-opacity: 0.5;
+  --wex-component-sheet-bg: var(--wex-content-bg);
+  --wex-component-sheet-border: var(--wex-content-border);
+  --wex-component-sheet-close-hover-bg: var(--wex-surface-subtle);
+
+  /* ============================================================
+     DRAWER
+     ============================================================ */
+  --wex-component-drawer-overlay-bg: 0 0% 0%;
+  --wex-component-drawer-overlay-opacity: 0.5;
+  --wex-component-drawer-bg: var(--wex-content-bg);
+  --wex-component-drawer-border: var(--wex-content-border);
+  --wex-component-drawer-handle-bg: var(--wex-text-muted);
+
+  /* ============================================================
+     ALERT DIALOG
+     ============================================================ */
+  --wex-component-alertdialog-overlay-bg: 0 0% 0%;
+  --wex-component-alertdialog-overlay-opacity: 0.5;
+  --wex-component-alertdialog-bg: var(--wex-content-bg);
+  --wex-component-alertdialog-fg: var(--wex-text);
+  --wex-component-alertdialog-border: var(--wex-content-border);
+  --wex-component-alertdialog-action-bg: var(--wex-primary);
+  --wex-component-alertdialog-action-fg: var(--wex-primary-contrast);
+  --wex-component-alertdialog-cancel-bg: var(--wex-surface-subtle);
+  --wex-component-alertdialog-cancel-fg: var(--wex-text);
+
+  /* ============================================================
+     TOGGLE
+     ============================================================ */
+  --wex-component-toggle-bg: transparent;
+  --wex-component-toggle-fg: var(--wex-text-muted);
+  --wex-component-toggle-hover-bg: var(--wex-surface-subtle);
+  --wex-component-toggle-hover-fg: var(--wex-text);
+  --wex-component-toggle-pressed-bg: var(--wex-surface-subtle);
+  --wex-component-toggle-pressed-fg: var(--wex-text);
+  --wex-component-toggle-focus-ring: var(--wex-focus-ring-color);
+  --wex-component-toggle-disabled-opacity: 0.5;
+
+  /* ============================================================
+     ACCORDION
+     ============================================================ */
+  --wex-component-accordion-border: var(--wex-content-border);
+  --wex-component-accordion-trigger-fg: var(--wex-text);
+  --wex-component-accordion-trigger-hover-bg: var(--wex-surface-subtle);
+  --wex-component-accordion-content-bg: transparent;
+  --wex-component-accordion-icon-fg: var(--wex-text-muted);
+
+  /* ============================================================
+     PAGINATION
+     ============================================================ */
+  --wex-component-pagination-item-bg: transparent;
+  --wex-component-pagination-item-fg: var(--wex-text);
+  --wex-component-pagination-item-hover-bg: var(--wex-surface-subtle);
+  --wex-component-pagination-active-bg: var(--wex-primary);
+  --wex-component-pagination-active-fg: var(--wex-primary-contrast);
+  --wex-component-pagination-disabled-opacity: 0.5;
+
+  /* ============================================================
+     BREADCRUMB
+     ============================================================ */
+  --wex-component-breadcrumb-link-fg: var(--wex-text-muted);
+  --wex-component-breadcrumb-link-hover-fg: var(--wex-text);
+  --wex-component-breadcrumb-separator-fg: var(--wex-text-muted);
+  --wex-component-breadcrumb-current-fg: var(--wex-text);
+
+  /* ============================================================
+     POPOVER
+     ============================================================ */
+  --wex-component-popover-bg: var(--wex-content-bg);
+  --wex-component-popover-fg: var(--wex-text);
+  --wex-component-popover-border: var(--wex-content-border);
+
+  /* ============================================================
+     HOVER CARD
+     ============================================================ */
+  --wex-component-hovercard-bg: var(--wex-content-bg);
+  --wex-component-hovercard-fg: var(--wex-text);
+  --wex-component-hovercard-border: var(--wex-content-border);
+
+  /* ============================================================
+     TOOLTIP
+     ============================================================ */
+  --wex-component-tooltip-bg: var(--wex-palette-slate-900);
+  --wex-component-tooltip-fg: var(--wex-palette-slate-50);
+  --wex-component-tooltip-border: transparent;
+
+  /* ============================================================
+     SKELETON
+     ============================================================ */
+  --wex-component-skeleton-bg: var(--wex-surface-subtle);
+
+  /* ============================================================
+     SEPARATOR
+     ============================================================ */
+  --wex-component-separator-bg: var(--wex-content-border);
+
+  /* ============================================================
+     KBD (Keyboard)
+     ============================================================ */
+  --wex-component-kbd-bg: var(--wex-surface-subtle);
+  --wex-component-kbd-fg: var(--wex-text);
+  --wex-component-kbd-border: var(--wex-content-border);
 }
 
 /* ============================================================
@@ -259,5 +473,9 @@
   
   --wex-component-toast-destructive-bg: var(--wex-palette-red-900);
   --wex-component-toast-destructive-border: var(--wex-palette-red-700);
+
+  /* ----- Tooltip: invert colors in dark mode ----- */
+  --wex-component-tooltip-bg: var(--wex-palette-slate-50);
+  --wex-component-tooltip-fg: var(--wex-palette-slate-900);
 }
 

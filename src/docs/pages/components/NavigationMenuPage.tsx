@@ -8,13 +8,13 @@ import { WexNavigationMenu, wexNavigationMenuTriggerStyle } from "@/components/w
 import { cn } from "@/lib/utils";
 
 // Token mappings for WexNavigationMenu
+// Layer 3 component tokens
 const navigationMenuTokens: TokenRow[] = [
-  { element: "Trigger", property: "Background", token: "--background" },
-  { element: "Trigger (hover)", property: "Background", token: "--accent" },
-  { element: "Trigger (hover)", property: "Text", token: "--accent-foreground" },
-  { element: "Content", property: "Background", token: "--popover" },
-  { element: "Content", property: "Border", token: "--border" },
-  { element: "Indicator", property: "Color", token: "--muted-foreground" },
+  { element: "Trigger (Hover)", property: "Background", token: "--wex-component-navmenu-trigger-hover-bg" },
+  { element: "Trigger (Focus)", property: "Background", token: "--wex-component-navmenu-trigger-focus-bg" },
+  { element: "Content", property: "Background", token: "--wex-component-navmenu-content-bg" },
+  { element: "Link (Hover)", property: "Background", token: "--wex-component-navmenu-link-hover-bg" },
+  { element: "Indicator", property: "Color", token: "--wex-component-navmenu-indicator" },
 ];
 
 export default function NavigationMenuPage() {

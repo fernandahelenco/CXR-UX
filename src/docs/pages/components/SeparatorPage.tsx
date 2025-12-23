@@ -6,8 +6,9 @@ import { TokenReference, type TokenRow } from "@/docs/components/TokenReference"
 import { WexSeparator } from "@/components/wex";
 
 // Token mappings for WexSeparator
+// Layer 3 component tokens
 const separatorTokens: TokenRow[] = [
-  { element: "Line", property: "Color", token: "--border" },
+  { element: "Line", property: "Color", token: "--wex-component-separator-bg" },
 ];
 
 export default function SeparatorPage() {

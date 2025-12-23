@@ -6,11 +6,12 @@ import { TokenReference, type TokenRow } from "@/docs/components/TokenReference"
 import { WexBreadcrumb } from "@/components/wex";
 
 // Token mappings for WexBreadcrumb
+// Layer 3 component tokens
 const breadcrumbTokens: TokenRow[] = [
-  { element: "Link", property: "Text", token: "--muted-foreground" },
-  { element: "Link (hover)", property: "Text", token: "--foreground" },
-  { element: "Current Page", property: "Text", token: "--foreground" },
-  { element: "Separator", property: "Color", token: "--muted-foreground" },
+  { element: "Link", property: "Text", token: "--wex-component-breadcrumb-link-fg" },
+  { element: "Link (Hover)", property: "Text", token: "--wex-component-breadcrumb-link-hover-fg" },
+  { element: "Current Page", property: "Text", token: "--wex-component-breadcrumb-current-fg" },
+  { element: "Separator", property: "Color", token: "--wex-component-breadcrumb-separator-fg" },
 ];
 
 export default function BreadcrumbDocPage() {

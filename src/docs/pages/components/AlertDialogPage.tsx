@@ -6,14 +6,17 @@ import { TokenReference, type TokenRow } from "@/docs/components/TokenReference"
 import { WexAlertDialog, WexButton } from "@/components/wex";
 
 // Token mappings for WexAlertDialog
+// Layer 3 component tokens
 const alertDialogTokens: TokenRow[] = [
-  { element: "Overlay", property: "Background", token: "--background (80% opacity)" },
-  { element: "Content", property: "Background", token: "--background" },
-  { element: "Content", property: "Border", token: "--border" },
-  { element: "Title", property: "Text", token: "--foreground" },
-  { element: "Description", property: "Text", token: "--muted-foreground" },
-  { element: "Action Button", property: "Background", token: "--primary" },
-  { element: "Cancel Button", property: "Border", token: "--input" },
+  { element: "Overlay", property: "Background", token: "--wex-component-alertdialog-overlay-bg" },
+  { element: "Overlay", property: "Opacity", token: "--wex-component-alertdialog-overlay-opacity" },
+  { element: "Content", property: "Background", token: "--wex-component-alertdialog-bg" },
+  { element: "Content", property: "Text", token: "--wex-component-alertdialog-fg" },
+  { element: "Content", property: "Border", token: "--wex-component-alertdialog-border" },
+  { element: "Action Button", property: "Background", token: "--wex-component-alertdialog-action-bg" },
+  { element: "Action Button", property: "Text", token: "--wex-component-alertdialog-action-fg" },
+  { element: "Cancel Button", property: "Background", token: "--wex-component-alertdialog-cancel-bg" },
+  { element: "Cancel Button", property: "Text", token: "--wex-component-alertdialog-cancel-fg" },
 ];
 
 export default function AlertDialogPage() {

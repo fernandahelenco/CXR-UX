@@ -6,15 +6,16 @@ import { TokenReference, type TokenRow } from "@/docs/components/TokenReference"
 import { WexMenubar } from "@/components/wex";
 
 // Token mappings for WexMenubar
+// Layer 3 component tokens
 const menubarTokens: TokenRow[] = [
-  { element: "Bar", property: "Background", token: "--background" },
-  { element: "Bar", property: "Border", token: "--border" },
-  { element: "Trigger", property: "Text", token: "--foreground" },
-  { element: "Trigger (active)", property: "Background", token: "--accent" },
-  { element: "Content", property: "Background", token: "--popover" },
-  { element: "Content", property: "Border", token: "--border" },
-  { element: "Item (focus)", property: "Background", token: "--accent" },
-  { element: "Separator", property: "Color", token: "--muted" },
+  { element: "Bar", property: "Background", token: "--wex-component-menubar-bg" },
+  { element: "Bar", property: "Border", token: "--wex-component-menubar-border" },
+  { element: "Trigger (Hover)", property: "Background", token: "--wex-component-menubar-trigger-hover-bg" },
+  { element: "Trigger (Focus)", property: "Background", token: "--wex-component-menubar-trigger-focus-bg" },
+  { element: "Content", property: "Background", token: "--wex-component-menu-content-bg" },
+  { element: "Content", property: "Border", token: "--wex-component-menu-content-border" },
+  { element: "Item (Focus)", property: "Background", token: "--wex-component-menu-item-focus-bg" },
+  { element: "Separator", property: "Color", token: "--wex-component-menu-separator" },
 ];
 
 export default function MenubarPage() {

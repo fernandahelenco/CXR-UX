@@ -8,11 +8,11 @@ import { WexHoverCard, WexButton, WexAvatar } from "@/components/wex";
 import { CalendarDays, ExternalLink, Github, Mail } from "lucide-react";
 
 // Token mappings for WexHoverCard
+// Layer 3 component tokens
 const hoverCardTokens: TokenRow[] = [
-  { element: "Content", property: "Background", token: "--popover" },
-  { element: "Content", property: "Border", token: "--border" },
-  { element: "Content", property: "Text", token: "--popover-foreground" },
-  { element: "Content", property: "Shadow", token: "--shadow (md)" },
+  { element: "Content", property: "Background", token: "--wex-component-hovercard-bg" },
+  { element: "Content", property: "Text", token: "--wex-component-hovercard-fg" },
+  { element: "Content", property: "Border", token: "--wex-component-hovercard-border" },
 ];
 
 export default function HoverCardPage() {

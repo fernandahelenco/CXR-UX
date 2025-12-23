@@ -6,12 +6,13 @@ import { TokenReference, type TokenRow } from "@/docs/components/TokenReference"
 import { WexInputOTP } from "@/components/wex";
 
 // Token mappings for WexInputOTP
+// Layer 3 component tokens
 const inputOTPTokens: TokenRow[] = [
-  { element: "Slot", property: "Border", token: "--input" },
-  { element: "Slot", property: "Background", token: "--background" },
-  { element: "Slot (active)", property: "Border", token: "--ring" },
-  { element: "Caret", property: "Color", token: "--foreground" },
-  { element: "Disabled", property: "Opacity", token: "50%" },
+  { element: "Slot", property: "Background", token: "--wex-component-inputotp-bg" },
+  { element: "Slot", property: "Border", token: "--wex-component-inputotp-border" },
+  { element: "Slot (Active)", property: "Focus Ring", token: "--wex-component-inputotp-focus-ring" },
+  { element: "Caret", property: "Color", token: "--wex-component-inputotp-caret" },
+  { element: "Disabled", property: "Opacity", token: "--wex-component-inputotp-disabled-opacity" },
 ];
 
 export default function InputOTPPage() {

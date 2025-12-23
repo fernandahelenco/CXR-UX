@@ -6,12 +6,13 @@ import { TokenReference, type TokenRow } from "@/docs/components/TokenReference"
 import { WexSwitch, WexLabel } from "@/components/wex";
 
 // Token mappings for WexSwitch
+// Layer 3 component tokens
 const switchTokens: TokenRow[] = [
-  { element: "Track (off)", property: "Background", token: "--input" },
-  { element: "Track (on)", property: "Background", token: "--primary" },
-  { element: "Thumb", property: "Background", token: "--background" },
-  { element: "Focus Ring", property: "Color", token: "--ring" },
-  { element: "Disabled", property: "Opacity", token: "50%" },
+  { element: "Track (Off)", property: "Background", token: "--wex-component-switch-bg" },
+  { element: "Track (On)", property: "Background", token: "--wex-component-switch-checked-bg" },
+  { element: "Thumb", property: "Background", token: "--wex-component-switch-thumb" },
+  { element: "Focus Ring", property: "Color", token: "--wex-component-switch-focus-ring" },
+  { element: "Disabled", property: "Opacity", token: "--wex-component-switch-disabled-opacity" },
 ];
 
 export default function SwitchPage() {

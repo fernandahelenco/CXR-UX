@@ -6,12 +6,14 @@ import { TokenReference, type TokenRow } from "@/docs/components/TokenReference"
 import { WexCheckbox, WexLabel } from "@/components/wex";
 
 // Token mappings for WexCheckbox
+// Layer 3 component tokens
 const checkboxTokens: TokenRow[] = [
-  { element: "Box", property: "Border", token: "--primary" },
-  { element: "Box", property: "Background (checked)", token: "--primary" },
-  { element: "Checkmark", property: "Color", token: "--primary-foreground" },
-  { element: "Focus Ring", property: "Color", token: "--ring" },
-  { element: "Disabled", property: "Opacity", token: "50%" },
+  { element: "Box", property: "Background", token: "--wex-component-checkbox-bg" },
+  { element: "Box", property: "Border", token: "--wex-component-checkbox-border" },
+  { element: "Box (Checked)", property: "Background", token: "--wex-component-checkbox-checked-bg" },
+  { element: "Checkmark", property: "Color", token: "--wex-component-checkbox-checked-fg" },
+  { element: "Focus Ring", property: "Color", token: "--wex-component-checkbox-focus-ring" },
+  { element: "Disabled", property: "Opacity", token: "--wex-component-checkbox-disabled-opacity" },
 ];
 
 export default function CheckboxPage() {
