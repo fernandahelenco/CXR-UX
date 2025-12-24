@@ -1,299 +1,262 @@
+import { ArrowDown, Info } from "lucide-react";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 
 /**
- * Token Architecture Documentation Page
- * 
- * Consolidated page explaining the 4-layer token system used in the WEX Design System.
- * Merged from TokensPage.tsx and TokenArchitecturePage.tsx
+ * Design Tokens Documentation Page
+ *
+ * Clean, scannable documentation explaining the 4-layer token architecture
+ * used in the WEX Design System.
  */
 export default function TokenArchitecturePage() {
   return (
     <div className="space-y-12">
       {/* Header */}
-      <div className="space-y-4">
+      <div className="space-y-3">
         <h1 className="font-display text-4xl font-bold tracking-tight">
           Design Tokens
         </h1>
-        <p className="text-xl text-muted-foreground max-w-3xl">
-          The WEX Design System uses a 4-layer token architecture to provide
-          flexibility, maintainability, and rich component customization without
+        <p className="text-lg text-muted-foreground max-w-2xl">
+          A 4-layer token architecture enabling granular theming without
           sacrificing consistency.
         </p>
       </div>
 
-      {/* Overview */}
-      <section className="space-y-6">
-        <h2 className="font-display text-2xl font-semibold">Architecture Overview</h2>
-        <p className="text-muted-foreground max-w-3xl">
-          Our token system is designed to solve the "primary bleed" problem
-          common in design systems—where a single <code className="bg-muted px-1.5 py-0.5 rounded text-sm">--primary</code> token
-          gets used everywhere, making granular theming difficult.
-        </p>
-
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <LayerCard
-            layer={1}
-            title="Primitives & Semantics"
-            file="wex.tokens.css"
-            description="Palette ramps (50-900) and semantic tokens that reference them."
-            examples={["--wex-palette-blue-700", "--wex-primary", "--wex-text"]}
-          />
-          <LayerCard
-            layer={2}
-            title="shadcn Bridge"
-            file="wex.shadcn-bridge.css"
-            description="Maps WEX semantics to shadcn required variables. Small and stable."
-            examples={["--primary", "--muted", "--border"]}
-          />
-          <LayerCard
-            layer={3}
-            title="Component Slots"
-            file="wex.components-bridge.css"
-            description="Granular component-level tokens for rich customization."
-            examples={["--wex-component-button-primary-bg", "--wex-component-input-border-focus"]}
-          />
-          <LayerCard
-            layer={4}
-            title="Tailwind Utilities"
-            file="tailwind.config.ts"
-            description="Exposes Layer 2 and Layer 3 tokens as Tailwind classes."
-            examples={["bg-primary", "bg-wex-button-primary-bg"]}
-          />
-        </div>
-      </section>
-
-      {/* Token Flow */}
-      <section className="space-y-6">
-        <h2 className="font-display text-2xl font-semibold">Token Flow</h2>
-        <p className="text-muted-foreground max-w-3xl">
-          Tokens cascade from primitive palette values through semantic tokens to component usage.
-          This layered approach ensures consistency while enabling granular theming.
-        </p>
-
-        <div className="rounded-lg border border-border bg-muted/50 p-6 font-mono text-sm">
+      {/* Token Cascade Visual - Vertical Flow */}
+      <section className="space-y-4">
+        <h2 className="font-display text-xl font-semibold">Token Cascade</h2>
+        <div className="rounded-xl border border-border bg-gradient-to-b from-muted/30 to-muted/10 p-6">
           <div className="space-y-3">
-            <p>
-              <span className="text-muted-foreground font-sans">1. Palette (primitives):</span>{" "}
-              <code className="text-primary">--wex-palette-blue-700: 208 100% 32%</code>
-            </p>
-            <p>
-              <span className="text-muted-foreground font-sans">2. Semantic (references palette):</span>{" "}
-              <code className="text-primary">--wex-primary: var(--wex-palette-blue-700)</code>
-            </p>
-            <p>
-              <span className="text-muted-foreground font-sans">3. Bridge (maps to shadcn):</span>{" "}
-              <code className="text-primary">--primary: var(--wex-primary)</code>
-            </p>
-            <p>
-              <span className="text-muted-foreground font-sans">4. Component (optional granular):</span>{" "}
-              <code className="text-primary">--wex-component-button-primary-bg: var(--wex-primary)</code>
-            </p>
-            <p>
-              <span className="text-muted-foreground font-sans">5. Tailwind utility:</span>{" "}
-              <code className="text-primary">bg-primary → hsl(var(--primary))</code>
-            </p>
+            <CascadeRow
+              layer="1"
+              label="Palette"
+              token="--wex-palette-blue-700"
+              value="208 100% 32%"
+            />
+            <CascadeArrow />
+            <CascadeRow
+              layer="1"
+              label="Semantic"
+              token="--wex-primary"
+              value="var(--wex-palette-blue-700)"
+            />
+            <CascadeArrow />
+            <CascadeRow
+              layer="2"
+              label="Bridge"
+              token="--primary"
+              value="var(--wex-primary)"
+            />
+            <CascadeArrow />
+            <CascadeRow
+              layer="3"
+              label="Component"
+              token="--wex-component-button-primary-bg"
+              value="var(--wex-primary)"
+            />
+            <CascadeArrow />
+            <CascadeRow
+              layer="4"
+              label="Tailwind"
+              token="bg-primary"
+              value="hsl(var(--primary))"
+            />
           </div>
         </div>
       </section>
 
-      {/* Token Example */}
-      <section className="space-y-6">
-        <h2 className="font-display text-2xl font-semibold">Token Definition Example</h2>
-        <p className="text-muted-foreground max-w-3xl">
-          Here's how tokens are defined in <code className="bg-muted px-1 rounded">wex.tokens.css</code>.
-          Note how semantic tokens reference palette steps, not raw HSL values.
+      {/* File Reference Table */}
+      <section className="space-y-4">
+        <h2 className="font-display text-xl font-semibold">File Reference</h2>
+        <div className="border border-border rounded-lg overflow-hidden">
+          <table className="w-full text-sm">
+            <thead className="bg-muted/50">
+              <tr>
+                <th className="px-4 py-3 text-left font-medium w-20">Layer</th>
+                <th className="px-4 py-3 text-left font-medium">File</th>
+                <th className="px-4 py-3 text-left font-medium">Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="border-t border-border">
+                <td className="px-4 py-3 font-mono text-xs">1</td>
+                <td className="px-4 py-3 font-mono text-xs text-primary">
+                  wex.tokens.css
+                </td>
+                <td className="px-4 py-3 text-muted-foreground">
+                  Palette ramps (50-900) and semantic tokens
+                </td>
+              </tr>
+              <tr className="border-t border-border bg-muted/25">
+                <td className="px-4 py-3 font-mono text-xs">2</td>
+                <td className="px-4 py-3 font-mono text-xs text-primary">
+                  wex.shadcn-bridge.css
+                </td>
+                <td className="px-4 py-3 text-muted-foreground">
+                  Maps WEX tokens to shadcn variables
+                </td>
+              </tr>
+              <tr className="border-t border-border">
+                <td className="px-4 py-3 font-mono text-xs">3</td>
+                <td className="px-4 py-3 font-mono text-xs text-primary">
+                  wex.components-bridge.css
+                </td>
+                <td className="px-4 py-3 text-muted-foreground">
+                  Granular component slot tokens
+                </td>
+              </tr>
+              <tr className="border-t border-border bg-muted/25">
+                <td className="px-4 py-3 font-mono text-xs">4</td>
+                <td className="px-4 py-3 font-mono text-xs text-primary">
+                  tailwind.config.ts
+                </td>
+                <td className="px-4 py-3 text-muted-foreground">
+                  Exposes tokens as Tailwind utilities
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* Code Example */}
+      <section className="space-y-4">
+        <h2 className="font-display text-xl font-semibold">Example</h2>
+        <p className="text-sm text-muted-foreground max-w-2xl">
+          Semantic tokens reference palette steps. Dark mode swaps to different
+          palette steps for contrast.
         </p>
         <CodeBlock
           code={`:root {
-  /* Layer 1a: Palette primitives */
+  /* Palette primitives */
   --wex-palette-blue-700: 208 100% 32%;
   --wex-palette-blue-800: 208 100% 26%;
   
-  /* Layer 1b: Semantic tokens (reference palette) */
+  /* Semantic tokens reference palette */
   --wex-primary: var(--wex-palette-blue-700);
   --wex-primary-hover: var(--wex-palette-blue-800);
-  --wex-primary-contrast: 0 0% 100%;
 }
 
 .dark {
-  /* Dark mode uses lighter palette steps for contrast */
   --wex-primary: var(--wex-palette-blue-500);
   --wex-primary-hover: var(--wex-palette-blue-600);
-  --wex-primary-contrast: 216 10% 90%;
 }`}
         />
       </section>
 
-      {/* Layer 3 Deep Dive */}
-      <section className="space-y-6">
-        <h2 className="font-display text-2xl font-semibold">
-          Layer 3: Component Slot Tokens
+      {/* Layer 3: Component Slots */}
+      <section className="space-y-4">
+        <h2 className="font-display text-xl font-semibold">
+          Layer 3: Component Slots
         </h2>
-        <p className="text-muted-foreground max-w-3xl">
-          Layer 3 provides component-specific tokens that give each component
-          its own "slots" for backgrounds, foregrounds, borders, and states.
-          This enables PrimeNG-like richness while maintaining shadcn compatibility.
+        <div className="bg-muted/30 border border-border rounded-lg p-4">
+          <p className="font-mono text-sm">
+            --wex-component-
+            <span className="text-primary">{"{component}"}</span>-
+            <span className="text-muted-foreground">{"{variant?}"}</span>-
+            <span className="text-primary">{"{slot}"}</span>
+          </p>
+        </div>
+
+        <div className="border border-border rounded-lg overflow-hidden">
+          <table className="w-full text-sm">
+            <thead className="bg-muted/50">
+              <tr>
+                <th className="px-4 py-2 text-left font-medium">
+                  Button Token
+                </th>
+                <th className="px-4 py-2 text-left font-medium">References</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                {
+                  name: "--wex-component-button-primary-bg",
+                  ref: "var(--wex-primary)",
+                },
+                {
+                  name: "--wex-component-button-primary-fg",
+                  ref: "var(--wex-primary-contrast)",
+                },
+                {
+                  name: "--wex-component-button-primary-hover-bg",
+                  ref: "var(--wex-primary-hover)",
+                },
+                {
+                  name: "--wex-component-button-secondary-bg",
+                  ref: "var(--wex-surface-subtle)",
+                },
+                {
+                  name: "--wex-component-button-destructive-bg",
+                  ref: "var(--wex-destructive)",
+                },
+              ].map((token, i) => (
+                <tr
+                  key={token.name}
+                  className={i % 2 === 0 ? "border-t border-border" : "border-t border-border bg-muted/25"}
+                >
+                  <td className="px-4 py-2 font-mono text-xs">{token.name}</td>
+                  <td className="px-4 py-2 font-mono text-xs text-muted-foreground">
+                    {token.ref}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          See individual component pages for full token reference.
         </p>
-
-        <div className="bg-muted/50 border border-border rounded-lg p-6 space-y-4">
-          <h3 className="font-semibold">Naming Convention</h3>
-          <code className="block bg-background px-4 py-2 rounded text-sm font-mono">
-            --wex-component-{"{component}"}-{"{variant?}"}-{"{slot}"}
-          </code>
-          <div className="grid gap-4 md:grid-cols-3 text-sm">
-            <div>
-              <span className="font-medium">component:</span>
-              <span className="text-muted-foreground ml-2">button, input, tabs, etc.</span>
-            </div>
-            <div>
-              <span className="font-medium">variant:</span>
-              <span className="text-muted-foreground ml-2">primary, secondary, info (optional)</span>
-            </div>
-            <div>
-              <span className="font-medium">slot:</span>
-              <span className="text-muted-foreground ml-2">bg, fg, border, hover-bg, etc.</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Component Token Tables */}
-        <div className="space-y-8">
-          <TokenTable
-            component="Button"
-            tokens={[
-              { name: "--wex-component-button-primary-bg", source: "var(--wex-primary)" },
-              { name: "--wex-component-button-primary-fg", source: "var(--wex-primary-contrast)" },
-              { name: "--wex-component-button-primary-hover-bg", source: "var(--wex-primary-hover)" },
-              { name: "--wex-component-button-primary-active-bg", source: "var(--wex-primary-active)" },
-              { name: "--wex-component-button-secondary-bg", source: "var(--wex-surface-subtle)" },
-              { name: "--wex-component-button-destructive-bg", source: "var(--wex-destructive)" },
-            ]}
-          />
-
-          <TokenTable
-            component="Input"
-            tokens={[
-              { name: "--wex-component-input-bg", source: "var(--wex-content-bg)" },
-              { name: "--wex-component-input-border", source: "var(--wex-input-border)" },
-              { name: "--wex-component-input-border-focus", source: "var(--wex-primary)" },
-              { name: "--wex-component-input-disabled-bg", source: "var(--wex-surface-subtle)" },
-            ]}
-          />
-
-          <TokenTable
-            component="Badge"
-            tokens={[
-              { name: "--wex-component-badge-info-bg", source: "var(--wex-info)" },
-              { name: "--wex-component-badge-success-bg", source: "var(--wex-success)" },
-              { name: "--wex-component-badge-warning-bg", source: "var(--wex-warning)" },
-              { name: "--wex-component-badge-destructive-bg", source: "var(--wex-destructive)" },
-            ]}
-          />
-        </div>
-      </section>
-
-      {/* Usage */}
-      <section className="space-y-6">
-        <h2 className="font-display text-2xl font-semibold">Usage</h2>
-
-        <div className="space-y-4">
-          <h3 className="font-medium">Tailwind Utilities (Recommended)</h3>
-          <p className="text-muted-foreground text-sm">
-            Use the <code className="bg-muted px-1 rounded">wex.*</code> utilities
-            for component-specific styling:
-          </p>
-          <pre className="bg-muted/50 border border-border rounded-lg p-4 text-sm font-mono overflow-x-auto">
-{`<button className="
-  bg-wex-button-primary-bg
-  text-wex-button-primary-fg
-  hover:bg-wex-button-primary-hover-bg
-  active:bg-wex-button-primary-active-bg
-">
-  Click me
-</button>`}
-          </pre>
-        </div>
-
-        <div className="space-y-4">
-          <h3 className="font-medium">CVA Integration</h3>
-          <p className="text-muted-foreground text-sm">
-            In CVA variant definitions, use the wex utilities:
-          </p>
-          <pre className="bg-muted/50 border border-border rounded-lg p-4 text-sm font-mono overflow-x-auto">
-{`const buttonVariants = cva("...", {
-  variants: {
-    intent: {
-      primary: "bg-wex-button-primary-bg text-wex-button-primary-fg hover:bg-wex-button-primary-hover-bg",
-      secondary: "bg-wex-button-secondary-bg text-wex-button-secondary-fg hover:bg-wex-button-secondary-hover-bg",
-    }
-  }
-});`}
-          </pre>
-        </div>
       </section>
 
       {/* Rules */}
-      <section className="space-y-6">
-        <h2 className="font-display text-2xl font-semibold">Rules</h2>
-        <div className="grid gap-4 md:grid-cols-2">
-          <RuleCard
-            title="Layer 3 tokens MUST reference Layer 1"
-            description="Component tokens should reference semantic tokens (--wex-primary) or palette steps (--wex-palette-blue-700), never raw hex values."
-            status="required"
-          />
-          <RuleCard
-            title="No circular references"
-            description="A token cannot reference itself or create a reference loop."
-            status="required"
-          />
-          <RuleCard
-            title="Prefix with --wex-component-*"
-            description="All Layer 3 tokens must use the collision-proof prefix."
-            status="required"
-          />
-          <RuleCard
-            title="Dark mode auto-shifts"
-            description="Reference semantic tokens for automatic dark mode support. Only add .dark overrides when truly necessary."
-            status="recommended"
-          />
-        </div>
+      <section className="space-y-4">
+        <h2 className="font-display text-xl font-semibold">Rules</h2>
+        <ul className="space-y-2 text-sm">
+          <li className="flex items-start gap-2">
+            <span className="text-destructive font-medium shrink-0">
+              Required
+            </span>
+            <span className="text-muted-foreground">
+              Layer 3 tokens must reference Layer 1 (semantic or palette), never
+              raw hex/HSL values.
+            </span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-destructive font-medium shrink-0">
+              Required
+            </span>
+            <span className="text-muted-foreground">
+              No circular references between tokens.
+            </span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-destructive font-medium shrink-0">
+              Required
+            </span>
+            <span className="text-muted-foreground">
+              All Layer 3 tokens use the{" "}
+              <code className="bg-muted px-1 rounded">--wex-component-*</code>{" "}
+              prefix.
+            </span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-info font-medium shrink-0">Recommended</span>
+            <span className="text-muted-foreground">
+              Reference semantic tokens for automatic dark mode support.
+            </span>
+          </li>
+        </ul>
       </section>
 
-      {/* Future: Style Dictionary */}
-      <section className="space-y-6">
-        <h2 className="font-display text-2xl font-semibold">Future: Style Dictionary</h2>
-        <div className="bg-muted/30 border border-border rounded-lg p-6 space-y-4">
-          <p className="text-muted-foreground">
-            Currently, <code className="bg-muted px-1.5 py-0.5 rounded">wex.tokens.css</code> is
-            hand-authored. In a future phase, this file will become a generated
-            output from Style Dictionary, with the source of truth being JSON
-            token files.
-          </p>
-          <p className="text-muted-foreground">
-            The bridge file (<code className="bg-muted px-1.5 py-0.5 rounded">wex.shadcn-bridge.css</code>) 
-            will remain hand-authored, as semantic mapping decisions require human intent.
-          </p>
-        </div>
-      </section>
-
-      {/* Why This Matters */}
-      <section className="space-y-6">
-        <h2 className="font-display text-2xl font-semibold">Why This Matters</h2>
-        <div className="grid gap-6 md:grid-cols-3">
-          <BenefitCard
-            title="Eliminates Primary Bleed"
-            description="Each component has its own tokens, so changing the button primary color doesn't affect badges, tabs, or other components."
-          />
-          <BenefitCard
-            title="Rich Variant Support"
-            description="Support for multiple button intents, badge styles, and component states without workarounds."
-          />
-          <BenefitCard
-            title="Theme Builder Ready"
-            description="The Theme Builder can target specific component slots for granular theming."
-          />
-        </div>
-      </section>
+      {/* Future Note */}
+      <aside className="flex items-start gap-3 bg-muted/30 border border-border rounded-lg p-4">
+        <Info className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
+        <p className="text-sm text-muted-foreground">
+          <span className="font-medium text-foreground">Future:</span> Token
+          files will be generated from Style Dictionary JSON sources. The bridge
+          file will remain hand-authored.
+        </p>
+      </aside>
     </div>
   );
 }
@@ -302,105 +265,40 @@ export default function TokenArchitecturePage() {
 // Helper Components
 // ============================================================
 
-interface LayerCardProps {
-  layer: number;
-  title: string;
-  file: string;
-  description: string;
-  examples: string[];
+interface CascadeRowProps {
+  layer: string;
+  label: string;
+  token: string;
+  value: string;
 }
 
-function LayerCard({ layer, title, file, description, examples }: LayerCardProps) {
+function CascadeRow({ layer, label, token, value }: CascadeRowProps) {
   return (
-    <div className="bg-card border border-border rounded-lg p-4 space-y-3">
-      <div className="flex items-center gap-2">
+    <div className="flex items-center gap-4 bg-background/50 rounded-lg px-4 py-3 border border-border/50">
+      <div className="flex items-center gap-2 shrink-0 w-28">
         <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold">
           {layer}
         </span>
-        <span className="font-semibold">{title}</span>
+        <span className="text-sm font-medium">{label}</span>
       </div>
-      <code className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
-        {file}
-      </code>
-      <p className="text-sm text-muted-foreground">{description}</p>
-      <div className="space-y-1">
-        {examples.map((example) => (
-          <code key={example} className="block text-xs font-mono text-primary">
-            {example}
-          </code>
-        ))}
+      <div className="flex-1 min-w-0">
+        <code className="text-sm font-mono text-primary break-all">
+          {token}
+        </code>
       </div>
-    </div>
-  );
-}
-
-interface TokenTableProps {
-  component: string;
-  tokens: { name: string; source: string }[];
-}
-
-function TokenTable({ component, tokens }: TokenTableProps) {
-  return (
-    <div className="space-y-2">
-      <h4 className="font-medium">{component}</h4>
-      <div className="border border-border rounded-lg overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-muted/50">
-            <tr>
-              <th className="px-4 py-2 text-left font-medium">Token</th>
-              <th className="px-4 py-2 text-left font-medium">References</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tokens.map((token, i) => (
-              <tr key={token.name} className={i % 2 === 0 ? "" : "bg-muted/25"}>
-                <td className="px-4 py-2 font-mono text-xs">{token.name}</td>
-                <td className="px-4 py-2 font-mono text-xs text-muted-foreground">{token.source}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="hidden sm:block text-right shrink-0">
+        <code className="text-xs font-mono text-muted-foreground">
+          {value}
+        </code>
       </div>
     </div>
   );
 }
 
-interface RuleCardProps {
-  title: string;
-  description: string;
-  status: "required" | "recommended";
-}
-
-function RuleCard({ title, description, status }: RuleCardProps) {
+function CascadeArrow() {
   return (
-    <div className="bg-card border border-border rounded-lg p-4 space-y-2">
-      <div className="flex items-center gap-2">
-        <span
-          className={`px-2 py-0.5 rounded text-xs font-medium ${
-            status === "required"
-              ? "bg-destructive/10 text-destructive"
-              : "bg-info/10 text-info"
-          }`}
-        >
-          {status}
-        </span>
-        <span className="font-medium">{title}</span>
-      </div>
-      <p className="text-sm text-muted-foreground">{description}</p>
-    </div>
-  );
-}
-
-interface BenefitCardProps {
-  title: string;
-  description: string;
-}
-
-function BenefitCard({ title, description }: BenefitCardProps) {
-  return (
-    <div className="space-y-2">
-      <h3 className="font-medium">{title}</h3>
-      <p className="text-sm text-muted-foreground">{description}</p>
+    <div className="flex justify-center pl-16">
+      <ArrowDown className="w-4 h-4 text-muted-foreground" />
     </div>
   );
 }

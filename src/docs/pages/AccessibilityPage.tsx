@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useSearchParams, Link } from "react-router-dom";
-import { Check, AlertTriangle, X, HelpCircle, Search, Sun, Moon } from "lucide-react";
+import { Check, X, HelpCircle, Search, Sun, Moon } from "lucide-react";
 import complianceData from "@/docs/registry/compliance.json";
 import { componentRegistry } from "@/docs/registry/components";
 import { WexInput, WexDialog, WexTabs } from "@/components/wex";

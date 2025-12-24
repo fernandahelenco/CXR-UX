@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Check, AlertTriangle, X, HelpCircle, ChevronDown, ChevronUp, FlaskConical, Sun, Moon } from "lucide-react";
-import { useA11yCompliance, useA11yExampleResults, type ComplianceResult, type ExampleResult } from "@/docs/hooks/useA11yCompliance";
+import { useA11yCompliance, useA11yExampleResults, type ComplianceResult } from "@/docs/hooks/useA11yCompliance";
 
 /**
  * A11yResultsSection - Accessibility results summary for component pages
@@ -129,7 +129,7 @@ function ResultsSection({ compliance, registryKey }: ResultsSectionProps) {
           <CheckIndicator passed={ariaPassed} label="ARIA" />
         </div>
         <div className="text-sm">
-          {violations > 0 ? (
+          {(violations ?? 0) > 0 ? (
             <span className="text-destructive font-medium">{violations} violation{violations !== 1 ? 's' : ''}</span>
           ) : (
             <span className="text-success font-medium">No violations</span>

@@ -5,7 +5,7 @@ import { CodeBlock } from "@/docs/components/CodeBlock";
 import { Guidance } from "@/docs/components/ProseBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
 import { WexButton } from "@/components/wex";
-import { Plus, Trash2, Settings, Download, Check, Info, AlertTriangle, HelpCircle, ExternalLink } from "lucide-react";
+import { Plus, Settings, Download } from "lucide-react";
 
 // Token mappings for WexButton variants - using Layer 3 component tokens
 const buttonTokens: TokenRow[] = [
