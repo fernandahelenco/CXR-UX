@@ -27,17 +27,19 @@ export default function TokenArchitecturePage() {
         <div className="rounded-xl border border-border bg-gradient-to-b from-muted/30 to-muted/10 p-6">
           <div className="space-y-3">
             <CascadeRow
-              layer="1"
+              layer="1a"
               label="Palette"
               token="--wex-palette-blue-700"
               value="208 100% 32%"
+              sublabel="Raw color values"
             />
             <CascadeArrow />
             <CascadeRow
-              layer="1"
+              layer="1b"
               label="Semantic"
               token="--wex-primary"
               value="var(--wex-palette-blue-700)"
+              sublabel="Meaningful names"
             />
             <CascadeArrow />
             <CascadeRow
@@ -45,6 +47,7 @@ export default function TokenArchitecturePage() {
               label="Bridge"
               token="--primary"
               value="var(--wex-primary)"
+              sublabel="shadcn compatibility"
             />
             <CascadeArrow />
             <CascadeRow
@@ -52,6 +55,7 @@ export default function TokenArchitecturePage() {
               label="Component"
               token="--wex-component-button-primary-bg"
               value="var(--wex-primary)"
+              sublabel="Per-component slots"
             />
             <CascadeArrow />
             <CascadeRow
@@ -59,6 +63,7 @@ export default function TokenArchitecturePage() {
               label="Tailwind"
               token="bg-primary"
               value="hsl(var(--primary))"
+              sublabel="CSS utilities"
             />
           </div>
         </div>
@@ -78,12 +83,12 @@ export default function TokenArchitecturePage() {
             </thead>
             <tbody>
               <tr className="border-t border-border">
-                <td className="px-4 py-3 font-mono text-xs">1</td>
+                <td className="px-4 py-3 font-mono text-xs">1a/1b</td>
                 <td className="px-4 py-3 font-mono text-xs text-primary">
                   wex.tokens.css
                 </td>
                 <td className="px-4 py-3 text-muted-foreground">
-                  Palette ramps (50-900) and semantic tokens
+                  Palette ramps (1a: raw values) and semantic tokens (1b: meaningful names)
                 </td>
               </tr>
               <tr className="border-t border-border bg-muted/25">
@@ -270,16 +275,22 @@ interface CascadeRowProps {
   label: string;
   token: string;
   value: string;
+  sublabel?: string;
 }
 
-function CascadeRow({ layer, label, token, value }: CascadeRowProps) {
+function CascadeRow({ layer, label, token, value, sublabel }: CascadeRowProps) {
   return (
     <div className="flex items-center gap-4 bg-background/50 rounded-lg px-4 py-3 border border-border/50">
-      <div className="flex items-center gap-2 shrink-0 w-28">
-        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold">
+      <div className="flex items-center gap-2 shrink-0 w-36">
+        <span className="flex items-center justify-center w-7 h-7 rounded-full bg-primary text-primary-foreground text-xs font-bold">
           {layer}
         </span>
-        <span className="text-sm font-medium">{label}</span>
+        <div className="flex flex-col">
+          <span className="text-sm font-medium leading-tight">{label}</span>
+          {sublabel && (
+            <span className="text-[10px] text-muted-foreground leading-tight">{sublabel}</span>
+          )}
+        </div>
       </div>
       <div className="flex-1 min-w-0">
         <code className="text-sm font-mono text-primary break-all">
