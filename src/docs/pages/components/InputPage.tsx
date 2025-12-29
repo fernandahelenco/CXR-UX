@@ -4,6 +4,7 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { Guidance } from "@/docs/components/ProseBlock";
 import { WexInput, WexLabel } from "@/components/wex";
 import { Search, Mail, Eye, EyeOff, Lock, Calendar, Phone } from "lucide-react";
 
@@ -293,6 +294,16 @@ const [showPassword, setShowPassword] = useState(false);
             <li><code className="bg-muted px-1 rounded">rightIcon</code>: ReactNode</li>
           </ul>
         </div>
+      </Section>
+
+      <Section title="Related Components">
+        <Guidance>
+          Need the label to float from inside the field to above it when focused? Use{" "}
+          <a href="/components/float-label" className="text-link hover:text-link-hover underline">
+            Float Label
+          </a>{" "}
+          for the PrimeNG-style floating variant built on top of this input.
+        </Guidance>
       </Section>
 
       <TokenReference tokens={inputTokens} className="mt-12" />

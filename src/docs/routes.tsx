@@ -49,6 +49,7 @@ const FieldPage = React.lazy(() => import("@/docs/pages/components/FieldPage"));
 const FormPage = React.lazy(() => import("@/docs/pages/components/FormPage"));
 const HoverCardPage = React.lazy(() => import("@/docs/pages/components/HoverCardPage"));
 const InputPage = React.lazy(() => import("@/docs/pages/components/InputPage"));
+const FloatLabelPage = React.lazy(() => import("@/docs/pages/components/FloatLabelPage"));
 const InputGroupPage = React.lazy(() => import("@/docs/pages/components/InputGroupPage"));
 const InputOTPPage = React.lazy(() => import("@/docs/pages/components/InputOTPPage"));
 const ItemPage = React.lazy(() => import("@/docs/pages/components/ItemPage"));
@@ -150,6 +151,7 @@ export function DocsRoutes() {
           <Route path="components/form" element={<FormPage />} />
           <Route path="components/hover-card" element={<HoverCardPage />} />
           <Route path="components/input" element={<InputPage />} />
+          <Route path="components/float-label" element={<FloatLabelPage />} />
           <Route path="components/input-group" element={<InputGroupPage />} />
           <Route path="components/input-otp" element={<InputOTPPage />} />
           <Route path="components/item" element={<ItemPage />} />

@@ -187,6 +187,17 @@
   --wex-component-input-height-lg: 3rem;
 
   /* ============================================================
+     FLOAT LABEL
+     ============================================================
+     Floating label input component (PrimeNG-style).
+     The label floats from inside the input to above when focused
+     or containing a value.
+     ============================================================ */
+  --wex-component-floatlabel-label-fg: var(--wex-text-muted);
+  --wex-component-floatlabel-label-focus-fg: var(--wex-primary);
+  --wex-component-floatlabel-label-filled-fg: var(--wex-text-muted);
+
+  /* ============================================================
      SELECT
      ============================================================
      References shared form control tokens for consistency.

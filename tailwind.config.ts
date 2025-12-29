@@ -197,6 +197,11 @@ const config: Config = {
             "disabled-fg": "hsl(var(--wex-component-input-disabled-fg) / <alpha-value>)",
             "disabled-border": "hsl(var(--wex-component-input-disabled-border) / <alpha-value>)",
           },
+          floatlabel: {
+            "label-fg": "hsl(var(--wex-component-floatlabel-label-fg) / <alpha-value>)",
+            "label-focus-fg": "hsl(var(--wex-component-floatlabel-label-focus-fg) / <alpha-value>)",
+            "label-filled-fg": "hsl(var(--wex-component-floatlabel-label-filled-fg) / <alpha-value>)",
+          },
           select: {
             "trigger-bg": "hsl(var(--wex-component-select-trigger-bg) / <alpha-value>)",
             "trigger-fg": "hsl(var(--wex-component-select-trigger-fg) / <alpha-value>)",

@@ -26,6 +26,7 @@ export { WexBadge, wexBadgeVariants, type WexBadgeProps } from "./components/wex
 
 // ===== FORM COMPONENTS =====
 export { WexInput } from "./components/wex/wex-input";
+export { WexFloatLabel, type WexFloatLabelProps } from "./components/wex/wex-float-label";
 export { WexTextarea } from "./components/wex/wex-textarea";
 export { WexCheckbox } from "./components/wex/wex-checkbox";
 export { WexSwitch } from "./components/wex/wex-switch";

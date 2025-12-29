@@ -105,6 +105,15 @@ export const componentRegistry: ComponentRegistryEntry[] = [
     tags: ["form", "input", "date"],
   },
   {
+    name: "Float Label",
+    route: "/components/float-label",
+    importPath: "@/docs/pages/components/FloatLabelPage",
+    description: "Input with floating label that animates on focus",
+    status: "stable",
+    category: "form-inputs",
+    tags: ["form", "input"],
+  },
+  {
     name: "Input",
     route: "/components/input",
     importPath: "@/docs/pages/components/InputPage",
