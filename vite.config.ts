@@ -4,6 +4,7 @@ import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/CXR-UX/', // GitHub Pages base path
   plugins: [react()],
   server: {
     port: 5174,
