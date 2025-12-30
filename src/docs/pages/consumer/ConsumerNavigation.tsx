@@ -108,9 +108,12 @@ export function ConsumerNavigation() {
             <WexButton
               intent="ghost"
               size="icon"
+              asChild
               aria-label="Notifications"
             >
-              <Bell className="h-5 w-5" />
+              <Link to="/message-center">
+                <Bell className="h-5 w-5" />
+              </Link>
             </WexButton>
             <WexBadge 
               className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"

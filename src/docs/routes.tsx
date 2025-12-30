@@ -20,6 +20,9 @@ const ConsumerExperiencePage = React.lazy(() => import("@/docs/pages/ConsumerExp
 // Account Overview page - standalone route
 const AccountOverviewPage = React.lazy(() => import("@/docs/pages/AccountOverviewPage"));
 
+// Message Center page - standalone route
+const MessageCenterPage = React.lazy(() => import("@/docs/pages/consumer/MessageCenter"));
+
 // Foundation pages
 const TokenArchitecturePage = React.lazy(() => import("@/docs/pages/foundations/TokenArchitecturePage"));
 const ColorsPage = React.lazy(() => import("@/docs/pages/foundations/ColorsPage"));
@@ -112,6 +115,9 @@ export function DocsRoutes() {
         
         {/* Standalone Account Overview route - bypasses DocsLayout */}
         <Route path="/account-overview" element={<AccountOverviewPage />} />
+        
+        {/* Standalone Message Center route - bypasses DocsLayout */}
+        <Route path="/message-center" element={<MessageCenterPage />} />
         
         <Route element={<DocsLayout />}>
           {/* Design System overview moved to /design-system */}
