@@ -16,6 +16,34 @@ export default function ChangelogPage() {
 
       <div className="space-y-8">
         <ChangelogEntry
+          version="1.1.0"
+          date="December 30, 2025"
+          title="Button Outline Variants & A11y Fixes"
+          changes={[
+            "BREAKING: WexButton API refactored - added 'variant' prop (solid | outline | ghost | link)",
+            "BREAKING: WexButton 'intent' now restricted to semantic values only (primary, secondary, success, info, warning, destructive, help, contrast)",
+            "BREAKING: Removed ghost, outline, link from intent - use variant prop instead",
+            "Components: Outline variant now works with ALL intents (not just neutral)",
+            "Components: Tinted hover/active backgrounds for outline buttons per intent",
+            "Components: Removed outline-contrast variant (too similar to outline-secondary)",
+            "Tokens: Added 64 new CSS variables for outline button variants (fg, border, hover-bg, active-bg per intent)",
+            "Tailwind: Added outline-* utilities for each button intent",
+            "A11y: Fixed WexTabs nested-interactive issue with closable tabs",
+            "A11y: Fixed WexFloatLabel target-size issue (password toggle now 24x24)",
+            "A11y: Fixed WexChart svg-img-alt with MutationObserver to hide SVG from AT",
+            "A11y: All 57 components now pass accessibility tests (light and dark modes)",
+            "A11y: Added 16 new ExampleCards for outline button variants with proper test coverage",
+            "Tokens: Fixed dark mode outline colors using valid palette shades (900/800 instead of 950)",
+            "Tokens: Fixed outline-warning contrast (amber-800 instead of amber-700)",
+            "Tokens: Fixed outline-destructive dark contrast (red-300 instead of red-400)",
+            "Tokens: Fixed outline-help dark contrast (purple-300 instead of purple-400)",
+            "Docs: Updated ButtonPage with Outline Severities section",
+            "Docs: Updated API Reference to reflect variant/intent split",
+            "Version: Bumped @wex/components and root package to 1.1.0",
+          ]}
+        />
+
+        <ChangelogEntry
           version="0.23.0"
           date="December 29, 2025"
           title="Float Label Component & Extended Test Coverage"
