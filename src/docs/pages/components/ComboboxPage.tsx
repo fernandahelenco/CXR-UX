@@ -5,7 +5,20 @@ import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { Guidance } from "@/docs/components/ProseBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexCombobox, type ComboboxOption } from "@/components/wex";
+
+// Props documentation for WexCombobox
+const comboboxProps: PropDefinition[] = [
+  { name: "options", type: "ComboboxOption[]", required: true, description: "Array of options { value, label }" },
+  { name: "value", type: "string", description: "Controlled selected value" },
+  { name: "onValueChange", type: "(value: string) => void", description: "Callback when selection changes" },
+  { name: "placeholder", type: "string", default: '"Select..."', description: "Placeholder text when no option selected" },
+  { name: "searchPlaceholder", type: "string", default: '"Search..."', description: "Placeholder for the search input" },
+  { name: "emptyText", type: "string", default: '"No results found."', description: "Text shown when no options match search" },
+  { name: "disabled", type: "boolean", default: "false", description: "Disables the combobox" },
+  { name: "className", type: "string", description: "Additional CSS classes" },
+];
 
 // Token mappings for WexCombobox
 const comboboxTokens: TokenRow[] = [
@@ -139,6 +152,10 @@ const [value, setValue] = React.useState<string>("");
 />`}
           language="tsx"
         />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={comboboxProps} />
       </Section>
 
       <TokenReference tokens={comboboxTokens} className="mt-12" />

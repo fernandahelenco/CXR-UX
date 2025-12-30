@@ -3,7 +3,15 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexSkeleton } from "@/components/wex";
+
+// Props documentation
+const skeletonProps: PropDefinition[] = [
+  { name: "shape", type: '"rectangle" | "circle"', default: '"rectangle"', description: "Shape of the skeleton" },
+  { name: "animation", type: '"pulse" | "wave" | "none"', default: '"pulse"', description: "Animation style" },
+  { name: "className", type: "string", description: "Additional CSS classes for custom sizing" },
+];
 
 // Token mappings for Skeleton
 // Layer 3 component tokens
@@ -196,6 +204,10 @@ export default function SkeletonPage() {
             <li><code className="bg-muted px-1 rounded">SkeletonList count</code>: number - Number of list items</li>
           </ul>
         </div>
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={skeletonProps} />
       </Section>
 
       <TokenReference tokens={skeletonTokens} className="mt-12" />

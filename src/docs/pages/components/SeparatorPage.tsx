@@ -3,7 +3,15 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexSeparator } from "@/components/wex";
+
+// Props documentation
+const separatorProps: PropDefinition[] = [
+  { name: "orientation", type: '"horizontal" | "vertical"', default: '"horizontal"', description: "Separator direction" },
+  { name: "decorative", type: "boolean", default: "true", description: "If true, renders as purely decorative (no role)" },
+  { name: "className", type: "string", description: "Additional CSS classes" },
+];
 
 // Token mappings for WexSeparator
 // Layer 3 component tokens
@@ -82,6 +90,10 @@ export default function SeparatorPage() {
 // Vertical
 <WexSeparator orientation="vertical" />`}
         />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={separatorProps} />
       </Section>
 
       <TokenReference tokens={separatorTokens} className="mt-12" />

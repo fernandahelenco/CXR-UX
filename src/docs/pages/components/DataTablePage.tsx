@@ -4,6 +4,7 @@ import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { Guidance } from "@/docs/components/ProseBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import {
   WexDataTable,
   WexDataTableColumnHeader,
@@ -11,6 +12,18 @@ import {
   WexBadge,
 } from "@/components/wex";
 import type { ColumnDef } from "@tanstack/react-table";
+
+// Props documentation
+const dataTableProps: PropDefinition[] = [
+  { name: "columns", type: "ColumnDef<TData>[]", required: true, description: "Column definitions" },
+  { name: "data", type: "TData[]", required: true, description: "Table data array" },
+  { name: "searchKey", type: "string", description: "Key for global search filtering" },
+  { name: "searchPlaceholder", type: "string", default: '"Search..."', description: "Search input placeholder" },
+  { name: "pagination", type: "boolean", default: "true", description: "Show pagination controls" },
+  { name: "pageSize", type: "number", default: "10", description: "Rows per page" },
+  { name: "selectable", type: "boolean", default: "false", description: "Enable row selection" },
+  { name: "onRowClick", type: "(row: TData) => void", description: "Row click handler" },
+];
 
 // Token mappings for WexDataTable
 const dataTableTokens: TokenRow[] = [
@@ -229,6 +242,16 @@ const columns: ColumnDef<Payment>[] = [
   searchPlaceholder="Search emails..."
 />`}
           language="tsx"
+        />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable 
+          props={dataTableProps}
+          subComponents={[
+            { name: "WexDataTableColumnHeader", props: [{ name: "column", type: "Column<TData>", required: true, description: "Column instance" }, { name: "title", type: "string", required: true, description: "Header title" }] },
+            { name: "WexDataTableRowActions", props: [{ name: "row", type: "Row<TData>", required: true, description: "Row instance" }] },
+          ]}
         />
       </Section>
 

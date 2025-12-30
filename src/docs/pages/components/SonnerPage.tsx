@@ -4,8 +4,21 @@ import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { Guidance } from "@/docs/components/ProseBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexButton, wexToast } from "@/components/wex";
 import { AccessibilitySection } from "@/docs/components/AccessibilitySection";
+
+// Props documentation for wexToast function
+const wexToastProps: PropDefinition[] = [
+  { name: "message", type: "string | ReactNode", required: true, description: "Toast message content" },
+  { name: "description", type: "string | ReactNode", description: "Additional description" },
+  { name: "duration", type: "number", default: "4000", description: "Duration in ms" },
+  { name: "position", type: '"top-left" | "top-center" | "top-right" | "bottom-left" | "bottom-center" | "bottom-right"', default: '"top-center"', description: "Toast position" },
+  { name: "action", type: "{ label: string; onClick: () => void }", description: "Action button config" },
+  { name: "cancel", type: "{ label: string; onClick: () => void }", description: "Cancel button config" },
+  { name: "id", type: "string | number", description: "Unique ID for deduplication" },
+  { name: "dismissible", type: "boolean", default: "true", description: "Show close button" },
+];
 
 // Token mappings for WexSonner (Toast)
 const sonnerTokens: TokenRow[] = [
@@ -320,6 +333,13 @@ wexToast.error("Failed to save", { id: toastId });`}
             </ul>
           </div>
         </div>
+      </Section>
+
+      <Section title="API Reference">
+        <p className="text-sm text-muted-foreground mb-4">
+          Use the <code className="text-sm">wexToast</code> function: <code className="text-sm">wexToast("Message")</code> or <code className="text-sm">wexToast.success("Message")</code>
+        </p>
+        <PropsTable props={wexToastProps} />
       </Section>
 
       <TokenReference tokens={sonnerTokens} className="mt-12" />

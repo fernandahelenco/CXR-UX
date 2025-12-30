@@ -5,7 +5,16 @@ import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { Guidance } from "@/docs/components/ProseBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexPagination } from "@/components/wex";
+
+// Props documentation
+const paginationProps: PropDefinition[] = [
+  { name: "currentPage", type: "number", required: true, description: "Current active page" },
+  { name: "totalPages", type: "number", required: true, description: "Total number of pages" },
+  { name: "onPageChange", type: "(page: number) => void", description: "Callback when page changes" },
+  { name: "siblingCount", type: "number", default: "1", description: "Number of siblings on each side" },
+];
 
 // Token mappings for Pagination
 // Layer 3 component tokens
@@ -337,6 +346,10 @@ export default function PaginationPage() {
             <li><code className="bg-muted px-1 rounded">JumpToPage</code>: Direct page input</li>
           </ul>
         </div>
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={paginationProps} />
       </Section>
 
       <TokenReference tokens={paginationTokens} className="mt-12" />

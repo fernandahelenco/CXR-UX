@@ -3,7 +3,21 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, SubComponentProps, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexField, WexInput } from "@/components/wex";
+
+// Props documentation for WexField
+const fieldProps: PropDefinition[] = [
+  { name: "orientation", type: '"vertical" | "horizontal"', default: '"vertical"', description: "Layout orientation of label and input" },
+  { name: "data-invalid", type: '"true" | undefined', description: "Marks the field as invalid for error styling" },
+  { name: "className", type: "string", description: "Additional CSS classes" },
+  { name: "children", type: "ReactNode", required: true, description: "Field content (Label, Input, Description, Error)" },
+];
+
+const fieldLabelProps: PropDefinition[] = [
+  { name: "htmlFor", type: "string", required: true, description: "ID of the associated input element" },
+  { name: "children", type: "ReactNode", required: true, description: "Label text" },
+];
 
 // Token mappings for WexField
 const fieldTokens: TokenRow[] = [
@@ -126,6 +140,11 @@ export default function FieldPage() {
   </WexField>
 </WexField.Group>`}
         />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={fieldProps} title="WexField" />
+        <SubComponentProps name="WexField.Label" props={fieldLabelProps} />
       </Section>
 
       <TokenReference tokens={fieldTokens} className="mt-12" />

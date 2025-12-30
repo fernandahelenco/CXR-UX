@@ -5,7 +5,20 @@ import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { Guidance } from "@/docs/components/ProseBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, SubComponentProps, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexDrawer, WexButton, WexInput, WexLabel } from "@/components/wex";
+
+// Props documentation for WexDrawer
+const drawerRootProps: PropDefinition[] = [
+  { name: "open", type: "boolean", description: "Controlled open state" },
+  { name: "onOpenChange", type: "(open: boolean) => void", description: "Callback when open state changes" },
+  { name: "shouldScaleBackground", type: "boolean", default: "true", description: "Whether to scale the background" },
+];
+
+const drawerContentProps: PropDefinition[] = [
+  { name: "className", type: "string", description: "Additional CSS classes" },
+  { name: "children", type: "ReactNode", required: true, description: "Drawer content" },
+];
 
 // Token mappings for WexDrawer
 // Layer 3 component tokens
@@ -258,6 +271,11 @@ const [open, setOpen] = useState(false);
   </WexDrawer.Content>
 </WexDrawer>`}
         />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={drawerRootProps} title="WexDrawer" />
+        <SubComponentProps name="WexDrawer.Content" props={drawerContentProps} />
       </Section>
 
       <TokenReference tokens={drawerTokens} className="mt-12" />

@@ -4,8 +4,22 @@ import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { Guidance } from "@/docs/components/ProseBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexNavigationMenu, wexNavigationMenuTriggerStyle } from "@/components/wex";
 import { cn } from "@/lib/utils";
+
+// Props documentation
+const navigationMenuRootProps: PropDefinition[] = [
+  { name: "value", type: "string", description: "Controlled active item" },
+  { name: "defaultValue", type: "string", description: "Default active item" },
+  { name: "onValueChange", type: "(value: string) => void", description: "Callback when active changes" },
+  { name: "orientation", type: '"horizontal" | "vertical"', default: '"horizontal"', description: "Layout direction" },
+];
+
+const navigationMenuLinkProps: PropDefinition[] = [
+  { name: "active", type: "boolean", default: "false", description: "Active state styling" },
+  { name: "asChild", type: "boolean", default: "false", description: "Merge with child element" },
+];
 
 // Token mappings for WexNavigationMenu
 // Layer 3 component tokens
@@ -190,6 +204,21 @@ export default function NavigationMenuPage() {
     </WexNavigationMenu.Item>
   </WexNavigationMenu.List>
 </WexNavigationMenu>`}
+        />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable 
+          props={navigationMenuRootProps}
+          subComponents={[
+            { name: "WexNavigationMenu.List", props: [{ name: "className", type: "string", description: "Additional CSS classes" }] },
+            { name: "WexNavigationMenu.Item", props: [{ name: "value", type: "string", description: "Unique value for controlled mode" }] },
+            { name: "WexNavigationMenu.Trigger", props: [{ name: "className", type: "string", description: "Additional CSS classes" }] },
+            { name: "WexNavigationMenu.Content", props: [{ name: "forceMount", type: "boolean", description: "Force mount for animation" }] },
+            { name: "WexNavigationMenu.Link", props: navigationMenuLinkProps },
+            { name: "WexNavigationMenu.Viewport", props: [] },
+            { name: "WexNavigationMenu.Indicator", props: [] },
+          ]}
         />
       </Section>
 

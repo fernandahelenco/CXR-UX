@@ -5,8 +5,19 @@ import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { Guidance } from "@/docs/components/ProseBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexToggle } from "@/components/wex";
 import { Bold, Italic, Underline, AlignLeft, AlignCenter, AlignRight, Star } from "lucide-react";
+
+// Props documentation
+const toggleProps: PropDefinition[] = [
+  { name: "pressed", type: "boolean", description: "Controlled pressed state" },
+  { name: "defaultPressed", type: "boolean", default: "false", description: "Default pressed state" },
+  { name: "onPressedChange", type: "(pressed: boolean) => void", description: "Callback when pressed changes" },
+  { name: "variant", type: '"default" | "outline"', default: '"default"', description: "Visual variant" },
+  { name: "size", type: '"default" | "sm" | "lg"', default: '"default"', description: "Toggle size" },
+  { name: "disabled", type: "boolean", default: "false", description: "Disables the toggle" },
+];
 
 // Token mappings for WexToggle
 // Layer 3 component tokens
@@ -249,6 +260,10 @@ const [pressed, setPressed] = useState(false);
   <Star className="h-4 w-4" />
 </WexToggle>`}
         />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={toggleProps} />
       </Section>
 
       <TokenReference tokens={toggleTokens} className="mt-12" />

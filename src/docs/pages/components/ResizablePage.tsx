@@ -3,7 +3,28 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexResizable } from "@/components/wex";
+
+// Props documentation
+const resizableGroupProps: PropDefinition[] = [
+  { name: "orientation", type: '"horizontal" | "vertical"', default: '"horizontal"', description: "Panel layout direction" },
+  { name: "autoSaveId", type: "string", description: "ID for persisting layout to localStorage" },
+  { name: "onLayout", type: "(sizes: number[]) => void", description: "Callback when layout changes" },
+];
+
+const resizablePanelProps: PropDefinition[] = [
+  { name: "defaultSize", type: "number", description: "Initial size (percentage)" },
+  { name: "minSize", type: "number", default: "10", description: "Minimum size (percentage)" },
+  { name: "maxSize", type: "number", description: "Maximum size (percentage)" },
+  { name: "collapsible", type: "boolean", default: "false", description: "Allow panel to collapse" },
+  { name: "collapsedSize", type: "number", default: "0", description: "Size when collapsed" },
+];
+
+const resizableHandleProps: PropDefinition[] = [
+  { name: "withHandle", type: "boolean", default: "true", description: "Show visible handle grip" },
+  { name: "disabled", type: "boolean", default: "false", description: "Disable resizing" },
+];
 
 // Token mappings for WexResizable
 const resizableTokens: TokenRow[] = [
@@ -74,6 +95,16 @@ export default function ResizablePage() {
   <WexResizable.Handle />
   <WexResizable.Panel>Panel 2</WexResizable.Panel>
 </WexResizable.Group>`}
+        />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable 
+          props={resizableGroupProps}
+          subComponents={[
+            { name: "WexResizable.Panel", props: resizablePanelProps },
+            { name: "WexResizable.Handle", props: resizableHandleProps },
+          ]}
         />
       </Section>
 

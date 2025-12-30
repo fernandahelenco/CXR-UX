@@ -3,7 +3,14 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexSpinner, WexButton } from "@/components/wex";
+
+// Props documentation
+const spinnerProps: PropDefinition[] = [
+  { name: "size", type: '"sm" | "md" | "lg"', default: '"md"', description: "Spinner size" },
+  { name: "className", type: "string", description: "Additional CSS classes" },
+];
 
 // Token mappings for WexSpinner
 const spinnerTokens: TokenRow[] = [
@@ -85,6 +92,10 @@ export default function SpinnerPage() {
   <WexSpinner className="h-8 w-8" />
 </div>`}
         />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={spinnerProps} />
       </Section>
 
       <TokenReference tokens={spinnerTokens} className="mt-12" />

@@ -4,9 +4,22 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexCalendar } from "@/components/wex";
 import type { DateRange } from "react-day-picker";
 import { addDays } from "date-fns";
+
+// Props documentation for WexCalendar
+const calendarProps: PropDefinition[] = [
+  { name: "mode", type: '"single" | "multiple" | "range"', default: '"single"', description: "Selection mode" },
+  { name: "selected", type: "Date | Date[] | DateRange", description: "Controlled selected date(s)" },
+  { name: "onSelect", type: "(date) => void", description: "Callback when selection changes" },
+  { name: "defaultMonth", type: "Date", description: "Month to display initially" },
+  { name: "numberOfMonths", type: "number", default: "1", description: "Number of months to display" },
+  { name: "disabled", type: "Matcher | Matcher[]", description: "Dates to disable (function or date range)" },
+  { name: "footer", type: "ReactNode", description: "Content to display below the calendar" },
+  { name: "className", type: "string", description: "Additional CSS classes" },
+];
 
 // Token mappings for WexCalendar
 const calendarTokens: TokenRow[] = [
@@ -204,6 +217,10 @@ const [range, setRange] = useState<DateRange | undefined>();
   disabled={(date) => date < new Date()}
 />`}
         />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={calendarProps} />
       </Section>
 
       <TokenReference tokens={calendarTokens} className="mt-12" />

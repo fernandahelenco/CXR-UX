@@ -3,7 +3,30 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, SubComponentProps, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexLabel, WexSelect } from "@/components/wex";
+
+// Props documentation for WexSelect
+const selectRootProps: PropDefinition[] = [
+  { name: "value", type: "string", description: "Controlled value of the selected item" },
+  { name: "defaultValue", type: "string", description: "Default value for uncontrolled usage" },
+  { name: "onValueChange", type: "(value: string) => void", description: "Callback when value changes" },
+  { name: "disabled", type: "boolean", default: "false", description: "Disables the select" },
+  { name: "required", type: "boolean", default: "false", description: "Marks the select as required" },
+  { name: "name", type: "string", description: "Name for form submission" },
+];
+
+const selectTriggerProps: PropDefinition[] = [
+  { name: "className", type: "string", description: "Additional CSS classes" },
+  { name: "aria-label", type: "string", description: "Accessible label when no visible label exists" },
+  { name: "aria-labelledby", type: "string", description: "ID of the element that labels this trigger" },
+];
+
+const selectItemProps: PropDefinition[] = [
+  { name: "value", type: "string", required: true, description: "Unique value for the item" },
+  { name: "disabled", type: "boolean", default: "false", description: "Disables this option" },
+  { name: "children", type: "ReactNode", required: true, description: "Display text for the option" },
+];
 
 // Token mappings for WexSelect
 // Layer 3 component tokens
@@ -245,6 +268,12 @@ const [value, setValue] = useState("");
   ...
 </WexSelect>`}
         />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={selectRootProps} title="WexSelect" />
+        <SubComponentProps name="WexSelect.Trigger" props={selectTriggerProps} />
+        <SubComponentProps name="WexSelect.Item" props={selectItemProps} />
       </Section>
 
       <TokenReference tokens={selectTokens} className="mt-12" />

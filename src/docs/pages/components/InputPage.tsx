@@ -5,8 +5,21 @@ import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
 import { Guidance } from "@/docs/components/ProseBlock";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexInput, WexLabel } from "@/components/wex";
 import { Search, Mail, Eye, EyeOff, Lock, Calendar, Phone } from "lucide-react";
+
+// Props documentation for WexInput
+const inputProps: PropDefinition[] = [
+  { name: "inputSize", type: '"sm" | "md" | "lg"', default: '"md"', description: "Input size variant" },
+  { name: "variant", type: '"default" | "filled"', default: '"default"', description: "Visual style variant" },
+  { name: "invalid", type: "boolean", default: "false", description: "Marks input as invalid with visual styling" },
+  { name: "leftIcon", type: "ReactNode", description: "Icon displayed on the left side of the input" },
+  { name: "rightIcon", type: "ReactNode", description: "Icon displayed on the right side of the input" },
+  { name: "disabled", type: "boolean", default: "false", description: "Disables the input" },
+  { name: "readOnly", type: "boolean", default: "false", description: "Makes the input read-only" },
+  { name: "className", type: "string", description: "Additional CSS classes to apply" },
+];
 
 // Token mappings for Input - Layer 3 component tokens
 const inputTokens: TokenRow[] = [
@@ -284,16 +297,10 @@ const [showPassword, setShowPassword] = useState(false);
 <WexInput invalid placeholder="Invalid input" />
 <p className="text-destructive">Error message</p>`}
         />
-        <div className="mt-4 text-sm text-muted-foreground">
-          <p><strong>Props:</strong></p>
-          <ul className="list-disc list-inside mt-2 space-y-1">
-            <li><code className="bg-muted px-1 rounded">inputSize</code>: "sm" | "md" | "lg"</li>
-            <li><code className="bg-muted px-1 rounded">variant</code>: "default" | "filled"</li>
-            <li><code className="bg-muted px-1 rounded">invalid</code>: boolean</li>
-            <li><code className="bg-muted px-1 rounded">leftIcon</code>: ReactNode</li>
-            <li><code className="bg-muted px-1 rounded">rightIcon</code>: ReactNode</li>
-          </ul>
-        </div>
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={inputProps} />
       </Section>
 
       <Section title="Related Components">

@@ -5,7 +5,19 @@ import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { Guidance } from "@/docs/components/ProseBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexDatePicker } from "@/components/wex";
+
+// Props documentation for WexDatePicker
+const datePickerProps: PropDefinition[] = [
+  { name: "date", type: "Date | undefined", description: "Controlled selected date" },
+  { name: "onDateChange", type: "(date: Date | undefined) => void", description: "Callback when date changes" },
+  { name: "placeholder", type: "string", default: '"Pick a date"', description: "Placeholder text when no date selected" },
+  { name: "fromDate", type: "Date", description: "Minimum selectable date" },
+  { name: "toDate", type: "Date", description: "Maximum selectable date" },
+  { name: "disabled", type: "boolean", default: "false", description: "Disables the date picker" },
+  { name: "className", type: "string", description: "Additional CSS classes" },
+];
 
 // Token mappings for WexDatePicker
 const datePickerTokens: TokenRow[] = [
@@ -134,6 +146,10 @@ const [date, setDate] = React.useState<Date | undefined>();
 />`}
           language="tsx"
         />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={datePickerProps} />
       </Section>
 
       <TokenReference tokens={datePickerTokens} className="mt-12" />

@@ -4,7 +4,18 @@ import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { Guidance } from "@/docs/components/ProseBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { Home, Settings, User, FileText, Mail, Calendar } from "lucide-react";
+
+// Props documentation
+const sidebarProps: PropDefinition[] = [
+  { name: "side", type: '"left" | "right"', default: '"left"', description: "Which side the sidebar appears" },
+  { name: "variant", type: '"sidebar" | "floating" | "inset"', default: '"sidebar"', description: "Visual variant" },
+  { name: "collapsible", type: '"offcanvas" | "icon" | "none"', default: '"offcanvas"', description: "Collapse behavior" },
+  { name: "defaultOpen", type: "boolean", default: "true", description: "Default open state" },
+  { name: "open", type: "boolean", description: "Controlled open state" },
+  { name: "onOpenChange", type: "(open: boolean) => void", description: "Callback when open changes" },
+];
 
 // Token mappings for WexSidebar
 const sidebarTokens: TokenRow[] = [
@@ -170,6 +181,21 @@ export default function SidebarPage() {
     </WexSidebar.Group>
   </WexSidebar.Content>
 </WexSidebar>`}
+        />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable 
+          props={sidebarProps}
+          subComponents={[
+            { name: "WexSidebar.Header", props: [{ name: "className", type: "string", description: "Additional CSS classes" }] },
+            { name: "WexSidebar.Content", props: [{ name: "className", type: "string", description: "Additional CSS classes" }] },
+            { name: "WexSidebar.Footer", props: [{ name: "className", type: "string", description: "Additional CSS classes" }] },
+            { name: "WexSidebar.Menu", props: [] },
+            { name: "WexSidebar.MenuItem", props: [{ name: "asChild", type: "boolean", default: "false", description: "Merge with child element" }] },
+            { name: "WexSidebar.MenuButton", props: [{ name: "isActive", type: "boolean", description: "Active state styling" }, { name: "tooltip", type: "string | TooltipConfig", description: "Tooltip when collapsed" }] },
+            { name: "WexSidebar.Trigger", props: [{ name: "className", type: "string", description: "Additional CSS classes" }] },
+          ]}
         />
       </Section>
 

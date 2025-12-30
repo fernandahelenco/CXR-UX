@@ -3,8 +3,19 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexEmpty, WexButton } from "@/components/wex";
 import { FileQuestion, Search, InboxIcon } from "lucide-react";
+
+// Props documentation
+const emptyRootProps: PropDefinition[] = [
+  { name: "className", type: "string", description: "Additional CSS classes" },
+];
+
+const emptyMediaProps: PropDefinition[] = [
+  { name: "variant", type: '"icon" | "image" | "illustration"', default: '"icon"', description: "Media type" },
+  { name: "children", type: "ReactNode", required: true, description: "Media content (icon, image, etc.)" },
+];
 
 // Token mappings for WexEmpty
 const emptyTokens: TokenRow[] = [
@@ -104,6 +115,19 @@ import { InboxIcon } from "lucide-react";
     <WexButton>Compose Message</WexButton>
   </WexEmpty.Content>
 </WexEmpty>`}
+        />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable 
+          props={emptyRootProps}
+          subComponents={[
+            { name: "WexEmpty.Header", props: [{ name: "className", type: "string", description: "Additional CSS classes" }] },
+            { name: "WexEmpty.Media", props: emptyMediaProps },
+            { name: "WexEmpty.Title", props: [{ name: "className", type: "string", description: "Additional CSS classes" }] },
+            { name: "WexEmpty.Description", props: [{ name: "className", type: "string", description: "Additional CSS classes" }] },
+            { name: "WexEmpty.Content", props: [{ name: "className", type: "string", description: "Additional CSS classes" }] },
+          ]}
         />
       </Section>
 

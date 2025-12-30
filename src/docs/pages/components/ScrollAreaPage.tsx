@@ -3,7 +3,15 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexScrollArea } from "@/components/wex";
+
+// Props documentation
+const scrollAreaProps: PropDefinition[] = [
+  { name: "type", type: '"auto" | "always" | "scroll" | "hover"', default: '"hover"', description: "When scrollbars appear" },
+  { name: "scrollHideDelay", type: "number", default: "600", description: "Delay before scrollbars hide (ms)" },
+  { name: "className", type: "string", description: "Additional CSS classes" },
+];
 
 // Token mappings for WexScrollArea
 const scrollAreaTokens: TokenRow[] = [
@@ -68,6 +76,10 @@ export default function ScrollAreaPage() {
   </div>
 </WexScrollArea>`}
         />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={scrollAreaProps} />
       </Section>
 
       <TokenReference tokens={scrollAreaTokens} className="mt-12" />

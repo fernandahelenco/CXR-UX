@@ -5,7 +5,27 @@ import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { Guidance } from "@/docs/components/ProseBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, SubComponentProps, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexDialog, WexButton, WexInput, WexLabel } from "@/components/wex";
+
+// Props documentation for WexDialog
+const dialogRootProps: PropDefinition[] = [
+  { name: "open", type: "boolean", description: "Controlled open state" },
+  { name: "defaultOpen", type: "boolean", default: "false", description: "Default open state for uncontrolled usage" },
+  { name: "onOpenChange", type: "(open: boolean) => void", description: "Callback when open state changes" },
+  { name: "modal", type: "boolean", default: "true", description: "Whether to render as modal with backdrop" },
+];
+
+const dialogContentProps: PropDefinition[] = [
+  { name: "size", type: '"sm" | "md" | "lg" | "xl" | "full"', default: '"md"', description: "Dialog width size variant" },
+  { name: "position", type: '"center" | "top" | "bottom" | "left" | "right"', default: '"center"', description: "Position of the dialog" },
+  { name: "maximizable", type: "boolean", default: "false", description: "Show maximize/restore button" },
+  { name: "className", type: "string", description: "Additional CSS classes" },
+];
+
+const dialogTriggerProps: PropDefinition[] = [
+  { name: "asChild", type: "boolean", default: "false", description: "Render as child element (polymorphic)" },
+];
 
 // Token mappings for Dialog
 // Layer 3 component tokens
@@ -266,14 +286,12 @@ export default function DialogPage() {
 // Maximizable
 <WexDialog.Content maximizable>...</WexDialog.Content>`}
         />
-        <div className="mt-4 text-sm text-muted-foreground">
-          <p><strong>DialogContent Props:</strong></p>
-          <ul className="list-disc list-inside mt-2 space-y-1">
-            <li><code className="bg-muted px-1 rounded">size</code>: "sm" | "md" | "lg" | "xl" | "full"</li>
-            <li><code className="bg-muted px-1 rounded">position</code>: "center" | "top" | "bottom" | "left" | "right"</li>
-            <li><code className="bg-muted px-1 rounded">maximizable</code>: boolean</li>
-          </ul>
-        </div>
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={dialogRootProps} title="WexDialog" />
+        <SubComponentProps name="WexDialog.Content" props={dialogContentProps} />
+        <SubComponentProps name="WexDialog.Trigger" props={dialogTriggerProps} />
       </Section>
 
       <TokenReference tokens={dialogTokens} className="mt-12" />

@@ -3,8 +3,20 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, SubComponentProps, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexInputGroup } from "@/components/wex";
 import { Search, Mail, Eye } from "lucide-react";
+
+// Props documentation for WexInputGroup
+const inputGroupProps: PropDefinition[] = [
+  { name: "className", type: "string", description: "Additional CSS classes for the container" },
+  { name: "children", type: "ReactNode", required: true, description: "Addon and Input elements" },
+];
+
+const inputGroupAddonProps: PropDefinition[] = [
+  { name: "align", type: '"inline-start" | "inline-end"', default: '"inline-start"', description: "Position of the addon" },
+  { name: "children", type: "ReactNode", required: true, description: "Icon, text, or button content" },
+];
 
 // Token mappings for WexInputGroup
 const inputGroupTokens: TokenRow[] = [
@@ -115,6 +127,11 @@ import { Search, Mail } from "lucide-react";
   </WexInputGroup.Addon>
 </WexInputGroup>`}
         />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={inputGroupProps} title="WexInputGroup" />
+        <SubComponentProps name="WexInputGroup.Addon" props={inputGroupAddonProps} />
       </Section>
 
       <TokenReference tokens={inputGroupTokens} className="mt-12" />

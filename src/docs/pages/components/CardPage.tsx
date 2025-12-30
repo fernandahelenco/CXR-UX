@@ -4,8 +4,16 @@ import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { Guidance } from "@/docs/components/ProseBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexCard, WexAvatar, WexButton, WexInput, WexLabel, WexSwitch } from "@/components/wex";
 import { CreditCard, Settings, User } from "lucide-react";
+
+// Props documentation for WexCard
+const cardProps: PropDefinition[] = [
+  { name: "variant", type: '"default" | "elevated" | "outlined" | "flat"', default: '"default"', description: "Visual style variant" },
+  { name: "className", type: "string", description: "Additional CSS classes" },
+  { name: "children", type: "ReactNode", required: true, description: "Card content" },
+];
 
 // Token mappings for Card
 // Layer 3 component tokens
@@ -269,12 +277,10 @@ export default function CardPage() {
   ...
 </WexCard>`}
         />
-        <div className="mt-4 text-sm text-muted-foreground">
-          <p><strong>Card Props:</strong></p>
-          <ul className="list-disc list-inside mt-2 space-y-1">
-            <li><code className="bg-muted px-1 rounded">variant</code>: "default" | "elevated" | "outlined" | "flat"</li>
-          </ul>
-        </div>
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={cardProps} />
       </Section>
 
       <TokenReference tokens={cardTokens} className="mt-12" />

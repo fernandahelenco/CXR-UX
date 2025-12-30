@@ -3,7 +3,14 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexAspectRatio } from "@/components/wex";
+
+// Props documentation
+const aspectRatioProps: PropDefinition[] = [
+  { name: "ratio", type: "number", default: "1", description: "Width/height ratio (e.g., 16/9 for widescreen)" },
+  { name: "className", type: "string", description: "Additional CSS classes" },
+];
 
 // Token mappings for WexAspectRatio
 const aspectRatioTokens: TokenRow[] = [
@@ -98,6 +105,10 @@ export default function AspectRatioPage() {
   <img src="..." alt="..." className="object-cover" />
 </WexAspectRatio>`}
         />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={aspectRatioProps} />
       </Section>
 
       <TokenReference tokens={aspectRatioTokens} className="mt-12" />

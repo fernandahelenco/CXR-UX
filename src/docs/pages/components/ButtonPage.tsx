@@ -4,8 +4,21 @@ import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { Guidance } from "@/docs/components/ProseBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexButton } from "@/components/wex";
 import { Plus, Settings, Download } from "lucide-react";
+
+// Props documentation for WexButton
+const buttonProps: PropDefinition[] = [
+  { name: "intent", type: '"primary" | "secondary" | "success" | "info" | "warning" | "destructive" | "help" | "contrast" | "ghost" | "outline" | "link"', default: '"primary"', description: "Visual style variant for the button" },
+  { name: "size", type: '"sm" | "md" | "lg" | "icon"', default: '"md"', description: "Button size. Icon size is square for icon-only buttons" },
+  { name: "rounded", type: "boolean", default: "false", description: "Applies pill-shaped rounded corners" },
+  { name: "loading", type: "boolean", default: "false", description: "Shows loading spinner and disables the button" },
+  { name: "asChild", type: "boolean", default: "false", description: "Render as child element (polymorphic)" },
+  { name: "disabled", type: "boolean", default: "false", description: "Disables the button" },
+  { name: "className", type: "string", description: "Additional CSS classes to apply" },
+  { name: "children", type: "ReactNode", required: true, description: "Button content" },
+];
 
 // Token mappings for WexButton variants - using Layer 3 component tokens
 const buttonTokens: TokenRow[] = [
@@ -269,16 +282,10 @@ export default function ButtonPage() {
   <Plus className="h-4 w-4" />
 </WexButton>`}
         />
-        <div className="mt-4 text-sm text-muted-foreground">
-          <p><strong>Props:</strong></p>
-          <ul className="list-disc list-inside mt-2 space-y-1">
-            <li><code className="bg-muted px-1 rounded">intent</code>: "primary" | "secondary" | "success" | "info" | "warning" | "destructive" | "help" | "contrast" | "ghost" | "outline" | "link"</li>
-            <li><code className="bg-muted px-1 rounded">size</code>: "sm" | "md" | "lg" | "icon"</li>
-            <li><code className="bg-muted px-1 rounded">rounded</code>: boolean - Pill shape</li>
-            <li><code className="bg-muted px-1 rounded">loading</code>: boolean - Shows spinner, disables button</li>
-            <li><code className="bg-muted px-1 rounded">asChild</code>: boolean - Render as child element</li>
-          </ul>
-        </div>
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={buttonProps} />
       </Section>
 
       <TokenReference tokens={buttonTokens} className="mt-12" />

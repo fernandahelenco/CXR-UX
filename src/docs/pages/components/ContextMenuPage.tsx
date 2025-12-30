@@ -3,7 +3,20 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexContextMenu } from "@/components/wex";
+
+// Props documentation
+const contextMenuRootProps: PropDefinition[] = [
+  { name: "modal", type: "boolean", default: "true", description: "Modal behavior (blocks outside interaction)" },
+  { name: "onOpenChange", type: "(open: boolean) => void", description: "Callback when menu opens/closes" },
+];
+
+const contextMenuItemProps: PropDefinition[] = [
+  { name: "disabled", type: "boolean", default: "false", description: "Disables the item" },
+  { name: "onSelect", type: "(event) => void", description: "Callback when item is selected" },
+  { name: "textValue", type: "string", description: "Text for typeahead matching" },
+];
 
 // Token mappings for WexContextMenu
 // Layer 3 component tokens
@@ -101,6 +114,23 @@ export default function ContextMenuPage() {
     <WexContextMenu.Item>Action 2</WexContextMenu.Item>
   </WexContextMenu.Content>
 </WexContextMenu>`}
+        />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable 
+          props={contextMenuRootProps}
+          subComponents={[
+            { name: "WexContextMenu.Trigger", props: [{ name: "asChild", type: "boolean", default: "false", description: "Merge with child element" }] },
+            { name: "WexContextMenu.Content", props: [{ name: "alignOffset", type: "number", default: "0", description: "Offset from alignment" }] },
+            { name: "WexContextMenu.Item", props: contextMenuItemProps },
+            { name: "WexContextMenu.CheckboxItem", props: [{ name: "checked", type: "boolean", description: "Checked state" }, { name: "onCheckedChange", type: "(checked: boolean) => void", description: "Callback" }] },
+            { name: "WexContextMenu.RadioItem", props: [{ name: "value", type: "string", required: true, description: "Radio value" }] },
+            { name: "WexContextMenu.Sub", props: [] },
+            { name: "WexContextMenu.SubTrigger", props: [{ name: "inset", type: "boolean", default: "false", description: "Add left padding" }] },
+            { name: "WexContextMenu.SubContent", props: [] },
+            { name: "WexContextMenu.Separator", props: [] },
+          ]}
         />
       </Section>
 

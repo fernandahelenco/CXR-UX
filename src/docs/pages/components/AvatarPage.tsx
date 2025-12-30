@@ -3,7 +3,21 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, SubComponentProps, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexAvatar } from "@/components/wex";
+
+// Props documentation
+const avatarRootProps: PropDefinition[] = [
+  { name: "size", type: '"xs" | "sm" | "md" | "lg" | "xl" | "2xl"', default: '"md"', description: "Avatar size" },
+  { name: "shape", type: '"circle" | "rounded" | "square"', default: '"circle"', description: "Avatar shape" },
+  { name: "status", type: '"online" | "offline" | "busy" | "away"', description: "Status badge indicator" },
+  { name: "className", type: "string", description: "Additional CSS classes" },
+];
+
+const avatarImageProps: PropDefinition[] = [
+  { name: "src", type: "string", required: true, description: "Image source URL" },
+  { name: "alt", type: "string", required: true, description: "Alternative text for accessibility" },
+];
 
 // Token mappings for Avatar
 const avatarTokens: TokenRow[] = [
@@ -288,6 +302,11 @@ export default function AvatarPage() {
   <WexAvatar><WexAvatar.Fallback>D</WexAvatar.Fallback></WexAvatar>
 </WexAvatar.Group>`}
         />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={avatarRootProps} title="WexAvatar" />
+        <SubComponentProps name="WexAvatar.Image" props={avatarImageProps} />
       </Section>
 
       <TokenReference tokens={avatarTokens} className="mt-12" />

@@ -3,7 +3,20 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexMenubar } from "@/components/wex";
+
+// Props documentation
+const menubarRootProps: PropDefinition[] = [
+  { name: "loop", type: "boolean", default: "true", description: "Loop keyboard navigation" },
+  { name: "className", type: "string", description: "Additional CSS classes" },
+];
+
+const menubarItemProps: PropDefinition[] = [
+  { name: "disabled", type: "boolean", default: "false", description: "Disables the item" },
+  { name: "onSelect", type: "(event) => void", description: "Callback when selected" },
+  { name: "inset", type: "boolean", default: "false", description: "Add left padding" },
+];
 
 // Token mappings for WexMenubar
 // Layer 3 component tokens
@@ -127,6 +140,24 @@ export default function MenubarPage() {
     </WexMenubar.Content>
   </WexMenubar.Menu>
 </WexMenubar>`}
+        />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable 
+          props={menubarRootProps}
+          subComponents={[
+            { name: "WexMenubar.Menu", props: [] },
+            { name: "WexMenubar.Trigger", props: [{ name: "className", type: "string", description: "Additional CSS classes" }] },
+            { name: "WexMenubar.Content", props: [{ name: "align", type: '"start" | "center" | "end"', default: '"start"', description: "Alignment" }] },
+            { name: "WexMenubar.Item", props: menubarItemProps },
+            { name: "WexMenubar.CheckboxItem", props: [{ name: "checked", type: "boolean", description: "Checked state" }] },
+            { name: "WexMenubar.RadioItem", props: [{ name: "value", type: "string", required: true, description: "Radio value" }] },
+            { name: "WexMenubar.Sub", props: [] },
+            { name: "WexMenubar.SubTrigger", props: [{ name: "inset", type: "boolean", default: "false", description: "Add left padding" }] },
+            { name: "WexMenubar.SubContent", props: [] },
+            { name: "WexMenubar.Separator", props: [] },
+          ]}
         />
       </Section>
 

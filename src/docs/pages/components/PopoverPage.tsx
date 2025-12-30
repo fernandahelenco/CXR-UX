@@ -5,9 +5,24 @@ import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { Guidance } from "@/docs/components/ProseBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, SubComponentProps, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexPopover, WexButton, WexInput, WexLabel, WexCalendar } from "@/components/wex";
 import { format } from "date-fns";
 import { CalendarIcon, Settings, User } from "lucide-react";
+
+// Props documentation for WexPopover
+const popoverRootProps: PropDefinition[] = [
+  { name: "open", type: "boolean", description: "Controlled open state" },
+  { name: "onOpenChange", type: "(open: boolean) => void", description: "Callback when open state changes" },
+  { name: "modal", type: "boolean", default: "false", description: "Whether to render as modal" },
+];
+
+const popoverContentProps: PropDefinition[] = [
+  { name: "side", type: '"top" | "right" | "bottom" | "left"', default: '"bottom"', description: "Preferred side to render" },
+  { name: "align", type: '"start" | "center" | "end"', default: '"center"', description: "Alignment along the side" },
+  { name: "sideOffset", type: "number", default: "4", description: "Offset from the trigger" },
+  { name: "className", type: "string", description: "Additional CSS classes" },
+];
 
 // Token mappings for WexPopover
 // Layer 3 component tokens
@@ -257,14 +272,15 @@ export default function PopoverPage() {
     </WexButton>
   </WexPopover.Trigger>
   <WexPopover.Content className="w-auto p-0">
-    <WexCalendar
-      mode="single"
-      selected={date}
-      onSelect={setDate}
-    />
+    <Calendar mode="single" selected={date} onSelect={setDate} />
   </WexPopover.Content>
 </WexPopover>`}
         />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={popoverRootProps} title="WexPopover" />
+        <SubComponentProps name="WexPopover.Content" props={popoverContentProps} />
       </Section>
 
       <TokenReference tokens={popoverTokens} className="mt-12" />

@@ -4,8 +4,16 @@ import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { Guidance } from "@/docs/components/ProseBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexAlert } from "@/components/wex";
 import { AlertCircle, Info, Terminal, AlertTriangle, CheckCircle } from "lucide-react";
+
+// Props documentation for WexAlert
+const alertProps: PropDefinition[] = [
+  { name: "intent", type: '"default" | "destructive" | "success" | "warning" | "info"', default: '"default"', description: "Visual intent variant" },
+  { name: "className", type: "string", description: "Additional CSS classes" },
+  { name: "children", type: "ReactNode", required: true, description: "Alert content (icon, title, description)" },
+];
 
 // Layer 3 component tokens for WexAlert variants
 const alertTokens: TokenRow[] = [
@@ -240,17 +248,10 @@ import { Info, AlertCircle, CheckCircle, AlertTriangle } from "lucide-react";
   <WexAlert.Description>A new version is available.</WexAlert.Description>
 </WexAlert>`}
         />
-        <div className="mt-4 text-sm text-muted-foreground">
-          <p><strong>Props:</strong></p>
-          <ul className="list-disc list-inside mt-2 space-y-1">
-            <li>
-              <code className="bg-muted px-1 rounded">intent</code>: "default" | "destructive" | "success" | "warning" | "info"
-            </li>
-            <li>
-              <code className="bg-muted px-1 rounded">className</code>: Additional CSS classes
-            </li>
-          </ul>
-        </div>
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={alertProps} />
       </Section>
 
       <TokenReference tokens={alertTokens} className="mt-12" />

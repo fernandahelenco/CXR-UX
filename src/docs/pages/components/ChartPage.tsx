@@ -4,7 +4,24 @@ import { Guidance } from "@/docs/components/ProseBlock";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexChart, type WexChartConfig } from "@/components/wex/wex-chart";
+
+// Props documentation
+const chartContainerProps: PropDefinition[] = [
+  { name: "config", type: "WexChartConfig", required: true, description: "Chart configuration mapping keys to colors/labels" },
+  { name: "className", type: "string", description: "Additional CSS classes" },
+  { name: "children", type: "ReactNode", required: true, description: "Recharts chart component" },
+];
+
+const chartTooltipProps: PropDefinition[] = [
+  { name: "content", type: "ReactNode | ({ active, payload, label }) => ReactNode", description: "Custom tooltip content" },
+  { name: "hideLabel", type: "boolean", default: "false", description: "Hide the label in tooltip" },
+  { name: "hideIndicator", type: "boolean", default: "false", description: "Hide color indicator" },
+  { name: "indicator", type: '"line" | "dot" | "dashed"', default: '"dot"', description: "Indicator style" },
+  { name: "nameKey", type: "string", description: "Key to use for data name" },
+  { name: "labelKey", type: "string", description: "Key to use for label" },
+];
 import {
   Bar,
   BarChart,
@@ -199,6 +216,16 @@ function MyChart() {
     </WexChart.Container>
   );
 }`}
+        />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable 
+          props={chartContainerProps}
+          subComponents={[
+            { name: "WexChart.Tooltip", props: chartTooltipProps },
+            { name: "WexChart.Legend", props: [{ name: "content", type: "ReactNode", description: "Custom legend content" }] },
+          ]}
         />
       </Section>
 

@@ -3,7 +3,17 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexBadge } from "@/components/wex";
+
+// Props documentation for WexBadge
+const badgeProps: PropDefinition[] = [
+  { name: "intent", type: '"default" | "secondary" | "outline" | "success" | "warning" | "destructive" | "info"', default: '"default"', description: "Visual intent variant" },
+  { name: "size", type: '"sm" | "md" | "lg"', default: '"md"', description: "Badge size" },
+  { name: "pill", type: "boolean", default: "false", description: "Fully rounded pill shape" },
+  { name: "className", type: "string", description: "Additional CSS classes" },
+  { name: "children", type: "ReactNode", required: true, description: "Badge content" },
+];
 
 // Layer 3 component tokens for Badge variants
 const badgeTokens: TokenRow[] = [
@@ -210,14 +220,10 @@ export default function BadgePage() {
   Active
 </WexBadge>`}
         />
-        <div className="mt-4 text-sm text-muted-foreground">
-          <p><strong>Props:</strong></p>
-          <ul className="list-disc list-inside mt-2 space-y-1">
-            <li><code className="bg-muted px-1 rounded">intent</code>: "default" | "secondary" | "outline" | "success" | "warning" | "destructive" | "info"</li>
-            <li><code className="bg-muted px-1 rounded">size</code>: "sm" | "md" | "lg"</li>
-            <li><code className="bg-muted px-1 rounded">pill</code>: boolean - Fully rounded shape</li>
-          </ul>
-        </div>
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={badgeProps} />
       </Section>
 
       <TokenReference tokens={badgeTokens} className="mt-12" />

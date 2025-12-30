@@ -4,8 +4,24 @@ import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { Guidance } from "@/docs/components/ProseBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexHoverCard, WexButton, WexAvatar } from "@/components/wex";
 import { CalendarDays, ExternalLink, Github, Mail } from "lucide-react";
+
+// Props documentation
+const hoverCardRootProps: PropDefinition[] = [
+  { name: "open", type: "boolean", description: "Controlled open state" },
+  { name: "defaultOpen", type: "boolean", default: "false", description: "Default open state" },
+  { name: "onOpenChange", type: "(open: boolean) => void", description: "Callback when open changes" },
+  { name: "openDelay", type: "number", default: "700", description: "Delay before opening (ms)" },
+  { name: "closeDelay", type: "number", default: "300", description: "Delay before closing (ms)" },
+];
+
+const hoverCardContentProps: PropDefinition[] = [
+  { name: "side", type: '"top" | "right" | "bottom" | "left"', default: '"bottom"', description: "Preferred side" },
+  { name: "align", type: '"start" | "center" | "end"', default: '"center"', description: "Alignment" },
+  { name: "sideOffset", type: "number", default: "4", description: "Offset from trigger" },
+];
 
 // Token mappings for WexHoverCard
 // Layer 3 component tokens
@@ -252,6 +268,16 @@ export default function HoverCardPage() {
     Preview content
   </WexHoverCard.Content>
 </WexHoverCard>`}
+        />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable 
+          props={hoverCardRootProps}
+          subComponents={[
+            { name: "WexHoverCard.Trigger", props: [{ name: "asChild", type: "boolean", default: "false", description: "Merge with child element" }] },
+            { name: "WexHoverCard.Content", props: hoverCardContentProps },
+          ]}
         />
       </Section>
 

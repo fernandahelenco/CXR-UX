@@ -5,7 +5,21 @@ import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { Guidance } from "@/docs/components/ProseBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, SubComponentProps, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexDropdownMenu, WexButton } from "@/components/wex";
+
+// Props documentation
+const dropdownMenuContentProps: PropDefinition[] = [
+  { name: "side", type: '"top" | "right" | "bottom" | "left"', default: '"bottom"', description: "Preferred side to render" },
+  { name: "align", type: '"start" | "center" | "end"', default: '"center"', description: "Alignment along the side" },
+  { name: "sideOffset", type: "number", default: "4", description: "Offset from the trigger" },
+  { name: "className", type: "string", description: "Additional CSS classes" },
+];
+
+const dropdownMenuItemProps: PropDefinition[] = [
+  { name: "disabled", type: "boolean", default: "false", description: "Disables the item" },
+  { name: "onSelect", type: "(event: Event) => void", description: "Callback when item is selected" },
+];
 
 // Token mappings for WexDropdownMenu
 // Layer 3 component tokens
@@ -276,6 +290,11 @@ const [value, setValue] = useState("a");
   <WexDropdownMenu.Shortcut>⌘S</WexDropdownMenu.Shortcut>
 </WexDropdownMenu.Item>`}
         />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={dropdownMenuContentProps} title="WexDropdownMenu.Content" />
+        <SubComponentProps name="WexDropdownMenu.Item" props={dropdownMenuItemProps} />
       </Section>
 
       <TokenReference tokens={dropdownMenuTokens} className="mt-12" />

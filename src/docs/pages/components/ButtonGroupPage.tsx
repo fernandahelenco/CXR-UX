@@ -3,7 +3,15 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexButtonGroup, WexButton } from "@/components/wex";
+
+// Props documentation
+const buttonGroupProps: PropDefinition[] = [
+  { name: "orientation", type: '"horizontal" | "vertical"', default: '"horizontal"', description: "Layout direction" },
+  { name: "attached", type: "boolean", default: "false", description: "Remove gaps between buttons" },
+  { name: "className", type: "string", description: "Additional CSS classes" },
+];
 
 // Token mappings for WexButtonGroup
 const buttonGroupTokens: TokenRow[] = [
@@ -92,6 +100,10 @@ export default function ButtonGroupPage() {
   <WexButton intent="outline">Delete</WexButton>
 </WexButtonGroup>`}
         />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={buttonGroupProps} />
       </Section>
 
       <TokenReference tokens={buttonGroupTokens} className="mt-12" />

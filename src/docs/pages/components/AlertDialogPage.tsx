@@ -3,7 +3,14 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexAlertDialog, WexButton } from "@/components/wex";
+
+// Props documentation
+const alertDialogRootProps: PropDefinition[] = [
+  { name: "open", type: "boolean", description: "Controlled open state" },
+  { name: "onOpenChange", type: "(open: boolean) => void", description: "Callback when open state changes" },
+];
 
 // Token mappings for WexAlertDialog
 // Layer 3 component tokens
@@ -138,6 +145,10 @@ export default function AlertDialogPage() {
   </WexAlertDialog.Content>
 </WexAlertDialog>`}
         />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={alertDialogRootProps} title="WexAlertDialog" />
       </Section>
 
       <TokenReference tokens={alertDialogTokens} className="mt-12" />

@@ -3,7 +3,20 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexSwitch, WexLabel } from "@/components/wex";
+
+// Props documentation for WexSwitch
+const switchProps: PropDefinition[] = [
+  { name: "checked", type: "boolean", description: "Controlled checked state" },
+  { name: "defaultChecked", type: "boolean", default: "false", description: "Default checked state for uncontrolled usage" },
+  { name: "onCheckedChange", type: "(checked: boolean) => void", description: "Callback when checked state changes" },
+  { name: "disabled", type: "boolean", default: "false", description: "Disables the switch" },
+  { name: "required", type: "boolean", default: "false", description: "Marks the switch as required" },
+  { name: "name", type: "string", description: "Name for form submission" },
+  { name: "value", type: "string", default: '"on"', description: "Value for form submission" },
+  { name: "id", type: "string", description: "ID for label association" },
+];
 
 // Token mappings for Switch
 // Layer 3 component tokens
@@ -152,14 +165,10 @@ const [enabled, setEnabled] = useState(false);
   onCheckedChange={setEnabled} 
 />`}
         />
-        <div className="mt-4 text-sm text-muted-foreground">
-          <p><strong>Props:</strong></p>
-          <ul className="list-disc list-inside mt-2 space-y-1">
-            <li><code className="bg-muted px-1 rounded">checked</code>: boolean</li>
-            <li><code className="bg-muted px-1 rounded">onCheckedChange</code>: (checked: boolean) =&gt; void</li>
-            <li><code className="bg-muted px-1 rounded">disabled</code>: boolean</li>
-          </ul>
-        </div>
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={switchProps} />
       </Section>
 
       <TokenReference tokens={switchTokens} className="mt-12" />

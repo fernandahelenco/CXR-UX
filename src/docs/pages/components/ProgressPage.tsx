@@ -5,7 +5,15 @@ import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { Guidance } from "@/docs/components/ProseBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexProgress, WexButton } from "@/components/wex";
+
+// Props documentation
+const progressProps: PropDefinition[] = [
+  { name: "value", type: "number", default: "0", description: "Current progress value (0-100)" },
+  { name: "max", type: "number", default: "100", description: "Maximum value" },
+  { name: "className", type: "string", description: "Additional CSS classes" },
+];
 
 // Token mappings for Progress
 // Layer 3 component tokens
@@ -231,6 +239,10 @@ export default function ProgressPage() {
             <li><code className="bg-muted px-1 rounded">labelFormat</code>: (value: number) =&gt; string - Custom label formatter</li>
           </ul>
         </div>
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={progressProps} />
       </Section>
 
       <TokenReference tokens={progressTokens} className="mt-12" />

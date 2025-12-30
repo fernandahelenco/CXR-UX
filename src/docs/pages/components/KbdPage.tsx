@@ -3,7 +3,14 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexKbd } from "@/components/wex";
+
+// Props documentation
+const kbdProps: PropDefinition[] = [
+  { name: "children", type: "ReactNode", required: true, description: "Key label or symbol" },
+  { name: "className", type: "string", description: "Additional CSS classes" },
+];
 
 // Token mappings for WexKbd
 // Layer 3 component tokens
@@ -99,6 +106,10 @@ export default function KbdPage() {
   <WexKbd>K</WexKbd>
 </WexKbd.Group>`}
         />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={kbdProps} />
       </Section>
 
       <TokenReference tokens={kbdTokens} className="mt-12" />

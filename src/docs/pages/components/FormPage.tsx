@@ -4,6 +4,7 @@ import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { Guidance } from "@/docs/components/ProseBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, SubComponentProps, type PropDefinition } from "@/docs/components/PropsTable";
 import {
   WexInput,
   WexLabel,
@@ -14,6 +15,18 @@ import {
   WexSelect,
   WexButton,
 } from "@/components/wex";
+
+// Props documentation for WexForm (React Hook Form integration)
+const formFieldProps: PropDefinition[] = [
+  { name: "control", type: "Control", required: true, description: "React Hook Form control object" },
+  { name: "name", type: "string", required: true, description: "Field name in form schema" },
+  { name: "render", type: "({ field }) => ReactNode", required: true, description: "Render function for the field" },
+];
+
+const formItemProps: PropDefinition[] = [
+  { name: "className", type: "string", description: "Additional CSS classes" },
+  { name: "children", type: "ReactNode", required: true, description: "Form item content (label, control, message)" },
+];
 
 // Token mappings for WexForm
 const formTokens: TokenRow[] = [
@@ -379,6 +392,11 @@ function MyForm() {
   );
 }`}
         />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={formFieldProps} title="WexForm.Field" />
+        <SubComponentProps name="WexForm.Item" props={formItemProps} />
       </Section>
 
       <TokenReference tokens={formTokens} className="mt-12" />

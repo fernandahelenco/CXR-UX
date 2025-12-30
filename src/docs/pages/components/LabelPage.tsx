@@ -3,7 +3,15 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexLabel, WexInput } from "@/components/wex";
+
+// Props documentation for WexLabel
+const labelProps: PropDefinition[] = [
+  { name: "htmlFor", type: "string", description: "ID of the associated input element" },
+  { name: "className", type: "string", description: "Additional CSS classes" },
+  { name: "children", type: "ReactNode", required: true, description: "Label text" },
+];
 
 // Token mappings for WexLabel
 const labelTokens: TokenRow[] = [
@@ -72,6 +80,10 @@ export default function LabelPage() {
 </WexLabel>
 <WexInput id="required" required />`}
         />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={labelProps} />
       </Section>
 
       <TokenReference tokens={labelTokens} className="mt-12" />

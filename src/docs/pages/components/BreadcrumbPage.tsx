@@ -3,7 +3,15 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexBreadcrumb } from "@/components/wex";
+
+// Props documentation
+const breadcrumbLinkProps: PropDefinition[] = [
+  { name: "href", type: "string", description: "URL for the link" },
+  { name: "asChild", type: "boolean", default: "false", description: "Render as child element" },
+  { name: "children", type: "ReactNode", required: true, description: "Link text" },
+];
 
 // Token mappings for WexBreadcrumb
 // Layer 3 component tokens
@@ -92,6 +100,10 @@ export default function BreadcrumbDocPage() {
   </WexBreadcrumb.List>
 </WexBreadcrumb>`}
         />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={breadcrumbLinkProps} title="WexBreadcrumb.Link" />
       </Section>
 
       <TokenReference tokens={breadcrumbTokens} className="mt-12" />

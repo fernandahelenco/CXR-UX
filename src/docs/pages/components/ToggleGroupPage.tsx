@@ -3,7 +3,24 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexToggleGroup } from "@/components/wex";
+
+// Props documentation
+const toggleGroupRootProps: PropDefinition[] = [
+  { name: "type", type: '"single" | "multiple"', required: true, description: "Single or multiple selection" },
+  { name: "value", type: "string | string[]", description: "Controlled selected value(s)" },
+  { name: "defaultValue", type: "string | string[]", description: "Default selected value(s)" },
+  { name: "onValueChange", type: "(value) => void", description: "Callback when selection changes" },
+  { name: "variant", type: '"default" | "outline"', default: '"default"', description: "Visual variant" },
+  { name: "size", type: '"default" | "sm" | "lg"', default: '"default"', description: "Size of items" },
+  { name: "disabled", type: "boolean", default: "false", description: "Disables all items" },
+];
+
+const toggleGroupItemProps: PropDefinition[] = [
+  { name: "value", type: "string", required: true, description: "Item value" },
+  { name: "disabled", type: "boolean", default: "false", description: "Disables this item" },
+];
 
 // Token mappings for WexToggleGroup
 // Layer 3 component tokens (uses toggle tokens)
@@ -101,6 +118,15 @@ export default function ToggleGroupPage() {
   <WexToggleGroup.Item value="a">A</WexToggleGroup.Item>
   <WexToggleGroup.Item value="b">B</WexToggleGroup.Item>
 </WexToggleGroup>`}
+        />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable 
+          props={toggleGroupRootProps}
+          subComponents={[
+            { name: "WexToggleGroup.Item", props: toggleGroupItemProps },
+          ]}
         />
       </Section>
 

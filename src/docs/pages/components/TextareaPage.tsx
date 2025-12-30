@@ -4,7 +4,19 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexTextarea, WexLabel } from "@/components/wex";
+
+// Props documentation for WexTextarea
+const textareaProps: PropDefinition[] = [
+  { name: "textareaSize", type: '"sm" | "md" | "lg"', default: '"md"', description: "Textarea size variant" },
+  { name: "autoResize", type: "boolean", default: "false", description: "Auto-grow height with content" },
+  { name: "disabled", type: "boolean", default: "false", description: "Disables the textarea" },
+  { name: "readOnly", type: "boolean", default: "false", description: "Makes the textarea read-only" },
+  { name: "maxLength", type: "number", description: "Maximum character count" },
+  { name: "placeholder", type: "string", description: "Placeholder text" },
+  { name: "className", type: "string", description: "Additional CSS classes" },
+];
 
 // Token mappings for Textarea
 // Layer 3 component tokens
@@ -190,13 +202,10 @@ export default function TextareaPage() {
   maxLength={500}
 />`}
         />
-        <div className="mt-4 text-sm text-muted-foreground">
-          <p><strong>Props:</strong></p>
-          <ul className="list-disc list-inside mt-2 space-y-1">
-            <li><code className="bg-muted px-1 rounded">textareaSize</code>: "sm" | "md" | "lg"</li>
-            <li><code className="bg-muted px-1 rounded">autoResize</code>: boolean - Auto-grow with content</li>
-          </ul>
-        </div>
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={textareaProps} />
       </Section>
 
       <TokenReference tokens={textareaTokens} className="mt-12" />

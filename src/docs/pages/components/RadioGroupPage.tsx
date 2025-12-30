@@ -3,7 +3,25 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, SubComponentProps, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexRadioGroup, WexLabel } from "@/components/wex";
+
+// Props documentation for WexRadioGroup
+const radioGroupProps: PropDefinition[] = [
+  { name: "value", type: "string", description: "Controlled selected value" },
+  { name: "defaultValue", type: "string", description: "Default selected value for uncontrolled usage" },
+  { name: "onValueChange", type: "(value: string) => void", description: "Callback when selection changes" },
+  { name: "disabled", type: "boolean", default: "false", description: "Disables all radio items" },
+  { name: "required", type: "boolean", default: "false", description: "Marks the group as required" },
+  { name: "name", type: "string", description: "Name for form submission" },
+  { name: "className", type: "string", description: "Additional CSS classes" },
+];
+
+const radioItemProps: PropDefinition[] = [
+  { name: "value", type: "string", required: true, description: "Unique value for this option" },
+  { name: "disabled", type: "boolean", default: "false", description: "Disables this option" },
+  { name: "id", type: "string", description: "ID for label association" },
+];
 
 // Token mappings for RadioGroup
 // Layer 3 component tokens
@@ -168,14 +186,11 @@ const [value, setValue] = useState("option-1");
   ...
 </WexRadioGroup>`}
         />
-        <div className="mt-4 text-sm text-muted-foreground">
-          <p><strong>RadioGroup Props:</strong></p>
-          <ul className="list-disc list-inside mt-2 space-y-1">
-            <li><code className="bg-muted px-1 rounded">value</code>: string</li>
-            <li><code className="bg-muted px-1 rounded">onValueChange</code>: (value: string) =&gt; void</li>
-            <li><code className="bg-muted px-1 rounded">defaultValue</code>: string</li>
-          </ul>
-        </div>
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={radioGroupProps} title="WexRadioGroup" />
+        <SubComponentProps name="WexRadioGroup.Item" props={radioItemProps} />
       </Section>
 
       <TokenReference tokens={radioGroupTokens} className="mt-12" />

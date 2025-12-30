@@ -4,8 +4,19 @@ import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { Guidance } from "@/docs/components/ProseBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexButton } from "@/components/wex";
 import { toast } from "sonner";
+
+// Props documentation (using Sonner's toast function)
+const toastFunctionProps: PropDefinition[] = [
+  { name: "message", type: "string | ReactNode", required: true, description: "Toast message content" },
+  { name: "description", type: "string | ReactNode", description: "Additional description" },
+  { name: "duration", type: "number", default: "4000", description: "Duration in ms (Infinity to persist)" },
+  { name: "position", type: '"top-left" | "top-center" | "top-right" | "bottom-left" | "bottom-center" | "bottom-right"', default: '"bottom-right"', description: "Toast position" },
+  { name: "action", type: "{ label: string; onClick: () => void }", description: "Action button config" },
+  { name: "cancel", type: "{ label: string; onClick: () => void }", description: "Cancel button config" },
+];
 
 // Layer 3 component tokens for Toast (Sonner) variants
 const toastTokens: TokenRow[] = [
@@ -227,6 +238,13 @@ wexToast.success("Done!", { id });
 wexToast.dismiss(); // All
 wexToast.dismiss(id); // Specific`}
         />
+      </Section>
+
+      <Section title="API Reference">
+        <p className="text-sm text-muted-foreground mb-4">
+          Toast is called as a function: <code className="text-sm">toast("Message")</code> or <code className="text-sm">toast.success("Message")</code>
+        </p>
+        <PropsTable props={toastFunctionProps} />
       </Section>
 
       <TokenReference tokens={toastTokens} className="mt-12" />

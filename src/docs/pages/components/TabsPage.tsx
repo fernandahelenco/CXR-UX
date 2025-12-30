@@ -5,7 +5,35 @@ import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { Guidance } from "@/docs/components/ProseBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, SubComponentProps, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexTabs, WexCard, WexButton, WexInput, WexLabel } from "@/components/wex";
+
+// Props documentation for WexTabs
+const tabsRootProps: PropDefinition[] = [
+  { name: "value", type: "string", description: "Controlled active tab value" },
+  { name: "defaultValue", type: "string", description: "Default active tab for uncontrolled usage" },
+  { name: "onValueChange", type: "(value: string) => void", description: "Callback when active tab changes" },
+  { name: "orientation", type: '"horizontal" | "vertical"', default: '"horizontal"', description: "Orientation of the tabs" },
+  { name: "className", type: "string", description: "Additional CSS classes" },
+];
+
+const tabsTriggerProps: PropDefinition[] = [
+  { name: "value", type: "string", required: true, description: "Unique value for this tab" },
+  { name: "disabled", type: "boolean", default: "false", description: "Disables this tab" },
+  { name: "children", type: "ReactNode", required: true, description: "Tab label content" },
+];
+
+const tabsClosableTriggerProps: PropDefinition[] = [
+  { name: "value", type: "string", required: true, description: "Unique value for this tab" },
+  { name: "onClose", type: "() => void", required: true, description: "Callback when close button is clicked" },
+  { name: "children", type: "ReactNode", required: true, description: "Tab label content" },
+];
+
+const tabsContentProps: PropDefinition[] = [
+  { name: "value", type: "string", required: true, description: "Matches the corresponding trigger value" },
+  { name: "className", type: "string", description: "Additional CSS classes" },
+  { name: "children", type: "ReactNode", required: true, description: "Panel content" },
+];
 
 // Token mappings for Tabs
 // Layer 3 component tokens
@@ -288,13 +316,13 @@ export default function TabsPage() {
   ...
 </WexTabs>`}
         />
-        <div className="mt-4 text-sm text-muted-foreground">
-          <p><strong>New Components:</strong></p>
-          <ul className="list-disc list-inside mt-2 space-y-1">
-            <li><code className="bg-muted px-1 rounded">ScrollableTabsList</code>: Wrapper with scroll arrows</li>
-            <li><code className="bg-muted px-1 rounded">ClosableTabsTrigger</code>: Tab with close button (onClose prop)</li>
-          </ul>
-        </div>
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={tabsRootProps} title="WexTabs" />
+        <SubComponentProps name="WexTabs.Trigger" props={tabsTriggerProps} />
+        <SubComponentProps name="WexTabs.ClosableTrigger" props={tabsClosableTriggerProps} />
+        <SubComponentProps name="WexTabs.Content" props={tabsContentProps} />
       </Section>
 
       <TokenReference tokens={tabsTokens} className="mt-12" />

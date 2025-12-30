@@ -4,8 +4,21 @@ import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { Guidance } from "@/docs/components/ProseBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, SubComponentProps, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexTooltip, WexButton } from "@/components/wex";
 import { Settings, Info, HelpCircle } from "lucide-react";
+
+// Props documentation for WexTooltip
+const tooltipProviderProps: PropDefinition[] = [
+  { name: "delayDuration", type: "number", default: "700", description: "Delay before tooltip appears (ms)" },
+  { name: "skipDelayDuration", type: "number", default: "300", description: "Skip delay when moving between triggers (ms)" },
+];
+
+const tooltipContentProps: PropDefinition[] = [
+  { name: "side", type: '"top" | "right" | "bottom" | "left"', default: '"top"', description: "Preferred side to render" },
+  { name: "sideOffset", type: "number", default: "4", description: "Offset from the trigger" },
+  { name: "className", type: "string", description: "Additional CSS classes" },
+];
 
 // Token mappings for Tooltip
 // Layer 3 component tokens
@@ -249,17 +262,11 @@ export default function TooltipPage() {
   </WexTooltip.Content>
 </WexTooltip>`}
         />
-        <div className="mt-4 text-sm text-muted-foreground">
-          <p><strong>Tooltip Props:</strong></p>
-          <ul className="list-disc list-inside mt-2 space-y-1">
-            <li><code className="bg-muted px-1 rounded">delayDuration</code>: number (ms) - Time before tooltip appears</li>
-          </ul>
-          <p className="mt-3"><strong>TooltipContent Props:</strong></p>
-          <ul className="list-disc list-inside mt-2 space-y-1">
-            <li><code className="bg-muted px-1 rounded">side</code>: "top" | "right" | "bottom" | "left"</li>
-            <li><code className="bg-muted px-1 rounded">sideOffset</code>: number - Distance from trigger</li>
-          </ul>
-        </div>
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={tooltipProviderProps} title="WexTooltip.Provider" />
+        <SubComponentProps name="WexTooltip.Content" props={tooltipContentProps} />
       </Section>
 
       <TokenReference tokens={tooltipTokens} className="mt-12" />

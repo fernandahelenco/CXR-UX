@@ -4,8 +4,22 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, SubComponentProps, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexCommand, WexButton } from "@/components/wex";
 import { Calculator, Calendar, CreditCard, Settings, Smile, User } from "lucide-react";
+
+// Props documentation
+const commandInputProps: PropDefinition[] = [
+  { name: "placeholder", type: "string", description: "Placeholder text for the search input" },
+  { name: "value", type: "string", description: "Controlled value" },
+  { name: "onValueChange", type: "(value: string) => void", description: "Callback when value changes" },
+];
+
+const commandItemProps: PropDefinition[] = [
+  { name: "value", type: "string", description: "Search value for filtering" },
+  { name: "disabled", type: "boolean", default: "false", description: "Disables the item" },
+  { name: "onSelect", type: "(value: string) => void", description: "Callback when item is selected" },
+];
 
 // Token mappings for WexCommand
 // Layer 3 component tokens
@@ -174,6 +188,11 @@ const [open, setOpen] = useState(false);
   </WexCommand.List>
 </WexCommand.Dialog>`}
         />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={commandInputProps} title="WexCommand.Input" />
+        <SubComponentProps name="WexCommand.Item" props={commandItemProps} />
       </Section>
 
       <TokenReference tokens={commandTokens} className="mt-12" />

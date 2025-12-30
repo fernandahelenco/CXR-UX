@@ -3,7 +3,21 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, SubComponentProps, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexInputOTP } from "@/components/wex";
+
+// Props documentation for WexInputOTP
+const inputOTPProps: PropDefinition[] = [
+  { name: "maxLength", type: "number", required: true, description: "Number of OTP digits" },
+  { name: "value", type: "string", description: "Controlled value" },
+  { name: "onChange", type: "(value: string) => void", description: "Callback when value changes" },
+  { name: "disabled", type: "boolean", default: "false", description: "Disables the input" },
+  { name: "aria-labelledby", type: "string", description: "ID of element that labels this input" },
+];
+
+const inputOTPSlotProps: PropDefinition[] = [
+  { name: "index", type: "number", required: true, description: "Zero-based index of this slot" },
+];
 
 // Token mappings for WexInputOTP
 // Layer 3 component tokens
@@ -68,6 +82,11 @@ export default function InputOTPPage() {
   </WexInputOTP.Group>
 </WexInputOTP>`}
         />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={inputOTPProps} title="WexInputOTP" />
+        <SubComponentProps name="WexInputOTP.Slot" props={inputOTPSlotProps} />
       </Section>
 
       <TokenReference tokens={inputOTPTokens} className="mt-12" />

@@ -5,8 +5,23 @@ import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
 import { Guidance } from "@/docs/components/ProseBlock";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexFloatLabel } from "@/components/wex";
 import { Mail, Lock, Search, User, Eye, EyeOff } from "lucide-react";
+
+// Props documentation for WexFloatLabel
+const floatLabelProps: PropDefinition[] = [
+  { name: "label", type: "string", required: true, description: "Label text that floats" },
+  { name: "size", type: '"sm" | "md" | "lg"', default: '"md"', description: "Input size variant" },
+  { name: "type", type: "string", default: '"text"', description: "HTML input type (email, password, etc.)" },
+  { name: "leftIcon", type: "ReactNode", description: "Icon displayed on the left" },
+  { name: "rightIcon", type: "ReactNode", description: "Icon displayed on the right" },
+  { name: "invalid", type: "boolean", default: "false", description: "Marks input as invalid" },
+  { name: "disabled", type: "boolean", default: "false", description: "Disables the input" },
+  { name: "containerClassName", type: "string", description: "Additional CSS classes for the container" },
+  { name: "value", type: "string", description: "Controlled value" },
+  { name: "onChange", type: "ChangeEventHandler", description: "Callback when value changes" },
+];
 
 // Token mappings for FloatLabel - Layer 3 component tokens
 const floatLabelTokens: TokenRow[] = [
@@ -172,6 +187,13 @@ const [show, setShow] = useState(false);
   value={value}
   onChange={(e) => setValue(e.target.value)}
 />`} />
+      </Section>
+
+      {/* ============================================================
+          API REFERENCE
+          ============================================================ */}
+      <Section title="API Reference">
+        <PropsTable props={floatLabelProps} />
       </Section>
 
       {/* ============================================================

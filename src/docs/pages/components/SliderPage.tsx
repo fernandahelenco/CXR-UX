@@ -4,7 +4,20 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexSlider, WexLabel } from "@/components/wex";
+
+// Props documentation for WexSlider
+const sliderProps: PropDefinition[] = [
+  { name: "value", type: "number[]", description: "Controlled value(s) - array for range" },
+  { name: "defaultValue", type: "number[]", description: "Default value(s) for uncontrolled usage" },
+  { name: "onValueChange", type: "(value: number[]) => void", description: "Callback when value changes" },
+  { name: "min", type: "number", default: "0", description: "Minimum value" },
+  { name: "max", type: "number", default: "100", description: "Maximum value" },
+  { name: "step", type: "number", default: "1", description: "Step increment" },
+  { name: "disabled", type: "boolean", default: "false", description: "Disables the slider" },
+  { name: "orientation", type: '"horizontal" | "vertical"', default: '"horizontal"', description: "Slider orientation" },
+];
 
 // Token mappings for Slider
 // Layer 3 component tokens
@@ -166,17 +179,10 @@ const [value, setValue] = useState([50]);
   max={100} 
 />`}
         />
-        <div className="mt-4 text-sm text-muted-foreground">
-          <p><strong>Props:</strong></p>
-          <ul className="list-disc list-inside mt-2 space-y-1">
-            <li><code className="bg-muted px-1 rounded">value</code>: number[] - Current value(s)</li>
-            <li><code className="bg-muted px-1 rounded">defaultValue</code>: number[] - Initial value(s)</li>
-            <li><code className="bg-muted px-1 rounded">onValueChange</code>: (value: number[]) =&gt; void</li>
-            <li><code className="bg-muted px-1 rounded">min</code>: number - Minimum value</li>
-            <li><code className="bg-muted px-1 rounded">max</code>: number - Maximum value</li>
-            <li><code className="bg-muted px-1 rounded">step</code>: number - Step increment</li>
-          </ul>
-        </div>
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable props={sliderProps} />
       </Section>
 
       <TokenReference tokens={sliderTokens} className="mt-12" />

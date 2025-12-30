@@ -3,7 +3,22 @@ import { Section } from "@/docs/components/Section";
 import { ExampleCard } from "@/docs/components/ExampleCard";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { TokenReference, type TokenRow } from "@/docs/components/TokenReference";
+import { PropsTable, type PropDefinition } from "@/docs/components/PropsTable";
 import { WexAccordion } from "@/components/wex";
+
+// Props documentation
+const accordionRootProps: PropDefinition[] = [
+  { name: "type", type: '"single" | "multiple"', default: '"single"', description: "Allow one or multiple items open" },
+  { name: "collapsible", type: "boolean", default: "false", description: "Allow all items to be closed (single mode)" },
+  { name: "defaultValue", type: "string | string[]", description: "Default open item(s)" },
+  { name: "value", type: "string | string[]", description: "Controlled open item(s)" },
+  { name: "onValueChange", type: "(value) => void", description: "Callback when open items change" },
+];
+
+const accordionItemProps: PropDefinition[] = [
+  { name: "value", type: "string", required: true, description: "Unique value for this item" },
+  { name: "disabled", type: "boolean", default: "false", description: "Disables this item" },
+];
 
 // Token mappings for WexAccordion
 // Layer 3 component tokens
@@ -107,6 +122,17 @@ export default function AccordionPage() {
   <WexAccordion.Item value="item-1">...</WexAccordion.Item>
   <WexAccordion.Item value="item-2">...</WexAccordion.Item>
 </WexAccordion>`}
+        />
+      </Section>
+
+      <Section title="API Reference">
+        <PropsTable 
+          props={accordionRootProps} 
+          subComponents={[
+            { name: "WexAccordion.Item", props: accordionItemProps },
+            { name: "WexAccordion.Trigger", props: [{ name: "children", type: "ReactNode", required: true, description: "Trigger content" }] },
+            { name: "WexAccordion.Content", props: [{ name: "children", type: "ReactNode", required: true, description: "Content shown when expanded" }] },
+          ]}
         />
       </Section>
 
