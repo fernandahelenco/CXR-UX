@@ -414,6 +414,109 @@ import './button-variants.css';
         </div>
       </Section>
 
+      <Section 
+        title="Component Implementation Patterns" 
+        description="How WEX components are built under the hood."
+        className="mb-16"
+      >
+        <p className="text-muted-foreground mb-6 mt-2">
+          WEX components follow two implementation patterns depending on whether shadcn's 
+          built-in variants meet WEX requirements:
+        </p>
+        
+        <div className="overflow-x-auto mb-6">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border">
+                <th className="text-left py-3 px-4 font-medium">Pattern</th>
+                <th className="text-left py-3 px-4 font-medium">Count</th>
+                <th className="text-left py-3 px-4 font-medium">Components</th>
+                <th className="text-left py-3 px-4 font-medium">Why</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              <tr>
+                <td className="py-4 px-4">
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-info" />
+                    Extended CVA
+                  </span>
+                </td>
+                <td className="py-4 px-4 font-medium">3</td>
+                <td className="py-4 px-4">
+                  <code className="bg-muted px-1.5 py-0.5 rounded text-xs">Button</code>,{" "}
+                  <code className="bg-muted px-1.5 py-0.5 rounded text-xs">Badge</code>,{" "}
+                  <code className="bg-muted px-1.5 py-0.5 rounded text-xs">Alert</code>
+                </td>
+                <td className="py-4 px-4 text-muted-foreground">
+                  Need WEX intents (success, info, warning, help, contrast) beyond shadcn defaults
+                </td>
+              </tr>
+              <tr>
+                <td className="py-4 px-4">
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-success" />
+                    shadcn Wrapper
+                  </span>
+                </td>
+                <td className="py-4 px-4 font-medium">55</td>
+                <td className="py-4 px-4 text-muted-foreground">
+                  All other components
+                </td>
+                <td className="py-4 px-4 text-muted-foreground">
+                  shadcn variants are sufficient; just add namespace pattern
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <WexAlert intent="info">
+          <WexAlert.Title>CVA = Class Variance Authority</WexAlert.Title>
+          <WexAlert.Description>
+            CVA is a library for defining component variants declaratively with Tailwind. 
+            When shadcn's built-in variants don't cover WEX's semantic intents, we extend 
+            with custom CVA configurations rather than forking the entire component.
+          </WexAlert.Description>
+        </WexAlert>
+      </Section>
+
+      <Section 
+        title="Industry Validation" 
+        description="This pattern is used by leading design systems."
+        className="mb-16"
+      >
+        <p className="text-muted-foreground mb-6 mt-2">
+          The layered approach—headless primitives → styled components → brand layer—is 
+          the industry standard for enterprise design systems:
+        </p>
+        
+        <div className="grid md:grid-cols-3 gap-4 mb-6">
+          <ValidationCard
+            company="Vercel"
+            description="Builds on Radix + Tailwind for their internal design system and Geist UI."
+          />
+          <ValidationCard
+            company="Shopify Polaris"
+            description="Uses headless primitives with a brand layer on top for consistent merchant experiences."
+          />
+          <ValidationCard
+            company="Stripe"
+            description="Wraps Radix components with custom styling for their dashboard and documentation."
+          />
+        </div>
+
+        <div className="p-5 rounded-lg bg-muted/30 border border-border">
+          <h4 className="font-medium mb-2">Why this pattern works</h4>
+          <ul className="list-disc list-inside text-sm text-muted-foreground space-y-2">
+            <li><strong>Accessibility guaranteed</strong> — Radix provides WCAG-compliant primitives</li>
+            <li><strong>Brand consistency</strong> — Token layer ensures visual alignment</li>
+            <li><strong>Upgrade path</strong> — Upstream improvements flow through without friction</li>
+            <li><strong>Developer experience</strong> — Familiar patterns, minimal learning curve</li>
+          </ul>
+        </div>
+      </Section>
+
     </article>
   );
 }
@@ -549,6 +652,21 @@ function MetricCard({
           <span className="text-sm font-medium text-destructive">{manualValue}</span>
         </div>
       </div>
+    </div>
+  );
+}
+
+function ValidationCard({
+  company,
+  description,
+}: {
+  company: string;
+  description: string;
+}) {
+  return (
+    <div className="p-4 rounded-lg border border-border bg-card">
+      <h4 className="font-medium text-foreground mb-2">{company}</h4>
+      <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
     </div>
   );
 }

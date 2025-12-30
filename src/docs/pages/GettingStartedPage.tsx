@@ -82,11 +82,27 @@ export default function GettingStartedPage() {
           title="Prerequisites"
           description="The WEX design system requires the following dependencies."
         >
-          <ul className="list-disc list-inside space-y-2 text-foreground">
+          <ul className="list-disc list-inside space-y-2 text-foreground mb-4">
             <li>React 18 or later</li>
             <li>Tailwind CSS 3.4 or later</li>
             <li>TypeScript (recommended)</li>
           </ul>
+          
+          <div className="p-4 rounded-lg bg-muted/30 border border-border">
+            <h4 className="font-medium mb-2 text-sm">What about shadcn and Radix?</h4>
+            <p className="text-sm text-muted-foreground mb-3">
+              <code className="bg-muted px-1.5 py-0.5 rounded text-sm">@wex/components</code> bundles 
+              shadcn/ui patterns and Radix UI primitives internally. You don't need to install them 
+              separately—just install the WEX package and you're ready to go.
+            </p>
+            <Link 
+              to="/architecture" 
+              className="text-sm text-link hover:underline inline-flex items-center gap-1"
+            >
+              Learn about the architecture
+              <ArrowRight className="h-3 w-3" />
+            </Link>
+          </div>
         </Section>
 
         <Section
