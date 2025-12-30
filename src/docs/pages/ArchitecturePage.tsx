@@ -112,86 +112,106 @@ export default function ArchitecturePage() {
 
       <Section 
         title="Developer Experience Comparison" 
-        description="See the difference: same button, same result, different effort."
+        description="Two scenarios: extended variants vs. wrapper components."
         className="mb-16"
       >
-        {/* Live Button Comparison */}
-        <div className="mt-2 mb-8">
-          <h4 className="text-sm font-medium text-muted-foreground mb-4">Live Result (identical appearance):</h4>
-          <div className="flex gap-8 items-center p-6 rounded-lg bg-muted/30 border border-border">
-            <div className="text-center">
-              <WexButton intent="destructive">Delete Account</WexButton>
-              <p className="text-xs text-muted-foreground mt-2">WexButton</p>
-            </div>
-            <div className="text-center">
-              <Button
-                className="
-                  inline-flex items-center justify-center gap-2
-                  h-11 min-h-[44px] px-4 py-2 rounded-md
-                  text-sm font-medium transition-colors
-                  bg-wex-button-destructive-bg
-                  text-wex-button-destructive-fg
-                  border border-wex-button-destructive-border
-                  hover:bg-wex-button-destructive-hover-bg
-                  active:bg-wex-button-destructive-active-bg
-                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
-                  focus-visible:ring-wex-button-destructive-focus-ring
-                  disabled:pointer-events-none disabled:opacity-50
-                  disabled:bg-wex-button-destructive-disabled-bg
-                  disabled:text-wex-button-destructive-disabled-fg
-                "
-              >
-                Delete Account
-              </Button>
-              <p className="text-xs text-muted-foreground mt-2">shadcn + tokens</p>
+        <p className="text-muted-foreground mb-8 mt-2">
+          WEX components fall into two categories. Here's what each looks like compared to 
+          using shadcn directly with tokens:
+        </p>
+
+        {/* Scenario 1: Extended Variants */}
+        <div className="mb-12">
+          <div className="flex items-center gap-3 mb-4">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-info/10 text-info text-sm font-medium">
+              <span className="w-2 h-2 rounded-full bg-info" />
+              Scenario 1
+            </span>
+            <h3 className="text-lg font-semibold">When You Need Extended Variants</h3>
+          </div>
+          <p className="text-sm text-muted-foreground mb-4">
+            <strong>Applies to:</strong> Button, Badge, Alert (3 components) — these need intents 
+            like <code className="bg-muted px-1 rounded">destructive</code>, <code className="bg-muted px-1 rounded">success</code>, <code className="bg-muted px-1 rounded">warning</code> that 
+            shadcn doesn't offer out of the box.
+          </p>
+
+          {/* Live Button Comparison */}
+          <div className="mb-6">
+            <h4 className="text-sm font-medium text-muted-foreground mb-3">Live Result (identical appearance):</h4>
+            <div className="flex gap-8 items-center p-6 rounded-lg bg-muted/30 border border-border">
+              <div className="text-center">
+                <WexButton intent="destructive">Delete Account</WexButton>
+                <p className="text-xs text-muted-foreground mt-2">WexButton</p>
+              </div>
+              <div className="text-center">
+                <Button
+                  className="
+                    inline-flex items-center justify-center gap-2
+                    h-11 min-h-[44px] px-4 py-2 rounded-md
+                    text-sm font-medium transition-colors
+                    bg-wex-button-destructive-bg
+                    text-wex-button-destructive-fg
+                    border border-wex-button-destructive-border
+                    hover:bg-wex-button-destructive-hover-bg
+                    active:bg-wex-button-destructive-active-bg
+                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
+                    focus-visible:ring-wex-button-destructive-focus-ring
+                    disabled:pointer-events-none disabled:opacity-50
+                    disabled:bg-wex-button-destructive-disabled-bg
+                    disabled:text-wex-button-destructive-disabled-fg
+                  "
+                >
+                  Delete Account
+                </Button>
+                <p className="text-xs text-muted-foreground mt-2">shadcn + manual CSS</p>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Code Comparison Tabs */}
-        <WexTabs defaultValue="wex" className="mb-8">
-          <WexTabs.List className="mb-4">
-            <WexTabs.Trigger value="wex" className="gap-2">
-              <Code2 className="h-4 w-4" />
-              With @wex/components
-            </WexTabs.Trigger>
-            <WexTabs.Trigger value="shadcn" className="gap-2">
-              <Code2 className="h-4 w-4" />
-              With shadcn + tokens
-            </WexTabs.Trigger>
-          </WexTabs.List>
-          
-          <WexTabs.Content value="wex">
-            <CodeBlock 
-              language="tsx"
-              filename="MyComponent.tsx"
-              code={`import { WexButton } from '@wex/components';
+          {/* Code Comparison Tabs */}
+          <WexTabs defaultValue="wex" className="mb-6">
+            <WexTabs.List className="mb-4">
+              <WexTabs.Trigger value="wex" className="gap-2">
+                <Code2 className="h-4 w-4" />
+                With @wex/components
+              </WexTabs.Trigger>
+              <WexTabs.Trigger value="shadcn" className="gap-2">
+                <Code2 className="h-4 w-4" />
+                With shadcn + tokens
+              </WexTabs.Trigger>
+            </WexTabs.List>
+            
+            <WexTabs.Content value="wex">
+              <CodeBlock 
+                language="tsx"
+                filename="MyComponent.tsx"
+                code={`import { WexButton } from '@wex/components';
 
 <WexButton intent="destructive">Delete Account</WexButton>`}
-            />
-            <p className="text-sm text-muted-foreground mt-3">
-              <span className="font-semibold text-success">3 lines</span> — Import and use. That's it.
-            </p>
-          </WexTabs.Content>
-          
-          <WexTabs.Content value="shadcn">
-            <CodeBlock 
-              language="tsx"
-              filename="MyComponent.tsx"
-              code={`import { Button } from '@/components/ui/button';
+              />
+              <p className="text-sm text-muted-foreground mt-3">
+                <span className="font-semibold text-success">3 lines</span> — Import and use. That's it.
+              </p>
+            </WexTabs.Content>
+            
+            <WexTabs.Content value="shadcn">
+              <CodeBlock 
+                language="tsx"
+                filename="MyComponent.tsx"
+                code={`import { Button } from '@/components/ui/button';
 import './button-variants.css';
 
 <Button className="btn-destructive">Delete Account</Button>`}
-            />
-            
-            <p className="text-xs font-medium text-muted-foreground mt-6 mb-3 uppercase tracking-wide">
-              Plus the CSS you write and maintain (using Tailwind @apply with WEX utilities):
-            </p>
-            
-            <CodeBlock 
-              language="css"
-              filename="button-variants.css"
-              code={`.btn-destructive {
+              />
+              
+              <p className="text-xs font-medium text-muted-foreground mt-6 mb-3 uppercase tracking-wide">
+                Plus the CSS you write and maintain (using Tailwind @apply with WEX utilities):
+              </p>
+              
+              <CodeBlock 
+                language="css"
+                filename="button-variants.css"
+                code={`.btn-destructive {
   @apply inline-flex items-center justify-center gap-2;
   @apply h-11 min-h-[44px] px-4 py-2 rounded-md;
   @apply text-sm font-medium transition-colors;
@@ -218,50 +238,124 @@ import './button-variants.css';
   @apply bg-wex-button-destructive-disabled-bg;
   @apply text-wex-button-destructive-disabled-fg;
 }`}
-            />
-            <p className="text-sm text-muted-foreground mt-3">
-              <span className="font-semibold text-destructive">~20 lines of CSS</span> — for just one button variant.
-            </p>
-          </WexTabs.Content>
-        </WexTabs>
+              />
+              <p className="text-sm text-muted-foreground mt-3">
+                <span className="font-semibold text-destructive">~20 lines of CSS</span> — for just one button variant.
+              </p>
+            </WexTabs.Content>
+          </WexTabs>
 
-        {/* Metrics Summary */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <MetricCard
-            icon={<Code2 className="h-5 w-5" />}
-            label="Component Code"
-            wexValue="3 lines"
-            manualValue="4 lines"
-          />
-          <MetricCard
-            icon={<FileCode className="h-5 w-5" />}
-            label="CSS to Write"
-            wexValue="0 lines"
-            manualValue="~20 lines"
-          />
-          <MetricCard
-            icon={<Moon className="h-5 w-5" />}
-            label="Dark Mode"
-            wexValue="Automatic"
-            manualValue="Manual"
-          />
-          <MetricCard
-            icon={<RotateCcw className="h-5 w-5" />}
-            label="Token Updates"
-            wexValue="Automatic"
-            manualValue="Manual sync"
-          />
+          {/* Metrics Summary */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <MetricCard
+              icon={<Code2 className="h-5 w-5" />}
+              label="Component Code"
+              wexValue="3 lines"
+              manualValue="4 lines"
+            />
+            <MetricCard
+              icon={<FileCode className="h-5 w-5" />}
+              label="CSS to Write"
+              wexValue="0 lines"
+              manualValue="~20 lines"
+            />
+            <MetricCard
+              icon={<Moon className="h-5 w-5" />}
+              label="Dark Mode"
+              wexValue="Automatic"
+              manualValue="Manual"
+            />
+            <MetricCard
+              icon={<RotateCcw className="h-5 w-5" />}
+              label="Token Updates"
+              wexValue="Automatic"
+              manualValue="Manual sync"
+            />
+          </div>
         </div>
 
-        {/* Value Callout */}
-        <WexAlert intent="success">
-          <WexAlert.Title>Same usage, zero maintenance</WexAlert.Title>
-          <WexAlert.Description>
-            Both approaches look similar at the component level — but WEX components eliminate 
-            the ~20 lines of CSS per variant you'd otherwise write and maintain. Dark mode, 
-            accessibility, and future token updates are handled for you.
-          </WexAlert.Description>
-        </WexAlert>
+        {/* Scenario 2: Wrapper Components */}
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-4">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-success/10 text-success text-sm font-medium">
+              <span className="w-2 h-2 rounded-full bg-success" />
+              Scenario 2
+            </span>
+            <h3 className="text-lg font-semibold">When shadcn Variants Work As-Is</h3>
+          </div>
+          <p className="text-sm text-muted-foreground mb-4">
+            <strong>Applies to:</strong> Dialog, Card, Tabs, and 52 other components — shadcn's 
+            built-in variants are sufficient, so WEX provides a thin wrapper with namespace patterns.
+          </p>
+
+          {/* Code Comparison */}
+          <div className="grid md:grid-cols-2 gap-4 mb-6">
+            <div>
+              <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">With @wex/components</p>
+              <CodeBlock 
+                language="tsx"
+                code={`import { WexDialog } from '@wex/components';
+
+<WexDialog>
+  <WexDialog.Trigger>Open</WexDialog.Trigger>
+  <WexDialog.Content>
+    <WexDialog.Header>
+      <WexDialog.Title>Title</WexDialog.Title>
+    </WexDialog.Header>
+    <p>Dialog content here.</p>
+  </WexDialog.Content>
+</WexDialog>`}
+              />
+            </div>
+            <div>
+              <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">With shadcn + tokens</p>
+              <CodeBlock 
+                language="tsx"
+                code={`import { Dialog, DialogTrigger, DialogContent, 
+  DialogHeader, DialogTitle } from '@/components/ui/dialog';
+
+<Dialog>
+  <DialogTrigger>Open</DialogTrigger>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>Title</DialogTitle>
+    </DialogHeader>
+    <p>Dialog content here.</p>
+  </DialogContent>
+</Dialog>`}
+              />
+            </div>
+          </div>
+
+          <WexAlert intent="info">
+            <WexAlert.Title>Similar code, different value</WexAlert.Title>
+            <WexAlert.Description>
+              For wrapper components, the code looks nearly identical. The value of WEX is in 
+              <strong> consistency</strong> (same patterns across all teams), 
+              <strong> namespace syntax</strong> (cleaner imports), and 
+              <strong> curated updates</strong> (upstream changes are vetted before reaching your app).
+            </WexAlert.Description>
+          </WexAlert>
+        </div>
+
+        {/* Summary Callout */}
+        <div className="p-5 rounded-lg bg-muted/30 border border-border">
+          <h4 className="font-medium mb-3">Summary</h4>
+          <div className="grid md:grid-cols-2 gap-4 text-sm">
+            <div>
+              <p className="font-medium text-info mb-1">Extended variants (3 components)</p>
+              <p className="text-muted-foreground">
+                Button, Badge, Alert — WEX saves ~20 lines of CSS per variant you'd otherwise write yourself.
+              </p>
+            </div>
+            <div>
+              <p className="font-medium text-success mb-1">Wrapper components (55 components)</p>
+              <p className="text-muted-foreground">
+                Dialog, Card, Tabs, etc. — WEX provides consistency, namespace patterns, and curated updates.
+              </p>
+            </div>
+          </div>
+        </div>
       </Section>
 
       <Section title="Dependency Model" description="How WEX components relate to underlying libraries." className="mb-16">
