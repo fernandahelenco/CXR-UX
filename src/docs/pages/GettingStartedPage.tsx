@@ -1,7 +1,7 @@
 import { Section } from "@/docs/components/Section";
 import { CodeBlock } from "@/docs/components/CodeBlock";
 import { Guidance } from "@/docs/components/ProseBlock";
-import { WexAlert, WexCard } from "@/components/wex";
+import { WexCard } from "@/components/wex";
 import { Package, Zap, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -131,7 +131,7 @@ import '@wex/design-tokens/css';`}
             <div>
               <h4 className="text-sm font-medium mb-3">3. Configure Tailwind</h4>
               <CodeBlock
-                language="ts"
+                language="typescript"
                 filename="tailwind.config.ts"
                 code={`import wexPreset from '@wex/design-tokens/tailwind-preset';
 
