@@ -25,12 +25,10 @@ export default function ContributingPage() {
 
       <WexAlert intent="info" className="mb-10">
         <BookOpen className="h-4 w-4" />
-        <WexAlert.Title>Full Documentation</WexAlert.Title>
+        <WexAlert.Title>For Contributors</WexAlert.Title>
         <WexAlert.Description>
-          This page provides an overview. For complete details, see{" "}
-          <code className="px-1.5 py-0.5 bg-muted rounded text-xs">CONTRIBUTING.md</code> in the repository root.
-          All contributions must follow{" "}
-          <code className="px-1.5 py-0.5 bg-muted rounded text-xs">WEX_COMPONENT_RULES.md</code>.
+          This guide covers how to create and submit new components to the WEX Design System. 
+          All contributions must follow the technical requirements outlined below.
         </WexAlert.Description>
       </WexAlert>
 
@@ -189,8 +187,7 @@ export const WexComponent = Object.assign(BaseComponent, {
       <Section title="Technical Requirements" className="mb-12">
         <div className="space-y-4">
           <p className="text-muted-foreground">
-            All components must meet these requirements from{" "}
-            <code className="px-1.5 py-0.5 bg-muted rounded text-xs">WEX_COMPONENT_RULES.md</code>:
+            All components must meet these requirements:
           </p>
           <ul className="space-y-3">
             <RequirementItem text="Use React.forwardRef with displayName set" />

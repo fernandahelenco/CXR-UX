@@ -24,7 +24,7 @@ export default function GettingStartedPage() {
       <div className="space-y-12">
         <Section
           title="Choose Your Integration"
-          description="The WEX Design System offers two packages for different needs."
+          description="The WEX Design System offers two packages that work together."
         >
           <div className="grid md:grid-cols-2 gap-4 mb-6">
             <WexCard className="p-4">
@@ -34,10 +34,10 @@ export default function GettingStartedPage() {
                 </div>
                 <div>
                   <WexCard.Title className="text-base mb-1">
-                    @wex/components
+                    @wex/components + @wex/design-tokens
                   </WexCard.Title>
                   <WexCard.Description className="text-sm mb-2">
-                    Full component library with WEX-branded variants and namespace patterns. 
+                    Full component library with WEX-branded variants, plus design tokens for theming. 
                     Recommended for most teams.
                   </WexCard.Description>
                   <span className="inline-flex items-center text-xs font-medium text-success bg-success/10 px-2 py-0.5 rounded">
@@ -53,11 +53,11 @@ export default function GettingStartedPage() {
                 </div>
                 <div>
                   <WexCard.Title className="text-base mb-1">
-                    @wex/design-tokens
+                    @wex/design-tokens only
                   </WexCard.Title>
                   <WexCard.Description className="text-sm mb-2">
                     Theme-only package with CSS variables and Tailwind preset. 
-                    For teams that need more control.
+                    For teams building their own components.
                   </WexCard.Description>
                   <span className="inline-flex items-center text-xs font-medium text-muted-foreground bg-muted px-2 py-0.5 rounded">
                     Advanced
@@ -92,8 +92,9 @@ export default function GettingStartedPage() {
             <h4 className="font-medium mb-2 text-sm">What about shadcn and Radix?</h4>
             <p className="text-sm text-muted-foreground mb-3">
               <code className="bg-muted px-1.5 py-0.5 rounded text-sm">@wex/components</code> bundles 
-              shadcn/ui patterns and Radix UI primitives internally. You don't need to install them 
-              separately—just install the WEX package and you're ready to go.
+              shadcn/ui patterns and Radix UI primitives internally — you don't need to install them 
+              separately. Design tokens are a separate peer dependency so brand updates can ship 
+              independently of component updates.
             </p>
             <Link 
               to="/architecture" 
@@ -107,31 +108,50 @@ export default function GettingStartedPage() {
 
         <Section
           title="Installation"
-          description="Install the WEX component package for the easiest integration."
+          description="Install both packages for the complete WEX experience."
         >
-          <div className="space-y-4">
-            <WexAlert intent="info">
-              <WexAlert.Description>
-                Package publication is coming soon. For now, components are available 
-                directly in this repository.
-              </WexAlert.Description>
-            </WexAlert>
+          <div className="space-y-6">
+            <div>
+              <h4 className="text-sm font-medium mb-3">1. Install packages</h4>
+              <CodeBlock
+                language="bash"
+                code={`npm install @wex/components @wex/design-tokens`}
+              />
+            </div>
             
-            <p className="text-muted-foreground">
-              WEX components live in{" "}
-              <code className="bg-muted px-1.5 py-0.5 rounded text-sm">src/components/wex/</code>.
-              Token files are in{" "}
-              <code className="bg-muted px-1.5 py-0.5 rounded text-sm">src/styles/</code>.
-            </p>
+            <div>
+              <h4 className="text-sm font-medium mb-3">2. Import tokens CSS (in your entry file)</h4>
+              <CodeBlock
+                language="tsx"
+                code={`// main.tsx or App.tsx
+import '@wex/design-tokens/css';`}
+              />
+            </div>
+            
+            <div>
+              <h4 className="text-sm font-medium mb-3">3. Configure Tailwind</h4>
+              <CodeBlock
+                language="ts"
+                filename="tailwind.config.ts"
+                code={`import wexPreset from '@wex/design-tokens/tailwind-preset';
 
-            <CodeBlock
-              code={`// Required CSS imports (add to your entry file)
-import './styles/wex.tokens.css';
-import './styles/wex.shadcn-bridge.css';
-
-// Component import (from the wex barrel export)
-import { WexButton, WexCard, WexDialog } from '@/components/wex';`}
-            />
+export default {
+  presets: [wexPreset],
+  content: [
+    './src/**/*.{js,ts,jsx,tsx}',
+    './node_modules/@wex/components/**/*.js',
+  ],
+};`}
+              />
+            </div>
+            
+            <div>
+              <h4 className="text-sm font-medium mb-3">4. Use components</h4>
+              <CodeBlock
+                language="tsx"
+                code={`import { WexButton, WexCard } from '@wex/components';`}
+              />
+            </div>
           </div>
         </Section>
 
@@ -140,7 +160,8 @@ import { WexButton, WexCard, WexDialog } from '@/components/wex';`}
           description="Import and use components in your React code."
         >
           <CodeBlock
-            code={`import { WexButton, WexCard, WexDialog } from '@/components/wex';
+            language="tsx"
+            code={`import { WexButton, WexCard, WexDialog } from '@wex/components';
 
 function MyComponent() {
   return (
@@ -188,51 +209,22 @@ document.documentElement.classList.remove('dark');`}
           </p>
         </Section>
 
-        <Section title="Component Rules">
-          <div className="rounded-lg border border-border bg-card p-4">
-            <h3 className="font-medium mb-2">WEX_COMPONENT_RULES.md</h3>
-            <p className="text-sm text-muted-foreground mb-3">
-              All component development must follow the rules defined in{" "}
-              <code className="bg-muted px-1 rounded">
-                WEX_COMPONENT_RULES.md
-              </code>{" "}
-              at the repository root. This includes:
-            </p>
-            <ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
-              <li>No raw hex/rgb/hsl color values</li>
-              <li>No arbitrary color value wrappers</li>
-              <li>Minimum 44×44px touch targets on interactive elements</li>
-              <li>Visible focus rings on all focusable elements</li>
-              <li>CVA for all variant-based components</li>
-            </ul>
-          </div>
-          <Guidance>
-            Read WEX_COMPONENT_RULES.md before contributing. It is the binding
-            contract for component development.
-          </Guidance>
-        </Section>
-
         <Section
-          title="Tailwind Configuration"
-          description="The Tailwind config extends colors with semantic tokens."
+          title="Updating Tokens"
+          description="Brand updates are shipped independently of component updates."
         >
+          <p className="text-muted-foreground mb-4">
+            When the WEX brand palette or theme changes, you can update tokens without 
+            touching your component version:
+          </p>
           <CodeBlock
-            code={`// tailwind.config.ts (excerpt)
-theme: {
-  extend: {
-    colors: {
-      background: "hsl(var(--background) / <alpha-value>)",
-      foreground: "hsl(var(--foreground) / <alpha-value>)",
-      primary: {
-        DEFAULT: "hsl(var(--primary) / <alpha-value>)",
-        foreground: "hsl(var(--primary-foreground) / <alpha-value>)",
-        hover: "hsl(var(--primary-hover) / <alpha-value>)",
-      },
-      // ... more semantic colors
-    },
-  },
-}`}
+            language="bash"
+            code={`# Update tokens only (no component changes)
+npm update @wex/design-tokens`}
           />
+          <Guidance>
+            This separation means faster, safer brand rollouts across all applications.
+          </Guidance>
         </Section>
       </div>
     </article>
