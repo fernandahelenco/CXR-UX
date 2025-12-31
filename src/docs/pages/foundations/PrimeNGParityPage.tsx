@@ -111,7 +111,7 @@ const componentParity = [
   { category: "Misc", wex: "-", primeng: "Chip", status: "missing", notes: "" },
   { category: "Misc", wex: "-", primeng: "Inplace", status: "missing", notes: "" },
   { category: "Misc", wex: "-", primeng: "MeterGroup", status: "missing", notes: "" },
-  { category: "Misc", wex: "-", primeng: "Tag", status: "missing", notes: "" },
+  { category: "Misc", wex: "Tag", primeng: "Tag", status: "stable", notes: "Implemented as WexTag" },
   { category: "Misc", wex: "-", primeng: "Terminal", status: "missing", notes: "" },
 ];
 

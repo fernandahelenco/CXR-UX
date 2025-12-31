@@ -16,6 +16,26 @@ export default function ChangelogPage() {
 
       <div className="space-y-8">
         <ChangelogEntry
+          version="0.24.0"
+          date="December 31, 2025"
+          title="Consumer Experience Refinement & Typography Polish"
+          changes={[
+            "Components: Added WexTag - subtle, tinted descriptor for UI elements and labels",
+            "Components: Added 'tinted' intent to WexButton for Blue-100 pill-style interactive chips",
+            "Components: Enhanced 'tinted' button hover state with border and text color transitions",
+            "Tokens: Added Layer 3 tokens for Tag component and Tinted Button variant",
+            "Tokens: Updated --wex-font-display to Inter system font stack for better consistency",
+            "Consumer Page: Migrated AI suggestion chips and Quick Links to the new WexButton 'tinted' pill style",
+            "Consumer Page: Migrated Urgent task labels to the new WexTag component",
+            "Consumer Page: Refined Task section buttons to use compact 'sm' variant",
+            "Consumer Page: Applied font-display to headings and prominent data points across all consumer experience components",
+            "Consumer Page: Refined padding and line-heights for improved visual rhythm",
+            "Consumer Page: Renamed 'To Do' section to 'Tasks' for improved clarity",
+            "Layout: Updated h1 welcome header with standard 40px line-height",
+          ]}
+        />
+
+        <ChangelogEntry
           version="0.23.0"
           date="December 29, 2025"
           title="Float Label Component & Extended Test Coverage"

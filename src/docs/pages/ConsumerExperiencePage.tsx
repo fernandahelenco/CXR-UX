@@ -30,6 +30,13 @@ export default function ConsumerExperiencePage() {
 
       {/* Main Content */}
       <main className="w-full max-w-[1440px] mx-auto px-8 py-7 space-y-6">
+        {/* Welcome Header */}
+        <div className="pt-2">
+          <h1 className="text-3xl font-display font-semibold text-foreground leading-10">
+            Welcome back, Crystal
+          </h1>
+        </div>
+
         {/* AI Chat Assistant */}
         <AIChatSection />
 

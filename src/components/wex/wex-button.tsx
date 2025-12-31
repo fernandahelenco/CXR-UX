@@ -22,7 +22,7 @@ const wexButtonVariants = cva(
   [
     "inline-flex items-center justify-center gap-2",
     "whitespace-nowrap text-sm font-medium",
-    "transition-colors",
+    "transition-colors cursor-pointer",
     // HARDENED: Focus ring - always visible on focus-visible
     "focus-visible:outline-none",
     "focus-visible:ring-[length:var(--wex-focus-ring-width)]",
@@ -155,6 +155,17 @@ const wexButtonVariants = cva(
           "active:text-wex-button-link-active-fg",
           "disabled:text-wex-button-link-disabled-fg",
           "disabled:no-underline",
+          "disabled:opacity-[var(--wex-component-button-disabled-opacity)]",
+        ].join(" "),
+        // TINTED - Layer 3 tokens (tinted blue style)
+        tinted: [
+          "bg-wex-button-tinted-bg",
+          "text-wex-button-tinted-fg",
+          "border border-wex-button-tinted-border",
+          "hover:bg-wex-button-tinted-hover-bg",
+          "hover:border-wex-button-tinted-hover-border",
+          "hover:text-wex-button-tinted-hover-fg",
+          "active:bg-wex-button-tinted-active-bg",
           "disabled:opacity-[var(--wex-component-button-disabled-opacity)]",
         ].join(" "),
       },

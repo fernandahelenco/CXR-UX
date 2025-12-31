@@ -29,7 +29,7 @@ export function InfoCardsSection() {
           <WexCard.Content className="p-6 flex-1 flex flex-col">
             <div className="space-y-4 flex-1">
               {/* Title */}
-              <h3 className="text-lg font-semibold text-foreground leading-snug">
+              <h3 className="text-lg font-display font-semibold text-foreground leading-snug">
                 {card.title}
               </h3>
 

@@ -16,6 +16,22 @@ export interface AccountCard {
   accounts: Account[];
 }
 
+export interface HSAAccountData {
+  title: string;
+  subtitle: string;
+  totalAccountValue: string;
+  availableCash: string;
+  investments: string;
+}
+
+export interface FSAAccountData {
+  title: string;
+  subtitle: string;
+  availableBalance: string;
+  useYourFundsText: string;
+  timeRemaining: number;
+}
+
 export interface Transaction {
   date: string;
   merchant: string;
@@ -26,7 +42,11 @@ export interface Transaction {
 export interface Task {
   id: string;
   title: string;
+  description: string;
   isPending: boolean;
+  actionLabel: string;
+  category?: string;
+  isUrgent?: boolean;
 }
 
 export interface QuickLink {
@@ -51,7 +71,7 @@ export interface CategoryData {
   percentage: number;
 }
 
-// Accounts Data
+// Accounts Data (legacy - kept for backward compatibility)
 export const hsaData: AccountCard = {
   title: "HSA For Life®",
   accounts: [
@@ -72,12 +92,49 @@ export const fsaData: AccountCard = {
   ],
 };
 
+// New Account Data Structure
+export const hsaAccountData: HSAAccountData = {
+  title: "HSA For Life®",
+  subtitle: "Health Savings Account • 2025 Plan Year",
+  totalAccountValue: "$0.00",
+  availableCash: "$0.00",
+  investments: "$0.00",
+};
+
+export const fsaAccountData: FSAAccountData = {
+  title: "Health Care FSA",
+  subtitle: "Flexible Spending Account • 2025 Plan Year",
+  availableBalance: "$250.00",
+  useYourFundsText: "Submit receipts to get reimbursed",
+  timeRemaining: 49,
+};
+
 // Tasks Data
 export const tasksData: Task[] = [
   {
     id: "1",
-    title: "To get your money faster, set up a bank account for direct deposit",
+    title: "Set up Direct Deposit",
+    description: "Get your money faster by linking your bank account.",
     isPending: true,
+    actionLabel: "Add Account",
+    category: "banking",
+  },
+  {
+    id: "2",
+    title: "LSA Expiring Soon",
+    description: "Today is the last day to spend your remaining balance.",
+    isPending: true,
+    actionLabel: "View Balance",
+    isUrgent: true,
+    category: "clock",
+  },
+  {
+    id: "3",
+    title: "Verify your Email",
+    description: "Secure your account by confirming your email address.",
+    isPending: true,
+    actionLabel: "Verify Now",
+    category: "mail",
   },
 ];
 

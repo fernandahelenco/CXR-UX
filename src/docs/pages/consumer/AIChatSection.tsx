@@ -19,7 +19,7 @@ export function AIChatSection() {
       <WexCard.Content className="p-6">
         <div className="flex flex-col gap-4">
           {/* Title - H5/Bold 18px */}
-          <h2 className="text-lg font-bold text-foreground leading-6">
+          <h2 className="text-lg font-display font-bold text-foreground leading-6">
             What can we help you with today?
           </h2>
 
@@ -60,13 +60,14 @@ export function AIChatSection() {
 
             {/* Suggestion Chips with overflow gradient */}
             <div className="relative overflow-hidden w-full">
-              <div className="flex gap-2 items-center overflow-x-auto scrollbar-hide">
+              <div className="flex gap-2 items-center overflow-x-auto scrollbar-hide py-1">
                 {aiSuggestions.map((suggestion, index) => (
                   <WexButton
                     key={index}
-                    intent="ghost"
-                    size="md"
-                    className="rounded-[32px] bg-info/10 text-primary hover:bg-info/20 shrink-0 h-auto py-1"
+                    intent="tinted"
+                    size="sm"
+                    rounded
+                    className="shrink-0"
                   >
                     {suggestion}
                   </WexButton>

@@ -155,6 +155,15 @@
   --wex-component-button-link-active-fg: var(--wex-link-active);
   --wex-component-button-link-disabled-fg: var(--wex-text-muted);
   
+  /* ----- Button: Tinted ----- */
+  --wex-component-button-tinted-bg: var(--wex-palette-blue-50);
+  --wex-component-button-tinted-fg: var(--wex-palette-blue-700);
+  --wex-component-button-tinted-border: var(--wex-palette-blue-100);
+  --wex-component-button-tinted-hover-bg: var(--wex-palette-blue-100);
+  --wex-component-button-tinted-hover-border: var(--wex-palette-blue-300);
+  --wex-component-button-tinted-hover-fg: var(--wex-palette-blue-800);
+  --wex-component-button-tinted-active-bg: var(--wex-palette-blue-200);
+  
   /* ----- Button: Shared ----- */
   --wex-component-button-disabled-opacity: 0.5;
 
@@ -277,6 +286,35 @@
   --wex-component-badge-destructive-bg: var(--wex-destructive);
   --wex-component-badge-destructive-fg: var(--wex-destructive-foreground);
   --wex-component-badge-destructive-border: var(--wex-destructive);
+
+  /* ============================================================
+     TAG (Tinted style)
+     ============================================================ */
+  
+  /* ----- Tag: Neutral ----- */
+  --wex-component-tag-neutral-bg: var(--wex-surface-subtle);
+  --wex-component-tag-neutral-fg: var(--wex-text);
+  --wex-component-tag-neutral-border: var(--wex-content-border);
+  
+  /* ----- Tag: Info ----- */
+  --wex-component-tag-info-bg: var(--wex-palette-cyan-50);
+  --wex-component-tag-info-fg: var(--wex-palette-cyan-700);
+  --wex-component-tag-info-border: var(--wex-palette-cyan-200);
+  
+  /* ----- Tag: Success ----- */
+  --wex-component-tag-success-bg: var(--wex-palette-green-50);
+  --wex-component-tag-success-fg: var(--wex-palette-green-800);
+  --wex-component-tag-success-border: var(--wex-palette-green-200);
+  
+  /* ----- Tag: Warning ----- */
+  --wex-component-tag-warning-bg: var(--wex-palette-amber-50);
+  --wex-component-tag-warning-fg: var(--wex-palette-amber-800);
+  --wex-component-tag-warning-border: var(--wex-palette-amber-200);
+  
+  /* ----- Tag: Destructive ----- */
+  --wex-component-tag-destructive-bg: var(--wex-palette-red-50);
+  --wex-component-tag-destructive-fg: var(--wex-palette-red-600);
+  --wex-component-tag-destructive-border: var(--wex-palette-red-200);
 
   /* ============================================================
      ALERT
@@ -716,6 +754,32 @@
   --wex-component-alert-destructive-bg: var(--wex-palette-red-900);
   --wex-component-alert-destructive-border: var(--wex-palette-red-700);
   
+  /* Tag: tinted backgrounds dark overrides */
+  --wex-component-tag-info-bg: var(--wex-palette-cyan-900);
+  --wex-component-tag-info-border: var(--wex-palette-cyan-700);
+  --wex-component-tag-info-fg: var(--wex-palette-white);
+
+  --wex-component-tag-success-bg: var(--wex-palette-green-900);
+  --wex-component-tag-success-border: var(--wex-palette-green-700);
+  --wex-component-tag-success-fg: var(--wex-palette-white);
+
+  --wex-component-tag-warning-bg: var(--wex-palette-amber-900);
+  --wex-component-tag-warning-border: var(--wex-palette-amber-700);
+  --wex-component-tag-warning-fg: var(--wex-palette-white);
+
+  --wex-component-tag-destructive-bg: var(--wex-palette-red-900);
+  --wex-component-tag-destructive-border: var(--wex-palette-red-700);
+  --wex-component-tag-destructive-fg: var(--wex-palette-white);
+  
+  /* Button: Tinted dark overrides */
+  --wex-component-button-tinted-bg: var(--wex-palette-blue-900);
+  --wex-component-button-tinted-border: var(--wex-palette-blue-700);
+  --wex-component-button-tinted-fg: var(--wex-palette-white);
+  --wex-component-button-tinted-hover-bg: var(--wex-palette-blue-800);
+  --wex-component-button-tinted-hover-border: var(--wex-palette-blue-600);
+  --wex-component-button-tinted-hover-fg: var(--wex-palette-white);
+  --wex-component-button-tinted-active-bg: var(--wex-palette-blue-700);
+
   /* Alert text: white for contrast on dark tinted backgrounds */
   --wex-component-alert-default-fg: var(--wex-palette-white);
   --wex-component-alert-info-fg: var(--wex-palette-white);

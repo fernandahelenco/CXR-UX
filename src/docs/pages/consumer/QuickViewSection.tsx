@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { WexCard } from "@/components/wex/wex-card";
 import { WexButton } from "@/components/wex/wex-button";
 import { WexChart, type WexChartConfig } from "@/components/wex/wex-chart";
@@ -44,6 +45,8 @@ const COLORS = [
 ];
 
 export function QuickViewSection() {
+  const navigate = useNavigate();
+  
   // Transform data for pie chart
   const pieData = paidClaimsCategoryData.map((item) => ({
     name: item.category,
@@ -59,7 +62,13 @@ export function QuickViewSection() {
             <h2 className="text-2xl font-display font-semibold text-foreground">
               Quick View
             </h2>
-            <WexButton intent="link" size="md">
+            <WexButton 
+              intent="link" 
+              size="md"
+              onClick={() => {
+                navigate("/account-overview");
+              }}
+            >
               View All Accounts
               <ChevronRight className="h-4 w-4" />
             </WexButton>
@@ -70,7 +79,7 @@ export function QuickViewSection() {
             {/* Bar Chart - HSA Contributions */}
             <div className="flex-1 space-y-4">
               <div className="flex items-center gap-2">
-                <h3 className="text-lg font-semibold">
+                <h3 className="text-lg font-display font-semibold">
                   HSA Contributions by Tax Year
                 </h3>
                 <AlertCircle className="h-4 w-4 text-muted-foreground" />
@@ -121,7 +130,7 @@ export function QuickViewSection() {
             {/* Pie Chart - Paid Claims */}
             <div className="flex-1 space-y-4">
               <div className="text-center space-y-1">
-                <h3 className="text-lg font-semibold">
+                <h3 className="text-lg font-display font-semibold">
                   Paid Claims by Category
                 </h3>
                 <p className="text-sm text-muted-foreground">01/01/2025 - 12/31/2025</p>

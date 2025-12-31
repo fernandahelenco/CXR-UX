@@ -300,6 +300,15 @@ export const componentRegistry: ComponentRegistryEntry[] = [
     tags: ["display", "status"],
   },
   {
+    name: "Tag",
+    route: "/components/tag",
+    importPath: "@/docs/pages/components/TagPage",
+    description: "Subtle, tinted descriptor for UI elements",
+    status: "stable",
+    category: "data-display",
+    tags: ["display", "status", "chip"],
+  },
+  {
     name: "Carousel",
     route: "/components/carousel",
     importPath: "@/docs/pages/components/CarouselPage",

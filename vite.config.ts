@@ -11,6 +11,13 @@ export default defineConfig(({ mode }) => ({
   server: {
     port: 5174,
     strictPort: true, // Fail if port is already in use
+    hmr: {
+      overlay: true,  // Show errors as overlay
+    },
+    watch: {
+      usePolling: true,  // Enable polling for file changes
+      interval: 100,     // Check for changes every 100ms
+    },
   },
   resolve: {
     alias: {

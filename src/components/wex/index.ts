@@ -17,6 +17,7 @@
 export { WexButton, wexButtonVariants, type WexButtonProps } from "./wex-button";
 export { WexAlert, wexAlertVariants } from "./wex-alert";
 export { WexBadge, wexBadgeVariants, type WexBadgeProps } from "./wex-badge";
+export { WexTag, wexTagVariants, type WexTagProps } from "./wex-tag";
 
 // ===== FORM COMPONENTS =====
 export { WexInput } from "./wex-input";

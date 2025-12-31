@@ -184,6 +184,15 @@ const config: Config = {
               "active-fg": "hsl(var(--wex-component-button-link-active-fg) / <alpha-value>)",
               "disabled-fg": "hsl(var(--wex-component-button-link-disabled-fg) / <alpha-value>)",
             },
+            tinted: {
+              bg: "hsl(var(--wex-component-button-tinted-bg) / <alpha-value>)",
+              fg: "hsl(var(--wex-component-button-tinted-fg) / <alpha-value>)",
+              border: "hsl(var(--wex-component-button-tinted-border) / <alpha-value>)",
+              "hover-bg": "hsl(var(--wex-component-button-tinted-hover-bg) / <alpha-value>)",
+              "hover-border": "hsl(var(--wex-component-button-tinted-hover-border) / <alpha-value>)",
+              "hover-fg": "hsl(var(--wex-component-button-tinted-hover-fg) / <alpha-value>)",
+              "active-bg": "hsl(var(--wex-component-button-tinted-active-bg) / <alpha-value>)",
+            },
           },
           input: {
             bg: "hsl(var(--wex-component-input-bg) / <alpha-value>)",
@@ -265,6 +274,33 @@ const config: Config = {
               bg: "hsl(var(--wex-component-badge-destructive-bg) / <alpha-value>)",
               fg: "hsl(var(--wex-component-badge-destructive-fg) / <alpha-value>)",
               border: "hsl(var(--wex-component-badge-destructive-border) / <alpha-value>)",
+            },
+          },
+          tag: {
+            neutral: {
+              bg: "hsl(var(--wex-component-tag-neutral-bg) / <alpha-value>)",
+              fg: "hsl(var(--wex-component-tag-neutral-fg) / <alpha-value>)",
+              border: "hsl(var(--wex-component-tag-neutral-border) / <alpha-value>)",
+            },
+            info: {
+              bg: "hsl(var(--wex-component-tag-info-bg) / <alpha-value>)",
+              fg: "hsl(var(--wex-component-tag-info-fg) / <alpha-value>)",
+              border: "hsl(var(--wex-component-tag-info-border) / <alpha-value>)",
+            },
+            success: {
+              bg: "hsl(var(--wex-component-tag-success-bg) / <alpha-value>)",
+              fg: "hsl(var(--wex-component-tag-success-fg) / <alpha-value>)",
+              border: "hsl(var(--wex-component-tag-success-border) / <alpha-value>)",
+            },
+            warning: {
+              bg: "hsl(var(--wex-component-tag-warning-bg) / <alpha-value>)",
+              fg: "hsl(var(--wex-component-tag-warning-fg) / <alpha-value>)",
+              border: "hsl(var(--wex-component-tag-warning-border) / <alpha-value>)",
+            },
+            destructive: {
+              bg: "hsl(var(--wex-component-tag-destructive-bg) / <alpha-value>)",
+              fg: "hsl(var(--wex-component-tag-destructive-fg) / <alpha-value>)",
+              border: "hsl(var(--wex-component-tag-destructive-border) / <alpha-value>)",
             },
           },
           alert: {

@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
@@ -6,6 +7,7 @@ import { cn } from "@/lib/utils";
  * WexBadge - WEX Design System Badge Component
  *
  * Small status descriptor for UI elements with semantic intent variants.
+ * Supports asChild for use as a chip or interactive element.
  *
  * @example
  * <WexBadge intent="default">New</WexBadge>
@@ -78,11 +80,14 @@ const wexBadgeVariants = cva(
 
 export interface WexBadgeProps
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof wexBadgeVariants> {}
+    VariantProps<typeof wexBadgeVariants> {
+  asChild?: boolean;
+}
 
-function WexBadge({ className, intent, size, pill, ...props }: WexBadgeProps) {
+function WexBadge({ className, intent, size, pill, asChild = false, ...props }: WexBadgeProps) {
+  const Comp = asChild ? Slot : "div";
   return (
-    <div className={cn(wexBadgeVariants({ intent, size, pill }), className)} {...props} />
+    <Comp className={cn(wexBadgeVariants({ intent, size, pill }), className)} {...props} />
   );
 }
 

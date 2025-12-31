@@ -3,7 +3,6 @@ import { Outlet, useLocation } from "react-router-dom";
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
 import { SidebarNav } from "./SidebarNav";
-import { ScrollToTop } from "@/docs/components/ScrollToTop";
 import { TokenMapModal } from "@/docs/components/TokenMapModal";
 import { ThemeBuilderProvider } from "@/docs/context/ThemeBuilderContext";
 
@@ -45,7 +44,6 @@ export function DocsLayout() {
 
   return (
     <div className="min-h-screen bg-background text-foreground relative">
-      <ScrollToTop />
       
       {/* 
         Global Mesh Background - Only on Home Page

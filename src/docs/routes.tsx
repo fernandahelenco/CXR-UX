@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Routes, Route } from "react-router-dom";
 import { DocsLayout } from "./layout/DocsLayout";
+import { ScrollToTop } from "@/docs/components/ScrollToTop";
 
 // Lazy load pages for code splitting
 const OverviewPage = React.lazy(() => import("@/docs/pages/OverviewPage"));
@@ -109,6 +110,7 @@ function PageLoader() {
 export function DocsRoutes() {
   return (
     <React.Suspense fallback={<PageLoader />}>
+      <ScrollToTop />
       <Routes>
         {/* Consumer Experience is now the landing page */}
         <Route index element={<ConsumerExperiencePage />} />

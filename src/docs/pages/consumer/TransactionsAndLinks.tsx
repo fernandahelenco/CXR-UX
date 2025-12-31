@@ -1,6 +1,8 @@
+import { useNavigate } from "react-router-dom";
 import { WexCard } from "@/components/wex/wex-card";
 import { WexButton } from "@/components/wex/wex-button";
 import { WexSeparator } from "@/components/wex/wex-separator";
+import { ChevronRight } from "lucide-react";
 import { transactionsData, quickLinksData } from "./mockData";
 
 /**
@@ -11,6 +13,8 @@ import { transactionsData, quickLinksData } from "./mockData";
  * - Right: Quick Links grid
  */
 export function TransactionsAndLinks() {
+  const navigate = useNavigate();
+  
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Recent Transactions - Takes 2 columns on large screens */}
@@ -23,8 +27,16 @@ export function TransactionsAndLinks() {
                 <h2 className="text-2xl font-display font-semibold text-foreground">
                   Recent Transactions
                 </h2>
-                <WexButton intent="outline" size="md">
+                <WexButton 
+                  intent="link" 
+                  size="md"
+                  className="px-0"
+                  onClick={() => {
+                    navigate("/account-overview");
+                  }}
+                >
                   View All Transactions
+                  <ChevronRight className="h-4 w-4" />
                 </WexButton>
               </div>
 
@@ -38,7 +50,7 @@ export function TransactionsAndLinks() {
                         <div className="text-sm text-muted-foreground mb-1">
                           {transaction.date}
                         </div>
-                        <div className="text-base font-medium">
+                        <div className="text-base font-display font-medium">
                           {transaction.merchant}
                         </div>
                       </div>
@@ -48,7 +60,7 @@ export function TransactionsAndLinks() {
                         <div className="text-sm text-muted-foreground mb-1">
                           {transaction.account}
                         </div>
-                        <div className={`text-base font-medium ${
+                        <div className={`text-base font-display font-medium ${
                           transaction.amount.startsWith('-') 
                             ? 'text-foreground' 
                             : 'text-success'
@@ -81,9 +93,10 @@ export function TransactionsAndLinks() {
                 {quickLinksData.map((link, index) => (
                   <WexButton
                     key={index}
-                    intent="outline"
-                    size="md"
-                    className="text-sm"
+                    intent="tinted"
+                    size="sm"
+                    rounded
+                    className="shrink-0"
                   >
                     {link.label}
                   </WexButton>
