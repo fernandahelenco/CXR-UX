@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { WexButton } from "@/components/wex/wex-button";
 import { WexAvatar } from "@/components/wex/wex-avatar";
@@ -6,6 +7,7 @@ import { WexSeparator } from "@/components/wex/wex-separator";
 import { WexDropdownMenu } from "@/components/wex/wex-dropdown-menu";
 import { Bell, User, Home, Wallet, FileText, LifeBuoy, ChevronDown, Languages, Palette, LogOut } from "lucide-react";
 import { navigationItems } from "./mockData";
+import { getUnreadCount, UNREAD_COUNT_CHANGED_EVENT } from "./messageCenterUtils";
 
 // Icon mapping for navigation items
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -26,6 +28,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 export function ConsumerNavigation() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [unreadCount, setUnreadCount] = useState<number>(getUnreadCount());
   
   // Check if a nav item is currently active based on the URL
   const isActive = (href: string) => {
@@ -55,6 +58,33 @@ export function ConsumerNavigation() {
   const handleLogout = () => {
     navigate("/login");
   };
+
+  // Listen for unread count changes
+  useEffect(() => {
+    // Set initial count
+    setUnreadCount(getUnreadCount());
+
+    // Listen for unread count change events
+    const handleUnreadCountChange = (event: CustomEvent) => {
+      setUnreadCount(event.detail as number);
+    };
+
+    window.addEventListener(UNREAD_COUNT_CHANGED_EVENT, handleUnreadCountChange as EventListener);
+
+    // Also listen for storage changes (in case of multiple tabs)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "messageCenter_unreadCount") {
+        setUnreadCount(getUnreadCount());
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener(UNREAD_COUNT_CHANGED_EVENT, handleUnreadCountChange as EventListener);
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -134,12 +164,14 @@ export function ConsumerNavigation() {
                 <Bell className="h-5 w-5" />
               </Link>
             </WexButton>
-            <WexBadge 
-              className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
-              intent="destructive"
-            >
-              1
-            </WexBadge>
+            {unreadCount > 0 && (
+              <WexBadge 
+                className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                intent="destructive"
+              >
+                {unreadCount}
+              </WexBadge>
+            )}
           </div>
 
           <WexSeparator orientation="vertical" className="h-6" />

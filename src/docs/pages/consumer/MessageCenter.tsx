@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { WexButton } from "@/components/wex/wex-button";
 import { WexCard } from "@/components/wex/wex-card";
 import { WexBadge } from "@/components/wex/wex-badge";
@@ -9,6 +10,7 @@ import { WexDropdownMenu } from "@/components/wex/wex-dropdown-menu";
 import { WexTable } from "@/components/wex/wex-table";
 import { WexPagination } from "@/components/wex/wex-pagination";
 import { WexDialog } from "@/components/wex/wex-dialog";
+import { WexEmpty } from "@/components/wex/wex-empty";
 import { ConsumerNavigation } from "./ConsumerNavigation";
 import { cn } from "@/lib/utils";
 import {
@@ -21,23 +23,14 @@ import {
   Folder,
   Download,
 } from "lucide-react";
-
-interface Message {
-  id: string;
-  subject: string;
-  hasAttachment: boolean;
-  category: string;
-  categoryColor: string;
-  categoryTextColor: string;
-  deliveryDate: string;
-  isStarred: boolean;
-  isBold: boolean;
-  isRead: boolean;
-  body?: string;
-  attachmentFileName?: string;
-}
-
-const MESSAGE_READ_STATUS_KEY = "messageCenter_readStatus";
+import type { Message } from "./messageCenterUtils";
+import {
+  getInitialMessages as getInitialMessagesUtil,
+  calculateUnreadCount,
+  updateUnreadCount,
+  saveReadStatus,
+  saveArchiveStatus,
+} from "./messageCenterUtils";
 
 const getInitialMessages = (): Message[] => {
   const initialMessages: Message[] = [
@@ -180,45 +173,43 @@ const getInitialMessages = (): Message[] => {
     },
   ];
 
-  try {
-    const persisted = localStorage.getItem(MESSAGE_READ_STATUS_KEY);
-    if (persisted) {
-      const readStatusMap = JSON.parse(persisted);
-      return initialMessages.map((msg) => ({
-        ...msg,
-        isRead: readStatusMap[msg.id] ?? msg.isRead,
-      }));
-    }
-  } catch (error) {
-    console.error("Failed to load persisted read status:", error);
-  }
-
-  return initialMessages;
+  return getInitialMessagesUtil(initialMessages);
 };
 
 export default function MessageCenter() {
-  const [messages, setMessages] = useState<Message[]>(getInitialMessages());
+  const navigate = useNavigate();
+  const [messages, setMessages] = useState<Message[]>(() => {
+    const initial = getInitialMessages();
+    // Initialize unread count on mount
+    const initialUnreadCount = calculateUnreadCount(initial);
+    updateUnreadCount(initialUnreadCount);
+    return initial;
+  });
 
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const updateMessage = (id: string, updates: Partial<Message>) => {
-    setMessages((prev) =>
-      prev.map((msg) => (msg.id === id ? { ...msg, ...updates } : msg))
-    );
-    
-    // Save read status to localStorage
-    if (updates.hasOwnProperty("isRead")) {
-      try {
-        const persisted = localStorage.getItem(MESSAGE_READ_STATUS_KEY);
-        const readStatusMap = persisted ? JSON.parse(persisted) : {};
-        readStatusMap[id] = updates.isRead;
-        localStorage.setItem(MESSAGE_READ_STATUS_KEY, JSON.stringify(readStatusMap));
-      } catch (error) {
-        console.error("Failed to save read status:", error);
+    setMessages((prev) => {
+      const updated = prev.map((msg) => (msg.id === id ? { ...msg, ...updates } : msg));
+      
+      // Save read status to localStorage and update unread count
+      if (updates.hasOwnProperty("isRead")) {
+        saveReadStatus(id, updates.isRead as boolean);
+        const newUnreadCount = calculateUnreadCount(updated);
+        updateUnreadCount(newUnreadCount);
       }
-    }
+      
+      // Save archive status to localStorage and update unread count
+      if (updates.hasOwnProperty("isArchived")) {
+        saveArchiveStatus(id, updates.isArchived as boolean);
+        const newUnreadCount = calculateUnreadCount(updated);
+        updateUnreadCount(newUnreadCount);
+      }
+      
+      return updated;
+    });
     
     // Update selectedMessage if it's the message being updated
     if (selectedMessage && selectedMessage.id === id) {
@@ -249,21 +240,56 @@ export default function MessageCenter() {
     updateMessage(message.id, { isStarred: !message.isStarred });
   };
 
+  const handleArchive = (message: Message, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent row click
+    updateMessage(message.id, { isArchived: true });
+  };
+
+  const handleUnarchive = (message: Message, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent row click
+    updateMessage(message.id, { isArchived: false });
+  };
+
+  const getEmptyStateText = (): string => {
+    if (selectedCategory === null) {
+      return "You don't have any messages yet";
+    }
+    if (selectedCategory === "archive") {
+      return "You don't have any archived messages yet";
+    }
+    if (selectedCategory === "starred") {
+      return "You don't have any starred messages yet";
+    }
+    if (selectedCategory === "unread") {
+      return "You don't have any unread messages yet";
+    }
+    // Category filter
+    return "You don't have any messages in this category yet";
+  };
+
   const unreadCount = useMemo(() => {
-    return messages.filter((message) => !message.isRead).length;
+    return messages.filter((message) => !message.isRead && !message.isArchived).length;
   }, [messages]);
 
   const filteredMessages = useMemo(() => {
     if (selectedCategory === null) {
-      return messages;
+      // All Messages: show only non-archived messages
+      return messages.filter((message) => !message.isArchived);
+    }
+    if (selectedCategory === "archive") {
+      // Archive view: show only archived messages
+      return messages.filter((message) => message.isArchived === true);
     }
     if (selectedCategory === "starred") {
-      return messages.filter((message) => message.isStarred === true);
+      // Starred: show only non-archived starred messages
+      return messages.filter((message) => message.isStarred === true && !message.isArchived);
     }
     if (selectedCategory === "unread") {
-      return messages.filter((message) => message.isRead === false);
+      // Unread: show only non-archived unread messages
+      return messages.filter((message) => message.isRead === false && !message.isArchived);
     }
-    return messages.filter((message) => message.category === selectedCategory);
+    // Category filter: show only non-archived messages in that category
+    return messages.filter((message) => message.category === selectedCategory && !message.isArchived);
   }, [selectedCategory, messages]);
 
   return (
@@ -290,6 +316,7 @@ export default function MessageCenter() {
               <WexButton
                 intent="primary"
                 className="flex items-center gap-2 bg-[#0058a3] text-white hover:bg-[#0058a3]/90"
+                onClick={() => navigate("/my-profile?subPage=communication")}
               >
                 <Settings className="h-4 w-4" />
                 Communication Preferences
@@ -429,7 +456,13 @@ export default function MessageCenter() {
                     <div className="space-y-1">
                       <WexButton
                         intent="ghost"
-                        className="w-full justify-start rounded-lg px-3 py-2.5 text-left text-sm text-[#243746]"
+                        onClick={() => setSelectedCategory("archive")}
+                        className={cn(
+                          "w-full justify-start rounded-lg px-3 py-2.5 text-left text-sm",
+                          selectedCategory === "archive"
+                            ? "bg-[#e4f5fd] text-[#003c70] font-semibold hover:bg-[#e4f5fd]"
+                            : "text-[#243746]"
+                        )}
                       >
                         Archive
                       </WexButton>
@@ -442,33 +475,50 @@ export default function MessageCenter() {
             {/* Main Content Area - Table */}
             <WexCard className="flex-1 rounded-r-2xl rounded-l-none">
               <WexCard.Content className="p-6">
-                {/* Table */}
-                <div className="overflow-x-auto">
-                  <WexTable>
-                    {/* Table Header */}
-                    <WexTable.Header>
-                      <WexTable.Row className="border-b border-[#e4e6e9]">
-                        <WexTable.Head className="w-[47px] px-3.5 py-2.5 text-left">
-                          <WexCheckbox />
-                        </WexTable.Head>
-                        <WexTable.Head className="w-[47px] px-3.5 py-2.5"></WexTable.Head>
-                        <WexTable.Head className="w-[401px] px-3.5 py-2.5 text-left">
-                          <span className="text-sm font-semibold text-[#243746]">Subject</span>
-                        </WexTable.Head>
-                        <WexTable.Head className="w-[277px] px-3.5 py-2.5 text-left">
-                          <span className="text-sm font-semibold text-[#243746]">Category</span>
-                        </WexTable.Head>
-                        <WexTable.Head className="w-[170px] px-3.5 py-2.5 text-left">
-                          <span className="text-sm font-semibold text-[#243746]">Delivery Date</span>
-                        </WexTable.Head>
-                        <WexTable.Head className="w-[129px] px-3.5 py-2.5 text-right">
-                          <span className="text-sm font-semibold text-[#243746]">Action</span>
-                        </WexTable.Head>
-                      </WexTable.Row>
-                    </WexTable.Header>
-                    {/* Table Body */}
-                    <WexTable.Body>
-                      {filteredMessages.map((message) => (
+                {filteredMessages.length === 0 ? (
+                  /* Empty State */
+                  <WexEmpty className="border-0 py-12">
+                    <WexEmpty.Header>
+                      <WexEmpty.Media variant="default">
+                        <img 
+                          src="/empty-state-illustration.svg" 
+                          alt="" 
+                          className="h-[191px] w-[235px]"
+                        />
+                      </WexEmpty.Media>
+                      <WexEmpty.Title className="text-base font-normal text-[#243746]">
+                        {getEmptyStateText()}
+                      </WexEmpty.Title>
+                    </WexEmpty.Header>
+                  </WexEmpty>
+                ) : (
+                  /* Table */
+                  <div className="overflow-x-auto">
+                    <WexTable>
+                      {/* Table Header */}
+                      <WexTable.Header>
+                        <WexTable.Row className="border-b border-[#e4e6e9]">
+                          <WexTable.Head className="w-[47px] px-3.5 py-2.5 text-left">
+                            <WexCheckbox />
+                          </WexTable.Head>
+                          <WexTable.Head className="w-[47px] px-3.5 py-2.5"></WexTable.Head>
+                          <WexTable.Head className="w-[401px] px-3.5 py-2.5 text-left">
+                            <span className="text-sm font-semibold text-[#243746]">Subject</span>
+                          </WexTable.Head>
+                          <WexTable.Head className="w-[277px] px-3.5 py-2.5 text-left">
+                            <span className="text-sm font-semibold text-[#243746]">Category</span>
+                          </WexTable.Head>
+                          <WexTable.Head className="w-[170px] px-3.5 py-2.5 text-left">
+                            <span className="text-sm font-semibold text-[#243746]">Delivery Date</span>
+                          </WexTable.Head>
+                          <WexTable.Head className="w-[129px] px-3.5 py-2.5 text-right">
+                            <span className="text-sm font-semibold text-[#243746]">Action</span>
+                          </WexTable.Head>
+                        </WexTable.Row>
+                      </WexTable.Header>
+                      {/* Table Body */}
+                      <WexTable.Body>
+                        {filteredMessages.map((message) => (
                         <WexTable.Row
                           key={message.id}
                           className="cursor-pointer border-b border-[#e4e6e9] hover:bg-gray-50"
@@ -547,28 +597,44 @@ export default function MessageCenter() {
                                 className="w-[180px] rounded-[6px] border border-[#e4e6e9] bg-white p-[3.5px] shadow-md"
                               >
                                 <div className="flex flex-col gap-[2px]">
-                                  {!message.isRead && (
+                                  {selectedCategory !== "archive" && (
+                                    <>
+                                      {!message.isRead && (
+                                        <WexDropdownMenu.Item
+                                          onClick={(e) => handleToggleReadStatus(message, e)}
+                                          className="flex cursor-pointer items-center gap-[7px] rounded-[4px] px-[10.5px] py-[7px] text-sm text-[#243746] outline-none hover:bg-gray-50 focus:bg-gray-50"
+                                        >
+                                          <Inbox className="h-3.5 w-3.5 shrink-0 text-[#7c858e]" />
+                                          <span>Mark as read</span>
+                                        </WexDropdownMenu.Item>
+                                      )}
+                                      {message.isRead && (
+                                        <WexDropdownMenu.Item
+                                          onClick={(e) => handleToggleReadStatus(message, e)}
+                                          className="flex cursor-pointer items-center gap-[7px] rounded-[4px] px-[10.5px] py-[7px] text-sm text-[#243746] outline-none hover:bg-gray-50 focus:bg-gray-50"
+                                        >
+                                          <Inbox className="h-3.5 w-3.5 shrink-0 text-[#7c858e]" />
+                                          <span>Mark as unread</span>
+                                        </WexDropdownMenu.Item>
+                                      )}
+                                      <WexDropdownMenu.Item
+                                        onClick={(e) => handleArchive(message, e)}
+                                        className="flex cursor-pointer items-center gap-[7px] rounded-[4px] px-[10.5px] py-[7px] text-sm text-[#243746] outline-none hover:bg-gray-50 focus:bg-gray-50"
+                                      >
+                                        <Folder className="h-3.5 w-3.5 shrink-0 text-[#7c858e]" />
+                                        <span>Archive</span>
+                                      </WexDropdownMenu.Item>
+                                    </>
+                                  )}
+                                  {selectedCategory === "archive" && (
                                     <WexDropdownMenu.Item
-                                      onClick={(e) => handleToggleReadStatus(message, e)}
+                                      onClick={(e) => handleUnarchive(message, e)}
                                       className="flex cursor-pointer items-center gap-[7px] rounded-[4px] px-[10.5px] py-[7px] text-sm text-[#243746] outline-none hover:bg-gray-50 focus:bg-gray-50"
                                     >
                                       <Inbox className="h-3.5 w-3.5 shrink-0 text-[#7c858e]" />
-                                      <span>Mark as read</span>
+                                      <span>Move to inbox</span>
                                     </WexDropdownMenu.Item>
                                   )}
-                                  {message.isRead && (
-                                    <WexDropdownMenu.Item
-                                      onClick={(e) => handleToggleReadStatus(message, e)}
-                                      className="flex cursor-pointer items-center gap-[7px] rounded-[4px] px-[10.5px] py-[7px] text-sm text-[#243746] outline-none hover:bg-gray-50 focus:bg-gray-50"
-                                    >
-                                      <Inbox className="h-3.5 w-3.5 shrink-0 text-[#7c858e]" />
-                                      <span>Mark as unread</span>
-                                    </WexDropdownMenu.Item>
-                                  )}
-                                  <WexDropdownMenu.Item className="flex cursor-pointer items-center gap-[7px] rounded-[4px] px-[10.5px] py-[7px] text-sm text-[#243746] outline-none hover:bg-gray-50 focus:bg-gray-50">
-                                    <Folder className="h-3.5 w-3.5 shrink-0 text-[#7c858e]" />
-                                    <span>Archive</span>
-                                  </WexDropdownMenu.Item>
                                 </div>
                               </WexDropdownMenu.Content>
                             </WexDropdownMenu>
@@ -578,9 +644,11 @@ export default function MessageCenter() {
                     </WexTable.Body>
                   </WexTable>
                 </div>
+                )}
 
                 {/* Pagination */}
-                <div className="mt-6 flex items-center justify-center gap-1 border-t border-[#e4e6e9] pt-4">
+                {filteredMessages.length > 0 && (
+                  <div className="mt-6 flex items-center justify-center gap-1 border-t border-[#e4e6e9] pt-4">
                   <WexPagination>
                     <WexPagination.Content>
                       <WexPagination.Item>
@@ -626,7 +694,8 @@ export default function MessageCenter() {
                       </WexSelect.Content>
                     </WexSelect>
                   </div>
-                </div>
+                  </div>
+                )}
               </WexCard.Content>
             </WexCard>
           </div>
