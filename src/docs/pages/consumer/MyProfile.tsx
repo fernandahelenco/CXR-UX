@@ -908,11 +908,13 @@ export default function MyProfile() {
                   onClick={() => {
                     setBankAccountFormData({
                       verificationMethod: "text",
-                      accountType: "",
+                      verificationCode: "",
+                      accountType: "checking",
                       accountNumber: "",
+                      confirmAccountNumber: "",
                       routingNumber: "",
-                      bankName: "",
-                      accountHolderName: "",
+                      accountNickname: "",
+                      selectedDirectDepositOptions: [],
                     });
                     setBankAccountStep("step1");
                     setEditingBankAccountId(null);
