@@ -6,4 +6,5 @@
 
 export { Stepper, type Step, type StepperProps } from "./Stepper";
 export { SelectCard, SelectCardGroup, type SelectCardProps, type SelectCardGroupProps } from "./SelectCard";
+export { QuestionOptionCard, type QuestionOptionCardProps } from "./QuestionOptionCard";
 

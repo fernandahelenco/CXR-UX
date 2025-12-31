@@ -2,6 +2,7 @@ import { WexCard } from "@/components/wex/wex-card";
 import { WexInput } from "@/components/wex/wex-input";
 import { WexButton } from "@/components/wex/wex-button";
 import { Send, Mic, Sparkles } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { aiSuggestions } from "./mockData";
 
 /**
@@ -14,6 +15,14 @@ import { aiSuggestions } from "./mockData";
  * - Proper spacing: 24px padding, 16px gap between title/input, 12px gap between input/chips
  */
 export function AIChatSection() {
+  const navigate = useNavigate();
+
+  const handleSuggestionClick = (suggestion: string) => {
+    if (suggestion === "Enroll in HSA") {
+      navigate("/hsa-enrollment");
+    }
+  };
+
   return (
     <WexCard className="border border-border">
       <WexCard.Content className="p-6">
@@ -67,6 +76,7 @@ export function AIChatSection() {
                     intent="ghost"
                     size="md"
                     className="rounded-[32px] bg-info/10 text-primary hover:bg-info/20 shrink-0 h-auto py-1"
+                    onClick={() => handleSuggestionClick(suggestion)}
                   >
                     {suggestion}
                   </WexButton>
