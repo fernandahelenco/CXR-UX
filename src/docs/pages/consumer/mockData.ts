@@ -129,6 +129,7 @@ export const aiSuggestions: string[] = [
   "Contribute to HSA",
   "Manage Investments",
   "Manage My Expenses",
+  "Enroll in HSA",
 ];
 
 // Info Cards Data

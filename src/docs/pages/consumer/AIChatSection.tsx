@@ -20,6 +20,8 @@ export function AIChatSection() {
   const handleSuggestionClick = (suggestion: string) => {
     if (suggestion === "Reimburse Myself") {
       navigate("/reimburse");
+    } else if (suggestion === "Enroll in HSA") {
+      navigate("/hsa-enrollment");
     }
     // Add other navigation handlers here as needed
   };
