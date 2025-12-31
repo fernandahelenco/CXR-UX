@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Info } from "lucide-react";
 import { WexButton } from "@/components/wex/wex-button";
 import { WexCheckbox } from "@/components/wex/wex-checkbox";
+import { WexPopover } from "@/components/wex/wex-popover";
 import { Stepper } from "./components/Stepper";
 import type { Step } from "./components/Stepper";
 import { QuestionOptionCard } from "./components/QuestionOptionCard";
@@ -203,10 +204,123 @@ export default function HSAEnrollmentPage() {
                         transitionDelay: isTransitioning ? '0ms' : '100ms'
                       }}
                     >
-                      <Info className="h-4 w-4 text-[#1d2c38]" />
-                      <p className="text-sm font-normal leading-6 text-[#515f6b] tracking-[-0.084px]">
-                        {currentQuestion.helpText}
-                      </p>
+                      {currentQuestion.id === 'q1' ? (
+                        <WexPopover>
+                          <WexPopover.Trigger asChild>
+                            <button className="flex items-center gap-2 hover:opacity-70 transition-opacity">
+                              <Info className="h-4 w-4 text-[#1d2c38] cursor-pointer" />
+                              <p className="text-sm font-normal leading-6 text-[#515f6b] tracking-[-0.084px]">
+                                {currentQuestion.helpText}
+                              </p>
+                            </button>
+                          </WexPopover.Trigger>
+                          <WexPopover.Content className="max-w-[320px] p-4">
+                            <p className="text-sm leading-6 text-[#243746]">
+                              To be eligible for a Health Savings Account, you must have a high deductible health plan (HDHP) that meets certain requirements described in Section 223 of the Internal Revenue Code.
+                            </p>
+                          </WexPopover.Content>
+                        </WexPopover>
+                      ) : currentQuestion.id === 'q5' ? (
+                        <WexPopover>
+                          <WexPopover.Trigger asChild>
+                            <button className="flex items-center gap-2 hover:opacity-70 transition-opacity">
+                              <Info className="h-4 w-4 text-[#1d2c38] cursor-pointer" />
+                              <p className="text-sm font-normal leading-6 text-[#515f6b] tracking-[-0.084px] text-left">
+                                {currentQuestion.helpText}
+                              </p>
+                            </button>
+                          </WexPopover.Trigger>
+                          <WexPopover.Content className="max-w-[400px] p-4">
+                            <div className="space-y-3 text-sm leading-6 text-[#243746]">
+                              <p>
+                                You (and your spouse, if you have family coverage) generally cannot have any other health coverage that is not an HDHP. However, you can still be an eligible individual even if your spouse has non-HDHP coverage provided you are not covered by that plan.
+                              </p>
+                              <p>
+                                You can have additional insurance that provides benefits only for the following items:
+                              </p>
+                              <ul className="list-disc pl-5 space-y-1">
+                                <li>Liabilities incurred under workers' compensation laws, tort liabilities, or liabilities related to ownership or use of property</li>
+                                <li>A specific disease or illness</li>
+                                <li>A fixed amount per day (or other period) of hospitalization</li>
+                                <li>Accidents</li>
+                                <li>Disability</li>
+                                <li>Dental care</li>
+                                <li>Vision care</li>
+                                <li>Long-term care</li>
+                              </ul>
+                            </div>
+                          </WexPopover.Content>
+                        </WexPopover>
+                      ) : currentQuestion.id === 'q6' ? (
+                        <WexPopover>
+                          <WexPopover.Trigger asChild>
+                            <button className="flex items-center gap-2 hover:opacity-70 transition-opacity">
+                              <Info className="h-4 w-4 text-[#1d2c38] cursor-pointer" />
+                              <p className="text-sm font-normal leading-6 text-[#515f6b] tracking-[-0.084px] text-left">
+                                {currentQuestion.helpText}
+                              </p>
+                            </button>
+                          </WexPopover.Trigger>
+                          <WexPopover.Content className="max-w-[400px] p-4">
+                            <div className="space-y-4 text-sm leading-6 text-[#243746]">
+                              <p>
+                                You cannot be covered by a first-dollar full coverage health flexible spending account (FSA) or a health reimbursement arrangement (HRA). You can be covered by a limited purpose or post-deductible FSA or HRA as well as a retirement or suspended HRA.
+                              </p>
+                              
+                              <div>
+                                <p className="font-semibold mb-2">
+                                  The following health benefits make you <span className="italic">ineligible</span> for an HSA:
+                                </p>
+                                <div className="pl-4">
+                                  <p className="font-semibold mb-1">"General"</p>
+                                  <p className="mb-3">
+                                    FSA's and HRA's in which the reimbursement is provided before any minimum annual deductible has been satisfied under the HDHP. Includes coverage through a spouse's FSA or HRA.
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div>
+                                <p className="font-semibold mb-2">
+                                  The following health benefits allow you to have an HSA:
+                                </p>
+                                <div className="pl-4 space-y-3">
+                                  <div>
+                                    <p className="font-semibold mb-1">"Limited Purpose"</p>
+                                    <p>
+                                      FSAs and HRAs that restrict reimbursements to certain permitted benefits such as vision, dental or preventive care benefits.
+                                    </p>
+                                  </div>
+                                  <div>
+                                    <p className="font-semibold mb-1">"Retirement"</p>
+                                    <p>
+                                      HRAs that only provide reimbursement after retirement.
+                                    </p>
+                                  </div>
+                                  <div>
+                                    <p className="font-semibold mb-1">"Suspended"</p>
+                                    <p>
+                                      HRAs where the employee has elected to forgo health reimbursements for the coverage period.
+                                    </p>
+                                  </div>
+                                  <div>
+                                    <p className="font-semibold mb-1">"Post-deductible"</p>
+                                    <p>
+                                      FSAs or HRAs that only provide reimbursement after the minimum annual deductible has been satisfied under the HDHP.
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </WexPopover.Content>
+                        </WexPopover>
+                      ) : (
+                        <>
+                          <Info className="h-4 w-4 text-[#1d2c38]" />
+                          <p className="text-sm font-normal leading-6 text-[#515f6b] tracking-[-0.084px]">
+                            {currentQuestion.helpText}
+                          </p>
+                        </>
+                      )}
                     </div>
                   )}
 
