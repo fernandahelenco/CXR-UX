@@ -23,8 +23,14 @@ const AccountOverviewPage = React.lazy(() => import("@/docs/pages/AccountOvervie
 // Message Center page - standalone route
 const MessageCenterPage = React.lazy(() => import("@/docs/pages/consumer/MessageCenter"));
 
+// My Profile page - standalone route
+const MyProfilePage = React.lazy(() => import("@/docs/pages/consumer/MyProfile"));
+
 // Login page - standalone route
 const LoginPage = React.lazy(() => import("@/docs/pages/Login"));
+
+// Custom Components Demo page - standalone route
+const CustomComponentsDemo = React.lazy(() => import("@/docs/pages/consumer/CustomComponentsDemo"));
 
 // Foundation pages
 const TokenArchitecturePage = React.lazy(() => import("@/docs/pages/foundations/TokenArchitecturePage"));
@@ -122,8 +128,14 @@ export function DocsRoutes() {
         {/* Standalone Message Center route - bypasses DocsLayout */}
         <Route path="message-center" element={<MessageCenterPage />} />
         
+        {/* Standalone My Profile route - bypasses DocsLayout */}
+        <Route path="my-profile" element={<MyProfilePage />} />
+        
         {/* Standalone Login route - bypasses DocsLayout */}
         <Route path="login" element={<LoginPage onLoginSuccess={() => window.location.href = '/'} />} />
+        
+        {/* Custom Components Demo route - bypasses DocsLayout */}
+        <Route path="/custom-components-demo" element={<CustomComponentsDemo />} />
         
         <Route element={<DocsLayout />}>
           {/* Design System overview moved to /design-system */}
