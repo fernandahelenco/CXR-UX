@@ -54,7 +54,7 @@ function App() {
     <ErrorBoundary>
       <TooltipProvider>
         <DocsRoutes />
-        <Toaster />
+        <Toaster position="top-right" />
       </TooltipProvider>
     </ErrorBoundary>
   )
