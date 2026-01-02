@@ -327,19 +327,10 @@ export function MessageCenterWidget() {
                       <div className="flex items-start gap-3">
                         {/* Content */}
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-start gap-2 mb-1">
+                          <div className="mb-1">
                             <h4 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
                               {message.title}
                             </h4>
-                            {message.badge && (
-                              <WexBadge 
-                                intent={message.badge.intent} 
-                                size="sm" 
-                                className="shrink-0 text-xs px-2 py-0.5"
-                              >
-                                {message.badge.label}
-                              </WexBadge>
-                            )}
                           </div>
                           <div className="flex items-center gap-2 text-xs text-muted-foreground">
                             <span>{message.category}</span>
