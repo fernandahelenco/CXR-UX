@@ -1,9 +1,16 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { WexCard } from "@/components/wex/wex-card";
 import { WexButton } from "@/components/wex/wex-button";
 import { WexBadge } from "@/components/wex/wex-badge";
 import { WexSeparator } from "@/components/wex/wex-separator";
 import { ChevronRight, AlertTriangle, Mail, Star, Clock, Bell, FileText } from "lucide-react";
+import { 
+  getInitialMessages, 
+  calculateUnreadCount,
+  UNREAD_COUNT_CHANGED_EVENT,
+  type Message 
+} from "./messageCenterUtils";
 
 /**
  * Message Center Widget
@@ -27,41 +34,211 @@ interface MessageItem {
   };
 }
 
-// Mock message data for To Do list
-const toDoMessages: MessageItem[] = [
-  {
-    id: "1",
-    title: "HSA Contribution Maximum Warning",
-    category: "Contributions & Investments",
-    date: "Today, 9:55 AM",
-    icon: "alert",
-    badge: {
+// Initial messages data from Message Center
+const getMessageData = (): Message[] => {
+  const initialMessages: Message[] = [
+    {
+      id: "1",
+      subject: "HSA Contribution Maximum Warning",
+      hasAttachment: true,
+      category: "Contributions & Investments",
+      categoryColor: "#ffbca7",
+      categoryTextColor: "#66230e",
+      deliveryDate: "11/23/25 11:05AM",
+      isStarred: false,
+      isBold: true,
+      isRead: false,
+      isArchived: false,
+      body: "Your HSA contribution is approaching the annual maximum limit. Please review your contribution settings.",
+      attachmentFileName: "HSA_Contribution_Warning_11_23.pdf",
+    },
+    {
+      id: "2",
+      subject: "HSA Contribution Notification",
+      hasAttachment: true,
+      category: "Contributions & Investments",
+      categoryColor: "#ffbca7",
+      categoryTextColor: "#66230e",
+      deliveryDate: "11/23/25 11:05AM",
+      isStarred: false,
+      isBold: true,
+      isRead: false,
+      isArchived: false,
+      body: "A new contribution has been processed to your HSA account.",
+      attachmentFileName: "Contribution_Notification_11_23.pdf",
+    },
+    {
+      id: "3",
+      subject: "HSA Account Summary (11/01/2025-11/30/2025)",
+      hasAttachment: true,
+      category: "Statements & Tax Documents",
+      categoryColor: "#fff7b1",
+      categoryTextColor: "#665e18",
+      deliveryDate: "11/23/25 11:05AM",
+      isStarred: false,
+      isBold: true,
+      isRead: false,
+      isArchived: false,
+      body: "Your monthly account summary is now available.",
+      attachmentFileName: "Account_Summary_11_2025.pdf",
+    },
+    {
+      id: "4",
+      subject: "Tax Form Available: 1099-SA",
+      hasAttachment: true,
+      category: "Statements & Tax Documents",
+      categoryColor: "#fff7b1",
+      categoryTextColor: "#665e18",
+      deliveryDate: "11/23/25 11:05AM",
+      isStarred: false,
+      isBold: false,
+      isRead: false,
+      isArchived: false,
+      body: "Your 1099-SA tax form is now available for download.",
+      attachmentFileName: "1099-SA_2025.pdf",
+    },
+    {
+      id: "5",
+      subject: "HSA Withdrawal Notification",
+      hasAttachment: false,
+      category: "Distributions",
+      categoryColor: "#9ddcfb",
+      categoryTextColor: "#044362",
+      deliveryDate: "11/23/25 11:05AM",
+      isStarred: false,
+      isBold: false,
+      isRead: false,
+      isArchived: false,
+      body: "A withdrawal has been processed from your HSA account.",
+    },
+    {
+      id: "6",
+      subject: "HSA Payment Issued",
+      hasAttachment: false,
+      category: "Distributions",
+      categoryColor: "#9ddcfb",
+      categoryTextColor: "#044362",
+      deliveryDate: "11/23/25 11:05AM",
+      isStarred: false,
+      isBold: true,
+      isRead: false,
+      isArchived: false,
+      body: "Your HSA payment has been issued successfully.",
+    },
+    {
+      id: "7",
+      subject: "Purchase Alert",
+      hasAttachment: true,
+      category: "Cards & Security",
+      categoryColor: "#e8a6cc",
+      categoryTextColor: "#4f0d33",
+      deliveryDate: "11/23/25 11:05AM",
+      isStarred: false,
+      isBold: false,
+      isRead: false,
+      isArchived: false,
+      body: "A purchase was made using your HSA card.",
+      attachmentFileName: "Purchase_Alert_11_23.pdf",
+    },
+    {
+      id: "8",
+      subject: "HSA Account Summary (10/01/2025-10/31/2025)",
+      hasAttachment: true,
+      category: "Statements & Tax Documents",
+      categoryColor: "#fff7b1",
+      categoryTextColor: "#665e18",
+      deliveryDate: "11/23/25 11:05AM",
+      isStarred: false,
+      isBold: false,
+      isRead: false,
+      isArchived: false,
+      body: "Your monthly account summary is now available.",
+      attachmentFileName: "Account_Summary_10_2025.pdf",
+    },
+    {
+      id: "9",
+      subject: "HSA Account Summary (09/01/2025-09/30/2025)",
+      hasAttachment: true,
+      category: "Statements & Tax Documents",
+      categoryColor: "#fff7b1",
+      categoryTextColor: "#665e18",
+      deliveryDate: "11/23/25 11:05AM",
+      isStarred: false,
+      isBold: true,
+      isRead: false,
+      isArchived: false,
+      body: "Your monthly account summary is now available.",
+      attachmentFileName: "Account_Summary_09_2025.pdf",
+    },
+    {
+      id: "10",
+      subject: "Password Successfully Changed",
+      hasAttachment: false,
+      category: "Cards & Security",
+      categoryColor: "#e8a6cc",
+      categoryTextColor: "#4f0d33",
+      deliveryDate: "11/23/25 11:05AM",
+      isStarred: false,
+      isBold: true,
+      isRead: false,
+      isArchived: false,
+      body: "Your password has been successfully changed.",
+    },
+  ];
+
+  return getInitialMessages(initialMessages);
+};
+
+// Mock message data for To Do list - using actual messages from Message Center
+const getToDoMessages = (messages: Message[]): MessageItem[] => {
+  // Get urgent/unread messages that are bold (priority items)
+  const priorityMessages = messages
+    .filter(msg => !msg.isArchived && (msg.isBold || !msg.isRead))
+    .slice(0, 3);
+
+  return priorityMessages.map(msg => ({
+    id: msg.id,
+    title: msg.subject,
+    category: msg.category,
+    date: msg.deliveryDate,
+    icon: msg.isBold && !msg.isRead ? "alert" : (msg.hasAttachment ? "document" : "bell"),
+    badge: msg.isBold && !msg.isRead ? {
       label: "Action Required",
-      intent: "destructive",
-    },
-  },
-  {
-    id: "2",
-    title: "HSA Contribution Notification",
-    category: "Contributions & Investments",
-    date: "Yesterday, 2:30 PM",
-    icon: "bell",
-  },
-  {
-    id: "3",
-    title: "Tax Form Available: 1099-SA",
-    category: "Statements & Tax Documents",
-    date: "Nov 23, 2025",
-    icon: "document",
-    badge: {
+      intent: "destructive" as const,
+    } : (msg.hasAttachment && !msg.isRead ? {
       label: "New Document",
-      intent: "info",
-    },
-  },
-];
+      intent: "info" as const,
+    } : undefined),
+  }));
+};
 
 export function MessageCenterWidget() {
   const navigate = useNavigate();
+  const [messages, setMessages] = useState<Message[]>(() => getMessageData());
+  const [unreadCount, setUnreadCount] = useState<number>(() => calculateUnreadCount(messages));
+
+  // Listen for unread count changes
+  useEffect(() => {
+    const handleUnreadCountChange = (event: CustomEvent) => {
+      setUnreadCount(event.detail);
+    };
+
+    window.addEventListener(UNREAD_COUNT_CHANGED_EVENT as any, handleUnreadCountChange);
+    
+    // Refresh messages when component mounts or becomes visible
+    const refreshMessages = () => {
+      const updated = getMessageData();
+      setMessages(updated);
+      setUnreadCount(calculateUnreadCount(updated));
+    };
+
+    window.addEventListener('focus', refreshMessages);
+
+    return () => {
+      window.removeEventListener(UNREAD_COUNT_CHANGED_EVENT as any, handleUnreadCountChange);
+      window.removeEventListener('focus', refreshMessages);
+    };
+  }, []);
 
   const getIcon = (iconType: "alert" | "bell" | "document") => {
     switch (iconType) {
@@ -76,13 +253,20 @@ export function MessageCenterWidget() {
     }
   };
 
-  // Stats data
+  // Calculate actual counts from message data
+  const urgentCount = messages.filter(m => m.isBold && !m.isArchived && !m.isRead).length;
+  const starredCount = messages.filter(m => m.isStarred && !m.isArchived).length;
+  const readCount = messages.filter(m => m.isRead && !m.isArchived).length;
+
+  // Stats data with actual counts
   const stats = [
-    { label: "Urgent Items", count: 2, icon: <AlertTriangle className="h-5 w-5 text-destructive" />, bgColor: "bg-destructive/10" },
-    { label: "Unread Messages", count: 10, icon: <Mail className="h-5 w-5 text-primary" />, bgColor: "bg-primary/10" },
-    { label: "Starred Items", count: 5, icon: <Star className="h-5 w-5 text-warning" />, bgColor: "bg-warning/10" },
-    { label: "Recently Viewed", count: 12, icon: <Clock className="h-5 w-5 text-info" />, bgColor: "bg-info/10" },
+    { label: "Urgent Items", count: urgentCount, icon: <AlertTriangle className="h-5 w-5 text-destructive" />, bgColor: "bg-destructive/10" },
+    { label: "Unread Messages", count: unreadCount, icon: <Mail className="h-5 w-5 text-primary" />, bgColor: "bg-primary/10" },
+    { label: "Starred Items", count: starredCount, icon: <Star className="h-5 w-5 text-warning" />, bgColor: "bg-warning/10" },
+    { label: "Recently Viewed", count: readCount, icon: <Clock className="h-5 w-5 text-info" />, bgColor: "bg-info/10" },
   ];
+
+  const toDoMessages = getToDoMessages(messages);
 
   return (
     <WexCard>
@@ -136,45 +320,51 @@ export function MessageCenterWidget() {
             </h3>
             
             <div className="space-y-0">
-              {toDoMessages.map((message, index) => (
-                <div key={message.id}>
-                  <button
-                    onClick={() => navigate("/message-center")}
-                    className="w-full text-left py-3 px-3 -mx-3 rounded-lg transition-colors hover:bg-muted/50 cursor-pointer group"
-                  >
-                    <div className="flex items-start gap-3">
-                      {/* Icon */}
-                      <div className="mt-0.5 shrink-0">
-                        {getIcon(message.icon)}
-                      </div>
+              {toDoMessages.length > 0 ? (
+                toDoMessages.map((message, index) => (
+                  <div key={message.id}>
+                    <button
+                      onClick={() => navigate("/message-center")}
+                      className="w-full text-left py-3 px-3 -mx-3 rounded-lg transition-colors hover:bg-muted/50 cursor-pointer group"
+                    >
+                      <div className="flex items-start gap-3">
+                        {/* Icon */}
+                        <div className="mt-0.5 shrink-0">
+                          {getIcon(message.icon)}
+                        </div>
 
-                      {/* Content */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start gap-2 mb-1">
-                          <h4 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
-                            {message.title}
-                          </h4>
-                          {message.badge && (
-                            <WexBadge 
-                              intent={message.badge.intent} 
-                              size="sm" 
-                              className="shrink-0 text-xs px-2 py-0.5"
-                            >
-                              {message.badge.label}
-                            </WexBadge>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <span>{message.category}</span>
-                          <span>•</span>
-                          <span>{message.date}</span>
+                        {/* Content */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start gap-2 mb-1">
+                            <h4 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
+                              {message.title}
+                            </h4>
+                            {message.badge && (
+                              <WexBadge 
+                                intent={message.badge.intent} 
+                                size="sm" 
+                                className="shrink-0 text-xs px-2 py-0.5"
+                              >
+                                {message.badge.label}
+                              </WexBadge>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <span>{message.category}</span>
+                            <span>•</span>
+                            <span>{message.date}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </button>
-                  {index < toDoMessages.length - 1 && <WexSeparator className="my-0" />}
+                    </button>
+                    {index < toDoMessages.length - 1 && <WexSeparator className="my-0" />}
+                  </div>
+                ))
+              ) : (
+                <div className="py-8 text-center text-sm text-muted-foreground">
+                  No pending items
                 </div>
-              ))}
+              )}
             </div>
           </div>
 
