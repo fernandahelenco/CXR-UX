@@ -365,7 +365,7 @@ export function MessageCenterWidget() {
             {stats.map((stat, index) => (
               <div
                 key={index}
-                className="relative p-4 rounded-lg border border-border bg-card hover:shadow-sm transition-shadow"
+                className="relative p-4 rounded-lg border border-border bg-card hover:shadow-md hover:scale-[1.02] transition-all duration-200 cursor-pointer"
               >
                 <div className={`w-10 h-10 ${stat.bgColor} rounded-lg flex items-center justify-center mb-3`}>
                   {stat.icon}
