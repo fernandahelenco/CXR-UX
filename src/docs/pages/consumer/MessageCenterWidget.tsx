@@ -356,7 +356,7 @@ export function MessageCenterWidget() {
 
           {/* To Do Section */}
           <div className="space-y-3">
-            <h3 className="text-base font-semibold text-foreground">
+            <h3 className="text-lg font-display font-semibold text-foreground">
               To Do
             </h3>
             
