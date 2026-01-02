@@ -93,10 +93,9 @@ export function TransactionsAndLinks() {
                 {quickLinksData.map((link, index) => (
                   <WexButton
                     key={index}
-                    intent="tinted"
-                    size="sm"
-                    rounded
-                    className="shrink-0"
+                    intent="ghost"
+                    size="md"
+                    className="rounded-[32px] bg-info/10 text-primary hover:bg-info/20 shrink-0 h-auto py-1"
                   >
                     {link.label}
                   </WexButton>
