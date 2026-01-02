@@ -191,24 +191,21 @@ const getMessageData = (): Message[] => {
 
 // Mock message data for To Do list - using actual messages from Message Center
 const getToDoMessages = (messages: Message[]): MessageItem[] => {
-  // Get urgent/unread messages that are bold (priority items)
-  const priorityMessages = messages
-    .filter(msg => !msg.isArchived && (msg.isBold || !msg.isRead))
+  // Get only urgent messages that require action (bold + unread)
+  const actionRequiredMessages = messages
+    .filter(msg => !msg.isArchived && msg.isBold && !msg.isRead)
     .slice(0, 3);
 
-  return priorityMessages.map(msg => ({
+  return actionRequiredMessages.map(msg => ({
     id: msg.id,
     title: msg.subject,
     category: msg.category,
     date: msg.deliveryDate,
-    icon: msg.isBold && !msg.isRead ? "alert" : (msg.hasAttachment ? "document" : "bell"),
-    badge: msg.isBold && !msg.isRead ? {
+    icon: "alert" as const,
+    badge: {
       label: "Action Required",
       intent: "destructive" as const,
-    } : (msg.hasAttachment && !msg.isRead ? {
-      label: "New Document",
-      intent: "info" as const,
-    } : undefined),
+    },
   }));
 };
 
