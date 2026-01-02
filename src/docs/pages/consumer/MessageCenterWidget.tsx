@@ -356,9 +356,16 @@ export function MessageCenterWidget() {
 
           {/* To Do Section */}
           <div className="space-y-3">
-            <h3 className="text-lg font-display font-semibold text-foreground">
-              To Do
-            </h3>
+            <div className="flex items-center gap-2">
+              <h3 className="text-lg font-display font-semibold text-foreground">
+                To Do
+              </h3>
+              {toDoMessages.length > 0 && (
+                <WexBadge intent="destructive" className="h-5 min-w-[20px] px-1.5 rounded-full">
+                  {toDoMessages.length}
+                </WexBadge>
+              )}
+            </div>
             
             <div className="space-y-0">
               {toDoMessages.length > 0 ? (
