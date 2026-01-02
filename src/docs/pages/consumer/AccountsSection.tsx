@@ -101,7 +101,7 @@ export function AccountsSection() {
                     <WexButton 
                       intent="outline" 
                       size="sm" 
-                      className="w-full h-9 text-sm font-medium rounded-lg"
+                      className="w-full h-9 text-sm font-medium rounded-lg border-primary text-primary hover:bg-primary hover:text-white"
                     >
                       <Plus className="h-3.5 w-3.5 mr-1" />
                       Contribute
@@ -189,7 +189,7 @@ export function AccountsSection() {
                     <WexButton 
                       intent="outline" 
                       size="sm" 
-                      className="w-full h-9 text-sm font-medium rounded-lg"
+                      className="w-full h-9 text-sm font-medium rounded-lg border-primary text-primary hover:bg-primary hover:text-white"
                     >
                       <Plus className="h-3.5 w-3.5 mr-1" />
                       File Claim
