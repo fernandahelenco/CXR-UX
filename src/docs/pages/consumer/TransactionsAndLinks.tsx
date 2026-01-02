@@ -6,9 +6,9 @@ import { ChevronRight } from "lucide-react";
 import { transactionsData } from "./mockData";
 
 /**
- * Transactions Section
+ * Recent Transactions Section
  * 
- * Displays recent transactions list
+ * Displays recent transaction list
  */
 export function TransactionsAndLinks() {
   const navigate = useNavigate();

@@ -2,13 +2,12 @@ import { ConsumerNavigation } from "./consumer/ConsumerNavigation";
 import { AIChatSection } from "./consumer/AIChatSection";
 import { AccountsSection } from "./consumer/AccountsSection";
 import { MessageCenterWidget } from "./consumer/MessageCenterWidget";
+import { QuickLinksSection } from "./consumer/QuickLinksSection";
 import { TasksSection } from "./consumer/TasksSection";
 import { TransactionsAndLinks } from "./consumer/TransactionsAndLinks";
 import { InfoCardsSection } from "./consumer/InfoCardsSection";
 import { QuickViewSection } from "./consumer/QuickViewSection";
 import { PromoBanner } from "./consumer/PromoBanner";
-import { WexCard } from "@/components/wex/wex-card";
-import { WexButton } from "@/components/wex/wex-button";
 
 /**
  * Consumer Experience Page
@@ -47,102 +46,19 @@ export default function ConsumerExperiencePage() {
         {/* Accounts Overview */}
         <AccountsSection />
 
-        {/* Message Center */}
-        <MessageCenterWidget />
-
-        {/* Tasks and Quick Links Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Pending Tasks */}
-          <TasksSection />
-
-          {/* Quick Links */}
-          <div className="h-full">
-            <WexCard className="h-full">
-              <WexCard.Content className="p-6 h-full">
-                <div className="space-y-6">
-                  {/* Header */}
-                  <h2 className="text-2xl font-display font-semibold text-foreground">
-                    Quick Links
-                  </h2>
-
-                  {/* Quick Links Grid */}
-                  <div className="flex flex-wrap gap-2">
-                    <WexButton
-                      intent="outline"
-                      size="sm"
-                      className="rounded-[32px] h-auto py-0.5 text-sm font-medium shrink-0"
-                    >
-                      Contribute to HSA
-                    </WexButton>
-                    <WexButton
-                      intent="outline"
-                      size="sm"
-                      className="rounded-[32px] h-auto py-0.5 text-sm font-medium shrink-0"
-                    >
-                      Send Payment
-                    </WexButton>
-                    <WexButton
-                      intent="outline"
-                      size="sm"
-                      className="rounded-[32px] h-auto py-0.5 text-sm font-medium shrink-0"
-                    >
-                      Manage Investments
-                    </WexButton>
-                    <WexButton
-                      intent="outline"
-                      size="sm"
-                      className="rounded-[32px] h-auto py-0.5 text-sm font-medium shrink-0"
-                    >
-                      Set up/update bank account
-                    </WexButton>
-                    <WexButton
-                      intent="outline"
-                      size="sm"
-                      className="rounded-[32px] h-auto py-0.5 text-sm font-medium shrink-0"
-                    >
-                      Reimburse Myself
-                    </WexButton>
-                    <WexButton
-                      intent="outline"
-                      size="sm"
-                      className="rounded-[32px] h-auto py-0.5 text-sm font-medium shrink-0"
-                    >
-                      Add/HSA beneficiary
-                    </WexButton>
-                    <WexButton
-                      intent="outline"
-                      size="sm"
-                      className="rounded-[32px] h-auto py-0.5 text-sm font-medium shrink-0"
-                    >
-                      Manage My Expenses
-                    </WexButton>
-                    <WexButton
-                      intent="outline"
-                      size="sm"
-                      className="rounded-[32px] h-auto py-0.5 text-sm font-medium shrink-0"
-                    >
-                      View statements and notifications
-                    </WexButton>
-                    <WexButton
-                      intent="outline"
-                      size="sm"
-                      className="rounded-[32px] h-auto py-0.5 text-sm font-medium shrink-0"
-                    >
-                      Update notification preferences
-                    </WexButton>
-                    <WexButton
-                      intent="outline"
-                      size="sm"
-                      className="rounded-[32px] h-auto py-0.5 text-sm font-medium shrink-0"
-                    >
-                      Access tax documents
-                    </WexButton>
-                  </div>
-                </div>
-              </WexCard.Content>
-            </WexCard>
+        {/* Message Center & Quick Links Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Message Center - Takes 2 columns */}
+          <div className="lg:col-span-2">
+            <MessageCenterWidget />
           </div>
+
+          {/* Quick Links - Takes 1 column */}
+          <QuickLinksSection />
         </div>
+
+        {/* Pending Tasks */}
+        <TasksSection />
 
         {/* Recent Transactions */}
         <TransactionsAndLinks />
