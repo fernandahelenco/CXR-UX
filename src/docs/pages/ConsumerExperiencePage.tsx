@@ -7,6 +7,8 @@ import { TransactionsAndLinks } from "./consumer/TransactionsAndLinks";
 import { InfoCardsSection } from "./consumer/InfoCardsSection";
 import { QuickViewSection } from "./consumer/QuickViewSection";
 import { PromoBanner } from "./consumer/PromoBanner";
+import { WexCard } from "@/components/wex/wex-card";
+import { WexButton } from "@/components/wex/wex-button";
 
 /**
  * Consumer Experience Page
@@ -48,10 +50,101 @@ export default function ConsumerExperiencePage() {
         {/* Message Center */}
         <MessageCenterWidget />
 
-        {/* Pending Tasks */}
-        <TasksSection />
+        {/* Tasks and Quick Links Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Pending Tasks */}
+          <TasksSection />
 
-        {/* Transactions & Quick Links */}
+          {/* Quick Links */}
+          <div className="h-full">
+            <WexCard className="h-full">
+              <WexCard.Content className="p-6 h-full">
+                <div className="space-y-6">
+                  {/* Header */}
+                  <h2 className="text-2xl font-display font-semibold text-foreground">
+                    Quick Links
+                  </h2>
+
+                  {/* Quick Links Grid */}
+                  <div className="flex flex-wrap gap-2">
+                    <WexButton
+                      intent="outline"
+                      size="sm"
+                      className="rounded-[32px] h-auto py-0.5 text-sm font-medium shrink-0"
+                    >
+                      Contribute to HSA
+                    </WexButton>
+                    <WexButton
+                      intent="outline"
+                      size="sm"
+                      className="rounded-[32px] h-auto py-0.5 text-sm font-medium shrink-0"
+                    >
+                      Send Payment
+                    </WexButton>
+                    <WexButton
+                      intent="outline"
+                      size="sm"
+                      className="rounded-[32px] h-auto py-0.5 text-sm font-medium shrink-0"
+                    >
+                      Manage Investments
+                    </WexButton>
+                    <WexButton
+                      intent="outline"
+                      size="sm"
+                      className="rounded-[32px] h-auto py-0.5 text-sm font-medium shrink-0"
+                    >
+                      Set up/update bank account
+                    </WexButton>
+                    <WexButton
+                      intent="outline"
+                      size="sm"
+                      className="rounded-[32px] h-auto py-0.5 text-sm font-medium shrink-0"
+                    >
+                      Reimburse Myself
+                    </WexButton>
+                    <WexButton
+                      intent="outline"
+                      size="sm"
+                      className="rounded-[32px] h-auto py-0.5 text-sm font-medium shrink-0"
+                    >
+                      Add/HSA beneficiary
+                    </WexButton>
+                    <WexButton
+                      intent="outline"
+                      size="sm"
+                      className="rounded-[32px] h-auto py-0.5 text-sm font-medium shrink-0"
+                    >
+                      Manage My Expenses
+                    </WexButton>
+                    <WexButton
+                      intent="outline"
+                      size="sm"
+                      className="rounded-[32px] h-auto py-0.5 text-sm font-medium shrink-0"
+                    >
+                      View statements and notifications
+                    </WexButton>
+                    <WexButton
+                      intent="outline"
+                      size="sm"
+                      className="rounded-[32px] h-auto py-0.5 text-sm font-medium shrink-0"
+                    >
+                      Update notification preferences
+                    </WexButton>
+                    <WexButton
+                      intent="outline"
+                      size="sm"
+                      className="rounded-[32px] h-auto py-0.5 text-sm font-medium shrink-0"
+                    >
+                      Access tax documents
+                    </WexButton>
+                  </div>
+                </div>
+              </WexCard.Content>
+            </WexCard>
+          </div>
+        </div>
+
+        {/* Recent Transactions */}
         <TransactionsAndLinks />
 
         {/* Info Cards Grid */}
