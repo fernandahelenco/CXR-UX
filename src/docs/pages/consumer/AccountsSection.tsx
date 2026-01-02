@@ -99,7 +99,7 @@ export function AccountsSection() {
                       </div>
                     </div>
                     <WexButton 
-                      intent="outline" 
+                      intent="primary" 
                       size="sm" 
                       className="w-full h-9 text-sm font-medium rounded-lg"
                     >
