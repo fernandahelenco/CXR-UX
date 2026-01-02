@@ -16,7 +16,7 @@ import { hsaAccountData, fsaAccountData } from "./mockData";
  */
 export function AccountsSection() {
   const navigate = useNavigate();
-
+  
   return (
     <WexCard>
       <WexCard.Content className="p-6">
@@ -37,7 +37,7 @@ export function AccountsSection() {
                 View All Accounts
                 <ChevronRight className="h-4 w-4" />
               </WexButton>
-              <WexButton intent="primary" size="md" onClick={() => navigate("/reimburse")}>
+              <WexButton intent="destructive" size="md">
                 Reimburse Myself
               </WexButton>
             </div>
