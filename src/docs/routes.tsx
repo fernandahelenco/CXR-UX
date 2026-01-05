@@ -194,7 +194,16 @@ export function DocsRoutes() {
         />
 
         {/* Standalone Login route - bypasses DocsLayout */}
-        <Route path="login" element={<LoginPage onLoginSuccess={() => window.location.href = '/'} />} />
+        <Route
+          path="login"
+          element={
+            <LoginPage
+              onLoginSuccess={() => {
+                window.location.href = import.meta.env.BASE_URL
+              }}
+            />
+          }
+        />
         
         {/* Custom Components Demo route - bypasses DocsLayout */}
         <Route path="/custom-components-demo" element={<CustomComponentsDemo />} />
