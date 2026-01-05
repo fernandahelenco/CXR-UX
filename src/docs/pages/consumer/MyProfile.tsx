@@ -724,19 +724,20 @@ export default function MyProfile() {
         return (
           <>
             <div className="p-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <h2 className="text-2xl font-semibold text-gray-800">Dependents</h2>
                 <WexButton
                   intent="outline"
-                  className="border-[#0058a3] text-[#0058a3] hover:bg-blue-50"
+                  size="sm"
+                  className="w-full sm:w-auto justify-center border-[#0058a3] text-[#0058a3] hover:bg-blue-50"
                   onClick={() => {
                     resetForm();
                     setEditingDependentId(null);
                     setIsAddDependentModalOpen(true);
                   }}
                 >
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add New Dependent
+                  <Plus className="h-4 w-4" />
+                  <span className="sm:ml-2">Add New Dependent</span>
                 </WexButton>
               </div>
               <WexSeparator className="mt-4" />
@@ -747,7 +748,7 @@ export default function MyProfile() {
                   <WexEmpty.Header>
                     <WexEmpty.Media variant="default">
                       <img 
-                        src="/empty-state-illustration.svg" 
+                        src={`${import.meta.env.BASE_URL}empty-state-illustration.svg`} 
                         alt="" 
                         className="h-[191px] w-[235px]"
                       />
@@ -810,19 +811,20 @@ export default function MyProfile() {
         return (
           <>
             <div className="p-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <h2 className="text-2xl font-semibold text-gray-800">Beneficiaries</h2>
                 <WexButton
                   intent="outline"
-                  className="border-[#0058a3] text-[#0058a3] hover:bg-blue-50"
+                  size="sm"
+                  className="w-full sm:w-auto justify-center border-[#0058a3] text-[#0058a3] hover:bg-blue-50"
                   onClick={() => {
                     resetBeneficiaryForm();
                     setEditingBeneficiaryId(null);
                     setIsAddBeneficiaryModalOpen(true);
                   }}
                 >
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add New Beneficiary
+                  <Plus className="h-4 w-4" />
+                  <span className="sm:ml-2">Add New Beneficiary</span>
                 </WexButton>
               </div>
               <WexSeparator className="mt-4" />
@@ -900,11 +902,12 @@ export default function MyProfile() {
         return (
           <>
             <div className="p-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <h2 className="text-2xl font-semibold text-gray-800">Banking</h2>
                 <WexButton
                   intent="outline"
-                  className="border-[#0058a3] text-[#0058a3] hover:bg-blue-50"
+                  size="sm"
+                  className="w-full sm:w-auto justify-center border-[#0058a3] text-[#0058a3] hover:bg-blue-50"
                   onClick={() => {
                     setBankAccountFormData({
                       verificationMethod: "text",
@@ -921,8 +924,8 @@ export default function MyProfile() {
                     setIsAddBankAccountModalOpen(true);
                   }}
                 >
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add New Bank Account
+                  <Plus className="h-4 w-4" />
+                  <span className="sm:ml-2">Add New Bank Account</span>
                 </WexButton>
               </div>
               <WexSeparator className="mt-4" />
@@ -1151,16 +1154,44 @@ export default function MyProfile() {
       <ConsumerNavigation />
 
       {/* Main Content */}
-      <div className="mx-auto max-w-[1440px] px-8 py-8">
+      <div className="mx-auto max-w-[1440px] px-4 py-8 sm:px-6 md:px-8">
         <div className="mx-auto max-w-[1376px]">
           {/* Page Header */}
-          <div className="mb-8 flex items-center">
+          <div className="mb-6 space-y-3 md:mb-8">
             <h1 className="text-2xl font-semibold text-gray-800">My Account</h1>
           </div>
 
-          <div className="flex gap-0">
-            {/* Left Sidebar */}
-            <WexCard className="w-[260px] rounded-l-2xl rounded-r-none border-r-0">
+          {/* Mobile menu */}
+          <div className="mb-4 md:hidden">
+            <WexCard className="rounded-2xl">
+              <WexCard.Content className="space-y-3 p-4">
+                <div className="space-y-1">
+                  <p className="text-xs font-medium uppercase tracking-[0.24px] text-[#243746]">
+                    Select section
+                  </p>
+                  <WexSelect
+                    value={activeSubPage}
+                    onValueChange={(val) => handleSubPageChange(val as SubPage)}
+                  >
+                    <WexSelect.Trigger className="h-[44px] w-full">
+                      <WexSelect.Value placeholder="Choose section" />
+                    </WexSelect.Trigger>
+                    <WexSelect.Content>
+                      {menuItems.map((item) => (
+                        <WexSelect.Item key={item.key} value={item.key}>
+                          {item.label}
+                        </WexSelect.Item>
+                      ))}
+                    </WexSelect.Content>
+                  </WexSelect>
+                </div>
+              </WexCard.Content>
+            </WexCard>
+          </div>
+
+          <div className="flex flex-col gap-4 md:flex-row md:gap-0">
+            {/* Left Sidebar (desktop) */}
+            <WexCard className="hidden w-[260px] rounded-2xl rounded-r-none border-r-0 md:block">
               <WexCard.Content className="px-4 py-6">
                 <div className="space-y-2">
                   {menuItems.map((item) => (
@@ -1179,7 +1210,7 @@ export default function MyProfile() {
             </WexCard>
 
             {/* Main Content Area */}
-            <WexCard className="flex-1 rounded-r-2xl rounded-l-none border-l-0">
+            <WexCard className="flex-1 rounded-2xl md:rounded-l-none">
               <WexCard.Content className="p-0">
                 {renderContent(activeSubPage)}
               </WexCard.Content>
