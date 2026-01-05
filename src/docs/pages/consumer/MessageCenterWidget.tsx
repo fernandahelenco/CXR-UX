@@ -367,15 +367,15 @@ export function MessageCenterWidget() {
 
   return (
     <WexCard>
-      <WexCard.Content className="p-6">
+      <WexCard.Content className="p-4 sm:p-6">
         <div className="space-y-6">
           {/* Header */}
-          <div className="flex items-start justify-between">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <h2 className="text-2xl font-display font-semibold text-foreground">
+              <h2 className="text-xl font-display font-semibold text-foreground sm:text-2xl">
                 Message Center
               </h2>
-              <p className="text-sm text-muted-foreground mt-1">
+              <p className="mt-1 text-sm text-muted-foreground">
                 Overview of your recent communications
               </p>
             </div>
@@ -383,7 +383,7 @@ export function MessageCenterWidget() {
               intent="link" 
               size="sm"
               onClick={() => navigate("/message-center")}
-              className="text-primary hover:text-primary/80"
+              className="self-start text-primary hover:text-primary/80"
             >
               View All
               <ChevronRight className="h-4 w-4 ml-1" />
@@ -391,16 +391,16 @@ export function MessageCenterWidget() {
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
             {stats.map((stat, index) => (
               <div
                 key={index}
-                className="relative p-4 rounded-lg border border-border bg-card hover:shadow-md hover:scale-[1.02] transition-all duration-200 cursor-pointer"
+                className="relative rounded-lg border border-border bg-card p-3 transition-all duration-200 hover:scale-[1.02] hover:shadow-md sm:p-4"
               >
                 <div className={`w-10 h-10 ${stat.bgColor} rounded-lg flex items-center justify-center mb-3`}>
                   {stat.icon}
                 </div>
-                <div className="text-2xl font-display font-semibold text-foreground mb-1">
+                <div className="mb-1 text-xl font-display font-semibold text-foreground sm:text-2xl">
                   {stat.count}
                 </div>
                 <div className="text-xs text-muted-foreground">
@@ -413,7 +413,7 @@ export function MessageCenterWidget() {
           {/* To Do Section */}
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <h2 className="text-2xl font-display font-semibold text-foreground">
+              <h2 className="text-xl font-display font-semibold text-foreground sm:text-2xl">
                 To Do
               </h2>
               {toDoMessages.length > 0 && (
@@ -429,7 +429,7 @@ export function MessageCenterWidget() {
                   <div key={message.id}>
                     <button
                       onClick={() => handleItemClick(message.id, message.type)}
-                      className="w-full text-left py-3 px-3 -mx-3 rounded-lg transition-colors hover:bg-muted/50 cursor-pointer group"
+                      className="group -mx-3 w-full cursor-pointer rounded-lg px-3 py-3 text-left transition-colors hover:bg-muted/50"
                     >
                       <div className="flex items-start gap-3">
                         {/* Icon */}
@@ -465,7 +465,7 @@ export function MessageCenterWidget() {
 
       {/* Message Detail Modal */}
       <WexDialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <WexDialog.Content className="w-[442px] p-6">
+        <WexDialog.Content className="w-full max-w-lg p-6 md:w-[442px]">
           <div className="space-y-0">
             {/* Header */}
             <div className="space-y-0 mb-4">
