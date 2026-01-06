@@ -1,6 +1,6 @@
 {
   "name": "@wex/design-tokens",
-  "version": "1.2.0",
+  "version": "1.0.0",
   "description": "WEX Design System tokens - CSS variables and Tailwind preset for React and Angular applications",
   "main": "./css/index.css",
   "exports": {

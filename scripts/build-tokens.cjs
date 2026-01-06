@@ -304,37 +304,37 @@ function generateIndexFiles() {
 
 // Run Style Dictionary for iOS/Android outputs
 async function runStyleDictionary() {
+  const configPath = path.join(DESIGN_TOKENS_DIR, 'style-dictionary.config.js');
+  
+  if (!fs.existsSync(configPath)) {
+    console.error(`  ✗ Style Dictionary config not found at: ${configPath}`);
+    throw new Error('Style Dictionary config file is required but missing');
+  }
+
+  // Ensure directories exist
+  ensureDir(IOS_DIR);
+  ensureDir(ANDROID_DIR);
+
+  // Use child_process to run Style Dictionary CLI directly (more reliable)
+  const { execSync } = require('child_process');
+  const originalCwd = process.cwd();
+  
   try {
-    const configPath = path.join(DESIGN_TOKENS_DIR, 'style-dictionary.config.js');
-    
-    if (!fs.existsSync(configPath)) {
-      console.warn('  ⚠ Style Dictionary config not found, skipping iOS/Android outputs');
-      return;
-    }
-
-    // Ensure directories exist
-    ensureDir(IOS_DIR);
-    ensureDir(ANDROID_DIR);
-
-    // Use child_process to run Style Dictionary CLI directly (more reliable)
-    const { execSync } = require('child_process');
-    const originalCwd = process.cwd();
-    
-    try {
-      process.chdir(DESIGN_TOKENS_DIR);
-      execSync('npx style-dictionary build --config style-dictionary.config.js', {
-        stdio: 'pipe',
-        encoding: 'utf8'
-      });
-      console.log('  ✓ Generated iOS outputs');
-      console.log('  ✓ Generated Android outputs');
-    } finally {
-      process.chdir(originalCwd);
-    }
+    process.chdir(DESIGN_TOKENS_DIR);
+    execSync('npx style-dictionary build --config style-dictionary.config.js', {
+      stdio: 'inherit', // Show output for debugging
+      encoding: 'utf8'
+    });
+    console.log('  ✓ Generated iOS outputs');
+    console.log('  ✓ Generated Android outputs');
   } catch (error) {
-    console.warn(`  ⚠ Style Dictionary error: ${error.message}`);
-    console.warn('  ⚠ Skipping iOS/Android outputs (this is optional)');
-    // Don't fail the build if Style Dictionary fails - it's optional for now
+    console.error(`  ✗ Style Dictionary failed: ${error.message}`);
+    if (error.stderr) {
+      console.error('  ✗ Error details:', error.stderr.toString());
+    }
+    throw new Error('Style Dictionary build failed - iOS/Android outputs are required');
+  } finally {
+    process.chdir(originalCwd);
   }
 }
 
