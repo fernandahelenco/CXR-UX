@@ -12,8 +12,8 @@ import { Loader2 } from "lucide-react";
  *
  * @example
  * <WexButton intent="primary">Save Changes</WexButton>
- * <WexButton intent="destructive" size="sm">Delete</WexButton>
- * <WexButton intent="success" rounded>Complete</WexButton>
+ * <WexButton intent="destructive" variant="outline">Delete</WexButton>
+ * <WexButton variant="ghost">Cancel</WexButton>
  * <WexButton intent="primary" loading>Saving...</WexButton>
  */
 
@@ -37,95 +37,18 @@ const wexButtonVariants = cva(
   {
     variants: {
       intent: {
-        // PRIMARY - Layer 3 tokens with explicit disabled colors
-        primary: [
-          "bg-wex-button-primary-bg",
-          "text-wex-button-primary-fg",
-          "border border-wex-button-primary-border",
-          "hover:bg-wex-button-primary-hover-bg",
-          "active:bg-wex-button-primary-active-bg",
-          "disabled:bg-wex-button-primary-disabled-bg",
-          "disabled:text-wex-button-primary-disabled-fg",
-          "disabled:opacity-[var(--wex-component-button-disabled-opacity)]",
-        ].join(" "),
-        // SECONDARY - Layer 3 tokens with explicit disabled colors
-        secondary: [
-          "bg-wex-button-secondary-bg",
-          "text-wex-button-secondary-fg",
-          "border border-wex-button-secondary-border",
-          "hover:bg-wex-button-secondary-hover-bg",
-          "active:bg-wex-button-secondary-active-bg",
-          "disabled:bg-wex-button-secondary-disabled-bg",
-          "disabled:text-wex-button-secondary-disabled-fg",
-          "disabled:opacity-[var(--wex-component-button-disabled-opacity)]",
-        ].join(" "),
-        // DESTRUCTIVE - Layer 3 tokens with explicit disabled colors
-        destructive: [
-          "bg-wex-button-destructive-bg",
-          "text-wex-button-destructive-fg",
-          "border border-wex-button-destructive-border",
-          "hover:bg-wex-button-destructive-hover-bg",
-          "active:bg-wex-button-destructive-active-bg",
-          "disabled:bg-wex-button-destructive-disabled-bg",
-          "disabled:text-wex-button-destructive-disabled-fg",
-          "disabled:opacity-[var(--wex-component-button-disabled-opacity)]",
-        ].join(" "),
-        // SUCCESS - Layer 3 tokens
-        success: [
-          "bg-wex-button-success-bg",
-          "text-wex-button-success-fg",
-          "border border-wex-button-success-border",
-          "hover:bg-wex-button-success-hover-bg",
-          "active:bg-wex-button-success-active-bg",
-          "disabled:bg-wex-button-success-disabled-bg",
-          "disabled:text-wex-button-success-disabled-fg",
-          "disabled:opacity-[var(--wex-component-button-disabled-opacity)]",
-        ].join(" "),
-        // INFO - Layer 3 tokens
-        info: [
-          "bg-wex-button-info-bg",
-          "text-wex-button-info-fg",
-          "border border-wex-button-info-border",
-          "hover:bg-wex-button-info-hover-bg",
-          "active:bg-wex-button-info-active-bg",
-          "disabled:bg-wex-button-info-disabled-bg",
-          "disabled:text-wex-button-info-disabled-fg",
-          "disabled:opacity-[var(--wex-component-button-disabled-opacity)]",
-        ].join(" "),
-        // WARNING - Layer 3 tokens
-        warning: [
-          "bg-wex-button-warning-bg",
-          "text-wex-button-warning-fg",
-          "border border-wex-button-warning-border",
-          "hover:bg-wex-button-warning-hover-bg",
-          "active:bg-wex-button-warning-active-bg",
-          "disabled:bg-wex-button-warning-disabled-bg",
-          "disabled:text-wex-button-warning-disabled-fg",
-          "disabled:opacity-[var(--wex-component-button-disabled-opacity)]",
-        ].join(" "),
-        // HELP - Layer 3 tokens
-        help: [
-          "bg-wex-button-help-bg",
-          "text-wex-button-help-fg",
-          "border border-wex-button-help-border",
-          "hover:bg-wex-button-help-hover-bg",
-          "active:bg-wex-button-help-active-bg",
-          "disabled:bg-wex-button-help-disabled-bg",
-          "disabled:text-wex-button-help-disabled-fg",
-          "disabled:opacity-[var(--wex-component-button-disabled-opacity)]",
-        ].join(" "),
-        // CONTRAST - Layer 3 tokens (inverts in dark mode)
-        contrast: [
-          "bg-wex-button-contrast-bg",
-          "text-wex-button-contrast-fg",
-          "border border-wex-button-contrast-border",
-          "hover:bg-wex-button-contrast-hover-bg",
-          "active:bg-wex-button-contrast-active-bg",
-          "disabled:bg-wex-button-contrast-disabled-bg",
-          "disabled:text-wex-button-contrast-disabled-fg",
-          "disabled:opacity-[var(--wex-component-button-disabled-opacity)]",
-        ].join(" "),
-        // GHOST - transparent background, hover shows bg
+        primary: "",
+        secondary: "",
+        destructive: "",
+        success: "",
+        info: "",
+        warning: "",
+        help: "",
+        contrast: "",
+      },
+      variant: {
+        solid: "",
+        outline: "bg-transparent",
         ghost: [
           "bg-transparent",
           "text-wex-button-tertiary-fg",
@@ -135,17 +58,6 @@ const wexButtonVariants = cva(
           "disabled:text-wex-button-tertiary-disabled-fg",
           "disabled:opacity-[var(--wex-component-button-disabled-opacity)]",
         ].join(" "),
-        // OUTLINE - border visible, transparent background
-        outline: [
-          "bg-transparent",
-          "text-wex-button-secondary-fg",
-          "border border-wex-button-secondary-border",
-          "hover:bg-wex-button-secondary-hover-bg",
-          "active:bg-wex-button-secondary-active-bg",
-          "disabled:text-wex-button-secondary-disabled-fg",
-          "disabled:opacity-[var(--wex-component-button-disabled-opacity)]",
-        ].join(" "),
-        // LINK - styled as hyperlink
         link: [
           "bg-transparent",
           "text-wex-button-link-fg",
@@ -173,8 +85,220 @@ const wexButtonVariants = cva(
         false: "rounded-md",
       },
     },
+    compoundVariants: [
+      // ═══════════════════════════════════════════════════════════════════
+      // SOLID VARIANTS (default) - filled background with intent color
+      // ═══════════════════════════════════════════════════════════════════
+      {
+        intent: "primary",
+        variant: "solid",
+        class: [
+          "bg-wex-button-primary-bg",
+          "text-wex-button-primary-fg",
+          "border border-wex-button-primary-border",
+          "hover:bg-wex-button-primary-hover-bg",
+          "active:bg-wex-button-primary-active-bg",
+          "disabled:bg-wex-button-primary-disabled-bg",
+          "disabled:text-wex-button-primary-disabled-fg",
+          "disabled:opacity-[var(--wex-component-button-disabled-opacity)]",
+        ].join(" "),
+      },
+      {
+        intent: "secondary",
+        variant: "solid",
+        class: [
+          "bg-wex-button-secondary-bg",
+          "text-wex-button-secondary-fg",
+          "border border-wex-button-secondary-border",
+          "hover:bg-wex-button-secondary-hover-bg",
+          "active:bg-wex-button-secondary-active-bg",
+          "disabled:bg-wex-button-secondary-disabled-bg",
+          "disabled:text-wex-button-secondary-disabled-fg",
+          "disabled:opacity-[var(--wex-component-button-disabled-opacity)]",
+        ].join(" "),
+      },
+      {
+        intent: "destructive",
+        variant: "solid",
+        class: [
+          "bg-wex-button-destructive-bg",
+          "text-wex-button-destructive-fg",
+          "border border-wex-button-destructive-border",
+          "hover:bg-wex-button-destructive-hover-bg",
+          "active:bg-wex-button-destructive-active-bg",
+          "disabled:bg-wex-button-destructive-disabled-bg",
+          "disabled:text-wex-button-destructive-disabled-fg",
+          "disabled:opacity-[var(--wex-component-button-disabled-opacity)]",
+        ].join(" "),
+      },
+      {
+        intent: "success",
+        variant: "solid",
+        class: [
+          "bg-wex-button-success-bg",
+          "text-wex-button-success-fg",
+          "border border-wex-button-success-border",
+          "hover:bg-wex-button-success-hover-bg",
+          "active:bg-wex-button-success-active-bg",
+          "disabled:bg-wex-button-success-disabled-bg",
+          "disabled:text-wex-button-success-disabled-fg",
+          "disabled:opacity-[var(--wex-component-button-disabled-opacity)]",
+        ].join(" "),
+      },
+      {
+        intent: "info",
+        variant: "solid",
+        class: [
+          "bg-wex-button-info-bg",
+          "text-wex-button-info-fg",
+          "border border-wex-button-info-border",
+          "hover:bg-wex-button-info-hover-bg",
+          "active:bg-wex-button-info-active-bg",
+          "disabled:bg-wex-button-info-disabled-bg",
+          "disabled:text-wex-button-info-disabled-fg",
+          "disabled:opacity-[var(--wex-component-button-disabled-opacity)]",
+        ].join(" "),
+      },
+      {
+        intent: "warning",
+        variant: "solid",
+        class: [
+          "bg-wex-button-warning-bg",
+          "text-wex-button-warning-fg",
+          "border border-wex-button-warning-border",
+          "hover:bg-wex-button-warning-hover-bg",
+          "active:bg-wex-button-warning-active-bg",
+          "disabled:bg-wex-button-warning-disabled-bg",
+          "disabled:text-wex-button-warning-disabled-fg",
+          "disabled:opacity-[var(--wex-component-button-disabled-opacity)]",
+        ].join(" "),
+      },
+      {
+        intent: "help",
+        variant: "solid",
+        class: [
+          "bg-wex-button-help-bg",
+          "text-wex-button-help-fg",
+          "border border-wex-button-help-border",
+          "hover:bg-wex-button-help-hover-bg",
+          "active:bg-wex-button-help-active-bg",
+          "disabled:bg-wex-button-help-disabled-bg",
+          "disabled:text-wex-button-help-disabled-fg",
+          "disabled:opacity-[var(--wex-component-button-disabled-opacity)]",
+        ].join(" "),
+      },
+      {
+        intent: "contrast",
+        variant: "solid",
+        class: [
+          "bg-wex-button-contrast-bg",
+          "text-wex-button-contrast-fg",
+          "border border-wex-button-contrast-border",
+          "hover:bg-wex-button-contrast-hover-bg",
+          "active:bg-wex-button-contrast-active-bg",
+          "disabled:bg-wex-button-contrast-disabled-bg",
+          "disabled:text-wex-button-contrast-disabled-fg",
+          "disabled:opacity-[var(--wex-component-button-disabled-opacity)]",
+        ].join(" "),
+      },
+      // ═══════════════════════════════════════════════════════════════════
+      // OUTLINE VARIANTS - transparent bg, colored border, tinted hover
+      // ═══════════════════════════════════════════════════════════════════
+      {
+        intent: "primary",
+        variant: "outline",
+        class: [
+          "text-wex-button-primary-outline-fg",
+          "border border-wex-button-primary-outline-border",
+          "hover:bg-wex-button-primary-outline-hover-bg",
+          "active:bg-wex-button-primary-outline-active-bg",
+          "disabled:text-wex-button-primary-outline-disabled-fg",
+          "disabled:border-wex-button-primary-outline-disabled-border",
+          "disabled:opacity-[var(--wex-component-button-disabled-opacity)]",
+        ].join(" "),
+      },
+      {
+        intent: "secondary",
+        variant: "outline",
+        class: [
+          "text-wex-button-secondary-outline-fg",
+          "border border-wex-button-secondary-outline-border",
+          "hover:bg-wex-button-secondary-outline-hover-bg",
+          "active:bg-wex-button-secondary-outline-active-bg",
+          "disabled:text-wex-button-secondary-outline-disabled-fg",
+          "disabled:border-wex-button-secondary-outline-disabled-border",
+          "disabled:opacity-[var(--wex-component-button-disabled-opacity)]",
+        ].join(" "),
+      },
+      {
+        intent: "destructive",
+        variant: "outline",
+        class: [
+          "text-wex-button-destructive-outline-fg",
+          "border border-wex-button-destructive-outline-border",
+          "hover:bg-wex-button-destructive-outline-hover-bg",
+          "active:bg-wex-button-destructive-outline-active-bg",
+          "disabled:text-wex-button-destructive-outline-disabled-fg",
+          "disabled:border-wex-button-destructive-outline-disabled-border",
+          "disabled:opacity-[var(--wex-component-button-disabled-opacity)]",
+        ].join(" "),
+      },
+      {
+        intent: "success",
+        variant: "outline",
+        class: [
+          "text-wex-button-success-outline-fg",
+          "border border-wex-button-success-outline-border",
+          "hover:bg-wex-button-success-outline-hover-bg",
+          "active:bg-wex-button-success-outline-active-bg",
+          "disabled:text-wex-button-success-outline-disabled-fg",
+          "disabled:border-wex-button-success-outline-disabled-border",
+          "disabled:opacity-[var(--wex-component-button-disabled-opacity)]",
+        ].join(" "),
+      },
+      {
+        intent: "info",
+        variant: "outline",
+        class: [
+          "text-wex-button-info-outline-fg",
+          "border border-wex-button-info-outline-border",
+          "hover:bg-wex-button-info-outline-hover-bg",
+          "active:bg-wex-button-info-outline-active-bg",
+          "disabled:text-wex-button-info-outline-disabled-fg",
+          "disabled:border-wex-button-info-outline-disabled-border",
+          "disabled:opacity-[var(--wex-component-button-disabled-opacity)]",
+        ].join(" "),
+      },
+      {
+        intent: "warning",
+        variant: "outline",
+        class: [
+          "text-wex-button-warning-outline-fg",
+          "border border-wex-button-warning-outline-border",
+          "hover:bg-wex-button-warning-outline-hover-bg",
+          "active:bg-wex-button-warning-outline-active-bg",
+          "disabled:text-wex-button-warning-outline-disabled-fg",
+          "disabled:border-wex-button-warning-outline-disabled-border",
+          "disabled:opacity-[var(--wex-component-button-disabled-opacity)]",
+        ].join(" "),
+      },
+      {
+        intent: "help",
+        variant: "outline",
+        class: [
+          "text-wex-button-help-outline-fg",
+          "border border-wex-button-help-outline-border",
+          "hover:bg-wex-button-help-outline-hover-bg",
+          "active:bg-wex-button-help-outline-active-bg",
+          "disabled:text-wex-button-help-outline-disabled-fg",
+          "disabled:border-wex-button-help-outline-disabled-border",
+          "disabled:opacity-[var(--wex-component-button-disabled-opacity)]",
+        ].join(" "),
+      },
+    ],
     defaultVariants: {
       intent: "primary",
+      variant: "solid",
       size: "md",
       rounded: false,
     },
@@ -189,7 +313,7 @@ export interface WexButtonProps
 }
 
 const WexButton = React.forwardRef<HTMLButtonElement, WexButtonProps>(
-  ({ className, intent, size, rounded, asChild = false, loading = false, disabled, children, ...props }, ref) => {
+  ({ className, intent, variant, size, rounded, asChild = false, loading = false, disabled, children, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
     const isDisabled = disabled || loading;
     
@@ -212,7 +336,7 @@ const WexButton = React.forwardRef<HTMLButtonElement, WexButtonProps>(
     
     return (
       <Comp
-        className={cn(wexButtonVariants({ intent, size, rounded, className }))}
+        className={cn(wexButtonVariants({ intent, variant, size, rounded, className }))}
         ref={ref}
         disabled={isDisabled}
         aria-busy={loading}

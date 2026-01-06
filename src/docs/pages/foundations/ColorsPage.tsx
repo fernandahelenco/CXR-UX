@@ -122,7 +122,7 @@ export default function ColorsPage() {
         {/* Semantic Tokens Section */}
         <Section
           title="Semantic Tokens (Source of Truth)"
-          description="Core WEX semantic tokens defined in wex.tokens.css. These reference palette steps for consistency."
+          description="Core WEX semantic tokens defined in design-tokens.json. These reference palette steps for consistency."
         >
           <Guidance>
             Semantic tokens reference palette steps (e.g., <code className="bg-muted px-1 rounded">var(--wex-palette-blue-700)</code>) 

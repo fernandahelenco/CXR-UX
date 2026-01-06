@@ -33,6 +33,11 @@
   --primary-foreground: var(--wex-primary-contrast);
   --primary-hover: var(--wex-primary-hover);
 
+  /* ===== LINK (for text links) ===== */
+  --link: var(--wex-link);
+  --link-hover: var(--wex-link-hover);
+  --link-active: var(--wex-link-active);
+
   /* ===== SECONDARY (with state) ===== */
   --secondary: var(--wex-content-border);
   --secondary-foreground: var(--wex-text);
@@ -96,4 +101,3 @@
   /* ===== SECONDARY (dark mode hover adjustment) ===== */
   --secondary-hover: var(--wex-content-border);
 }
-

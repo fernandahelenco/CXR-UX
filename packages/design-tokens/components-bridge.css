@@ -155,6 +155,77 @@
   --wex-component-button-link-active-fg: var(--wex-link-active);
   --wex-component-button-link-disabled-fg: var(--wex-text-muted);
   
+  /* ----- Button: Link ----- */
+  /* (link tokens already defined above) */
+  
+  /* ═══════════════════════════════════════════════════════════════════
+     OUTLINE VARIANTS - transparent bg, colored border, tinted hover
+     ═══════════════════════════════════════════════════════════════════ */
+  
+  /* ----- Button: Primary Outline ----- */
+  --wex-component-button-primary-outline-fg: var(--wex-primary);
+  --wex-component-button-primary-outline-border: var(--wex-primary);
+  --wex-component-button-primary-outline-hover-bg: var(--wex-palette-blue-50);
+  --wex-component-button-primary-outline-active-bg: var(--wex-palette-blue-100);
+  --wex-component-button-primary-outline-disabled-fg: var(--wex-primary);
+  --wex-component-button-primary-outline-disabled-border: var(--wex-primary);
+  
+  /* ----- Button: Secondary Outline ----- */
+  --wex-component-button-secondary-outline-fg: var(--wex-text);
+  --wex-component-button-secondary-outline-border: var(--wex-content-border);
+  --wex-component-button-secondary-outline-hover-bg: var(--wex-surface-subtle);
+  --wex-component-button-secondary-outline-active-bg: var(--wex-content-border);
+  --wex-component-button-secondary-outline-disabled-fg: var(--wex-text-muted);
+  --wex-component-button-secondary-outline-disabled-border: var(--wex-content-border);
+  
+  /* ----- Button: Destructive Outline ----- */
+  --wex-component-button-destructive-outline-fg: var(--wex-destructive);
+  --wex-component-button-destructive-outline-border: var(--wex-destructive);
+  --wex-component-button-destructive-outline-hover-bg: var(--wex-palette-red-50);
+  --wex-component-button-destructive-outline-active-bg: var(--wex-palette-red-100);
+  --wex-component-button-destructive-outline-disabled-fg: var(--wex-destructive);
+  --wex-component-button-destructive-outline-disabled-border: var(--wex-destructive);
+  
+  /* ----- Button: Success Outline ----- */
+  --wex-component-button-success-outline-fg: var(--wex-palette-green-700);
+  --wex-component-button-success-outline-border: var(--wex-success);
+  --wex-component-button-success-outline-hover-bg: var(--wex-palette-green-50);
+  --wex-component-button-success-outline-active-bg: var(--wex-palette-green-100);
+  --wex-component-button-success-outline-disabled-fg: var(--wex-success);
+  --wex-component-button-success-outline-disabled-border: var(--wex-success);
+  
+  /* ----- Button: Info Outline ----- */
+  --wex-component-button-info-outline-fg: var(--wex-palette-cyan-700);
+  --wex-component-button-info-outline-border: var(--wex-info);
+  --wex-component-button-info-outline-hover-bg: var(--wex-palette-cyan-50);
+  --wex-component-button-info-outline-active-bg: var(--wex-palette-cyan-100);
+  --wex-component-button-info-outline-disabled-fg: var(--wex-info);
+  --wex-component-button-info-outline-disabled-border: var(--wex-info);
+  
+  /* ----- Button: Warning Outline ----- */
+  --wex-component-button-warning-outline-fg: var(--wex-palette-amber-800); /* Darker for WCAG 4.5:1 on white */
+  --wex-component-button-warning-outline-border: var(--wex-palette-amber-600);
+  --wex-component-button-warning-outline-hover-bg: var(--wex-palette-amber-50);
+  --wex-component-button-warning-outline-active-bg: var(--wex-palette-amber-100);
+  --wex-component-button-warning-outline-disabled-fg: var(--wex-palette-amber-800);
+  --wex-component-button-warning-outline-disabled-border: var(--wex-palette-amber-600);
+  
+  /* ----- Button: Help Outline ----- */
+  --wex-component-button-help-outline-fg: var(--wex-palette-purple-600);
+  --wex-component-button-help-outline-border: var(--wex-palette-purple-500);
+  --wex-component-button-help-outline-hover-bg: var(--wex-palette-purple-50);
+  --wex-component-button-help-outline-active-bg: var(--wex-palette-purple-100);
+  --wex-component-button-help-outline-disabled-fg: var(--wex-palette-purple-500);
+  --wex-component-button-help-outline-disabled-border: var(--wex-palette-purple-500);
+  
+  /* ----- Button: Contrast Outline ----- */
+  --wex-component-button-contrast-outline-fg: var(--wex-palette-slate-900);
+  --wex-component-button-contrast-outline-border: var(--wex-palette-slate-900);
+  --wex-component-button-contrast-outline-hover-bg: var(--wex-palette-slate-100);
+  --wex-component-button-contrast-outline-active-bg: var(--wex-palette-slate-200);
+  --wex-component-button-contrast-outline-disabled-fg: var(--wex-palette-slate-900);
+  --wex-component-button-contrast-outline-disabled-border: var(--wex-palette-slate-900);
+  
   /* ----- Button: Shared ----- */
   --wex-component-button-disabled-opacity: 0.5;
 
@@ -691,6 +762,57 @@
   /* ----- Shared form controls: border-hover needs explicit dark override ----- */
   --wex-component-form-border-hover: var(--wex-palette-slate-600);
   
+  /* ═══════════════════════════════════════════════════════════════════
+     OUTLINE VARIANTS - Dark Mode Overrides
+     ═══════════════════════════════════════════════════════════════════ */
+  
+  /* ----- Button: Primary Outline (dark) ----- */
+  --wex-component-button-primary-outline-fg: var(--wex-palette-blue-400);
+  --wex-component-button-primary-outline-border: var(--wex-palette-blue-500);
+  --wex-component-button-primary-outline-hover-bg: var(--wex-palette-blue-900);
+  --wex-component-button-primary-outline-active-bg: var(--wex-palette-blue-800);
+  
+  /* ----- Button: Secondary Outline (dark) ----- */
+  --wex-component-button-secondary-outline-fg: var(--wex-palette-slate-200);
+  --wex-component-button-secondary-outline-hover-bg: var(--wex-palette-slate-700);
+  --wex-component-button-secondary-outline-active-bg: var(--wex-palette-slate-600);
+  
+  /* ----- Button: Destructive Outline (dark) ----- */
+  --wex-component-button-destructive-outline-fg: var(--wex-palette-red-300); /* Brighter for WCAG 4.5:1 on dark */
+  --wex-component-button-destructive-outline-border: var(--wex-palette-red-400);
+  --wex-component-button-destructive-outline-hover-bg: var(--wex-palette-red-900);
+  --wex-component-button-destructive-outline-active-bg: var(--wex-palette-red-800);
+  
+  /* ----- Button: Success Outline (dark) ----- */
+  --wex-component-button-success-outline-fg: var(--wex-palette-green-400);
+  --wex-component-button-success-outline-border: var(--wex-palette-green-500);
+  --wex-component-button-success-outline-hover-bg: var(--wex-palette-green-900);
+  --wex-component-button-success-outline-active-bg: var(--wex-palette-green-800);
+  
+  /* ----- Button: Info Outline (dark) ----- */
+  --wex-component-button-info-outline-fg: var(--wex-palette-cyan-400);
+  --wex-component-button-info-outline-border: var(--wex-palette-cyan-500);
+  --wex-component-button-info-outline-hover-bg: var(--wex-palette-cyan-900);
+  --wex-component-button-info-outline-active-bg: var(--wex-palette-cyan-800);
+  
+  /* ----- Button: Warning Outline (dark) ----- */
+  --wex-component-button-warning-outline-fg: var(--wex-palette-amber-400);
+  --wex-component-button-warning-outline-border: var(--wex-palette-amber-500);
+  --wex-component-button-warning-outline-hover-bg: var(--wex-palette-amber-900);
+  --wex-component-button-warning-outline-active-bg: var(--wex-palette-amber-800);
+  
+  /* ----- Button: Help Outline (dark) ----- */
+  --wex-component-button-help-outline-fg: var(--wex-palette-purple-300); /* Brighter for WCAG 4.5:1 on dark */
+  --wex-component-button-help-outline-border: var(--wex-palette-purple-400);
+  --wex-component-button-help-outline-hover-bg: var(--wex-palette-purple-900);
+  --wex-component-button-help-outline-active-bg: var(--wex-palette-purple-800);
+  
+  /* ----- Button: Contrast Outline (dark) - inverts ----- */
+  --wex-component-button-contrast-outline-fg: var(--wex-palette-slate-100);
+  --wex-component-button-contrast-outline-border: var(--wex-palette-slate-200);
+  --wex-component-button-contrast-outline-hover-bg: var(--wex-palette-slate-700);
+  --wex-component-button-contrast-outline-active-bg: var(--wex-palette-slate-600);
+  
   /* ----- Button: Contrast inverts in dark mode ----- */
   --wex-component-button-contrast-bg: var(--wex-palette-slate-50);
   --wex-component-button-contrast-fg: var(--wex-palette-slate-900);
@@ -757,4 +879,3 @@
   --wex-component-text-info: var(--wex-palette-cyan-400);
   --wex-component-text-warning: var(--wex-palette-amber-400);
 }
-

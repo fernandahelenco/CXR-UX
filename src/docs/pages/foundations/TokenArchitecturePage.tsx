@@ -83,27 +83,36 @@ export default function TokenArchitecturePage() {
             </thead>
             <tbody>
               <tr className="border-t border-border">
-                <td className="px-4 py-3 font-mono text-xs">1a/1b</td>
+                <td className="px-4 py-3 font-mono text-xs">Source</td>
                 <td className="px-4 py-3 font-mono text-xs text-primary">
-                  wex.tokens.css
+                  design-tokens.json
                 </td>
                 <td className="px-4 py-3 text-muted-foreground">
-                  Palette ramps (1a: raw values) and semantic tokens (1b: meaningful names)
+                  Single source of truth for all token values (JSON format)
                 </td>
               </tr>
               <tr className="border-t border-border bg-muted/25">
+                <td className="px-4 py-3 font-mono text-xs">1</td>
+                <td className="px-4 py-3 font-mono text-xs text-primary">
+                  design-tokens.css (generated)
+                </td>
+                <td className="px-4 py-3 text-muted-foreground">
+                  Palette ramps and semantic tokens as CSS custom properties
+                </td>
+              </tr>
+              <tr className="border-t border-border">
                 <td className="px-4 py-3 font-mono text-xs">2</td>
                 <td className="px-4 py-3 font-mono text-xs text-primary">
-                  wex.shadcn-bridge.css
+                  shadcn-bridge.css
                 </td>
                 <td className="px-4 py-3 text-muted-foreground">
                   Maps WEX tokens to shadcn variables
                 </td>
               </tr>
-              <tr className="border-t border-border">
+              <tr className="border-t border-border bg-muted/25">
                 <td className="px-4 py-3 font-mono text-xs">3</td>
                 <td className="px-4 py-3 font-mono text-xs text-primary">
-                  wex.components-bridge.css
+                  components-bridge.css
                 </td>
                 <td className="px-4 py-3 text-muted-foreground">
                   Granular component slot tokens

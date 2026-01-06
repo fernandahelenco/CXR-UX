@@ -141,7 +141,8 @@ const TabsTrigger = React.forwardRef<
 TabsTrigger.displayName = TabsPrimitive.Trigger.displayName
 
 // ============================================================
-// ClosableTabsTrigger - Tab trigger with close button (sibling structure for a11y)
+// ClosableTabsTrigger - Tab trigger with close button inside trigger for a11y compliance
+// The close button is inside the trigger to avoid tablist role violations
 // ============================================================
 interface ClosableTabsTriggerProps
   extends React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger> {
@@ -152,37 +153,36 @@ const ClosableTabsTrigger = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.Trigger>,
   ClosableTabsTriggerProps
 >(({ className, children, value, onClose, ...props }, ref) => (
-  <div className="group relative inline-flex items-center" role="presentation">
-    <TabsPrimitive.Trigger
-      ref={ref}
-      value={value}
-      className={cn(
-        "inline-flex items-center justify-center whitespace-nowrap pl-4 pr-8 py-2.5 text-sm font-medium transition-all",
-        "text-wex-tabs-trigger-fg",
-        "border-b-2 border-transparent -mb-px",
-        "hover:text-wex-tabs-trigger-active-fg hover:border-wex-tabs-trigger-hover-bg",
-        "data-[state=active]:text-wex-tabs-trigger-active-fg",
-        "data-[state=active]:border-wex-tabs-indicator",
-        "ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wex-tabs-focus-ring focus-visible:ring-offset-2",
-        "disabled:pointer-events-none disabled:opacity-50",
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </TabsPrimitive.Trigger>
-    <button
-      type="button"
-      onClick={(e) => {
+  <TabsPrimitive.Trigger
+    ref={ref}
+    value={value}
+    className={cn(
+      "group relative inline-flex items-center justify-center whitespace-nowrap pl-4 pr-8 py-2.5 text-sm font-medium transition-all",
+      "text-wex-tabs-trigger-fg",
+      "border-b-2 border-transparent -mb-px",
+      "hover:text-wex-tabs-trigger-active-fg hover:border-wex-tabs-trigger-hover-bg",
+      "data-[state=active]:text-wex-tabs-trigger-active-fg",
+      "data-[state=active]:border-wex-tabs-indicator",
+      "ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wex-tabs-focus-ring focus-visible:ring-offset-2",
+      "disabled:pointer-events-none disabled:opacity-50",
+      className
+    )}
+    {...props}
+  >
+    {children}
+    {/* Close button - aria-hidden to avoid nested-interactive, still clickable via pointer */}
+    <span
+      aria-hidden="true"
+      onPointerDown={(e) => {
         e.stopPropagation()
+        e.preventDefault()
         onClose?.(value)
       }}
-      className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-sm opacity-70 hover:opacity-100 hover:bg-muted p-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wex-tabs-focus-ring focus-visible:ring-offset-2 ring-offset-background"
-      aria-label={`Close ${children} tab`}
+      className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-sm opacity-70 hover:opacity-100 hover:bg-muted p-0.5 cursor-pointer"
     >
       <X className="h-3.5 w-3.5" />
-    </button>
-  </div>
+    </span>
+  </TabsPrimitive.Trigger>
 ))
 ClosableTabsTrigger.displayName = "ClosableTabsTrigger"
 
@@ -205,3 +205,4 @@ const TabsContent = React.forwardRef<
 TabsContent.displayName = TabsPrimitive.Content.displayName
 
 export { Tabs, TabsList, ScrollableTabsList, TabsTrigger, ClosableTabsTrigger, TabsContent }
+

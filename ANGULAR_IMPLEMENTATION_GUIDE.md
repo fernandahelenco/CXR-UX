@@ -319,8 +319,10 @@ Copy these files from the React implementation:
 
 | File | Purpose |
 |------|---------|
-| `wex.tokens.css` | CSS custom properties (design tokens) |
-| `wex.shadcn-bridge.css` | Maps tokens to shadcn/Spartan variables |
+| `@wex/design-tokens` | npm package containing all token formats |
+| `design-tokens.json` | Source of truth (JSON format) |
+| `css/design-tokens.css` | Generated CSS custom properties |
+| `css/shadcn-bridge.css` | Maps tokens to shadcn/Spartan variables |
 | `tailwind.config.ts` (preset portion) | Tailwind theme configuration |
 
 Import in your global styles:
@@ -332,8 +334,10 @@ Import in your global styles:
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-@import './styles/wex.tokens.css';
-@import './styles/wex.shadcn-bridge.css';
+@import '@wex/design-tokens/css';
+// Or individually:
+// @import '@wex/design-tokens/css/design-tokens';
+// @import '@wex/design-tokens/css/shadcn-bridge';
 ```
 
 ---
@@ -470,13 +474,12 @@ The Angular theme will be distributed as `@wex/angular-theme`:
 ├── package.json
 ├── README.md
 ├── src/
-│   ├── styles/
-│   │   ├── wex.tokens.css
-│   │   └── wex.shadcn-bridge.css
 │   ├── lib/
 │   │   └── utils.ts
 │   └── tailwind-preset.js
 └── components/        # Reference implementation (optional)
+
+Note: Design tokens are installed via `@wex/design-tokens` npm package.
     └── wex/
         └── ...
 ```
@@ -492,8 +495,7 @@ npm install @wex/angular-theme
 ```json
 {
   "styles": [
-    "node_modules/@wex/angular-theme/src/styles/wex.tokens.css",
-    "node_modules/@wex/angular-theme/src/styles/wex.shadcn-bridge.css",
+    "node_modules/@wex/design-tokens/css/index.css",
     "src/styles.scss"
   ]
 }
@@ -534,7 +536,7 @@ module.exports = {
 1. [ ] Create new Angular 21 standalone project (or 17+ minimum)
 2. [ ] Install Spartan UI CLI
 3. [ ] Configure Tailwind CSS
-4. [ ] Copy WEX theme files (`wex.tokens.css`, `wex.shadcn-bridge.css`)
+4. [ ] Install `@wex/design-tokens` package and import CSS
 5. [ ] Create `cn()` utility
 6. [ ] Add Spartan primitives as needed
 7. [ ] Create first WEX component (`wex-button`)

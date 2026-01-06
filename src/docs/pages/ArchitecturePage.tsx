@@ -11,7 +11,6 @@ import {
   Package, 
   CheckCircle,
   ArrowRight,
-  Code2,
 } from "lucide-react";
 
 /**

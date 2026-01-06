@@ -20,7 +20,7 @@ import {
  * @example
  * <WexSheet>
  *   <WexSheet.Trigger asChild>
- *     <WexButton intent="outline">Open Sheet</WexButton>
+ *     <WexButton variant="outline">Open Sheet</WexButton>
  *   </WexSheet.Trigger>
  *   <WexSheet.Content>
  *     <WexSheet.Header>

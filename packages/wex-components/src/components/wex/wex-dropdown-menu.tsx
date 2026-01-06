@@ -25,7 +25,7 @@ import {
  * @example
  * <WexDropdownMenu>
  *   <WexDropdownMenu.Trigger asChild>
- *     <WexButton intent="outline">Open Menu</WexButton>
+ *     <WexButton variant="outline">Open Menu</WexButton>
  *   </WexDropdownMenu.Trigger>
  *   <WexDropdownMenu.Content>
  *     <WexDropdownMenu.Label>My Account</WexDropdownMenu.Label>
