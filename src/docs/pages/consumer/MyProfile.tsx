@@ -1201,18 +1201,18 @@ export default function MyProfile() {
             </WexCard>
           </div>
 
-          <WexSidebar.Provider defaultOpen={true} className="min-h-full">
+          <WexSidebar.Provider defaultOpen={true} className="h-full">
             <WexCard className="rounded-2xl overflow-hidden h-full w-full">
-              <div className="flex min-h-full w-full">
+              <div className="flex h-full w-full">
                 {/* Left Sidebar (desktop) */}
                 <WexSidebar
                   collapsible="none"
-                  className="hidden md:flex w-[240px] border-r border-wex-card-border bg-wex-card-bg flex-col"
+                  className="hidden md:flex w-[240px] border-r border-wex-card-border bg-wex-card-bg flex-col h-auto"
                 >
-                  <WexSidebar.Content className="flex-1 min-h-full px-2 py-4">
-                    <WexSidebar.Group className="flex-1 min-h-full">
-                      <WexSidebar.GroupContent className="flex-1 min-h-full">
-                        <WexSidebar.Menu className="flex-1 min-h-full">
+                  <WexSidebar.Content className="flex-1 h-full px-2 py-4">
+                    <WexSidebar.Group className="flex-1 h-full">
+                      <WexSidebar.GroupContent className="flex-1 h-full">
+                        <WexSidebar.Menu className="flex-1 h-full">
                           {menuItems.map((item) => (
                             <WexSidebar.MenuItem key={item.key}>
                               <WexSidebar.MenuButton

@@ -11,6 +11,7 @@ import { WexTable } from "@/components/wex/wex-table";
 import { WexPagination } from "@/components/wex/wex-pagination";
 import { WexDialog } from "@/components/wex/wex-dialog";
 import { WexEmpty } from "@/components/wex/wex-empty";
+import { WexSidebar } from "@/components/wex/wex-sidebar";
 import { ConsumerNavigation } from "./ConsumerNavigation";
 import { cn } from "@/lib/utils";
 import emptyStateIllustration from "./img/empty-state-illustration.svg";
@@ -309,9 +310,9 @@ export default function MessageCenter() {
     { label: "Starred", value: "starred", section: "Activity" },
     { label: "Archive", value: "archive", section: "Manage" },
     { label: "Cards & Security", value: "Cards & Security", section: "Categories" },
-    { label: "Contributions & Investments", value: "Contributions & Investments", section: "Categories" },
+    { label: "Investments", value: "Contributions & Investments", section: "Categories" },
     { label: "Distributions", value: "Distributions", section: "Categories" },
-    { label: "Statements & Tax Documents", value: "Statements & Tax Documents", section: "Categories" },
+    { label: "Documents", value: "Statements & Tax Documents", section: "Categories" },
   ];
 
   const handleMobileSelect = (value: string) => {
@@ -424,156 +425,130 @@ export default function MessageCenter() {
           </div>
 
           {/* Content Container */}
-          <div className="flex flex-col gap-4 rounded-2xl md:flex-row md:gap-0">
-            {/* Left Sidebar */}
-            <WexCard className="hidden w-[260px] rounded-2xl rounded-r-none border-r-0 md:block">
-              <WexCard.Content className="p-4">
-                <div className="space-y-1">
-                  {/* Activity Section */}
-                  <div className="mb-4">
-                    <div className="mb-2 px-3 py-2 text-xs font-medium uppercase tracking-[0.24px] text-[#243746]">
-                      Activity
-                    </div>
-                    <div className="space-y-1">
-                      <WexButton
-                        intent="ghost"
-                        onClick={() => setSelectedCategory(null)}
-                        className={cn(
-                          "w-full justify-start rounded-lg px-3 py-2.5 text-left text-sm",
-                          selectedCategory === null
-                            ? "bg-[#e4f5fd] text-[#003c70] font-semibold hover:bg-[#e4f5fd]"
-                            : "text-[#243746]"
-                        )}
-                      >
-                        All Messages
-                      </WexButton>
-                      <WexButton
-                        intent="ghost"
-                        className="w-full justify-start rounded-lg px-3 py-2.5 text-left text-sm text-[#243746]"
-                      >
-                        Urgent Items
-                      </WexButton>
-                      <WexButton
-                        intent="ghost"
-                        onClick={() => setSelectedCategory("unread")}
-                        className={cn(
-                          "w-full justify-start rounded-lg px-3 py-2.5 text-left text-sm",
-                          selectedCategory === "unread"
-                            ? "bg-[#e4f5fd] text-[#003c70] font-semibold hover:bg-[#e4f5fd]"
-                            : "text-[#243746]"
-                        )}
-                      >
-                        Unread ({unreadCount})
-                      </WexButton>
-                      <WexButton
-                        intent="ghost"
-                        onClick={() => setSelectedCategory("starred")}
-                        className={cn(
-                          "w-full justify-start rounded-lg px-3 py-2.5 text-left text-sm",
-                          selectedCategory === "starred"
-                            ? "bg-[#e4f5fd] text-[#003c70] font-semibold hover:bg-[#e4f5fd]"
-                            : "text-[#243746]"
-                        )}
-                      >
-                        Starred
-                      </WexButton>
-                      <WexButton
-                        intent="ghost"
-                        className="w-full justify-start rounded-lg px-3 py-2.5 text-left text-sm text-[#243746]"
-                      >
-                        Recently Viewed
-                      </WexButton>
-                    </div>
-                  </div>
+          <WexSidebar.Provider defaultOpen={true} className="h-full">
+            <WexCard className="rounded-2xl overflow-hidden h-full w-full">
+              <div className="flex h-full w-full">
+                {/* Left Sidebar */}
+                <WexSidebar
+                  collapsible="none"
+                  className="hidden md:flex w-[240px] border-r border-wex-card-border bg-wex-card-bg flex-col h-auto"
+                >
+                  <WexSidebar.Content className="flex-1 h-full px-2 py-4">
+                    <WexSidebar.Group className="flex-1 h-full">
+                      <WexSidebar.GroupContent className="flex-1 h-full">
+                        <WexSidebar.Menu className="flex-1 h-full">
+                          {/* Activity Section */}
+                          <WexSidebar.GroupLabel className="px-3">
+                            ACTIVITY
+                          </WexSidebar.GroupLabel>
+                          <WexSidebar.MenuItem>
+                            <WexSidebar.MenuButton
+                              isActive={selectedCategory === null}
+                              onClick={() => setSelectedCategory(null)}
+                              className="h-[31px] min-h-[31px] whitespace-normal px-3 py-[6px] data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:font-normal"
+                            >
+                              All Messages
+                            </WexSidebar.MenuButton>
+                          </WexSidebar.MenuItem>
+                          <WexSidebar.MenuItem>
+                            <WexSidebar.MenuButton
+                              isActive={false}
+                              className="h-[31px] min-h-[31px] whitespace-normal px-3 py-[6px]"
+                            >
+                              Urgent Items
+                            </WexSidebar.MenuButton>
+                          </WexSidebar.MenuItem>
+                          <WexSidebar.MenuItem>
+                            <WexSidebar.MenuButton
+                              isActive={selectedCategory === "unread"}
+                              onClick={() => setSelectedCategory("unread")}
+                              className="h-[31px] min-h-[31px] whitespace-normal px-3 py-[6px] data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:font-normal"
+                            >
+                              Unread ({unreadCount})
+                            </WexSidebar.MenuButton>
+                          </WexSidebar.MenuItem>
+                          <WexSidebar.MenuItem>
+                            <WexSidebar.MenuButton
+                              isActive={selectedCategory === "starred"}
+                              onClick={() => setSelectedCategory("starred")}
+                              className="h-[31px] min-h-[31px] whitespace-normal px-3 py-[6px] data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:font-normal"
+                            >
+                              Starred
+                            </WexSidebar.MenuButton>
+                          </WexSidebar.MenuItem>
+                          <WexSidebar.MenuItem>
+                            <WexSidebar.MenuButton
+                              isActive={false}
+                              className="h-[31px] min-h-[31px] whitespace-normal px-3 py-[6px]"
+                            >
+                              Recently Viewed
+                            </WexSidebar.MenuButton>
+                          </WexSidebar.MenuItem>
 
-                  <WexSeparator className="my-3" />
 
-                  {/* Categories Section */}
-                  <div className="mb-4">
-                    <div className="mb-2 px-3 py-2 text-xs font-medium uppercase tracking-[0.24px] text-[#243746]">
-                      Categories
-                    </div>
-                    <div className="space-y-1">
-                      <WexButton
-                        intent="ghost"
-                        onClick={() => setSelectedCategory("Cards & Security")}
-                        className={cn(
-                          "w-full justify-start rounded-lg px-3 py-2.5 text-left text-sm",
-                          selectedCategory === "Cards & Security"
-                            ? "bg-[#e4f5fd] text-[#003c70] font-semibold hover:bg-[#e4f5fd]"
-                            : "text-[#4e5666]"
-                        )}
-                      >
-                        Cards & Security
-                      </WexButton>
-                      <WexButton
-                        intent="ghost"
-                        onClick={() => setSelectedCategory("Contributions & Investments")}
-                        className={cn(
-                          "w-full justify-start rounded-lg px-3 py-2.5 text-left text-sm",
-                          selectedCategory === "Contributions & Investments"
-                            ? "bg-[#e4f5fd] text-[#003c70] font-semibold hover:bg-[#e4f5fd]"
-                            : "text-[#243746]"
-                        )}
-                      >
-                        Contributions & Investments
-                      </WexButton>
-                      <WexButton
-                        intent="ghost"
-                        onClick={() => setSelectedCategory("Distributions")}
-                        className={cn(
-                          "w-full justify-start rounded-lg px-3 py-2.5 text-left text-sm",
-                          selectedCategory === "Distributions"
-                            ? "bg-[#e4f5fd] text-[#003c70] font-semibold hover:bg-[#e4f5fd]"
-                            : "text-[#4e5666]"
-                        )}
-                      >
-                        Distributions
-                      </WexButton>
-                      <WexButton
-                        intent="ghost"
-                        onClick={() => setSelectedCategory("Statements & Tax Documents")}
-                        className={cn(
-                          "w-full justify-start rounded-lg px-3 py-2.5 text-left text-sm",
-                          selectedCategory === "Statements & Tax Documents"
-                            ? "bg-[#e4f5fd] text-[#003c70] font-semibold hover:bg-[#e4f5fd]"
-                            : "text-[#4e5666]"
-                        )}
-                      >
-                        Statements & Tax Documents
-                      </WexButton>
-                    </div>
-                  </div>
+                          <WexSidebar.GroupLabel className="px-3 mt-6">
+                            CATEGORIES
+                          </WexSidebar.GroupLabel>
+                          <WexSidebar.MenuItem>
+                            <WexSidebar.MenuButton
+                              isActive={selectedCategory === "Cards & Security"}
+                              onClick={() => setSelectedCategory("Cards & Security")}
+                              className="h-[31px] min-h-[31px] whitespace-normal px-3 py-[6px] data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:font-normal"
+                            >
+                              Cards & Security
+                            </WexSidebar.MenuButton>
+                          </WexSidebar.MenuItem>
+                          <WexSidebar.MenuItem>
+                            <WexSidebar.MenuButton
+                              isActive={selectedCategory === "Contributions & Investments"}
+                              onClick={() => setSelectedCategory("Contributions & Investments")}
+                              className="h-[31px] min-h-[31px] whitespace-normal px-3 py-[6px] data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:font-normal"
+                            >
+                              Investments
+                            </WexSidebar.MenuButton>
+                          </WexSidebar.MenuItem>
+                          <WexSidebar.MenuItem>
+                            <WexSidebar.MenuButton
+                              isActive={selectedCategory === "Distributions"}
+                              onClick={() => setSelectedCategory("Distributions")}
+                              className="h-[31px] min-h-[31px] whitespace-normal px-3 py-[6px] data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:font-normal"
+                            >
+                              Distributions
+                            </WexSidebar.MenuButton>
+                          </WexSidebar.MenuItem>
+                          <WexSidebar.MenuItem>
+                            <WexSidebar.MenuButton
+                              isActive={selectedCategory === "Statements & Tax Documents"}
+                              onClick={() => setSelectedCategory("Statements & Tax Documents")}
+                              className="h-[31px] min-h-[31px] whitespace-normal px-3 py-[6px] data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:font-normal"
+                            >
+                              Documents
+                            </WexSidebar.MenuButton>
+                          </WexSidebar.MenuItem>
 
-                  <WexSeparator className="my-3" />
 
-                  {/* Manage Section */}
-                  <div>
-                    <div className="mb-2 px-3 py-2 text-xs font-medium uppercase tracking-[0.24px] text-[#243746]">
-                      Manage
-                    </div>
-                    <div className="space-y-1">
-                      <WexButton
-                        intent="ghost"
-                        onClick={() => setSelectedCategory("archive")}
-                        className={cn(
-                          "w-full justify-start rounded-lg px-3 py-2.5 text-left text-sm",
-                          selectedCategory === "archive"
-                            ? "bg-[#e4f5fd] text-[#003c70] font-semibold hover:bg-[#e4f5fd]"
-                            : "text-[#243746]"
-                        )}
-                      >
-                        Archive
-                      </WexButton>
-                    </div>
-                  </div>
-                </div>
-              </WexCard.Content>
-            </WexCard>
+                          <WexSidebar.GroupLabel className="px-3 mt-6">
+                            MANAGE
+                          </WexSidebar.GroupLabel>
+                          <WexSidebar.MenuItem>
+                            <WexSidebar.MenuButton
+                              isActive={selectedCategory === "archive"}
+                              onClick={() => setSelectedCategory("archive")}
+                              className="h-[31px] min-h-[31px] whitespace-normal px-3 py-[6px] data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:font-normal"
+                            >
+                              Archive
+                            </WexSidebar.MenuButton>
+                          </WexSidebar.MenuItem>
+                        </WexSidebar.Menu>
+                      </WexSidebar.GroupContent>
+                    </WexSidebar.Group>
+                  </WexSidebar.Content>
+                </WexSidebar>
 
-            {/* Main Content Area - Table */}
-            <WexCard className="flex-1 rounded-2xl md:rounded-l-none">
-              <WexCard.Content className="p-4 sm:p-6">
+                {/* Main Content Area */}
+                <WexSidebar.Inset className="flex-1 min-w-0 bg-wex-card-bg md:peer-data-[variant=inset]:!m-0 md:peer-data-[variant=inset]:!rounded-none md:peer-data-[variant=inset]:!shadow-none md:peer-data-[variant=inset]:!ml-0 md:peer-data-[state=collapsed]:peer-data-[variant=inset]:!ml-0">
+                  <div className="flex h-full flex-col">
+                    <div className="p-4 sm:p-6">
                 {filteredMessages.length === 0 ? (
                   /* Empty State */
                   <WexEmpty className="border-0 py-12">
@@ -889,10 +864,13 @@ export default function MessageCenter() {
                       </WexSelect>
                     </div>
                   </div>
-                )}
-              </WexCard.Content>
+                    )}
+                    </div>
+                  </div>
+                </WexSidebar.Inset>
+              </div>
             </WexCard>
-          </div>
+          </WexSidebar.Provider>
         </div>
       </div>
 
