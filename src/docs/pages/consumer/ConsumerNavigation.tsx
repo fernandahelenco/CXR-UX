@@ -91,9 +91,9 @@ export function ConsumerNavigation() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex h-20 items-center justify-between px-8 bg-[var(--tw-ring-offset-color)]">
+      <div className="flex h-20 items-center px-8 bg-[var(--tw-ring-offset-color)] gap-6">
         {/* Left: Logo */}
-        <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+        <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity shrink-0">
           <img
             src={`${import.meta.env.BASE_URL}WEX_Logo_Red_Vector.svg`}
             alt="WEX"
@@ -106,31 +106,33 @@ export function ConsumerNavigation() {
           />
         </Link>
 
-        {/* Center: Navigation Menu */}
-        <nav className="flex items-center gap-4">
-          {navigationItems.map((item) => {
-            const Icon = iconMap[item.icon];
-            const active = isActive(item.href);
-            
-            return (
-              <WexButton
-                key={item.label}
-                intent={active ? "primary" : "ghost"}
-                size="md"
-                asChild
-              >
-                <Link to={item.href} className="flex items-center gap-1.5">
-                  {Icon && <Icon className="h-4 w-4" />}
-                  {item.label}
-                  {item.hasDropdown && <ChevronDown className="h-3 w-3 ml-0.5" />}
-                </Link>
-              </WexButton>
-            );
-          })}
-        </nav>
+        {/* Right cluster: nav + utilities */}
+        <div className="flex flex-1 items-center justify-end gap-4 min-w-0">
+          {/* Navigation Menu */}
+          <nav className="flex items-center gap-4">
+            {navigationItems.map((item) => {
+              const Icon = iconMap[item.icon];
+              const active = isActive(item.href);
+              
+              return (
+                <WexButton
+                  key={item.label}
+                  intent={active ? "primary" : "ghost"}
+                  size="md"
+                  asChild
+                >
+                  <Link to={item.href} className="flex items-center gap-1.5">
+                    {Icon && <Icon className="h-4 w-4" />}
+                    {item.label}
+                    {item.hasDropdown && <ChevronDown className="h-3 w-3 ml-0.5" />}
+                  </Link>
+                </WexButton>
+              );
+            })}
+          </nav>
 
-        {/* Right: User Navigation */}
-        <div className="flex items-center gap-2">
+          {/* Right: User Navigation */}
+          <div className="flex items-center gap-2">
           {/* Design System Link */}
           <WexButton
             intent="ghost"
@@ -256,6 +258,7 @@ export function ConsumerNavigation() {
               </WexDropdownMenu.Item>
             </WexDropdownMenu.Content>
           </WexDropdownMenu>
+          </div>
         </div>
       </div>
     </header>
