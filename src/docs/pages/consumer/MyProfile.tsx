@@ -18,6 +18,7 @@ import { WexCheckbox } from "@/components/wex";
 import { wexToast } from "@/components/wex/wex-toast";
 import { Stepper } from "./components/Stepper";
 import { ConsumerNavigation } from "./ConsumerNavigation";
+import emptyStateIllustration from "./img/empty-state-illustration.svg";
 import { Pencil, Info, Plus, Calendar, X, Trash2 } from "lucide-react";
 
 type SubPage = "my-profile" | "dependents" | "beneficiaries" | "banking" | "debit-card" | "login-security" | "communication";
@@ -748,7 +749,7 @@ export default function MyProfile() {
                   <WexEmpty.Header>
                     <WexEmpty.Media variant="default">
                       <img 
-                        src={`${import.meta.env.BASE_URL}empty-state-illustration.svg`} 
+                        src={emptyStateIllustration} 
                         alt="" 
                         className="h-[191px] w-[235px]"
                       />
@@ -835,7 +836,7 @@ export default function MyProfile() {
                   <WexEmpty.Header>
                     <WexEmpty.Media variant="default">
                       <img 
-                        src="/empty-state-illustration.svg" 
+                        src={emptyStateIllustration} 
                         alt="" 
                         className="h-[191px] w-[235px]"
                       />
@@ -936,7 +937,7 @@ export default function MyProfile() {
                   <WexEmpty.Header>
                     <WexEmpty.Media variant="default">
                       <img 
-                        src="/empty-state-illustration.svg" 
+                        src={emptyStateIllustration} 
                         alt="" 
                         className="h-[191px] w-[235px]"
                       />
@@ -1014,7 +1015,7 @@ export default function MyProfile() {
                   <WexEmpty.Header>
                     <WexEmpty.Media variant="default">
                       <img 
-                        src="/empty-state-illustration.svg" 
+                        src={emptyStateIllustration} 
                         alt="" 
                         className="h-[191px] w-[235px]"
                       />

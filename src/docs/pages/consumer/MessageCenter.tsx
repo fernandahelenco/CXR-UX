@@ -13,6 +13,7 @@ import { WexDialog } from "@/components/wex/wex-dialog";
 import { WexEmpty } from "@/components/wex/wex-empty";
 import { ConsumerNavigation } from "./ConsumerNavigation";
 import { cn } from "@/lib/utils";
+import emptyStateIllustration from "./img/empty-state-illustration.svg";
 import {
   Star,
   Paperclip,
@@ -579,7 +580,7 @@ export default function MessageCenter() {
                     <WexEmpty.Header>
                       <WexEmpty.Media variant="default">
                         <img 
-                          src="/empty-state-illustration.svg" 
+                          src={emptyStateIllustration} 
                           alt="" 
                           className="h-[191px] w-[235px]"
                         />
