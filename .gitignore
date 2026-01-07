@@ -9,8 +9,18 @@ lerna-debug.log*
 
 node_modules
 dist
-!packages/design-tokens/dist
 dist-ssr
+
+# Design tokens generated files (not committed)
+packages/design-tokens/dist/
+packages/design-tokens/css/
+packages/design-tokens/scss/
+packages/design-tokens/ios/
+packages/design-tokens/android/
+packages/design-tokens/design-tokens.ts
+packages/design-tokens/index.css
+packages/design-tokens/.style-dictionary-tokens.json
+# Note: design-tokens.json is the source file (committed), not generated
 *.local
 .vite
 

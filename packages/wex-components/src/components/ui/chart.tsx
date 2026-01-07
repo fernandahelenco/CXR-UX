@@ -39,18 +39,72 @@ const ChartContainer = React.forwardRef<
     children: React.ComponentProps<
       typeof RechartsPrimitive.ResponsiveContainer
     >["children"]
+    /** Accessible label for the chart (required for a11y) */
+    "aria-label"?: string
   }
->(({ id, className, children, config, ...props }, ref) => {
+>(({ id, className, children, config, "aria-label": ariaLabel, ...props }, ref) => {
   const uniqueId = React.useId()
   const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`
+  const containerRef = React.useRef<HTMLDivElement>(null)
+
+  // Hide SVG internals from assistive technology
+  // Uses MutationObserver to catch Recharts re-renders
+  React.useLayoutEffect(() => {
+    const container = containerRef.current
+    if (!container) return
+
+    const hideSvgFromA11y = () => {
+      // Target ALL SVG-like elements (bar charts, pie charts, etc.)
+      container.querySelectorAll("svg, [cx], [cy]").forEach((el) => {
+        el.setAttribute("aria-hidden", "true")
+        el.setAttribute("tabindex", "-1") // Make not focusable
+        el.setAttribute("focusable", "false") // IE/Edge support
+        if (el.tagName.toLowerCase() === "svg") {
+          el.setAttribute("role", "presentation")
+        }
+        // Also remove name attributes (Recharts adds these for tooltips)
+        if (el.hasAttribute("name")) {
+          el.removeAttribute("name")
+        }
+      })
+      // Also target elements with name attributes
+      container.querySelectorAll("[name]").forEach((el) => {
+        el.removeAttribute("name")
+      })
+    }
+
+    hideSvgFromA11y()
+
+    // Watch for Recharts re-renders
+    const observer = new MutationObserver(hideSvgFromA11y)
+    observer.observe(container, { childList: true, subtree: true })
+
+    return () => observer.disconnect()
+  }, [])
+
+  // Merge refs
+  const mergedRef = React.useMemo(() => {
+    return (node: HTMLDivElement | null) => {
+      (containerRef as React.MutableRefObject<HTMLDivElement | null>).current = node
+      if (typeof ref === "function") {
+        ref(node)
+      } else if (ref) {
+        ref.current = node
+      }
+    }
+  }, [ref])
 
   return (
     <ChartContext.Provider value={{ config }}>
       <div
         data-chart={chartId}
-        ref={ref}
+        ref={mergedRef}
+        role="img"
+        aria-label={ariaLabel || "Chart visualization"}
         className={cn(
-          "flex aspect-video justify-center text-xs [&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-border/50 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-dot[stroke='#fff']]:stroke-transparent [&_.recharts-layer]:outline-none [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-sector]:outline-none [&_.recharts-surface]:outline-none",
+          "flex aspect-video justify-center text-xs",
+          // Recharts styling overrides
+          "[&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-border/50 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-dot[stroke='#fff']]:stroke-transparent [&_.recharts-layer]:outline-none [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-sector]:outline-none [&_.recharts-surface]:outline-none",
           className
         )}
         {...props}

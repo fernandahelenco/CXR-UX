@@ -1,24 +1,41 @@
 {
   "name": "@wex/design-tokens",
-  "version": "1.1.0",
+  "version": "1.0.0",
   "description": "WEX Design System tokens - CSS variables and Tailwind preset for React and Angular applications",
-  "main": "tailwind-preset.js",
+  "main": "./css/index.css",
   "exports": {
-    ".": "./tailwind-preset.js",
+    ".": "./css/index.css",
+    "./index.css": "./index.css",
     "./tailwind-preset": "./tailwind-preset.js",
-    "./css": "./dist/css/index.css",
-    "./css/tokens": "./dist/css/tokens.css",
-    "./css/shadcn-bridge": "./dist/css/shadcn-bridge.css",
-    "./css/components-bridge": "./dist/css/components-bridge.css"
+    "./css": "./css/index.css",
+    "./css/tokens": "./css/design-tokens.css",
+    "./css/design-tokens": "./css/design-tokens.css",
+    "./css/shadcn-bridge": "./css/shadcn-bridge.css",
+    "./css/components-bridge": "./css/components-bridge.css",
+    "./scss": "./scss/index.scss",
+    "./scss/tokens": "./scss/design-tokens.scss",
+    "./scss/design-tokens": "./scss/design-tokens.scss",
+    "./scss/shadcn-bridge": "./scss/shadcn-bridge.scss",
+    "./scss/components-bridge": "./scss/components-bridge.scss",
+    "./ts": "./design-tokens.ts",
+    "./typescript": "./design-tokens.ts",
+    "./json": "./design-tokens.json",
+    "./source": "./design-tokens.json"
+  },
+  "scripts": {
+    "prepublishOnly": "cd ../.. && node scripts/build-tokens.cjs"
   },
   "files": [
-    "dist",
+    "index.css",
+    "css",
+    "scss",
+    "ios",
+    "android",
+    "design-tokens.ts",
+    "design-tokens.json",
     "tailwind-preset.js",
     "README.md"
   ],
-  "scripts": {
-    "prepublishOnly": "echo 'Ready to publish @wex/design-tokens'"
-  },
   "peerDependencies": {
     "tailwindcss": ">=3.0.0"
   },

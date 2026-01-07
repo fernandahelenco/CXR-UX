@@ -240,6 +240,7 @@ export function useThemeOverrides() {
 
   /**
    * Set a single token value, with optional cascade to derived tokens
+   * Supports color, size, and font tokens
    */
   const setToken = React.useCallback((
     token: string, 
@@ -256,7 +257,7 @@ export function useThemeOverrides() {
         },
       };
       
-      // Apply cascade rules if enabled
+      // Apply cascade rules if enabled (only for color tokens)
       if (cascade) {
         const rule = CASCADE_RULES.find((r) => r.baseToken === token);
         if (rule) {

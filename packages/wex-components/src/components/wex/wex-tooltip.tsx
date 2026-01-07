@@ -15,7 +15,7 @@ import {
  * <WexTooltip.Provider>
  *   <WexTooltip>
  *     <WexTooltip.Trigger asChild>
- *       <WexButton intent="outline">Hover me</WexButton>
+ *       <WexButton variant="outline">Hover me</WexButton>
  *     </WexTooltip.Trigger>
  *     <WexTooltip.Content>
  *       <p>Tooltip content</p>

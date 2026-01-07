@@ -7,7 +7,7 @@
  */
 
 import * as React from "react";
-import { WexPopover } from "@/components/wex";
+import { WexPopover, WexTooltip } from "@/components/wex";
 import { PALETTE_RAMPS, NEUTRAL_TOKENS } from "@/docs/data/tokenRegistry";
 import { cn } from "@/lib/utils";
 
@@ -180,25 +180,73 @@ export function SwatchDisplay({ value, size = "md", className }: SwatchDisplayPr
     lg: "w-8 h-8",
   };
 
-  // Handle neutral tokens (white/black) which don't have a shade number
-  const isNeutral = value === "white" || value === "black";
-  const token = isNeutral ? `--wex-palette-${value}` : `--wex-palette-${value}`;
-  const bgColor = `hsl(var(${token}))`;
+  // Read actual CSS variable value from DOM
+  const [actualColor, setActualColor] = React.useState<string | null>(null);
+  const token = `--wex-palette-${value}`;
+
+  React.useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const readColor = () => {
+      const cssValue = getComputedStyle(document.documentElement)
+        .getPropertyValue(token)
+        .trim();
+      if (cssValue) {
+        setActualColor(cssValue);
+      } else {
+        setActualColor(null);
+      }
+    };
+
+    // Read immediately
+    readColor();
+
+    // Watch for style changes on documentElement
+    const observer = new MutationObserver(() => {
+      readColor();
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['style', 'class'],
+    });
+
+    // Also poll periodically (fallback)
+    const interval = setInterval(readColor, 200);
+
+    return () => {
+      observer.disconnect();
+      clearInterval(interval);
+    };
+  }, [token, value]);
+
+  // Use actual color if available, otherwise fall back to CSS variable reference
+  const bgColor = actualColor 
+    ? `hsl(${actualColor})` 
+    : `hsl(var(${token}))`;
 
   return (
-    <div
-      className={cn(
-        sizeClasses[size],
-        "rounded-sm border-2 border-border flex-shrink-0",
-        className
-      )}
-      style={{ 
-        backgroundColor: bgColor,
-        minWidth: size === 'sm' ? '16px' : size === 'md' ? '24px' : '32px',
-        minHeight: size === 'sm' ? '16px' : size === 'md' ? '24px' : '32px',
-      }}
-      title={value}
-    />
+    <WexTooltip.Provider>
+      <WexTooltip>
+        <WexTooltip.Trigger asChild>
+          <div
+            className={cn(
+              sizeClasses[size],
+              "rounded-full border-2 border-border flex-shrink-0 cursor-help",
+              className
+            )}
+            style={{ 
+              backgroundColor: bgColor,
+              minWidth: size === 'sm' ? '16px' : size === 'md' ? '24px' : '32px',
+              minHeight: size === 'sm' ? '16px' : size === 'md' ? '24px' : '32px',
+            }}
+          />
+        </WexTooltip.Trigger>
+        <WexTooltip.Content>
+          <p className="text-xs font-mono">{value}</p>
+        </WexTooltip.Content>
+      </WexTooltip>
+    </WexTooltip.Provider>
   );
 }
 

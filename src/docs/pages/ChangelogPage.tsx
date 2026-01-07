@@ -556,7 +556,7 @@ export default function ChangelogPage() {
           title="Initial Release"
           changes={[
             "WexButton component with 5 intent variants and 3 sizes",
-            "Two-layer token architecture (wex.tokens.css + wex.shadcn-bridge.css)",
+            "Token architecture with design-tokens.json as source, generating CSS/SCSS/TS/JSON outputs",
             "Light and dark mode support",
             "Documentation site foundation",
             "WEX_COMPONENT_RULES.md governance document",

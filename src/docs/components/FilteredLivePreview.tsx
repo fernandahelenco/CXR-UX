@@ -45,6 +45,7 @@ import { PALETTE_RAMPS } from "@/docs/data/tokenRegistry";
 import { addDays } from "date-fns";
 import type { DateRange } from "react-day-picker";
 import { PaletteSwatchPicker, SwatchDisplay, formatPaletteValue } from "./PaletteSwatchPicker";
+import { ColorInput } from "./ColorInput";
 import { hexToHSL, formatHSL, hslToHex, parseHSL } from "@/docs/utils/color-convert";
 import { useContrastCompliance, type ContrastCheckResult } from "@/docs/hooks/useContrastCompliance";
 import { WexPopover } from "@/components/wex";
@@ -240,6 +241,16 @@ export function FilteredLivePreview({
             {selectedToken === "--wex-text" && <TextPreview />}
             {selectedToken === "--wex-text-muted" && <TextMutedPreview />}
             {selectedToken === "--wex-focus-ring-color" && <FocusRingPreview />}
+            
+            {/* Radius tokens */}
+            {(selectedToken === "--wex-radius-sm" || selectedToken === "--wex-radius-md" || selectedToken === "--wex-radius-lg") && (
+              <RadiusPreview tokenName={selectedToken} />
+            )}
+            
+            {/* Typography tokens */}
+            {(selectedToken === "--wex-font-sans" || selectedToken === "--wex-font-display") && (
+              <TypographyPreview tokenName={selectedToken} />
+            )}
             
             {/* Foreground tokens */}
             {selectedToken === "--wex-primary-contrast" && <PrimaryContrastPreview />}
@@ -2073,23 +2084,21 @@ function AllPaletteRampsPreview({ currentValue, onValueChange, onRampChange }: A
                 })}
               </div>
 
-              {/* Edit controls */}
+              {/* Edit controls - using ColorInput for direct HSL/Hex editing */}
               {isEditing && (
-                <div className="space-y-2 pt-2 border-t border-border">
-                  <label className="text-xs font-medium">Base Color (500)</label>
+                <div className="space-y-3 pt-2 border-t border-border">
+                  <ColorInput
+                    token={`--wex-palette-${ramp.name}-500`}
+                    label="Base Color (500)"
+                    value={formatHSL(previewHsl)}
+                    onChange={(hsl) => {
+                      const hex = hslToHex(parseHSL(hsl) || previewHsl);
+                      if (hex) {
+                        handleColorChange(ramp.name, hex);
+                      }
+                    }}
+                  />
                   <div className="flex items-center gap-2">
-                    <div
-                      className="w-12 h-12 rounded border border-border/50 flex-shrink-0"
-                      style={{
-                        backgroundColor: displayHex,
-                      }}
-                    />
-                    <input
-                      type="color"
-                      value={displayHex}
-                      onChange={(e) => handleColorChange(ramp.name, e.target.value)}
-                      className="flex-1 h-8 rounded border border-border cursor-pointer"
-                    />
                     <button
                       onClick={() => handleSave(ramp.name)}
                       className="px-3 py-1.5 text-xs rounded bg-primary text-primary-foreground hover:bg-primary/90"
@@ -2408,6 +2417,243 @@ function ComponentTokenPreview({ tokenName }: { tokenName: string }) {
           This cascade allows theme customization at any level while maintaining design consistency.
         </p>
       </div>
+    </div>
+  );
+}
+
+// =============================================================================
+// RADIUS PREVIEW COMPONENT
+// =============================================================================
+
+interface RadiusPreviewProps {
+  tokenName: string;
+}
+
+function RadiusPreview({ tokenName }: RadiusPreviewProps) {
+  const [radiusValue, setRadiusValue] = React.useState<string>("6px");
+
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    const readRadius = () => {
+      const cssValue = getComputedStyle(document.documentElement)
+        .getPropertyValue(tokenName)
+        .trim();
+      if (cssValue) {
+        setRadiusValue(cssValue);
+      }
+    };
+    readRadius();
+    const observer = new MutationObserver(readRadius);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["style", "class"],
+    });
+    const interval = setInterval(readRadius, 200);
+    return () => {
+      observer.disconnect();
+      clearInterval(interval);
+    };
+  }, [tokenName]);
+
+  return (
+    <div className="space-y-6">
+      <PreviewCard title="Border Radius Preview" getIssuesForCard={() => []}>
+        <div className="space-y-4">
+          <div className="text-sm text-muted-foreground">
+            Current value: <code className="font-mono">{radiusValue}</code>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Button */}
+            <div className="space-y-2">
+              <div className="text-xs font-medium">Button</div>
+              <WexButton
+                style={{ borderRadius: radiusValue }}
+                className="w-full"
+              >
+                Button with {tokenName.replace("--wex-radius-", "")} radius
+              </WexButton>
+            </div>
+            
+            {/* Input */}
+            <div className="space-y-2">
+              <div className="text-xs font-medium">Input</div>
+              <WexInput
+                style={{ borderRadius: radiusValue }}
+                placeholder="Input field"
+                className="w-full"
+              />
+            </div>
+            
+            {/* Card */}
+            <div className="space-y-2">
+              <div className="text-xs font-medium">Card</div>
+              <div
+                className="p-4 border border-border bg-card"
+                style={{ borderRadius: radiusValue }}
+              >
+                <div className="text-sm font-medium">Card Title</div>
+                <div className="text-xs text-muted-foreground mt-1">
+                  Card content with {tokenName.replace("--wex-radius-", "")} radius
+                </div>
+              </div>
+            </div>
+            
+            {/* Badge */}
+            <div className="space-y-2">
+              <div className="text-xs font-medium">Badge</div>
+              <WexBadge
+                style={{ borderRadius: radiusValue }}
+                variant="default"
+              >
+                Badge
+              </WexBadge>
+            </div>
+            
+            {/* Alert */}
+            <div className="space-y-2">
+              <div className="text-xs font-medium">Alert</div>
+              <div
+                className="p-3 border border-border bg-muted/50"
+                style={{ borderRadius: radiusValue }}
+              >
+                <div className="text-sm">Alert message</div>
+              </div>
+            </div>
+            
+            {/* Progress */}
+            <div className="space-y-2">
+              <div className="text-xs font-medium">Progress Bar</div>
+              <div
+                className="h-2 bg-muted overflow-hidden"
+                style={{ borderRadius: radiusValue }}
+              >
+                <div
+                  className="h-full bg-primary"
+                  style={{ width: "60%", borderRadius: radiusValue }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </PreviewCard>
+    </div>
+  );
+}
+
+// =============================================================================
+// TYPOGRAPHY PREVIEW COMPONENT
+// =============================================================================
+
+interface TypographyPreviewProps {
+  tokenName: string;
+}
+
+function TypographyPreview({ tokenName }: TypographyPreviewProps) {
+  const [fontValue, setFontValue] = React.useState<string>("");
+
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    const readFont = () => {
+      const cssValue = getComputedStyle(document.documentElement)
+        .getPropertyValue(tokenName)
+        .trim();
+      if (cssValue) {
+        setFontValue(cssValue);
+      }
+    };
+    readFont();
+    const observer = new MutationObserver(readFont);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["style", "class"],
+    });
+    const interval = setInterval(readFont, 200);
+    return () => {
+      observer.disconnect();
+      clearInterval(interval);
+    };
+  }, [tokenName]);
+
+  const isDisplay = tokenName === "--wex-font-display";
+  const primaryFont = fontValue.split(",")[0]?.trim() || fontValue;
+
+  return (
+    <div className="space-y-6">
+      <PreviewCard title="Typography Preview" getIssuesForCard={() => []}>
+        <div className="space-y-4">
+          <div className="text-sm text-muted-foreground">
+            Current font: <code className="font-mono">{primaryFont}</code>
+          </div>
+          
+          <div className="space-y-6">
+            {isDisplay ? (
+              <>
+                <div className="space-y-2">
+                  <div className="text-xs font-medium">Display Heading (H1)</div>
+                  <h1 style={{ fontFamily: fontValue }} className="text-4xl font-bold">
+                    Display Heading
+                  </h1>
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="text-xs font-medium">Section Heading (H2)</div>
+                  <h2 style={{ fontFamily: fontValue }} className="text-3xl font-semibold">
+                    Section Heading
+                  </h2>
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="text-xs font-medium">Subsection Heading (H3)</div>
+                  <h3 style={{ fontFamily: fontValue }} className="text-2xl font-semibold">
+                    Subsection Heading
+                  </h3>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="space-y-2">
+                  <div className="text-xs font-medium">Body Text</div>
+                  <p style={{ fontFamily: fontValue }} className="text-base">
+                    This is body text using the {tokenName.replace("--wex-font-", "")} font family.
+                    It should be readable and comfortable for extended reading.
+                  </p>
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="text-xs font-medium">Small Text</div>
+                  <p style={{ fontFamily: fontValue }} className="text-sm text-muted-foreground">
+                    This is smaller text, often used for captions, labels, or secondary information.
+                  </p>
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="text-xs font-medium">Button Text</div>
+                  <WexButton style={{ fontFamily: fontValue }}>
+                    Button with {tokenName.replace("--wex-font-", "")} font
+                  </WexButton>
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="text-xs font-medium">Input Text</div>
+                  <WexInput
+                    style={{ fontFamily: fontValue }}
+                    placeholder="Input with custom font"
+                    className="w-full"
+                  />
+                </div>
+              </>
+            )}
+            
+            <div className="space-y-2">
+              <div className="text-xs font-medium">Full Font Stack</div>
+              <div className="p-3 bg-muted/50 rounded border border-border">
+                <code className="text-xs font-mono break-all">{fontValue}</code>
+              </div>
+            </div>
+          </div>
+        </div>
+      </PreviewCard>
     </div>
   );
 }

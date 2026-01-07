@@ -1,40 +1,38 @@
 /**
- * Theme Builder V6 - Layers Panel Architecture
+ * Theme Builder - Component-First Architecture
  *
  * Unified layout with:
- * - Left rail: Layers panel with all tokens in collapsible sections
- * - Main area: Full-width live preview
+ * - Left rail: Component selector + Foundation presets
+ * - Main area: Component editor or foundation editor
  *
- * All token editing happens via popovers in the left rail.
- * The preview shows affected components for the selected token.
+ * Component-first approach: select a component to edit its tokens,
+ * or select a foundation preset to edit global values.
  */
 
 import * as React from "react";
 import { useThemeBuilder } from "@/docs/context/ThemeBuilderContext";
 import { useThemeOverrides } from "@/docs/hooks/useThemeOverrides";
-import {
-  SEMANTIC_TOKENS,
-  SURFACE_TOKENS,
-  TEXT_TOKENS,
-  COMPONENT_TOKENS,
-} from "@/docs/data/tokenRegistry";
+import { RADIUS_TOKENS } from "@/docs/data/tokenRegistry";
 import { WexAlertDialog } from "@/components/wex";
 import { ThemeBuilderNav } from "@/docs/components/ThemeBuilderNav";
-import { FilteredLivePreview } from "@/docs/components/FilteredLivePreview";
+import { ComponentEditor } from "@/docs/components/ComponentEditor";
+import type { MVPComponent } from "@/docs/components/ComponentSelector";
+import { GlobalRadiusEditor } from "@/docs/components/GlobalRadiusEditor";
 import { ThemeExportView } from "@/docs/components/ThemeExportView";
+import { WexButton, WexCard, WexInput, WexBadge, WexAlert } from "@/components/wex";
 
 // ============================================================================
 // Main Theme Builder Page
 // ============================================================================
 
 export default function ThemeBuilderPage() {
-  const { setSelectedToken, editMode } = useThemeBuilder();
-  const { resetAll, hasOverrides, setToken } = useThemeOverrides();
+  const { editMode } = useThemeBuilder();
+  const { resetAll, hasOverrides, setToken, getAllOverrides, overrides: hookOverrides } = useThemeOverrides();
 
-  // Currently selected token for preview
-  const [selectedToken, setSelectedTokenLocal] = React.useState<string | null>(
-    null
-  );
+  // Component-first selection state
+  const [selectedComponent, setSelectedComponent] = React.useState<MVPComponent | null>(null);
+  const [selectedFoundation, setSelectedFoundation] = React.useState<string | null>(null);
+  const [selectedVariant, setSelectedVariant] = React.useState<string | null>(null);
 
   // Export view state
   const [showExportView, setShowExportView] = React.useState(false);
@@ -42,131 +40,72 @@ export default function ThemeBuilderPage() {
   // Reset confirmation dialog
   const [showResetDialog, setShowResetDialog] = React.useState(false);
 
-  // Get all editable tokens (flattened)
-  const allEditableTokens = React.useMemo(
-    () => [
-      ...SEMANTIC_TOKENS.filter(
-        (t) =>
-          t.references &&
-          !t.name.includes("-hover") &&
-          !t.name.includes("-foreground") &&
-          !t.name.includes("-contrast")
-      ),
-      ...SURFACE_TOKENS,
-      ...TEXT_TOKENS,
-      // Layer 3 Component tokens (color types only)
-      ...COMPONENT_TOKENS.filter((t) => t.type === "color"),
-    ],
-    []
-  );
+  // Get current overrides for component editor - combine light and dark, make reactive
+  const overrides = React.useMemo(() => {
+    // Combine light and dark overrides (component editor uses combined view for MVP)
+    return { ...hookOverrides.light, ...hookOverrides.dark };
+  }, [hookOverrides]);
 
-  // Track current assignments - for tokens with palette references
-  const [assignments, setAssignments] = React.useState<Record<string, string>>(
-    () => {
-      const initial: Record<string, string> = {};
-      allEditableTokens.forEach((t) => {
-        if (t.references) {
-          const ref =
-            editMode === "light"
-              ? t.references
-              : t.darkReferences || t.references;
-          if (ref) {
-            const matchWithShade = ref.match(/--wex-palette-(\w+-\d+)/);
-            const matchNeutral = ref.match(/--wex-palette-(white|black)/);
-            initial[t.name] = matchWithShade
-              ? matchWithShade[1]
-              : matchNeutral
-                ? matchNeutral[1]
-                : "";
-          }
-        }
-      });
-      return initial;
-    }
-  );
-
-  // Update assignments when mode changes
-  React.useEffect(() => {
-    const updated: Record<string, string> = {};
-    allEditableTokens.forEach((t) => {
-      if (t.references) {
-        const ref =
-          editMode === "light"
-            ? t.references
-            : t.darkReferences || t.references;
-        if (ref) {
-          const matchWithShade = ref.match(/--wex-palette-(\w+-\d+)/);
-          const matchNeutral = ref.match(/--wex-palette-(white|black)/);
-          updated[t.name] = matchWithShade
-            ? matchWithShade[1]
-            : matchNeutral
-              ? matchNeutral[1]
-              : "";
-        }
-      }
+  // Get current radius values for global editor
+  const radiusValues = React.useMemo(() => {
+    const all = getAllOverrides();
+    const values: Record<string, string> = {};
+    RADIUS_TOKENS.forEach((token) => {
+      const value = all.light[token.name] || token.lightValue;
+      values[token.name] = value;
     });
-    setAssignments(updated);
-  }, [editMode, allEditableTokens]);
+    return values;
+  }, [getAllOverrides]);
 
-  // Handle assignment change
-  const handleAssignmentChange = React.useCallback(
-    (tokenName: string, value: string) => {
-      const isPaletteRefWithShade = /^[a-z]+-\d+$/.test(value);
-      const isNeutralRef = value === "white" || value === "black";
+  // Handle component selection
+  const handleSelectComponent = React.useCallback((component: MVPComponent) => {
+    setSelectedComponent(component);
+    setSelectedFoundation(null);
+    setShowExportView(false);
+  }, []);
 
-      if (isPaletteRefWithShade || isNeutralRef) {
-        const paletteToken = `--wex-palette-${value}`;
-        document.documentElement.style.setProperty(
-          tokenName,
-          `var(${paletteToken})`
-        );
-        setAssignments((prev) => ({ ...prev, [tokenName]: value }));
-        setToken(tokenName, `var(${paletteToken})`, editMode);
-      } else {
-        document.documentElement.style.setProperty(tokenName, value);
-        setToken(tokenName, value, editMode);
-      }
+  // Handle foundation selection
+  const handleSelectFoundation = React.useCallback((foundation: string) => {
+    setSelectedFoundation(foundation);
+    setSelectedComponent(null);
+    setShowExportView(false);
+  }, []);
 
-      setSelectedTokenLocal(tokenName);
-    },
-    [editMode, setToken]
-  );
+  // Handle token change from component editor
+  const handleTokenChange = React.useCallback((tokenName: string, value: string) => {
+    setToken(tokenName, value, editMode);
+  }, [editMode, setToken]);
 
-  // Handle token selection
-  const handleSelectToken = React.useCallback(
-    (token: string) => {
-      setSelectedTokenLocal(token);
-      setSelectedToken(token);
-      setShowExportView(false); // Close export view when selecting a token
-    },
-    [setSelectedToken]
-  );
+  // Handle radius change from global editor
+  const handleRadiusChange = React.useCallback((tokenName: string, value: string) => {
+    setToken(tokenName, value, editMode);
+  }, [editMode, setToken]);
 
   // Handle export - toggle export view
   const handleExport = React.useCallback(() => {
     setShowExportView(true);
-    setSelectedTokenLocal(null); // Clear selection when showing export
+    setSelectedComponent(null);
+    setSelectedFoundation(null);
   }, []);
 
   // Handle reset all
   const confirmReset = React.useCallback(() => {
     resetAll();
-    setSelectedTokenLocal(null);
+    setSelectedComponent(null);
+    setSelectedFoundation(null);
     setShowResetDialog(false);
     window.location.reload();
   }, [resetAll]);
 
   return (
     <div className="h-full flex overflow-hidden">
-      {/* Left Navigation - Layers Panel (fixed height, independent scroll) */}
+      {/* Left Navigation - Component-First Navigation */}
       <div className="w-72 flex-shrink-0 h-full overflow-hidden">
         <ThemeBuilderNav
-          selectedToken={selectedToken}
-          onSelectToken={handleSelectToken}
-          assignments={assignments}
-          onAssignmentChange={handleAssignmentChange}
-          setToken={setToken}
-          editMode={editMode}
+          selectedComponent={selectedComponent}
+          onSelectComponent={handleSelectComponent}
+          selectedFoundation={selectedFoundation}
+          onSelectFoundation={handleSelectFoundation}
           onExport={handleExport}
           onReset={() => setShowResetDialog(true)}
           hasUnsavedChanges={hasOverrides}
@@ -174,29 +113,66 @@ export default function ThemeBuilderPage() {
         />
       </div>
 
-      {/* Main Workspace - Full Width Live Preview or Export View */}
+      {/* Main Workspace - Component Editor, Foundation Editor, or Export View */}
       <div className="flex-1 h-full overflow-y-auto bg-background">
         {showExportView ? (
           <ThemeExportView onClose={() => setShowExportView(false)} />
+        ) : selectedComponent ? (
+          <div className="p-6 max-w-4xl mx-auto">
+            <ComponentEditor
+              component={selectedComponent}
+              overrides={overrides}
+              onTokenChange={handleTokenChange}
+              onVariantChange={setSelectedVariant}
+            />
+            <div className="mt-8">
+              <ComponentPreview component={selectedComponent} variant={selectedVariant} />
+            </div>
+          </div>
+        ) : selectedFoundation === "radius-presets" ? (
+          <div className="p-6 max-w-4xl mx-auto">
+            <GlobalRadiusEditor
+              values={radiusValues}
+              onChange={handleRadiusChange}
+            />
+          </div>
+        ) : selectedFoundation === "color-ramps" ? (
+          <div className="p-6 max-w-4xl mx-auto">
+            <div className="space-y-4">
+              <div>
+                <h2 className="text-lg font-semibold">Color Ramps</h2>
+                <p className="text-sm text-muted-foreground">
+                  Edit global color palette ramps. Changes cascade to all components.
+                </p>
+              </div>
+              <div className="text-sm text-muted-foreground">
+                Color ramp editing will be implemented in a future update.
+              </div>
+            </div>
+          </div>
+        ) : selectedFoundation === "typography" ? (
+          <div className="p-6 max-w-4xl mx-auto">
+            <div className="space-y-4">
+              <div>
+                <h2 className="text-lg font-semibold">Typography</h2>
+                <p className="text-sm text-muted-foreground">
+                  Edit global typography tokens. Changes cascade to all components.
+                </p>
+              </div>
+              <div className="text-sm text-muted-foreground">
+                Typography editing will be implemented in a future update.
+              </div>
+            </div>
+          </div>
         ) : (
-          <FilteredLivePreview
-            selectedToken={selectedToken}
-            currentValue={selectedToken ? assignments[selectedToken] : undefined}
-            onValueChange={
-              selectedToken
-                ? (value) => handleAssignmentChange(selectedToken, value)
-                : undefined
-            }
-            onRampChange={
-              selectedToken === "--wex-palette-ramps"
-                ? (rampName: string, hslValue: string) => {
-                    const token500 = `--wex-palette-${rampName}-500`;
-                    setToken(token500, hslValue, editMode);
-                  }
-                : undefined
-            }
-            fullWidth
-          />
+          <div className="p-6 max-w-4xl mx-auto">
+            <div className="text-center py-12">
+              <h2 className="text-lg font-semibold mb-2">Theme Builder</h2>
+              <p className="text-sm text-muted-foreground">
+                Select a component from the left to start editing, or choose a foundation preset.
+              </p>
+            </div>
+          </div>
         )}
       </div>
 
@@ -218,6 +194,74 @@ export default function ThemeBuilderPage() {
           </WexAlertDialog.Footer>
         </WexAlertDialog.Content>
       </WexAlertDialog>
+    </div>
+  );
+}
+
+// ============================================================================
+// Component Preview
+// ============================================================================
+
+interface ComponentPreviewProps {
+  component: MVPComponent;
+  variant: string | null;
+}
+
+function ComponentPreview({ component, variant }: ComponentPreviewProps) {
+  return (
+    <div className="space-y-6">
+      <div>
+        <h3 className="text-sm font-semibold mb-4">Live Preview</h3>
+      </div>
+      <div className="space-y-4">
+        {component === "button" && variant && (
+          <div className="flex flex-wrap gap-4">
+            <WexButton intent={variant as any}>{variant.charAt(0).toUpperCase() + variant.slice(1)}</WexButton>
+          </div>
+        )}
+        {component === "card" && (
+          <WexCard>
+            <WexCard.Header>
+              <WexCard.Title>Card Title</WexCard.Title>
+            </WexCard.Header>
+            <WexCard.Content>
+              <p>This is a card component preview. Edit the card tokens to see changes here.</p>
+            </WexCard.Content>
+          </WexCard>
+        )}
+        {component === "input" && (
+          <div className="space-y-4 max-w-md">
+            <WexInput placeholder="Default input" />
+            <WexInput variant="filled" placeholder="Filled input" />
+            <WexInput invalid placeholder="Invalid input" />
+          </div>
+        )}
+        {component === "badge" && variant && (
+          <div className="flex flex-wrap gap-4">
+            <WexBadge intent={variant as any}>{variant.charAt(0).toUpperCase() + variant.slice(1)}</WexBadge>
+          </div>
+        )}
+        {component === "alert" && variant && (
+          <div className="space-y-4 max-w-2xl">
+            <WexAlert 
+              intent={variant as any} 
+              style={{
+                borderRadius: 'var(--wex-component-alert-radius)',
+              }}
+            >
+              <WexAlert.Title>{variant.charAt(0).toUpperCase() + variant.slice(1)} Alert</WexAlert.Title>
+              <WexAlert.Description>
+                This is a {variant} alert message. Edit the {variant} variant tokens above to see changes here.
+              </WexAlert.Description>
+            </WexAlert>
+          </div>
+        )}
+        {!variant && component !== "card" && component !== "input" && (
+          <div className="text-sm text-muted-foreground">
+            Select a variant above to see the preview.
+          </div>
+        )}
+      </div>
     </div>
   );
 }

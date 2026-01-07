@@ -12,9 +12,9 @@ import {
  *
  * @example
  * <WexButtonGroup>
- *   <WexButton intent="outline">Left</WexButton>
- *   <WexButton intent="outline">Center</WexButton>
- *   <WexButton intent="outline">Right</WexButton>
+ *   <WexButton variant="outline">Left</WexButton>
+ *   <WexButton variant="outline">Center</WexButton>
+ *   <WexButton variant="outline">Right</WexButton>
  * </WexButtonGroup>
  */
 

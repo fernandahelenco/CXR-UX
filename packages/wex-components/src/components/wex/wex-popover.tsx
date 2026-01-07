@@ -14,7 +14,7 @@ import {
  * @example
  * <WexPopover>
  *   <WexPopover.Trigger asChild>
- *     <WexButton intent="outline">Open Popover</WexButton>
+ *     <WexButton variant="outline">Open Popover</WexButton>
  *   </WexPopover.Trigger>
  *   <WexPopover.Content>
  *     Popover content here

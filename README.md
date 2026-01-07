@@ -85,9 +85,9 @@ src/
 │   ├── pages/          # Documentation pages
 │   └── utils/          # Utility functions
 ├── lib/                # Shared utilities (cn, etc.)
-└── styles/
-    ├── wex.tokens.css        # Core WEX design tokens
-    └── wex.shadcn-bridge.css # Semantic token bridge
+└── packages/
+    └── design-tokens/  # @wex/design-tokens package source
+        └── design-tokens.json  # Source of truth for all tokens
 ```
 
 ### Available Scripts
@@ -116,9 +116,9 @@ WEX components follow two patterns:
 The design tokens follow a three-layer architecture:
 
 ```
-Palette Ramps (wex.tokens.css)
+Palette Ramps (design-tokens.json → generated CSS)
   ↓
-Semantic Tokens (wex.shadcn-bridge.css)
+Semantic Tokens (design-tokens.json → generated CSS)
   ↓
 Tailwind Utilities (tailwind.config.ts)
 ```

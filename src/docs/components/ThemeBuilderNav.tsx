@@ -1,12 +1,12 @@
 /**
- * ThemeBuilderNav Component (V6 - Layers Panel)
+ * ThemeBuilderNav Component (Component-First Design)
  *
- * Left rail navigation with collapsible sections for all token types.
- * Acts as a "layers panel" similar to Figma/Photoshop.
+ * Left rail navigation with component-first structure.
  *
  * Structure:
  * - Light/Dark toggle at TOP
- * - Collapsible sections: Palette Ramps, Intent Colors, Surfaces, Text
+ * - Components section (top) - visual component selector
+ * - Foundation section (bottom) - global presets (Color Ramps, Radius, Typography)
  * - Actions at bottom: Reset, Export, Exit
  */
 
@@ -19,42 +19,30 @@ import {
   Sun,
   Moon,
   ChevronRight,
-  Pencil,
   CheckCircle2,
   AlertTriangle,
+  Palette,
+  Square,
+  Type,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useThemeBuilder } from "@/docs/context/ThemeBuilderContext";
-import {
-  PALETTE_RAMPS,
-  SEMANTIC_TOKENS,
-  SURFACE_TOKENS,
-  TEXT_TOKENS,
-  EDITABLE_COMPONENT_GROUPS,
-  getEditableTokensForGroup,
-  type TokenDefinition,
-  type ComponentGroup,
-} from "@/docs/data/tokenRegistry";
-import { PaletteSwatchPicker, formatPaletteValue } from "./PaletteSwatchPicker";
 import { useContrastCompliance } from "@/docs/hooks/useContrastCompliance";
+import { ComponentSelector, type MVPComponent } from "./ComponentSelector";
 
 // ============================================================================
 // Types
 // ============================================================================
 
 export interface ThemeBuilderNavProps {
-  /** Currently selected token */
-  selectedToken: string | null;
-  /** Callback when token is selected */
-  onSelectToken: (token: string) => void;
-  /** Current assignments (token name -> palette value like "blue-700") */
-  assignments: Record<string, string>;
-  /** Callback when assignment changes */
-  onAssignmentChange: (tokenName: string, value: string) => void;
-  /** Callback to set a token value directly (for palette ramps) */
-  setToken?: (token: string, value: string, mode: "light" | "dark") => void;
-  /** Current edit mode */
-  editMode?: "light" | "dark";
+  /** Currently selected component */
+  selectedComponent: MVPComponent | null;
+  /** Callback when component is selected */
+  onSelectComponent: (component: MVPComponent) => void;
+  /** Currently selected foundation item (e.g., "color-ramps", "radius-presets") */
+  selectedFoundation: string | null;
+  /** Callback when foundation item is selected */
+  onSelectFoundation: (item: string) => void;
   /** Callback for export action */
   onExport: () => void;
   /** Callback for reset action */
@@ -66,40 +54,33 @@ export interface ThemeBuilderNavProps {
 }
 
 // ============================================================================
-// Token Sections Configuration
+// Foundation Sections Configuration
 // ============================================================================
 
-interface TokenSection {
+interface FoundationSection {
   id: string;
   label: string;
-  tokens: TokenDefinition[];
+  icon: React.ComponentType<{ className?: string }>;
   defaultOpen?: boolean;
-  readOnly?: boolean;
 }
 
-const getTokenSections = (): TokenSection[] => [
+const FOUNDATION_SECTIONS: FoundationSection[] = [
   {
-    id: "intent",
-    label: "Intent Colors",
-    tokens: SEMANTIC_TOKENS.filter(
-      (t) =>
-        t.references &&
-        !t.name.includes("-hover") &&
-        !t.name.includes("-foreground") &&
-        !t.name.includes("-contrast")
-    ),
+    id: "color-ramps",
+    label: "Color Ramps",
+    icon: Palette,
     defaultOpen: true,
   },
   {
-    id: "surfaces",
-    label: "Surfaces",
-    tokens: SURFACE_TOKENS,
-    defaultOpen: false,
+    id: "radius-presets",
+    label: "Radius Presets",
+    icon: Square,
+    defaultOpen: true,
   },
   {
-    id: "text",
-    label: "Text",
-    tokens: TEXT_TOKENS,
+    id: "typography",
+    label: "Typography",
+    icon: Type,
     defaultOpen: false,
   },
 ];
@@ -109,48 +90,28 @@ const getTokenSections = (): TokenSection[] => [
 // ============================================================================
 
 export function ThemeBuilderNav({
-  selectedToken,
-  onSelectToken,
-  assignments,
-  onAssignmentChange,
-  setToken: _setToken,
-  editMode: editModeProp,
+  selectedComponent,
+  onSelectComponent,
+  selectedFoundation,
+  onSelectFoundation,
   onExport,
   onReset,
   hasUnsavedChanges = false,
   hasOverrides = false,
 }: ThemeBuilderNavProps) {
-  // _setToken passed for potential future use but currently unused
-  void _setToken;
-  
-  const { exitThemeBuilder, editMode: contextEditMode, setEditMode } = useThemeBuilder();
-  const editMode = editModeProp ?? contextEditMode;
+  const { exitThemeBuilder, editMode, setEditMode } = useThemeBuilder();
 
-  // Section open/closed state
-  const [openSections, setOpenSections] = React.useState<
+  // Foundation section open/closed state
+  const [openFoundationSections, setOpenFoundationSections] = React.useState<
     Record<string, boolean>
   >({
-    palette: true,
-    intent: true,
-    surfaces: false,
-    text: false,
-    components: false,
+    "color-ramps": true,
+    "radius-presets": true,
+    "typography": false,
   });
 
-  // Track which component groups are open within the Components section
-  const [openComponentGroups, setOpenComponentGroups] = React.useState<
-    Record<ComponentGroup, boolean>
-  >({} as Record<ComponentGroup, boolean>);
-
-  const toggleComponentGroup = (group: ComponentGroup) => {
-    setOpenComponentGroups((prev) => ({
-      ...prev,
-      [group]: !prev[group],
-    }));
-  };
-
-  const toggleSection = (sectionId: string) => {
-    setOpenSections((prev) => ({
+  const toggleFoundationSection = (sectionId: string) => {
+    setOpenFoundationSections((prev) => ({
       ...prev,
       [sectionId]: !prev[sectionId],
     }));
@@ -160,8 +121,6 @@ export function ThemeBuilderNav({
   const handleExit = React.useCallback(() => {
     exitThemeBuilder();
   }, [exitThemeBuilder]);
-
-  const tokenSections = getTokenSections();
 
   return (
     <div className="h-full flex flex-col bg-muted/30 border-r border-border">
@@ -203,125 +162,62 @@ export function ThemeBuilderNav({
         </div>
       </div>
 
-      {/* Scrollable Token Sections */}
+      {/* Scrollable Content */}
       <div className="flex-1 overflow-y-auto">
-        {/* Palette Ramps Section - Single clickable item */}
-        <div
-          className={cn(
-            "px-1 py-1.5 rounded cursor-pointer transition-colors",
-            selectedToken === "--wex-palette-ramps"
-              ? "bg-primary/10 ring-1 ring-primary/30"
-              : "hover:bg-muted/50"
-          )}
-          onClick={() => onSelectToken("--wex-palette-ramps")}
-        >
-          <div className="flex items-center gap-2">
-            <div className="flex gap-px flex-shrink-0">
-              {/* Mini preview showing 3 ramps */}
-              {PALETTE_RAMPS.slice(0, 3).map((ramp) => {
-                const shade500 = ramp.shades.find((s) => s.shade === 500);
-                const l = shade500?.lightness ?? 50;
-                return (
-                  <div
-                    key={ramp.name}
-                    className="w-3 h-4 first:rounded-l-sm last:rounded-r-sm border border-border/30"
-                    style={{
-                      backgroundColor: `hsl(${ramp.hue} ${ramp.saturation}% ${l}%)`,
-                    }}
-                  />
-                );
-              })}
-            </div>
-            <span className="text-xs font-medium flex-1">Palette Ramps</span>
-          </div>
+        {/* Components Section */}
+        <div className="p-3 border-b border-border">
+          <ComponentSelector
+            selectedComponent={selectedComponent}
+            onSelectComponent={onSelectComponent}
+          />
         </div>
 
         <WexSeparator />
 
-        {/* Token Sections */}
-        {tokenSections.map((section) => (
-          <React.Fragment key={section.id}>
-            <CollapsibleSection
-              label={section.label}
-              isOpen={openSections[section.id] ?? section.defaultOpen ?? false}
-              onToggle={() => toggleSection(section.id)}
-            >
-              <div className="space-y-0.5">
-                {section.tokens.map((token) => (
-                  <TokenRow
-                    key={token.name}
-                    token={token}
-                    isSelected={selectedToken === token.name}
-                    onSelect={() => onSelectToken(token.name)}
-                    value={assignments[token.name]}
-                    onChange={(value) => onAssignmentChange(token.name, value)}
-                    editMode={editMode}
-                    readOnly={section.readOnly}
-                  />
-                ))}
-              </div>
-            </CollapsibleSection>
-            <WexSeparator />
-          </React.Fragment>
-        ))}
-
-        {/* Layer 3 Component Tokens Section - EDITABLE */}
-        <CollapsibleSection
-          label="Component Tokens (L3)"
-          isOpen={openSections.components ?? false}
-          onToggle={() => toggleSection("components")}
-        >
-          <div className="space-y-2">
-            <div className="text-[10px] text-muted-foreground px-1 mb-2">
-              Edit component-specific tokens. Form Controls are shared across inputs.
-            </div>
-            {EDITABLE_COMPONENT_GROUPS.filter(g => g.editable).map((group) => {
-              const groupTokens = getEditableTokensForGroup(group.id);
-              if (groupTokens.length === 0) return null;
+        {/* Foundation Section */}
+        <div className="p-3">
+          <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
+            Foundation
+          </div>
+          <div className="space-y-1">
+            {FOUNDATION_SECTIONS.map((section) => {
+              const Icon = section.icon;
+              const isSelected = selectedFoundation === section.id;
+              const isOpen = openFoundationSections[section.id] ?? section.defaultOpen ?? false;
               
               return (
-                <div key={group.id} className="border-l-2 border-primary/30 pl-2">
+                <div key={section.id}>
                   <button
-                    onClick={() => toggleComponentGroup(group.id)}
-                    className="w-full flex items-center gap-1.5 py-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+                    type="button"
+                    onClick={() => {
+                      toggleFoundationSection(section.id);
+                      onSelectFoundation(section.id);
+                    }}
+                    className={cn(
+                      "w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-sm transition-all",
+                      "hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1",
+                      isSelected && "bg-primary/5 text-foreground"
+                    )}
                   >
                     <ChevronRight
                       className={cn(
-                        "h-3 w-3 transition-transform",
-                        openComponentGroups[group.id] && "rotate-90"
+                        "h-3.5 w-3.5 transition-transform text-muted-foreground",
+                        isOpen && "rotate-90"
                       )}
                     />
-                    <span>{group.label}</span>
-                    <span className="ml-auto text-[10px] text-muted-foreground">
-                      {groupTokens.length}
+                    <Icon className="h-4 w-4 text-muted-foreground" />
+                    <span className={cn(
+                      "flex-1 text-left",
+                      isSelected ? "font-medium" : "font-normal"
+                    )}>
+                      {section.label}
                     </span>
                   </button>
-                  {group.childGroups && group.childGroups.length > 0 && (
-                    <div className="text-[9px] text-muted-foreground pl-4 -mt-0.5 mb-1">
-                      {group.description}
-                    </div>
-                  )}
-                  {openComponentGroups[group.id] && (
-                    <div className="space-y-0.5 pl-4 pt-1">
-                      {groupTokens.map((token) => (
-                        <ComponentTokenRow
-                          key={token.name}
-                          token={token}
-                          isSelected={selectedToken === token.name}
-                          onSelect={() => onSelectToken(token.name)}
-                          editMode={editMode}
-                          value={assignments[token.name]}
-                          onChange={(value) => onAssignmentChange(token.name, value)}
-                        />
-                      ))}
-                    </div>
-                  )}
                 </div>
               );
             })}
           </div>
-        </CollapsibleSection>
-        <WexSeparator />
+        </div>
       </div>
 
       {/* A11y Compliance Summary + Actions at bottom */}
@@ -437,360 +333,6 @@ function ContrastComplianceSummary() {
         </div>
       </WexPopover.Content>
     </WexPopover>
-  );
-}
-
-// ============================================================================
-// Collapsible Section
-// ============================================================================
-
-interface CollapsibleSectionProps {
-  label: string;
-  isOpen: boolean;
-  onToggle: () => void;
-  children: React.ReactNode;
-}
-
-function CollapsibleSection({
-  label,
-  isOpen,
-  onToggle,
-  children,
-}: CollapsibleSectionProps) {
-  return (
-    <div className="py-2">
-      <button
-        onClick={onToggle}
-        className="w-full flex items-center gap-1.5 px-3 py-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
-      >
-        <ChevronRight
-          className={cn(
-            "h-3.5 w-3.5 transition-transform",
-            isOpen && "rotate-90"
-          )}
-        />
-        <span className="uppercase tracking-wider">{label}</span>
-      </button>
-      {isOpen && <div className="px-3 pt-2">{children}</div>}
-    </div>
-  );
-}
-
-// ============================================================================
-// Token Row (selectable + editable)
-// ============================================================================
-
-// Note: PaletteRampEditor was removed as it's unused; kept in git history
-
-// ============================================================================
-// Token Row (selectable + editable)
-// ============================================================================
-
-interface TokenRowProps {
-  token: TokenDefinition;
-  isSelected: boolean;
-  onSelect: () => void;
-  value?: string;
-  onChange: (value: string) => void;
-  editMode: "light" | "dark";
-  readOnly?: boolean;
-}
-
-function TokenRow({
-  token,
-  isSelected,
-  onSelect,
-  value,
-  onChange,
-  editMode,
-  readOnly,
-}: TokenRowProps) {
-  const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
-  const [actualColor, setActualColor] = React.useState<string | null>(null);
-
-  // Read actual CSS variable value (for semantic tokens that have been overridden)
-  React.useEffect(() => {
-    if (typeof window === 'undefined' || !token.name) return;
-
-    const readColor = () => {
-      const cssValue = getComputedStyle(document.documentElement)
-        .getPropertyValue(token.name)
-        .trim();
-      if (cssValue) {
-        setActualColor(cssValue);
-      } else {
-        setActualColor(null);
-      }
-    };
-
-    // Read immediately
-    readColor();
-
-    // Watch for style changes on documentElement
-    const observer = new MutationObserver(() => {
-      readColor();
-    });
-
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['style', 'class'],
-    });
-
-    // Also poll periodically (fallback for when style attribute doesn't change)
-    const interval = setInterval(readColor, 200);
-
-    return () => {
-      observer.disconnect();
-      clearInterval(interval);
-    };
-  }, [token.name, value, editMode]); // Re-read when value or mode changes
-
-  const displayValue = value ? formatPaletteValue(value) : "—";
-
-  // Compute HSL - prefer actual CSS variable value, fallback to palette reference
-  let swatchBgColor = "hsl(0 0% 50%)"; // default gray
-  
-  // If we have an actual CSS variable value, use it (means token was overridden)
-  if (actualColor) {
-    swatchBgColor = `hsl(${actualColor})`;
-  } else if (value) {
-    // Otherwise use palette reference
-    if (value === "white") {
-      swatchBgColor = "hsl(0 0% 100%)";
-    } else if (value === "black") {
-      swatchBgColor = "hsl(0 0% 0%)";
-    } else {
-      const match = value.match(/^(\w+)-(\d+)$/);
-      if (match) {
-        const [, rampName, shadeStr] = match;
-        const shade = parseInt(shadeStr, 10);
-        const ramp = PALETTE_RAMPS.find((r) => r.name === rampName);
-        if (ramp) {
-          const shadeData = ramp.shades.find((s) => s.shade === shade);
-          if (shadeData) {
-            // EXACT same format as palette ramps use
-            swatchBgColor = `hsl(${ramp.hue} ${ramp.saturation}% ${shadeData.lightness}%)`;
-          }
-        }
-      }
-    }
-  } else {
-    // Fallback to token default
-    const hsl = editMode === "light" ? token.lightValue : (token.darkValue || token.lightValue);
-    swatchBgColor = `hsl(${hsl})`;
-  }
-
-  return (
-    <div
-      className={cn(
-        "flex items-center gap-2 px-1 py-1.5 rounded cursor-pointer transition-colors group",
-        isSelected
-          ? "bg-primary/10 ring-1 ring-primary/30"
-          : "hover:bg-muted/50"
-      )}
-      onClick={onSelect}
-    >
-      {/* Color swatch - EXACT same pattern as palette ramps */}
-      <div
-        className="w-4 h-4 rounded-sm border border-border/50 flex-shrink-0"
-        style={{
-          backgroundColor: swatchBgColor,
-        }}
-      />
-
-      {/* Label and value */}
-      <div className="flex-1 min-w-0">
-        <div className="text-xs font-medium truncate">{token.label}</div>
-        <div className="text-[10px] text-muted-foreground truncate">
-          {displayValue}
-        </div>
-      </div>
-
-      {/* Edit button (only if not readOnly and has references) */}
-      {!readOnly && token.references && (
-        <WexPopover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
-          <WexPopover.Trigger asChild>
-            <button
-              className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-muted transition-opacity"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsPopoverOpen(true);
-              }}
-            >
-              <Pencil className="h-3 w-3 text-muted-foreground" />
-            </button>
-          </WexPopover.Trigger>
-          <WexPopover.Content
-            side="right"
-            align="start"
-            className="w-auto p-0"
-          >
-            <PaletteSwatchPicker
-              value={value || ""}
-              onSelect={(newValue: string) => {
-                onChange(newValue);
-                setIsPopoverOpen(false);
-              }}
-            />
-          </WexPopover.Content>
-        </WexPopover>
-      )}
-    </div>
-  );
-}
-
-// ============================================================================
-// Component Token Row (EDITABLE for Layer 3)
-// ============================================================================
-
-interface ComponentTokenRowProps {
-  token: TokenDefinition;
-  isSelected: boolean;
-  onSelect: () => void;
-  editMode: "light" | "dark";
-  value?: string;
-  onChange?: (value: string) => void;
-}
-
-function ComponentTokenRow({
-  token,
-  isSelected,
-  onSelect,
-  editMode,
-  value,
-  onChange,
-}: ComponentTokenRowProps) {
-  const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
-  const [actualColor, setActualColor] = React.useState<string | null>(null);
-
-  // Read actual CSS variable value
-  React.useEffect(() => {
-    if (typeof window === 'undefined' || !token.name) return;
-
-    const readColor = () => {
-      const cssValue = getComputedStyle(document.documentElement)
-        .getPropertyValue(token.name)
-        .trim();
-      if (cssValue) {
-        setActualColor(cssValue);
-      } else {
-        setActualColor(null);
-      }
-    };
-
-    readColor();
-    const observer = new MutationObserver(readColor);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['style', 'class'],
-    });
-    const interval = setInterval(readColor, 200);
-    return () => {
-      observer.disconnect();
-      clearInterval(interval);
-    };
-  }, [token.name, editMode, value]);
-
-  const displayValue = value ? formatPaletteValue(value) : "—";
-
-  // Compute swatch color - prefer actual CSS, fallback to palette reference
-  let swatchBgColor = "hsl(0 0% 50%)";
-  
-  if (actualColor) {
-    if (actualColor.includes("%")) {
-      swatchBgColor = `hsl(${actualColor})`;
-    } else {
-      swatchBgColor = actualColor;
-    }
-  } else if (value) {
-    // Parse palette reference
-    if (value === "white") {
-      swatchBgColor = "hsl(0 0% 100%)";
-    } else if (value === "black") {
-      swatchBgColor = "hsl(0 0% 0%)";
-    } else {
-      const match = value.match(/^(\w+)-(\d+)$/);
-      if (match) {
-        const [, rampName, shadeStr] = match;
-        const shade = parseInt(shadeStr, 10);
-        const ramp = PALETTE_RAMPS.find((r) => r.name === rampName);
-        if (ramp) {
-          const shadeData = ramp.shades.find((s) => s.shade === shade);
-          if (shadeData) {
-            swatchBgColor = `hsl(${ramp.hue} ${ramp.saturation}% ${shadeData.lightness}%)`;
-          }
-        }
-      }
-    }
-  } else {
-    const hsl = editMode === "light" ? token.lightValue : (token.darkValue || token.lightValue);
-    if (hsl && !hsl.startsWith("var(")) {
-      swatchBgColor = `hsl(${hsl})`;
-    }
-  }
-
-  // Show reference info or current value
-  const refInfo = value ? displayValue : (token.references?.replace("--wex-", "") || "");
-  const isEditable = token.type === "color" && onChange;
-
-  return (
-    <div
-      className={cn(
-        "flex items-center gap-2 px-1 py-1 rounded cursor-pointer transition-colors group",
-        isSelected
-          ? "bg-primary/10 ring-1 ring-primary/30"
-          : "hover:bg-muted/50"
-      )}
-      onClick={onSelect}
-    >
-      {/* Color swatch */}
-      {token.type === "color" && (
-        <div
-          className="w-3 h-3 rounded-sm border border-border/50 flex-shrink-0"
-          style={{ backgroundColor: swatchBgColor }}
-        />
-      )}
-
-      {/* Label */}
-      <div className="flex-1 min-w-0">
-        <div className="text-[10px] font-medium truncate">{token.label}</div>
-        {refInfo && (
-          <div className="text-[9px] text-muted-foreground truncate">
-            {value ? displayValue : `→ ${refInfo}`}
-          </div>
-        )}
-      </div>
-
-      {/* Edit button */}
-      {isEditable && (
-        <WexPopover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
-          <WexPopover.Trigger asChild>
-            <button
-              className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-muted transition-opacity"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsPopoverOpen(true);
-              }}
-            >
-              <Pencil className="h-2.5 w-2.5 text-muted-foreground" />
-            </button>
-          </WexPopover.Trigger>
-          <WexPopover.Content
-            side="right"
-            align="start"
-            className="w-auto p-0"
-          >
-            <PaletteSwatchPicker
-              value={value || ""}
-              onSelect={(newValue: string) => {
-                onChange(newValue);
-                setIsPopoverOpen(false);
-              }}
-            />
-          </WexPopover.Content>
-        </WexPopover>
-      )}
-    </div>
   );
 }
 

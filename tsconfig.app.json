@@ -27,7 +27,9 @@
     /* Path alias */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@wex/design-tokens": ["./packages/design-tokens/design-tokens.json"],
+      "@wex/design-tokens/*": ["./packages/design-tokens/*"]
     }
   },
   "include": ["src"]

@@ -20,6 +20,7 @@ export { WexBadge, wexBadgeVariants, type WexBadgeProps } from "./wex-badge";
 
 // ===== FORM COMPONENTS =====
 export { WexInput } from "./wex-input";
+export { WexFloatLabel, type WexFloatLabelProps } from "./wex-float-label";
 export { WexTextarea } from "./wex-textarea";
 export { WexCheckbox } from "./wex-checkbox";
 export { WexSwitch } from "./wex-switch";
@@ -27,7 +28,6 @@ export { WexSlider } from "./wex-slider";
 export { WexRadioGroup } from "./wex-radio-group";
 export { WexSelect } from "./wex-select";
 export { WexLabel } from "./wex-label";
-export { WexFloatLabel, type WexFloatLabelProps } from "./wex-float-label";
 export { WexForm, useWexFormField } from "./wex-form";
 export { WexField } from "./wex-field";
 export { WexInputGroup } from "./wex-input-group";

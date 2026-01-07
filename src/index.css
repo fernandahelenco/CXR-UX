@@ -1,6 +1,4 @@
-@import "./styles/wex.tokens.css";
-@import "./styles/wex.shadcn-bridge.css";
-@import "./styles/wex.components-bridge.css";
+/* Design tokens are imported via @wex/design-tokens/css in main.tsx */
 
 @tailwind base;
 @tailwind components;

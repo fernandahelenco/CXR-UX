@@ -16,12 +16,6 @@ import { FloatLabel, type FloatLabelProps } from "../ui/float-label";
  * <WexFloatLabel label="Medium" size="md" />
  * <WexFloatLabel label="Large" size="lg" />
  *
- * // With icons
- * import { Mail, Search, Eye } from "lucide-react";
- * <WexFloatLabel label="Email" leftIcon={<Mail className="h-4 w-4" />} />
- * <WexFloatLabel label="Search" rightIcon={<Search className="h-4 w-4" />} />
- * <WexFloatLabel label="Password" leftIcon={<Lock />} rightIcon={<Eye />} />
- *
  * // With validation
  * <WexFloatLabel label="Email" type="email" invalid />
  *
