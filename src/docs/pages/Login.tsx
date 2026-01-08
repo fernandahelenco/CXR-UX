@@ -6,6 +6,7 @@ import { WexCheckbox } from "@/components/wex/wex-checkbox"
 import { wexToast } from "@/components/wex/wex-toast"
 import { Eye, EyeOff, AlertCircle, Mail, MessageSquare, ChevronRight } from "lucide-react"
 import WexLogo from "/WEX_Logo_Red_Vector.svg"
+import LoginBg from "/login-bg.svg"
 import { useAuth } from "@/docs/context/AuthContext"
 
 interface LoginProps {
@@ -174,7 +175,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
     <div 
       className="min-h-screen w-full relative overflow-hidden"
       style={{ 
-        backgroundImage: 'url(/login-bg.svg)',
+        backgroundImage: `url(${LoginBg})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
