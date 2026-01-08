@@ -6,7 +6,8 @@ import path from 'path'
 export default defineConfig(({ mode }) => ({
   // Only set base path for production builds (GitHub Pages deployment)
   // Local development will work at root path
-  base: mode === 'production' ? '/CXR-UX/' : '/',
+  // Note: GitHub Pages paths are case-sensitive; keep this lower-case to match repo name.
+  base: mode === 'production' ? '/cxr-ux/' : '/',
   plugins: [react()],
   server: {
     port: 5174,
