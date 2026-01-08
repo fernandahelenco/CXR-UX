@@ -6,7 +6,7 @@ import { WexCheckbox } from "@/components/wex/wex-checkbox"
 import { wexToast } from "@/components/wex/wex-toast"
 import { Eye, EyeOff, AlertCircle, Mail, MessageSquare, ChevronRight } from "lucide-react"
 import WexLogo from "/WEX_Logo_Red_Vector.svg"
-import LoginBg from "/login-bg.svg"
+import LoginBg from "/login-bg.svg?url"
 import { useAuth } from "@/docs/context/AuthContext"
 
 interface LoginProps {
