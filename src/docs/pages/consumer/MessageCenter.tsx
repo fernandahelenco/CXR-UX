@@ -13,6 +13,7 @@ import { WexDialog } from "@/components/wex/wex-dialog";
 import { WexEmpty } from "@/components/wex/wex-empty";
 import { WexSidebar } from "@/components/wex/wex-sidebar";
 import { ConsumerNavigation } from "./ConsumerNavigation";
+import { ConsumerFooter } from "./Footer";
 import { cn } from "@/lib/utils";
 import emptyStateIllustration from "./img/empty-state-illustration.svg";
 import {
@@ -1573,44 +1574,7 @@ export default function MessageCenter() {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="border-t bg-white py-6">
-        <div className="mx-auto max-w-[1440px] px-8">
-          <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-[#7c858e]">
-            <WexButton
-              intent="primary"
-              variant="link"
-              className="h-auto p-0 text-sm text-[#7c858e] underline"
-            >
-              Copyright
-            </WexButton>
-            <WexButton
-              intent="primary"
-              variant="link"
-              className="h-auto p-0 text-sm text-[#7c858e] underline"
-            >
-              Disclaimer
-            </WexButton>
-            <WexButton
-              intent="primary"
-              variant="link"
-              className="h-auto p-0 text-sm text-[#7c858e] underline"
-            >
-              Privacy Policy
-            </WexButton>
-            <WexButton
-              intent="primary"
-              variant="link"
-              className="h-auto p-0 text-sm text-[#7c858e] underline"
-            >
-              Terms of Use
-            </WexButton>
-          </div>
-          <p className="mt-4 text-center text-sm text-[#7c858e]">
-            WEX Health Inc. 2004-2026. All rights reserved. Powered by WEX Health.
-          </p>
-        </div>
-      </footer>
+      <ConsumerFooter />
 
       {/* Message Detail Modal */}
       <WexDialog open={isModalOpen} onOpenChange={setIsModalOpen}>

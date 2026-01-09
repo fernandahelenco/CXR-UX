@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { WexButton } from "@/components/wex/wex-button";
+import { ConsumerFooter } from "./Footer";
 import { WexAlert } from "@/components/wex/wex-alert";
 import { WexEmpty } from "@/components/wex/wex-empty";
 import { WexSeparator } from "@/components/wex/wex-separator";
@@ -1245,31 +1246,7 @@ export default function MyProfile() {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="border-t bg-white py-4">
-        <div className="mx-auto max-w-[1440px] px-8">
-          <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-gray-500">
-            <WexButton variant="ghost" className="h-auto p-0 text-sm text-gray-500">
-              Copyright
-            </WexButton>
-            <span>•</span>
-            <WexButton variant="ghost" className="h-auto p-0 text-sm text-gray-500">
-              Disclaimer
-            </WexButton>
-            <span>•</span>
-            <WexButton variant="ghost" className="h-auto p-0 text-sm text-gray-500">
-              Privacy Policy
-            </WexButton>
-            <span>•</span>
-            <WexButton variant="ghost" className="h-auto p-0 text-sm text-gray-500">
-              Terms of Use
-            </WexButton>
-          </div>
-          <p className="mt-2 text-center text-sm text-gray-500">
-            WEX Health Inc. 2004-2026. All rights reserved. Powered by WEX Health.
-          </p>
-        </div>
-      </footer>
+      <ConsumerFooter />
 
       {/* Add New Dependent Modal */}
       <WexDialog open={isAddDependentModalOpen} onOpenChange={setIsAddDependentModalOpen}>

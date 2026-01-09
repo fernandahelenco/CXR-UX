@@ -4,6 +4,7 @@ import { WexCard } from "@/components/wex/wex-card";
 import { WexSeparator } from "@/components/wex/wex-separator";
 import { WexCollapsible } from "@/components/wex/wex-collapsible";
 import { ConsumerNavigation } from "./ConsumerNavigation";
+import { ConsumerFooter } from "./Footer";
 import {
   FileText,
   Download,
@@ -298,31 +299,7 @@ export default function Resources() {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="border-t bg-white py-4">
-        <div className="mx-auto max-w-[1440px] px-8">
-          <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground">
-            <WexButton variant="ghost" className="h-auto p-0 text-sm text-muted-foreground">
-              Copyright
-            </WexButton>
-            <span>•</span>
-            <WexButton variant="ghost" className="h-auto p-0 text-sm text-muted-foreground">
-              Disclaimer
-            </WexButton>
-            <span>•</span>
-            <WexButton variant="ghost" className="h-auto p-0 text-sm text-muted-foreground">
-              Privacy Policy
-            </WexButton>
-            <span>•</span>
-            <WexButton variant="ghost" className="h-auto p-0 text-sm text-muted-foreground">
-              Terms of Use
-            </WexButton>
-          </div>
-          <p className="mt-2 text-center text-sm text-muted-foreground">
-            WEX Health Inc. 2004-2026. All rights reserved. Powered by WEX Health.
-          </p>
-        </div>
-      </footer>
+      <ConsumerFooter />
     </div>
   );
 }

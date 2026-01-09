@@ -232,17 +232,15 @@ export default function OverviewPage() {
           </div>
         </div>
         
-        <div className="mt-20 flex flex-col items-center justify-between gap-6 border-t border-border/30 py-10 sm:flex-row">
-          <div className="flex items-center gap-4">
-            <img src={`${import.meta.env.BASE_URL}WEX_Logo_Red_Vector.svg`} alt="WEX" className="h-5" />
-            <span className="text-sm font-medium text-muted-foreground">Design System</span>
-          </div>
-          
-          <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-xs text-muted-foreground">
-            <p>© {new Date().getFullYear()} WEX Inc.</p>
-            <a href="#" className="transition-colors hover:text-brand-red">Privacy Policy</a>
-            <a href="#" className="transition-colors hover:text-brand-red">Terms of Service</a>
-            <a href="#" className="transition-colors hover:text-brand-red">Cookie Settings</a>
+        <div className="mt-20 border-t border-border/30 py-10">
+          <div className="flex flex-col items-center gap-3 text-center text-sm text-muted-foreground">
+            <div className="flex items-center gap-3">
+              <img src={`${import.meta.env.BASE_URL}WEX_Logo_Red_Vector.svg`} alt="WEX" className="h-5" />
+              <span className="text-sm font-medium text-muted-foreground">Design System</span>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              © {new Date().getFullYear()} WEX Inc. All rights reserved.
+            </p>
           </div>
         </div>
       </footer>
