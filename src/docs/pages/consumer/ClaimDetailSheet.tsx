@@ -6,7 +6,7 @@ import { WexBadge } from "@/components/wex/wex-badge";
 import { WexTabs } from "@/components/wex/wex-tabs";
 import { WexSeparator } from "@/components/wex/wex-separator";
 import { WexScrollArea } from "@/components/wex/wex-scroll-area";
-import { Calendar, Trash2, Upload, Send, X } from "lucide-react";
+import { Calendar, Trash2, Send } from "lucide-react";
 
 // Base Claim interface - matches Claims.tsx
 export interface Claim {
@@ -454,7 +454,7 @@ export function ClaimDetailSheet({
               <WexButton
                 key={index}
                 intent="primary"
-                variant={action.variant}
+                variant="outline"
                 size="md"
                 onClick={action.onClick}
               >
