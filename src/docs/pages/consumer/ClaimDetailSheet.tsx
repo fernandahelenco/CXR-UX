@@ -106,7 +106,6 @@ const getSidebarActions = (claim: Claim): SidebarActionConfig => {
           {
             label: "Upload documentation",
             intent: "outline",
-            icon: <Upload className="h-4 w-4 mr-2" />,
             onClick: () => console.log("Upload documentation for claim:", claim.id),
           },
           {
@@ -124,17 +123,15 @@ const getSidebarActions = (claim: Claim): SidebarActionConfig => {
         leftActions: [
           {
             label: "Cancel claim",
-            intent: "ghost",
-            icon: <X className="h-4 w-4 mr-2" />,
+            intent: "primary",
+            variant: "outline",
             onClick: () => console.log("Cancel claim:", claim.id),
-            className: "text-destructive hover:text-destructive hover:bg-destructive/10",
           },
         ],
         rightActions: [
           {
             label: "Upload documentation",
             intent: "outline",
-            icon: <Upload className="h-4 w-4 mr-2" />,
             onClick: () => console.log("Upload documentation for claim:", claim.id),
           },
         ],
@@ -147,8 +144,8 @@ const getSidebarActions = (claim: Claim): SidebarActionConfig => {
         leftActions: [
           {
             label: "Cancel claim",
-            intent: "outline",
-            icon: <X className="h-4 w-4 mr-2" />,
+            intent: "primary",
+            variant: "outline",
             onClick: () => console.log("Cancel claim:", claim.id),
           },
         ],
@@ -156,7 +153,6 @@ const getSidebarActions = (claim: Claim): SidebarActionConfig => {
           {
             label: "Upload documentation",
             intent: "primary",
-            icon: <Upload className="h-4 w-4 mr-2" />,
             onClick: () => console.log("Upload documentation for claim:", claim.id),
           },
         ],
@@ -169,7 +165,6 @@ const getSidebarActions = (claim: Claim): SidebarActionConfig => {
           {
             label: "Upload documentation",
             intent: "outline",
-            icon: <Upload className="h-4 w-4 mr-2" />,
             onClick: () => console.log("Upload documentation for claim:", claim.id),
           },
         ],
@@ -438,6 +433,7 @@ export function ClaimDetailSheet({
               <WexButton
                 key={index}
                 intent={action.intent}
+                variant={action.variant}
                 size="md"
                 className={action.className}
                 onClick={action.onClick}
@@ -454,6 +450,7 @@ export function ClaimDetailSheet({
               <WexButton
                 key={index}
                 intent={action.intent}
+                variant={action.variant}
                 size="md"
                 onClick={action.onClick}
               >
