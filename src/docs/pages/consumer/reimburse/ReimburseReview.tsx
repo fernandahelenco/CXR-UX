@@ -116,7 +116,7 @@ export default function ReimburseReview() {
                               Adam Smith
                             </WexLabel>
                           </div>
-                          <WexButton intent="link" className="px-0 justify-start h-auto p-0">
+                          <WexButton intent="primary" variant="link" className="px-0 justify-start h-auto p-0">
                             + Add a dependent
                           </WexButton>
                         </WexRadioGroup>

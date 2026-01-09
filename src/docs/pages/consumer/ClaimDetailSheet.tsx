@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 import { WexSheet } from "@/components/wex/wex-sheet";
 import { WexButton } from "@/components/wex/wex-button";
 import { WexBadge } from "@/components/wex/wex-badge";
@@ -52,19 +53,22 @@ interface ClaimDetailSheetProps {
 }
 
 // Configuration interface for sidebar actions
+type SidebarIntent = "ghost" | "outline" | "primary" | "destructive";
+
 interface SidebarActionConfig {
   leftActions: Array<{
     label: string;
-    intent: "ghost" | "outline" | "primary" | "destructive";
+    intent: SidebarIntent;
     icon?: React.ReactNode;
     onClick: () => void;
     className?: string;
   }>;
   rightActions: Array<{
     label: string;
-    intent: "ghost" | "outline" | "primary" | "destructive";
+    intent: SidebarIntent;
     icon?: React.ReactNode;
     onClick: () => void;
+    className?: string;
   }>;
 }
 
@@ -123,9 +127,9 @@ const getSidebarActions = (claim: Claim): SidebarActionConfig => {
         leftActions: [
           {
             label: "Cancel claim",
-            intent: "primary",
-            variant: "outline",
+            intent: "outline",
             onClick: () => console.log("Cancel claim:", claim.id),
+            className: "text-primary",
           },
         ],
         rightActions: [
@@ -144,15 +148,15 @@ const getSidebarActions = (claim: Claim): SidebarActionConfig => {
         leftActions: [
           {
             label: "Cancel claim",
-            intent: "primary",
-            variant: "outline",
+            intent: "outline",
             onClick: () => console.log("Cancel claim:", claim.id),
+            className: "text-primary",
           },
         ],
         rightActions: [
           {
             label: "Upload documentation",
-            intent: "primary",
+            intent: "outline",
             onClick: () => console.log("Upload documentation for claim:", claim.id),
           },
         ],
@@ -405,7 +409,7 @@ export function ClaimDetailSheet({
                             </p>
                           </div>
                           {letter.url && (
-                            <WexButton intent="link" size="sm" asChild>
+                            <WexButton intent="primary" variant="link" size="sm" asChild>
                               <a href={letter.url} target="_blank" rel="noopener noreferrer">
                                 View
                               </a>
@@ -432,10 +436,10 @@ export function ClaimDetailSheet({
             {sidebarActions.leftActions.map((action, index) => (
               <WexButton
                 key={index}
-                intent={action.intent}
-                variant={action.variant}
+                intent="primary"
+                variant="outline"
                 size="md"
-                className={action.className}
+                className={cn("text-primary border-primary hover:bg-primary/10 active:bg-primary/20", action.className)}
                 onClick={action.onClick}
               >
                 {action.icon}
@@ -449,7 +453,7 @@ export function ClaimDetailSheet({
             {sidebarActions.rightActions.map((action, index) => (
               <WexButton
                 key={index}
-                intent={action.intent}
+                intent="primary"
                 variant={action.variant}
                 size="md"
                 onClick={action.onClick}

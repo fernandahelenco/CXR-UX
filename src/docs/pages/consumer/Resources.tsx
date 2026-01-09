@@ -103,7 +103,8 @@ export default function Resources() {
                             <div key={doc.id} className="flex items-center gap-2">
                               <FileText className="h-3.5 w-3.5 text-primary shrink-0" />
                               <WexButton
-                                intent="link"
+                                intent="primary"
+                                variant="link"
                                 className="flex-1 justify-start text-sm tracking-[-0.084px] h-auto p-0"
                               >
                                 {doc.name}
@@ -182,7 +183,8 @@ export default function Resources() {
                         <div key={video.id} className="flex items-center gap-2">
                           <Video className="h-3.5 w-3.5 text-primary shrink-0" />
                           <WexButton
-                            intent="link"
+                            intent="primary"
+                            variant="link"
                             className="justify-start text-sm tracking-[-0.084px] h-auto p-0"
                           >
                             {video.name}
@@ -235,7 +237,8 @@ export default function Resources() {
                         <div key={link.id} className="flex items-center gap-2">
                           <ExternalLink className="h-3.5 w-3.5 text-primary shrink-0" />
                           <WexButton
-                            intent="link"
+                            intent="primary"
+                            variant="link"
                             className="justify-start text-sm tracking-[-0.084px] h-auto p-0"
                           >
                             {link.name}
@@ -276,7 +279,8 @@ export default function Resources() {
                             <div key={link.id} className="flex items-center gap-2">
                               <ExternalLink className="h-3.5 w-3.5 text-primary shrink-0" />
                               <WexButton
-                                intent="link"
+                                intent="primary"
+                                variant="link"
                                 className="justify-start text-sm tracking-[-0.084px] h-auto p-0"
                               >
                                 {link.name}

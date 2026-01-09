@@ -302,7 +302,8 @@ export default function ReimburseMyself() {
                       <span className="text-sm text-muted-foreground">Don&apos;t have a receipt?</span>
                       <WexButton
                         type="button"
-                        intent="link"
+                        intent="primary"
+                        variant="link"
                         className="h-auto p-0 text-sm"
                         onClick={handleManualEntry}
                       >

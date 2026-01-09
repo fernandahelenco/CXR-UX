@@ -123,7 +123,8 @@ export function AccountsSection() {
                     </div>
                     <div className="flex items-center pt-1">
                       <WexButton
-                        intent="link"
+                        intent="primary"
+                        variant="link"
                         size="sm"
                         className="h-auto px-0 text-muted-foreground hover:text-foreground font-normal text-xs"
                       >
@@ -152,7 +153,8 @@ export function AccountsSection() {
                       </p>
                     </div>
                     <WexButton
-                      intent="link"
+                      intent="primary" 
+                      variant="link" 
                       size="sm"
                       className="h-auto px-0 font-medium"
                       onClick={() => {

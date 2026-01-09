@@ -76,7 +76,8 @@ export default function ReimburseDocs() {
                 </div>
 
                 <WexButton
-                  intent="link"
+                  intent="primary"
+                  variant="link"
                   className="flex items-center gap-1 text-sm font-medium h-auto p-0"
                 >
                   What information is required? <ExternalLink className="h-3.5 w-3.5" />
