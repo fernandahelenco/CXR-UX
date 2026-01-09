@@ -129,10 +129,20 @@ export function TransactionDetailSheet({
 
             {/* Action Buttons */}
             <div className="flex items-center justify-end gap-4 pt-8 pb-4">
-              <WexButton intent="primary" variant="outline" size="md">
+              <WexButton
+                intent="primary"
+                variant="outline"
+                size="md"
+                className="text-primary border-primary hover:bg-primary/10 active:bg-primary/20"
+              >
                 View Transactions
               </WexButton>
-              <WexButton intent="primary" variant="outline" size="md">
+              <WexButton
+                intent="primary"
+                variant="outline"
+                size="md"
+                className="text-primary border-primary hover:bg-primary/10 active:bg-primary/20"
+              >
                 View Claims
               </WexButton>
             </div>

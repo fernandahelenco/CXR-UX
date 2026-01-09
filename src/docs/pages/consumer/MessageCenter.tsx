@@ -1578,25 +1578,29 @@ export default function MessageCenter() {
         <div className="mx-auto max-w-[1440px] px-8">
           <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-[#7c858e]">
             <WexButton
-              intent="link"
+              intent="primary"
+              variant="link"
               className="h-auto p-0 text-sm text-[#7c858e] underline"
             >
               Copyright
             </WexButton>
             <WexButton
-              intent="link"
+              intent="primary"
+              variant="link"
               className="h-auto p-0 text-sm text-[#7c858e] underline"
             >
               Disclaimer
             </WexButton>
             <WexButton
-              intent="link"
+              intent="primary"
+              variant="link"
               className="h-auto p-0 text-sm text-[#7c858e] underline"
             >
               Privacy Policy
             </WexButton>
             <WexButton
-              intent="link"
+              intent="primary"
+              variant="link"
               className="h-auto p-0 text-sm text-[#7c858e] underline"
             >
               Terms of Use

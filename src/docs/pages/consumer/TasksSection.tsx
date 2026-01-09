@@ -66,7 +66,8 @@ export function TasksSection() {
               )}
             </div>
             <WexButton 
-              intent="link" 
+              intent="primary"
+              variant="link"
               size="sm"
               className="font-medium h-auto p-0"
               onClick={() => {
