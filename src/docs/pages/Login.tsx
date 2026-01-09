@@ -5,8 +5,6 @@ import { WexCard } from "@/components/wex/wex-card"
 import { WexCheckbox } from "@/components/wex/wex-checkbox"
 import { wexToast } from "@/components/wex/wex-toast"
 import { Eye, EyeOff, AlertCircle, Mail, MessageSquare, ChevronRight } from "lucide-react"
-import WexLogo from "/WEX_Logo_Red_Vector.svg"
-import LoginBg from "/login-bg.svg"
 import { useAuth } from "@/docs/context/AuthContext"
 
 interface LoginProps {
@@ -15,6 +13,8 @@ interface LoginProps {
 
 export default function Login({ onLoginSuccess }: LoginProps) {
   const { login } = useAuth()
+  const wexLogoUrl = `${import.meta.env.BASE_URL}WEX_Logo_Red_Vector.svg`
+  const loginBgUrl = `${import.meta.env.BASE_URL}login-bg.svg`
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1)
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
@@ -41,7 +41,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
         location: 'Login.tsx:initial',
         message: 'Login background asset resolved',
         data: {
-          loginBg: LoginBg,
+          loginBg: loginBgUrl,
           baseUrl: import.meta.env.BASE_URL,
           windowPath: typeof window !== 'undefined' ? window.location.pathname : 'no-window'
         },
@@ -54,7 +54,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
   // Debug instrumentation (asset reachability)
   useEffect(() => {
     const runId = 'pre-fix'
-    const targetUrl = LoginBg
+    const targetUrl = loginBgUrl
 
     // #region agent log
     fetch(targetUrl, { method: 'HEAD' })
@@ -276,7 +276,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
     <div 
       className="min-h-screen w-full relative overflow-hidden"
       style={{ 
-        backgroundImage: `url(${LoginBg})`,
+        backgroundImage: `url(${loginBgUrl})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
@@ -294,7 +294,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
                 {/* Logo + Title + Subtext */}
                 <div className="flex flex-col gap-6 items-center">
                   <div className="w-[150px] h-[50px]">
-                    <img src={WexLogo} alt="WEX" className="w-full h-full object-contain" />
+                    <img src={wexLogoUrl} alt="WEX" className="w-full h-full object-contain" />
                   </div>
                   <div className="flex flex-col gap-2 items-center text-center">
                     <h1 className="text-[18px] font-semibold leading-6 tracking-[-0.252px] text-foreground">
