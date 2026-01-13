@@ -60,7 +60,7 @@ export default function HSAProfileReview() {
   };
 
   const handleBack = () => {
-    navigate("/hsa-enrollment/results");
+    navigate("/hsa-enrollment");
   };
 
   const handleContinue = () => {

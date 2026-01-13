@@ -52,9 +52,6 @@ const CustomComponentsDemo = React.lazy(() => import("@/docs/pages/consumer/Cust
 // HSA Enrollment page - standalone route
 const HSAEnrollmentPage = React.lazy(() => import("@/docs/pages/consumer/HSAEnrollmentPage"));
 
-// HSA Eligibility Results page - standalone route
-const HSAEligibilityResults = React.lazy(() => import("@/docs/pages/consumer/HSAEligibilityResults"));
-
 // HSA Profile Review page - standalone route
 const HSAProfileReview = React.lazy(() => import("@/docs/pages/consumer/HSAProfileReview"));
 
@@ -239,9 +236,6 @@ export function DocsRoutes() {
         
         {/* Standalone HSA Enrollment route - bypasses DocsLayout */}
         <Route path="hsa-enrollment" element={withConsumerLight(<HSAEnrollmentPage />)} />
-        
-        {/* Standalone HSA Eligibility Results route - bypasses DocsLayout */}
-        <Route path="hsa-enrollment/results" element={withConsumerLight(<HSAEligibilityResults />)} />
         
         {/* Standalone HSA Profile Review route - bypasses DocsLayout */}
         <Route path="hsa-enrollment/profile" element={withConsumerLight(<HSAProfileReview />)} />
