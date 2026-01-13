@@ -3,7 +3,6 @@ import { WexSheet } from "@/components/wex/wex-sheet";
 import { WexButton } from "@/components/wex/wex-button";
 import { WexSeparator } from "@/components/wex/wex-separator";
 import { WexScrollArea } from "@/components/wex/wex-scroll-area";
-import { X } from "lucide-react";
 import { type Transaction, type TransactionDetail, transactionDetailData } from "./mockData";
 
 interface TransactionDetailSheetProps {
@@ -66,23 +65,13 @@ export function TransactionDetailSheet({
     <WexSheet open={open} onOpenChange={onOpenChange}>
       <WexSheet.Content
         side="right"
-        className="hide-default-sheet-close w-[480px] max-w-[90vw] p-0"
+        className="w-[480px] max-w-[90vw] p-0"
         ref={contentRef}
       >
         <WexScrollArea className="h-full">
           <div className="p-6 space-y-4">
             {/* Header */}
             <WexSheet.Header className="space-y-1 relative">
-              <WexSheet.Close asChild>
-                <WexButton
-                  variant="ghost"
-                  size="icon"
-                  className="absolute right-0 top-0 text-muted-foreground hover:text-foreground"
-                  aria-label="Close"
-                >
-                  <X className="h-5 w-5" />
-                </WexButton>
-              </WexSheet.Close>
               <WexSheet.Title className="text-[30px] font-bold tracking-tight leading-10">
                 Plan details
               </WexSheet.Title>

@@ -34,7 +34,9 @@
   }
 
   /* Hide default Radix sheet close button when a custom close is provided */
-  .hide-default-sheet-close [data-radix-dialog-close] {
+  .hide-default-sheet-close > button[data-radix-dialog-close],
+  [data-radix-dialog-content].hide-default-sheet-close
+    > button[data-radix-dialog-close] {
     display: none !important;
   }
   
