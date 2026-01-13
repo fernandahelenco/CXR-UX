@@ -234,8 +234,20 @@ export const paidClaimsCategoryData: CategoryData[] = [
 // Navigation Menu Items
 export const navigationItems = [
   { label: "Home", href: "/", icon: "home", hasDropdown: false },
-  { label: "Accounts", href: "/account-overview", icon: "wallet", hasDropdown: true },
-  { label: "Claims", href: "/claims", icon: "file-text", hasDropdown: false },
-  { label: "Resources", href: "/resources", icon: "life-buoy", hasDropdown: false },
+  { 
+    label: "Accounts", 
+    href: "#", 
+    icon: "wallet", 
+    hasDropdown: true,
+    subItems: [
+      { label: "Account Overview", href: "/account-overview" },
+      { label: "Health Savings Account (HSA)", href: "/account-overview?account=hsa" },
+      { label: "Flexible Savings Account (FSA)", href: "/account-overview?account=fsa" },
+      { label: "Dependent Care", href: "/account-overview?account=dependent-care" },
+      { label: "Lifestyle Spending Account", href: "/account-overview?account=lifestyle" },
+    ]
+  },
+  { label: "Claims", href: "/claims", icon: "receipt", hasDropdown: false },
+  { label: "Resources", href: "/resources", icon: "file-text", hasDropdown: false },
 ];
 
