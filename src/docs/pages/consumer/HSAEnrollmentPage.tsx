@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import { Info } from "lucide-react";
 import { WexButton } from "@/components/wex/wex-button";
 import { WexCheckbox } from "@/components/wex/wex-checkbox";
 import { WexSelect } from "@/components/wex/wex-select";
