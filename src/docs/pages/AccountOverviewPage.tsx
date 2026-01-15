@@ -1,9 +1,11 @@
 import { ConsumerNavigation } from "./consumer/ConsumerNavigation";
-import { TitleBar } from "./account-overview/TitleBar";
-import { AccountSummaryCards } from "./account-overview/AccountSummaryCards";
-import { RecentTransactionsTable } from "./account-overview/RecentTransactionsTable";
-import { PreviousPlanYearTable } from "./account-overview/PreviousPlanYearTable";
 import { ConsumerFooter } from "./consumer/Footer";
+import { UnderConstruction } from "./consumer/UnderConstruction";
+// Original imports preserved for future restoration:
+// import { TitleBar } from "./account-overview/TitleBar";
+// import { AccountSummaryCards } from "./account-overview/AccountSummaryCards";
+// import { RecentTransactionsTable } from "./account-overview/RecentTransactionsTable";
+// import { PreviousPlanYearTable } from "./account-overview/PreviousPlanYearTable";
 
 /**
  * Account Overview Page
@@ -17,6 +19,9 @@ import { ConsumerFooter } from "./consumer/Footer";
  * - Footer
  * 
  * All components use WEX Design System components.
+ * 
+ * NOTE: Original content has been temporarily replaced with an "under construction" message.
+ * All original content is preserved in comments below for easy restoration.
  */
 export default function AccountOverviewPage() {
   return (
@@ -25,18 +30,8 @@ export default function AccountOverviewPage() {
       <ConsumerNavigation />
 
       {/* Main Content */}
-      <main className="w-full max-w-[1440px] mx-auto px-8 py-7 space-y-6">
-        {/* Title Bar */}
-        <TitleBar />
-
-        {/* Account Summary Cards */}
-        <AccountSummaryCards />
-
-        {/* Recent Transactions */}
-        <RecentTransactionsTable />
-
-        {/* Previous Plan Year */}
-        <PreviousPlanYearTable />
+      <main className="w-full max-w-[1440px] mx-auto px-8 py-7">
+        <UnderConstruction />
       </main>
 
       {/* Footer */}
@@ -44,4 +39,28 @@ export default function AccountOverviewPage() {
     </div>
   );
 }
+
+/* 
+ * ============================================================================
+ * ORIGINAL CONTENT PRESERVED BELOW - Restore when ready to show full page
+ * ============================================================================
+ * 
+ * Original main content structure:
+ * 
+ * <main className="w-full max-w-[1440px] mx-auto px-8 py-7 space-y-6">
+ *   {/* Title Bar *\/}
+ *   <TitleBar />
+ * 
+ *   {/* Account Summary Cards *\/}
+ *   <AccountSummaryCards />
+ * 
+ *   {/* Recent Transactions *\/}
+ *   <RecentTransactionsTable />
+ * 
+ *   {/* Previous Plan Year *\/}
+ *   <PreviousPlanYearTable />
+ * </main>
+ * 
+ * ============================================================================
+ */
 
