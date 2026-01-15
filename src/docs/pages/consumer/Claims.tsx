@@ -22,46 +22,46 @@ import { UnderConstruction } from "./UnderConstruction";
 //   Wallet,
 // } from "lucide-react";
 
-// TypeScript interfaces for Claim data
-interface Claim {
-  id: string;
-  dateSubmitted: string;
-  status: "document-needed" | "denied" | "in-review" | "submitted" | "not-submitted" | "approved";
-  providerService: string;
-  dateOfService: string;
-  recipient: string;
-  amount: string;
-  hasRefresh?: boolean;
-  // Extended fields for sidebar
-  claimId?: string;
-  payFrom?: string;
-  payTo?: {
-    recipient: string;
-    address: string;
-  };
-  categoryType?: string;
-  statusMessage?: string;
-  statusDate?: string;
-  isRecurring?: boolean;
-  hasDocuments?: boolean;
-  documents?: Array<{ name: string; url?: string }>;
-  timeline?: Array<{
-    date: string;
-    event: string;
-    description?: string;
-  }>;
-  letters?: Array<{
-    title: string;
-    date: string;
-    url?: string;
-  }>;
-}
+// TypeScript interfaces for Claim data - preserved for restoration
+// interface Claim {
+//   id: string;
+//   dateSubmitted: string;
+//   status: "document-needed" | "denied" | "in-review" | "submitted" | "not-submitted" | "approved";
+//   providerService: string;
+//   dateOfService: string;
+//   recipient: string;
+//   amount: string;
+//   hasRefresh?: boolean;
+//   // Extended fields for sidebar
+//   claimId?: string;
+//   payFrom?: string;
+//   payTo?: {
+//     recipient: string;
+//     address: string;
+//   };
+//   categoryType?: string;
+//   statusMessage?: string;
+//   statusDate?: string;
+//   isRecurring?: boolean;
+//   hasDocuments?: boolean;
+//   documents?: Array<{ name: string; url?: string }>;
+//   timeline?: Array<{
+//     date: string;
+//     event: string;
+//     description?: string;
+//   }>;
+//   letters?: Array<{
+//     title: string;
+//     date: string;
+//     url?: string;
+//   }>;
+// }
 
-interface SummaryStats {
-  totalReimbursed: string;
-  totalNotSubmitted: string;
-  totalClaims: number;
-}
+// interface SummaryStats {
+//   totalReimbursed: string;
+//   totalNotSubmitted: string;
+//   totalClaims: number;
+// }
 
 // Mock data for summary statistics - preserved for restoration
 // const summaryStats: SummaryStats = {
