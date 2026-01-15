@@ -63,15 +63,15 @@ interface SummaryStats {
   totalClaims: number;
 }
 
-// Mock data for summary statistics
-const summaryStats: SummaryStats = {
+// Mock data for summary statistics - preserved for restoration
+const _summaryStats: SummaryStats = {
   totalReimbursed: "$5,300.00",
   totalNotSubmitted: "$2,150.00",
   totalClaims: 200,
 };
 
-// Mock data for Action Required claims
-const actionRequiredClaims: Claim[] = [
+// Mock data for Action Required claims - preserved for restoration
+const _actionRequiredClaims: Claim[] = [
   {
     id: "1",
     dateSubmitted: "6/12/2025",
@@ -183,8 +183,8 @@ const actionRequiredClaims: Claim[] = [
   },
 ];
 
-// Mock data for all Claims
-const allClaims: Claim[] = [
+// Mock data for all Claims - preserved for restoration
+const _allClaims: Claim[] = [
   {
     id: "5",
     dateSubmitted: "4/30/2025",
@@ -349,8 +349,8 @@ const allClaims: Claim[] = [
   },
 ];
 
-// Helper function to get status badge props
-const getStatusBadge = (status: Claim["status"]) => {
+// Helper function to get status badge props - preserved for restoration
+const _getStatusBadge = (status: Claim["status"]) => {
   switch (status) {
     case "document-needed":
       return { intent: "warning" as const, label: "Document needed" };
