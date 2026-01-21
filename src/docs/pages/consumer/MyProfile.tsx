@@ -24,7 +24,7 @@ import { ConsumerNavigation } from "./ConsumerNavigation";
 import emptyStateIllustration from "./img/empty-state-illustration.svg";
 import { Pencil, Info, Plus, Calendar, X, Trash2, MoreVertical, Eye, RefreshCw, AlertCircle } from "lucide-react";
 
-type SubPage = "my-profile" | "dependents" | "beneficiaries" | "banking" | "debit-card" | "login-security" | "communication";
+type SubPage = "my-profile" | "dependents" | "beneficiaries" | "banking" | "debit-card" | "login-security" | "communication" | "report-lost-stolen" | "order-replacement-card";
 
 type Dependent = {
   id: string;
@@ -160,6 +160,29 @@ export default function MyProfile() {
   const [isActivateCardModalOpen, setIsActivateCardModalOpen] = useState(false);
   const [cardBeingActivated, setCardBeingActivated] = useState<DebitCard | null>(null);
   
+  // Report Lost/Stolen page state
+  const [confirmationAnswer, setConfirmationAnswer] = useState<"yes" | "no" | "">("");
+  const [mailingAddress, setMailingAddress] = useState({
+    name: "John Johnson",
+    street: "5050 Lincoln Dr",
+    addressLine2: "",
+    city: "Edina",
+    state: "MN",
+    zip: "55436",
+    country: "United States",
+  });
+  const [isMailingAddressModalOpen, setIsMailingAddressModalOpen] = useState(false);
+  const [mailingAddressForm, setMailingAddressForm] = useState({
+    street: "5050 Lincoln Dr",
+    addressLine2: "",
+    city: "Edina",
+    state: "MN",
+    zip: "55436",
+    country: "United States",
+  });
+  const [isStateSelectFocused, setIsStateSelectFocused] = useState(false);
+  const [isCountrySelectFocused, setIsCountrySelectFocused] = useState(false);
+  
   // Modal state
   const [isAddDependentModalOpen, setIsAddDependentModalOpen] = useState(false);
   const [editingDependentId, setEditingDependentId] = useState<string | null>(null);
@@ -229,7 +252,7 @@ export default function MyProfile() {
 
   const [activeSubPage, setActiveSubPage] = useState<SubPage>(() => {
     const subPage = searchParams.get("subPage");
-    const validSubPages: SubPage[] = ["my-profile", "dependents", "beneficiaries", "banking", "debit-card", "login-security", "communication"];
+    const validSubPages: SubPage[] = ["my-profile", "dependents", "beneficiaries", "banking", "debit-card", "login-security", "communication", "report-lost-stolen", "order-replacement-card"];
     if (subPage && validSubPages.includes(subPage as SubPage)) {
       return subPage as SubPage;
     }
@@ -239,7 +262,7 @@ export default function MyProfile() {
   // Sync activeSubPage with URL params
   useEffect(() => {
     const subPage = searchParams.get("subPage");
-    const validSubPages: SubPage[] = ["my-profile", "dependents", "beneficiaries", "banking", "debit-card", "login-security", "communication"];
+    const validSubPages: SubPage[] = ["my-profile", "dependents", "beneficiaries", "banking", "debit-card", "login-security", "communication", "report-lost-stolen", "order-replacement-card"];
     if (subPage && validSubPages.includes(subPage as SubPage)) {
       setActiveSubPage(subPage as SubPage);
     } else if (!subPage) {
@@ -1149,7 +1172,13 @@ export default function MyProfile() {
                                 <Eye className="h-3.5 w-3.5 text-[#7c858e]" />
                                 <span className="text-sm text-[#243746] leading-none">View Details</span>
                               </WexDropdownMenu.Item>
-                              <WexDropdownMenu.Item className="flex items-center gap-2 px-3 py-2 cursor-pointer">
+                              <WexDropdownMenu.Item
+                                className="flex items-center gap-2 px-3 py-2 cursor-pointer"
+                                onClick={() => {
+                                  setSearchParams({ subPage: "order-replacement-card", cardId: card.id });
+                                  setOpenDropdownId(null);
+                                }}
+                              >
                                 <RefreshCw className="h-3.5 w-3.5 text-[#7c858e]" />
                                 <span className="text-sm text-[#243746] leading-none">Order Replacement</span>
                               </WexDropdownMenu.Item>
@@ -1215,8 +1244,7 @@ export default function MyProfile() {
                               variant="outline"
                               className="w-full"
                               onClick={() => {
-                                // Handle report lost/stolen
-                                wexToast.warning("Report lost/stolen initiated");
+                                setSearchParams({ subPage: "report-lost-stolen", cardId: card.id });
                               }}
                             >
                               Report Lost/Stolen
@@ -1674,6 +1702,740 @@ export default function MyProfile() {
                     }}
                   >
                     Activate
+                  </WexButton>
+                </WexDialog.Footer>
+              </WexDialog.Content>
+            </WexDialog>
+          </>
+        );
+
+      case "report-lost-stolen":
+        // Get card ID from URL params
+        const cardId = searchParams.get("cardId");
+        const cardToReport = debitCards.find((card) => card.id === cardId);
+
+        if (!cardToReport) {
+          // If card not found, redirect back to debit-card page
+          return (
+            <>
+              <div className="px-6 py-4">
+                <WexButton
+                  intent="secondary"
+                  variant="outline"
+                  onClick={() => setSearchParams({ subPage: "debit-card" })}
+                >
+                  Back to Debit Card
+                </WexButton>
+              </div>
+            </>
+          );
+        }
+
+        return (
+          <>
+            {/* Page Header */}
+            <div className="border-b border-[#e4e6e9] px-6 py-4">
+              <h2 className="text-2xl font-semibold text-[#243746] tracking-[-0.456px] leading-8">
+                Report Card Lost/Stolen
+              </h2>
+            </div>
+
+            {/* Content */}
+            <div className="flex flex-col gap-6">
+              {/* Card Information Section */}
+              <div className="border-b border-[#e4e6e9] px-6 pb-6 pt-6">
+                <div className="flex items-start justify-between gap-16">
+                  <div className="flex flex-col gap-4 flex-1">
+                    <h3 className="text-xl font-medium text-[#243746] tracking-[-0.34px] leading-8">
+                      Card Information
+                    </h3>
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-sm text-[#515f6b] tracking-[-0.084px] leading-6">
+                          Selected Card:
+                        </span>
+                        <span className="text-sm text-[#1d2c38] tracking-[-0.084px] leading-6">
+                          {cardToReport.cardholderName} x{cardToReport.cardNumber}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-sm text-[#515f6b] tracking-[-0.084px] leading-6">
+                          Current Status:
+                        </span>
+                        <span className="text-sm text-[#1d2c38] tracking-[-0.084px] leading-6">
+                          {cardToReport.status === "active" ? "Active" : "Ready to Activate"}
+                        </span>
+                      </div>
+                      {cardToReport.status === "active" && (
+                        <div className="flex items-center">
+                          <WexBadge intent="success" size="sm" className="w-fit">
+                            Active
+                          </WexBadge>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Mailing Address Section */}
+                  <div className="flex flex-col gap-4 flex-1">
+                    <div className="flex items-center gap-4">
+                      <h3 className="text-xl font-medium text-[#243746] tracking-[-0.34px] leading-8">
+                        Mailing Address
+                      </h3>
+                      <WexButton
+                        variant="ghost"
+                        size="sm"
+                        className="h-auto p-0 gap-1.5"
+                        onClick={() => {
+                          setMailingAddressForm({
+                            street: mailingAddress.street,
+                            addressLine2: mailingAddress.addressLine2 || "",
+                            city: mailingAddress.city,
+                            state: mailingAddress.state,
+                            zip: mailingAddress.zip,
+                            country: mailingAddress.country,
+                          });
+                          setIsMailingAddressModalOpen(true);
+                        }}
+                      >
+                        <Pencil className="h-3.5 w-3.5 text-[#0058a3]" />
+                        <span className="text-sm font-medium text-[#0058a3]">Edit</span>
+                      </WexButton>
+                    </div>
+                    <div className="flex flex-col text-sm text-[#1d2c38] tracking-[-0.084px] leading-6">
+                      <p className="mb-0">{mailingAddress.name}</p>
+                      <p className="mb-0">{mailingAddress.street}</p>
+                      {mailingAddress.addressLine2 && <p className="mb-0">{mailingAddress.addressLine2}</p>}
+                      <p className="mb-0">
+                        {mailingAddress.city}, {mailingAddress.state} {mailingAddress.zip}
+                      </p>
+                      <p>{mailingAddress.country}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Update Card Status Section */}
+              <div className="border-b border-[#e4e6e9] px-6 pb-6">
+                <div className="flex flex-col gap-4">
+                  <h3 className="text-xl font-medium text-[#243746] tracking-[-0.34px] leading-8">
+                    Update Card Status
+                  </h3>
+                  <div className="flex items-center gap-6">
+                    <span className="text-sm text-[#515f6b] tracking-[-0.084px] leading-6 w-[190px]">
+                      New Status:
+                    </span>
+                    <span className="text-sm text-[#1d2c38] tracking-[-0.084px] leading-6">
+                      Lost/Stolen
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-6">
+                    <span className="text-sm text-[#515f6b] tracking-[-0.084px] leading-6 w-[190px]">
+                      Can you confirm this card has been lost/stolen?
+                    </span>
+                    <WexRadioGroup
+                      value={confirmationAnswer}
+                      onValueChange={(value) => setConfirmationAnswer(value as "yes" | "no")}
+                      className="flex gap-4"
+                    >
+                      <div className="flex items-center gap-2">
+                        <WexRadioGroup.Item value="yes" id="confirm-yes" />
+                        <WexLabel htmlFor="confirm-yes" className="cursor-pointer text-sm text-[#334155]">
+                          Yes
+                        </WexLabel>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <WexRadioGroup.Item value="no" id="confirm-no" />
+                        <WexLabel htmlFor="confirm-no" className="cursor-pointer text-sm text-[#334155]">
+                          No
+                        </WexLabel>
+                      </div>
+                    </WexRadioGroup>
+                  </div>
+                  <div className="flex items-center gap-6">
+                    <span className="text-sm text-[#515f6b] tracking-[-0.084px] leading-6 w-[190px]">
+                      Replacement Fee:
+                    </span>
+                    <span className="text-sm text-[#1d2c38] tracking-[-0.084px] leading-6">
+                      $3.00
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* What Happens Next Section */}
+              <div className="border-b border-[#e4e6e9] px-6 pb-6">
+                <div className="flex flex-col gap-4">
+                  <h3 className="text-xl font-medium text-[#243746] tracking-[-0.34px] leading-8">
+                    What Happens Next
+                  </h3>
+                  <p className="text-sm font-normal text-[#1d2c38] tracking-[-0.084px] leading-6">
+                    A replacement card with a new card number will be automatically issued and mailed to the primary cardholder's address within 5–7 business days.
+                  </p>
+                  <p className="text-sm font-normal text-[#1d2c38] tracking-[-0.084px] leading-6">
+                    A United States mailing address is required to receive a replacement card. Cards cannot be issued to international mailing addresses.
+                  </p>
+                  <WexAlert
+                    intent="info"
+                    className="border border-[#bfdbfe] bg-[rgba(239,246,255,0.95)] rounded-md shadow-[0px_4px_8px_0px_rgba(2,5,10,0.04)]"
+                  >
+                    <AlertCircle className="h-4 w-4 text-[#2563eb]" />
+                    <WexAlert.Description className="text-base text-[#0058a3] leading-6 tracking-[-0.176px]">
+                      <span className="font-normal">
+                        A replacement card fee may apply. If you suspect fraud, please mark the card as Lost/Stolen and contact XX Bank HSA Customer Support at{" "}
+                      </span>
+                      <span className="font-semibold">1-888-350-5353</span>
+                      <span className="font-normal"> to file a report and initiate an investigation.</span>
+                    </WexAlert.Description>
+                  </WexAlert>
+                </div>
+              </div>
+
+              {/* Footer Actions */}
+              <div className="flex items-center justify-between px-6 pb-6">
+                <WexButton
+                  intent="secondary"
+                  variant="outline"
+                  onClick={() => {
+                    setSearchParams({ subPage: "debit-card" });
+                    setConfirmationAnswer("");
+                  }}
+                >
+                  Cancel
+                </WexButton>
+                <WexButton
+                  intent="primary"
+                  onClick={() => {
+                    if (confirmationAnswer === "yes") {
+                      wexToast.success("Card reported as lost/stolen", {
+                        description: `Card number xxxx${cardToReport.cardNumber} has been reported as lost/stolen. A replacement card will be issued.`,
+                      });
+                      setSearchParams({ subPage: "debit-card" });
+                      setConfirmationAnswer("");
+                    } else {
+                      wexToast.error("Please confirm that the card has been lost/stolen");
+                    }
+                  }}
+                  disabled={confirmationAnswer !== "yes"}
+                >
+                  Send
+                </WexButton>
+              </div>
+            </div>
+
+            {/* Update Mailing Address Modal */}
+            <WexDialog open={isMailingAddressModalOpen} onOpenChange={setIsMailingAddressModalOpen}>
+              <WexDialog.Content className="w-[400px] p-0 gap-6 [&>div:last-child]:hidden">
+                {/* Header */}
+                <div className="flex items-center justify-between p-[17.5px]">
+                  <WexDialog.Title className="text-[17.5px] font-semibold text-[#243746] leading-normal">
+                    Update Mailing Address
+                  </WexDialog.Title>
+                  <WexDialog.Close asChild>
+                    <WexButton
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      aria-label="Close"
+                    >
+                      <X className="h-3.5 w-3.5 text-[#515f6b]" />
+                    </WexButton>
+                  </WexDialog.Close>
+                </div>
+
+                {/* Content */}
+                <div className="px-6 pb-6 flex flex-col gap-4">
+                  {/* Address */}
+                  <WexFloatLabel
+                    label="Address"
+                    value={mailingAddressForm.street}
+                    onChange={(e) => setMailingAddressForm({ ...mailingAddressForm, street: e.target.value })}
+                  />
+
+                  {/* Address line 2 */}
+                  <WexFloatLabel
+                    label="Address line 2"
+                    value={mailingAddressForm.addressLine2}
+                    onChange={(e) => setMailingAddressForm({ ...mailingAddressForm, addressLine2: e.target.value })}
+                  />
+
+                  {/* City */}
+                  <WexFloatLabel
+                    label="City"
+                    value={mailingAddressForm.city}
+                    onChange={(e) => setMailingAddressForm({ ...mailingAddressForm, city: e.target.value })}
+                  />
+
+                  {/* State - Using Select with Float Label */}
+                  <div className="relative w-full">
+                    <WexSelect
+                      value={mailingAddressForm.state}
+                      onValueChange={(value) => setMailingAddressForm({ ...mailingAddressForm, state: value })}
+                      onOpenChange={(open) => setIsStateSelectFocused(open)}
+                    >
+                      <WexSelect.Trigger className="h-14 pt-5 pb-2">
+                        <WexSelect.Value placeholder=" " />
+                      </WexSelect.Trigger>
+                      <WexSelect.Content>
+                        <WexSelect.Item value="AL">Alabama</WexSelect.Item>
+                        <WexSelect.Item value="AK">Alaska</WexSelect.Item>
+                        <WexSelect.Item value="AZ">Arizona</WexSelect.Item>
+                        <WexSelect.Item value="AR">Arkansas</WexSelect.Item>
+                        <WexSelect.Item value="CA">California</WexSelect.Item>
+                        <WexSelect.Item value="CO">Colorado</WexSelect.Item>
+                        <WexSelect.Item value="CT">Connecticut</WexSelect.Item>
+                        <WexSelect.Item value="DE">Delaware</WexSelect.Item>
+                        <WexSelect.Item value="FL">Florida</WexSelect.Item>
+                        <WexSelect.Item value="GA">Georgia</WexSelect.Item>
+                        <WexSelect.Item value="HI">Hawaii</WexSelect.Item>
+                        <WexSelect.Item value="ID">Idaho</WexSelect.Item>
+                        <WexSelect.Item value="IL">Illinois</WexSelect.Item>
+                        <WexSelect.Item value="IN">Indiana</WexSelect.Item>
+                        <WexSelect.Item value="IA">Iowa</WexSelect.Item>
+                        <WexSelect.Item value="KS">Kansas</WexSelect.Item>
+                        <WexSelect.Item value="KY">Kentucky</WexSelect.Item>
+                        <WexSelect.Item value="LA">Louisiana</WexSelect.Item>
+                        <WexSelect.Item value="ME">Maine</WexSelect.Item>
+                        <WexSelect.Item value="MD">Maryland</WexSelect.Item>
+                        <WexSelect.Item value="MA">Massachusetts</WexSelect.Item>
+                        <WexSelect.Item value="MI">Michigan</WexSelect.Item>
+                        <WexSelect.Item value="MN">Minnesota</WexSelect.Item>
+                        <WexSelect.Item value="MS">Mississippi</WexSelect.Item>
+                        <WexSelect.Item value="MO">Missouri</WexSelect.Item>
+                        <WexSelect.Item value="MT">Montana</WexSelect.Item>
+                        <WexSelect.Item value="NE">Nebraska</WexSelect.Item>
+                        <WexSelect.Item value="NV">Nevada</WexSelect.Item>
+                        <WexSelect.Item value="NH">New Hampshire</WexSelect.Item>
+                        <WexSelect.Item value="NJ">New Jersey</WexSelect.Item>
+                        <WexSelect.Item value="NM">New Mexico</WexSelect.Item>
+                        <WexSelect.Item value="NY">New York</WexSelect.Item>
+                        <WexSelect.Item value="NC">North Carolina</WexSelect.Item>
+                        <WexSelect.Item value="ND">North Dakota</WexSelect.Item>
+                        <WexSelect.Item value="OH">Ohio</WexSelect.Item>
+                        <WexSelect.Item value="OK">Oklahoma</WexSelect.Item>
+                        <WexSelect.Item value="OR">Oregon</WexSelect.Item>
+                        <WexSelect.Item value="PA">Pennsylvania</WexSelect.Item>
+                        <WexSelect.Item value="RI">Rhode Island</WexSelect.Item>
+                        <WexSelect.Item value="SC">South Carolina</WexSelect.Item>
+                        <WexSelect.Item value="SD">South Dakota</WexSelect.Item>
+                        <WexSelect.Item value="TN">Tennessee</WexSelect.Item>
+                        <WexSelect.Item value="TX">Texas</WexSelect.Item>
+                        <WexSelect.Item value="UT">Utah</WexSelect.Item>
+                        <WexSelect.Item value="VT">Vermont</WexSelect.Item>
+                        <WexSelect.Item value="VA">Virginia</WexSelect.Item>
+                        <WexSelect.Item value="WA">Washington</WexSelect.Item>
+                        <WexSelect.Item value="WV">West Virginia</WexSelect.Item>
+                        <WexSelect.Item value="WI">Wisconsin</WexSelect.Item>
+                        <WexSelect.Item value="WY">Wyoming</WexSelect.Item>
+                      </WexSelect.Content>
+                    </WexSelect>
+                    <label
+                      className={`absolute pointer-events-none origin-top-left transition-all duration-200 ease-out left-3 text-sm text-[#7c858e] ${
+                        mailingAddressForm.state || isStateSelectFocused
+                          ? "top-2 scale-75 -translate-y-0 text-xs"
+                          : "top-4"
+                      }`}
+                    >
+                      State
+                    </label>
+                  </div>
+
+                  {/* Zip Code */}
+                  <WexFloatLabel
+                    label="Zip Code"
+                    value={mailingAddressForm.zip}
+                    onChange={(e) => setMailingAddressForm({ ...mailingAddressForm, zip: e.target.value })}
+                  />
+
+                  {/* Country - Using Select with Float Label */}
+                  <div className="relative w-full">
+                    <WexSelect
+                      value={mailingAddressForm.country}
+                      onValueChange={(value) => setMailingAddressForm({ ...mailingAddressForm, country: value })}
+                      onOpenChange={(open) => setIsCountrySelectFocused(open)}
+                    >
+                      <WexSelect.Trigger className="h-14 pt-5 pb-2">
+                        <WexSelect.Value placeholder=" " />
+                      </WexSelect.Trigger>
+                      <WexSelect.Content>
+                        <WexSelect.Item value="United States">United States</WexSelect.Item>
+                        <WexSelect.Item value="Canada">Canada</WexSelect.Item>
+                        <WexSelect.Item value="Mexico">Mexico</WexSelect.Item>
+                      </WexSelect.Content>
+                    </WexSelect>
+                    <label
+                      className={`absolute pointer-events-none origin-top-left transition-all duration-200 ease-out left-3 text-sm text-[#7c858e] ${
+                        mailingAddressForm.country || isCountrySelectFocused
+                          ? "top-2 scale-75 -translate-y-0 text-xs"
+                          : "top-4"
+                      }`}
+                    >
+                      Country
+                    </label>
+                  </div>
+                </div>
+
+                {/* Footer */}
+                <WexDialog.Footer className="flex gap-2 justify-end p-[17.5px]">
+                  <WexButton
+                    intent="secondary"
+                    variant="outline"
+                    onClick={() => {
+                      setIsMailingAddressModalOpen(false);
+                    }}
+                  >
+                    Cancel
+                  </WexButton>
+                  <WexButton
+                    intent="primary"
+                    onClick={() => {
+                      setMailingAddress({
+                        ...mailingAddress,
+                        street: mailingAddressForm.street,
+                        addressLine2: mailingAddressForm.addressLine2,
+                        city: mailingAddressForm.city,
+                        state: mailingAddressForm.state,
+                        zip: mailingAddressForm.zip,
+                        country: mailingAddressForm.country,
+                      });
+                      setIsMailingAddressModalOpen(false);
+                      wexToast.success("Address updated");
+                    }}
+                  >
+                    Save
+                  </WexButton>
+                </WexDialog.Footer>
+              </WexDialog.Content>
+            </WexDialog>
+          </>
+        );
+
+      case "order-replacement-card":
+        // Get card ID from URL params
+        const orderCardId = searchParams.get("cardId");
+        const cardToOrder = debitCards.find((card) => card.id === orderCardId);
+
+        if (!cardToOrder) {
+          // If card not found, redirect back to debit-card page
+          return (
+            <>
+              <div className="px-6 py-4">
+                <WexButton
+                  intent="secondary"
+                  variant="outline"
+                  onClick={() => setSearchParams({ subPage: "debit-card" })}
+                >
+                  Back to Debit Card
+                </WexButton>
+              </div>
+            </>
+          );
+        }
+
+        return (
+          <>
+            {/* Page Header */}
+            <div className="border-b border-[#e4e6e9] px-6 py-4">
+              <h2 className="text-2xl font-semibold text-[#243746] tracking-[-0.456px] leading-8">
+                Order Replacement Card
+              </h2>
+            </div>
+
+            {/* Content */}
+            <div className="flex flex-col gap-6">
+              {/* Card Information Section */}
+              <div className="border-b border-[#e4e6e9] px-6 pb-6 pt-6">
+                <div className="flex items-start justify-between gap-16">
+                  <div className="flex flex-col gap-4 flex-1">
+                    <h3 className="text-xl font-medium text-[#243746] tracking-[-0.34px] leading-8">
+                      Card Information
+                    </h3>
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-sm text-[#515f6b] tracking-[-0.084px] leading-6">
+                          Selected Card:
+                        </span>
+                        <span className="text-sm text-[#1d2c38] tracking-[-0.084px] leading-6">
+                          {cardToOrder.cardholderName} x{cardToOrder.cardNumber}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-sm text-[#515f6b] tracking-[-0.084px] leading-6">
+                          Current Status:
+                        </span>
+                        <span className="text-sm text-[#1d2c38] tracking-[-0.084px] leading-6">
+                          {cardToOrder.status === "active" ? "Active" : "Ready to Activate"}
+                        </span>
+                      </div>
+                      {cardToOrder.status === "active" && (
+                        <div className="flex items-center">
+                          <WexBadge intent="success" size="sm" className="w-fit">
+                            Active
+                          </WexBadge>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Mailing Address Section */}
+                  <div className="flex flex-col gap-4 flex-1">
+                    <div className="flex items-center gap-4">
+                      <h3 className="text-xl font-medium text-[#243746] tracking-[-0.34px] leading-8">
+                        Mailing Address
+                      </h3>
+                      <WexButton
+                        variant="ghost"
+                        size="sm"
+                        className="h-auto p-0 gap-1.5"
+                        onClick={() => {
+                          setMailingAddressForm({
+                            street: mailingAddress.street,
+                            addressLine2: mailingAddress.addressLine2 || "",
+                            city: mailingAddress.city,
+                            state: mailingAddress.state,
+                            zip: mailingAddress.zip,
+                            country: mailingAddress.country,
+                          });
+                          setIsMailingAddressModalOpen(true);
+                        }}
+                      >
+                        <Pencil className="h-3.5 w-3.5 text-[#0058a3]" />
+                        <span className="text-sm font-medium text-[#0058a3]">Edit</span>
+                      </WexButton>
+                    </div>
+                    <div className="flex flex-col text-sm text-[#1d2c38] tracking-[-0.084px] leading-6">
+                      <p className="mb-0">{mailingAddress.name}</p>
+                      <p className="mb-0">{mailingAddress.street}</p>
+                      {mailingAddress.addressLine2 && <p className="mb-0">{mailingAddress.addressLine2}</p>}
+                      <p className="mb-0">
+                        {mailingAddress.city}, {mailingAddress.state} {mailingAddress.zip}
+                      </p>
+                      <p>{mailingAddress.country}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* What Happens Next Section */}
+              <div className="border-b border-[#e4e6e9] px-6 pb-6">
+                <div className="flex flex-col gap-4">
+                  <h3 className="text-xl font-medium text-[#243746] tracking-[-0.34px] leading-8">
+                    What Happens Next
+                  </h3>
+                  <p className="text-sm font-normal text-[#1d2c38] tracking-[-0.084px] leading-6">
+                    A replacement card with a new card number will be automatically issued and mailed to the primary cardholder's address within 5–7 business days.
+                  </p>
+                  <p className="text-sm font-normal text-[#1d2c38] tracking-[-0.084px] leading-6">
+                    A United States mailing address is required to receive a replacement card. Cards cannot be issued to international mailing addresses.
+                  </p>
+                </div>
+              </div>
+
+              {/* Footer Actions */}
+              <div className="flex items-center justify-between px-6 pb-6">
+                <WexButton
+                  intent="secondary"
+                  variant="outline"
+                  onClick={() => {
+                    setSearchParams({ subPage: "debit-card" });
+                  }}
+                >
+                  Cancel
+                </WexButton>
+                <WexButton
+                  intent="primary"
+                  onClick={() => {
+                    wexToast.success("Replacement card ordered", {
+                      description: `A replacement card for ${cardToOrder.cardholderName} x${cardToOrder.cardNumber} will be mailed within 5–7 business days.`,
+                    });
+                    setSearchParams({ subPage: "debit-card" });
+                  }}
+                >
+                  Send
+                </WexButton>
+              </div>
+            </div>
+
+            {/* Update Mailing Address Modal - Reuse existing modal */}
+            <WexDialog open={isMailingAddressModalOpen} onOpenChange={setIsMailingAddressModalOpen}>
+              <WexDialog.Content className="w-[400px] p-0 gap-6 [&>div:last-child]:hidden">
+                {/* Header */}
+                <div className="flex items-center justify-between p-[17.5px]">
+                  <WexDialog.Title className="text-[17.5px] font-semibold text-[#243746] leading-normal">
+                    Update Mailing Address
+                  </WexDialog.Title>
+                  <WexDialog.Close asChild>
+                    <WexButton
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      aria-label="Close"
+                    >
+                      <X className="h-3.5 w-3.5 text-[#515f6b]" />
+                    </WexButton>
+                  </WexDialog.Close>
+                </div>
+
+                {/* Content */}
+                <div className="px-6 pb-6 flex flex-col gap-4">
+                  {/* Address */}
+                  <WexFloatLabel
+                    label="Address"
+                    value={mailingAddressForm.street}
+                    onChange={(e) => setMailingAddressForm({ ...mailingAddressForm, street: e.target.value })}
+                  />
+
+                  {/* Address line 2 */}
+                  <WexFloatLabel
+                    label="Address line 2"
+                    value={mailingAddressForm.addressLine2}
+                    onChange={(e) => setMailingAddressForm({ ...mailingAddressForm, addressLine2: e.target.value })}
+                  />
+
+                  {/* City */}
+                  <WexFloatLabel
+                    label="City"
+                    value={mailingAddressForm.city}
+                    onChange={(e) => setMailingAddressForm({ ...mailingAddressForm, city: e.target.value })}
+                  />
+
+                  {/* State - Using Select with Float Label */}
+                  <div className="relative w-full">
+                    <WexSelect
+                      value={mailingAddressForm.state}
+                      onValueChange={(value) => setMailingAddressForm({ ...mailingAddressForm, state: value })}
+                      onOpenChange={(open) => setIsStateSelectFocused(open)}
+                    >
+                      <WexSelect.Trigger className="h-14 pt-5 pb-2">
+                        <WexSelect.Value placeholder=" " />
+                      </WexSelect.Trigger>
+                      <WexSelect.Content>
+                        <WexSelect.Item value="AL">Alabama</WexSelect.Item>
+                        <WexSelect.Item value="AK">Alaska</WexSelect.Item>
+                        <WexSelect.Item value="AZ">Arizona</WexSelect.Item>
+                        <WexSelect.Item value="AR">Arkansas</WexSelect.Item>
+                        <WexSelect.Item value="CA">California</WexSelect.Item>
+                        <WexSelect.Item value="CO">Colorado</WexSelect.Item>
+                        <WexSelect.Item value="CT">Connecticut</WexSelect.Item>
+                        <WexSelect.Item value="DE">Delaware</WexSelect.Item>
+                        <WexSelect.Item value="FL">Florida</WexSelect.Item>
+                        <WexSelect.Item value="GA">Georgia</WexSelect.Item>
+                        <WexSelect.Item value="HI">Hawaii</WexSelect.Item>
+                        <WexSelect.Item value="ID">Idaho</WexSelect.Item>
+                        <WexSelect.Item value="IL">Illinois</WexSelect.Item>
+                        <WexSelect.Item value="IN">Indiana</WexSelect.Item>
+                        <WexSelect.Item value="IA">Iowa</WexSelect.Item>
+                        <WexSelect.Item value="KS">Kansas</WexSelect.Item>
+                        <WexSelect.Item value="KY">Kentucky</WexSelect.Item>
+                        <WexSelect.Item value="LA">Louisiana</WexSelect.Item>
+                        <WexSelect.Item value="ME">Maine</WexSelect.Item>
+                        <WexSelect.Item value="MD">Maryland</WexSelect.Item>
+                        <WexSelect.Item value="MA">Massachusetts</WexSelect.Item>
+                        <WexSelect.Item value="MI">Michigan</WexSelect.Item>
+                        <WexSelect.Item value="MN">Minnesota</WexSelect.Item>
+                        <WexSelect.Item value="MS">Mississippi</WexSelect.Item>
+                        <WexSelect.Item value="MO">Missouri</WexSelect.Item>
+                        <WexSelect.Item value="MT">Montana</WexSelect.Item>
+                        <WexSelect.Item value="NE">Nebraska</WexSelect.Item>
+                        <WexSelect.Item value="NV">Nevada</WexSelect.Item>
+                        <WexSelect.Item value="NH">New Hampshire</WexSelect.Item>
+                        <WexSelect.Item value="NJ">New Jersey</WexSelect.Item>
+                        <WexSelect.Item value="NM">New Mexico</WexSelect.Item>
+                        <WexSelect.Item value="NY">New York</WexSelect.Item>
+                        <WexSelect.Item value="NC">North Carolina</WexSelect.Item>
+                        <WexSelect.Item value="ND">North Dakota</WexSelect.Item>
+                        <WexSelect.Item value="OH">Ohio</WexSelect.Item>
+                        <WexSelect.Item value="OK">Oklahoma</WexSelect.Item>
+                        <WexSelect.Item value="OR">Oregon</WexSelect.Item>
+                        <WexSelect.Item value="PA">Pennsylvania</WexSelect.Item>
+                        <WexSelect.Item value="RI">Rhode Island</WexSelect.Item>
+                        <WexSelect.Item value="SC">South Carolina</WexSelect.Item>
+                        <WexSelect.Item value="SD">South Dakota</WexSelect.Item>
+                        <WexSelect.Item value="TN">Tennessee</WexSelect.Item>
+                        <WexSelect.Item value="TX">Texas</WexSelect.Item>
+                        <WexSelect.Item value="UT">Utah</WexSelect.Item>
+                        <WexSelect.Item value="VT">Vermont</WexSelect.Item>
+                        <WexSelect.Item value="VA">Virginia</WexSelect.Item>
+                        <WexSelect.Item value="WA">Washington</WexSelect.Item>
+                        <WexSelect.Item value="WV">West Virginia</WexSelect.Item>
+                        <WexSelect.Item value="WI">Wisconsin</WexSelect.Item>
+                        <WexSelect.Item value="WY">Wyoming</WexSelect.Item>
+                      </WexSelect.Content>
+                    </WexSelect>
+                    <label
+                      className={`absolute pointer-events-none origin-top-left transition-all duration-200 ease-out left-3 text-sm text-[#7c858e] ${
+                        mailingAddressForm.state || isStateSelectFocused
+                          ? "top-2 scale-75 -translate-y-0 text-xs"
+                          : "top-4"
+                      }`}
+                    >
+                      State
+                    </label>
+                  </div>
+
+                  {/* Zip Code */}
+                  <WexFloatLabel
+                    label="Zip Code"
+                    value={mailingAddressForm.zip}
+                    onChange={(e) => setMailingAddressForm({ ...mailingAddressForm, zip: e.target.value })}
+                  />
+
+                  {/* Country - Using Select with Float Label */}
+                  <div className="relative w-full">
+                    <WexSelect
+                      value={mailingAddressForm.country}
+                      onValueChange={(value) => setMailingAddressForm({ ...mailingAddressForm, country: value })}
+                      onOpenChange={(open) => setIsCountrySelectFocused(open)}
+                    >
+                      <WexSelect.Trigger className="h-14 pt-5 pb-2">
+                        <WexSelect.Value placeholder=" " />
+                      </WexSelect.Trigger>
+                      <WexSelect.Content>
+                        <WexSelect.Item value="United States">United States</WexSelect.Item>
+                        <WexSelect.Item value="Canada">Canada</WexSelect.Item>
+                        <WexSelect.Item value="Mexico">Mexico</WexSelect.Item>
+                      </WexSelect.Content>
+                    </WexSelect>
+                    <label
+                      className={`absolute pointer-events-none origin-top-left transition-all duration-200 ease-out left-3 text-sm text-[#7c858e] ${
+                        mailingAddressForm.country || isCountrySelectFocused
+                          ? "top-2 scale-75 -translate-y-0 text-xs"
+                          : "top-4"
+                      }`}
+                    >
+                      Country
+                    </label>
+                  </div>
+                </div>
+
+                {/* Footer */}
+                <WexDialog.Footer className="flex gap-2 justify-end p-[17.5px]">
+                  <WexButton
+                    intent="secondary"
+                    variant="outline"
+                    onClick={() => {
+                      setIsMailingAddressModalOpen(false);
+                    }}
+                  >
+                    Cancel
+                  </WexButton>
+                  <WexButton
+                    intent="primary"
+                    onClick={() => {
+                      setMailingAddress({
+                        ...mailingAddress,
+                        street: mailingAddressForm.street,
+                        addressLine2: mailingAddressForm.addressLine2,
+                        city: mailingAddressForm.city,
+                        state: mailingAddressForm.state,
+                        zip: mailingAddressForm.zip,
+                        country: mailingAddressForm.country,
+                      });
+                      setIsMailingAddressModalOpen(false);
+                      wexToast.success("Address updated");
+                    }}
+                  >
+                    Save
                   </WexButton>
                 </WexDialog.Footer>
               </WexDialog.Content>
