@@ -1,16 +1,19 @@
 import * as React from "react"
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox"
-import { Check } from "lucide-react"
+import { Check, SquareMinus } from "lucide-react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const checkboxVariants = cva(
   [
-    "grid place-content-center peer shrink-0 rounded-sm border shadow",
+    "relative grid place-content-center peer shrink-0 rounded-sm border shadow box-border",
     "border-wex-checkbox-border bg-wex-checkbox-bg",
-    "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-wex-checkbox-focus-ring",
+    "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-wex-checkbox-focus-ring focus-visible:ring-offset-0 focus-visible:ring-inset",
     "disabled:cursor-not-allowed disabled:opacity-[var(--wex-component-checkbox-disabled-opacity)]",
-    "data-[state=checked]:bg-wex-checkbox-checked-bg data-[state=checked]:text-wex-checkbox-checked-fg",
+    "data-[state=checked]:bg-wex-checkbox-checked-bg data-[state=checked]:text-wex-checkbox-checked-fg data-[state=checked]:border-wex-checkbox-checked-bg",
+    "data-[state=unchecked]:border-wex-checkbox-border",
+    "flex-shrink-0",
+    "hover:border-wex-checkbox-border",
   ],
   {
     variants: {
@@ -39,19 +42,42 @@ export interface CheckboxProps
 const Checkbox = React.forwardRef<
   React.ElementRef<typeof CheckboxPrimitive.Root>,
   CheckboxProps
->(({ className, checkboxSize, ...props }, ref) => (
-  <CheckboxPrimitive.Root
-    ref={ref}
-    className={cn(checkboxVariants({ checkboxSize }), className)}
-    {...props}
-  >
-    <CheckboxPrimitive.Indicator
-      className={cn("grid place-content-center text-current")}
+>(({ className, checkboxSize, checked, ...props }, ref) => {
+  const isIndeterminate = checked === "indeterminate";
+  return (
+    <CheckboxPrimitive.Root
+      ref={ref}
+      className={cn(
+        checkboxVariants({ checkboxSize }),
+        isIndeterminate && "data-[state=indeterminate]:bg-wex-checkbox-checked-bg data-[state=indeterminate]:border-wex-checkbox-checked-bg",
+        "flex-shrink-0",
+        className
+      )}
+      checked={isIndeterminate ? false : checked}
+      data-state={isIndeterminate ? "indeterminate" : undefined}
+      style={{ minWidth: checkboxSize === "sm" ? "16px" : checkboxSize === "lg" ? "24px" : "20px", minHeight: checkboxSize === "sm" ? "16px" : checkboxSize === "lg" ? "24px" : "20px" }}
+      {...props}
     >
-      <Check className={checkIconSizes[checkboxSize || "md"]} />
-    </CheckboxPrimitive.Indicator>
-  </CheckboxPrimitive.Root>
-))
+      {isIndeterminate && (
+        <div className="grid place-content-center absolute inset-0 pointer-events-none">
+          <SquareMinus 
+            className={cn(checkIconSizes[checkboxSize || "md"])} 
+            strokeWidth={2}
+            stroke="#0058a3"
+            fill="white"
+          />
+        </div>
+      )}
+      {!isIndeterminate && (
+        <CheckboxPrimitive.Indicator
+          className={cn("grid place-content-center")}
+        >
+          <Check className={cn(checkIconSizes[checkboxSize || "md"], "!text-[#0058a3]")} />
+        </CheckboxPrimitive.Indicator>
+      )}
+    </CheckboxPrimitive.Root>
+  );
+})
 Checkbox.displayName = CheckboxPrimitive.Root.displayName
 
 export { Checkbox, checkboxVariants }

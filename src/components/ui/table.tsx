@@ -43,7 +43,7 @@ interface TableProps
 const Table = React.forwardRef<HTMLTableElement, TableProps>(
   ({ className, striped, gridlines, size, ...props }, ref) => (
     <TableContext.Provider value={{ striped, gridlines, size: size ?? "md" }}>
-      <div className="relative w-full overflow-auto">
+      <div className="relative w-full overflow-auto" style={{ overflowY: 'scroll' }}>
         <table
           ref={ref}
           className={cn(
