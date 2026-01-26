@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { WexButton } from "@/components/wex/wex-button";
 import { WexCard } from "@/components/wex/wex-card";
 import { WexBadge } from "@/components/wex/wex-badge";
@@ -25,6 +26,19 @@ import {
   Inbox,
   Download,
   Trash2,
+  AlertTriangle,
+  MessageSquare,
+  Archive,
+  Shield,
+  DollarSign,
+  Receipt,
+  Mails,
+  Mail,
+  MailCheck,
+  MailOpen,
+  SquareMinus,
+  X,
+  FileSpreadsheet,
 } from "lucide-react";
 import type { Message } from "./messageCenterUtils";
 import {
@@ -772,6 +786,7 @@ const getInitialMessages = (): Message[] => {
 
 export default function MessageCenter() {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const [messages, setMessages] = useState<Message[]>(() => {
     const initial = getInitialMessages();
     // Initialize unread count on mount
@@ -816,10 +831,17 @@ export default function MessageCenter() {
 
   const handleMessageClick = (message: Message) => {
     setSelectedMessage(message);
-    setIsModalOpen(true);
+    // In mobile view, open modal; in desktop view, use side panel
+    if (isMobile) {
+      setIsModalOpen(true);
+    }
     if (!message.isRead) {
       updateMessage(message.id, { isRead: true });
     }
+  };
+
+  const handleCloseDetailPanel = () => {
+    setSelectedMessage(null);
   };
 
   const handleCloseModal = () => {
@@ -845,6 +867,20 @@ export default function MessageCenter() {
   const handleUnarchive = (message: Message, e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent row click
     updateMessage(message.id, { isArchived: false });
+  };
+
+  const handleBulkMarkUnread = () => {
+    selectedMessageIds.forEach((id) => {
+      updateMessage(id, { isRead: false });
+    });
+    setSelectedMessageIds(new Set());
+  };
+
+  const handleBulkArchive = () => {
+    selectedMessageIds.forEach((id) => {
+      updateMessage(id, { isArchived: true });
+    });
+    setSelectedMessageIds(new Set());
   };
 
   const getEmptyStateText = (): string => {
@@ -884,20 +920,35 @@ export default function MessageCenter() {
       // Archive view: show only archived messages
       return messages.filter((message) => message.isArchived === true);
     }
-    if (selectedCategory === "starred") {
-      // Starred: show only non-archived starred messages
-      return messages.filter((message) => message.isStarred === true && !message.isArchived);
+    if (selectedCategory === "action-required") {
+      // Action Required: show messages with warning/alert in subject
+      return messages.filter(
+        (message) =>
+          (message.subject.toLowerCase().includes("warning") ||
+           message.subject.toLowerCase().includes("alert") ||
+           message.subject.toLowerCase().includes("action required")) &&
+          !message.isArchived
+      );
     }
     if (selectedCategory === "unread") {
       // Unread: show only non-archived unread messages
       return messages.filter((message) => message.isRead === false && !message.isArchived);
     }
-    if (selectedCategory === "recently-viewed") {
-      // Recently Viewed: show only non-archived read messages (previously opened)
-      return messages.filter((message) => message.isRead === true && !message.isArchived);
+    if (selectedCategory === "starred") {
+      // Starred: show only non-archived starred messages
+      return messages.filter((message) => message.isStarred === true && !message.isArchived);
+    }
+    // Category filter - map new category names to existing ones
+    let categoryFilter = selectedCategory;
+    if (selectedCategory === "Account & Security") {
+      categoryFilter = "Cards & Security";
+    } else if (selectedCategory === "Money Activity") {
+      categoryFilter = "Contributions & Investments";
+    } else if (selectedCategory === "Tax & Statements") {
+      categoryFilter = "Statements & Tax Documents";
     }
     // Category filter: show only non-archived messages in that category
-    return messages.filter((message) => message.category === selectedCategory && !message.isArchived);
+    return messages.filter((message) => message.category === categoryFilter && !message.isArchived);
   }, [selectedCategory, messages]);
 
   // Calculate pagination
@@ -1041,113 +1092,114 @@ export default function MessageCenter() {
                 {/* Left Sidebar */}
                 <WexSidebar
                   collapsible="none"
-                  className="hidden md:flex w-[240px] border-r border-wex-card-border bg-wex-card-bg flex-col h-auto"
+                  className="hidden md:flex w-[252px] border-r border-wex-card-border bg-wex-card-bg flex-col h-auto shrink-0"
                 >
-                  <WexSidebar.Content className="flex-1 h-full px-2 py-4">
+                  <WexSidebar.Content className="flex-1 h-full px-4 py-4">
                     <WexSidebar.Group className="flex-1 h-full">
                       <WexSidebar.GroupContent className="flex-1 h-full">
                         <WexSidebar.Menu className="flex-1 h-full">
                           {/* Activity Section */}
-                          <WexSidebar.GroupLabel className="px-3">
-                            ACTIVITY
+                          <WexSidebar.GroupLabel className="px-3 py-[7px]">
+                            <span className="text-xs font-medium text-[#243746] uppercase tracking-[0.24px]">ACTIVITY</span>
                           </WexSidebar.GroupLabel>
                           <WexSidebar.MenuItem>
                             <WexSidebar.MenuButton
                               isActive={selectedCategory === null}
                               onClick={() => setSelectedCategory(null)}
-                              className="h-[31px] min-h-[31px] whitespace-normal px-3 py-[6px] data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:font-normal"
+                              className="h-[32px] min-h-[32px] whitespace-normal px-3 py-1 rounded-md data-[active=true]:bg-[#0058a3] data-[active=true]:text-white data-[active=true]:font-semibold"
                             >
-                              All Messages
+                              <div className="flex items-center gap-2 w-full">
+                                <Mails className="h-5 w-5 shrink-0" />
+                                <span className="text-sm tracking-[-0.084px]">All Messages</span>
+                              </div>
                             </WexSidebar.MenuButton>
                           </WexSidebar.MenuItem>
                           <WexSidebar.MenuItem>
                             <WexSidebar.MenuButton
-                              isActive={false}
-                              className="h-[31px] min-h-[31px] whitespace-normal px-3 py-[6px]"
+                              isActive={selectedCategory === "action-required"}
+                              onClick={() => setSelectedCategory("action-required")}
+                              className="h-[32px] min-h-[32px] whitespace-normal px-3 py-1 rounded-md data-[active=true]:bg-[#0058a3] data-[active=true]:text-white data-[active=true]:font-semibold"
                             >
-                              Urgent Items
+                              <div className="flex items-center gap-2 w-full">
+                                <AlertTriangle className="h-5 w-5 shrink-0" />
+                                <span className="text-sm tracking-[0.07px]">Action Required</span>
+                              </div>
                             </WexSidebar.MenuButton>
                           </WexSidebar.MenuItem>
                           <WexSidebar.MenuItem>
                             <WexSidebar.MenuButton
                               isActive={selectedCategory === "unread"}
                               onClick={() => setSelectedCategory("unread")}
-                              className="h-[31px] min-h-[31px] whitespace-normal px-3 py-[6px] data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:font-normal"
+                              className="h-[32px] min-h-[32px] whitespace-normal px-3 py-1 rounded-md data-[active=true]:bg-[#0058a3] data-[active=true]:text-white data-[active=true]:font-semibold"
                             >
-                              Unread ({unreadCount})
+                              <div className="flex items-center gap-2 w-full">
+                                <Mail className="h-5 w-5 shrink-0" />
+                                <span className="text-sm tracking-[0.07px]">Unread ({unreadCount})</span>
+                              </div>
                             </WexSidebar.MenuButton>
                           </WexSidebar.MenuItem>
                           <WexSidebar.MenuItem>
                             <WexSidebar.MenuButton
                               isActive={selectedCategory === "starred"}
                               onClick={() => setSelectedCategory("starred")}
-                              className="h-[31px] min-h-[31px] whitespace-normal px-3 py-[6px] data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:font-normal"
+                              className="h-[32px] min-h-[32px] whitespace-normal px-3 py-1 rounded-md data-[active=true]:bg-[#0058a3] data-[active=true]:text-white data-[active=true]:font-semibold"
                             >
-                              Starred
+                              <div className="flex items-center gap-2 w-full">
+                                <Star className="h-5 w-5 shrink-0" />
+                                <span className="text-sm tracking-[0.07px]">Starred</span>
+                              </div>
                             </WexSidebar.MenuButton>
                           </WexSidebar.MenuItem>
-                          <WexSidebar.MenuItem>
-                            <WexSidebar.MenuButton
-                              isActive={selectedCategory === "recently-viewed"}
-                              onClick={() => setSelectedCategory("recently-viewed")}
-                              className="h-[31px] min-h-[31px] whitespace-normal px-3 py-[6px] data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:font-normal"
-                            >
-                              Recently Viewed ({recentlyViewedCount})
-                            </WexSidebar.MenuButton>
-                          </WexSidebar.MenuItem>
-
-
-                          <WexSidebar.GroupLabel className="px-3 mt-6">
-                            CATEGORIES
-                          </WexSidebar.GroupLabel>
-                          <WexSidebar.MenuItem>
-                            <WexSidebar.MenuButton
-                              isActive={selectedCategory === "Cards & Security"}
-                              onClick={() => setSelectedCategory("Cards & Security")}
-                              className="h-[31px] min-h-[31px] whitespace-normal px-3 py-[6px] data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:font-normal"
-                            >
-                              Cards & Security
-                            </WexSidebar.MenuButton>
-                          </WexSidebar.MenuItem>
-                          <WexSidebar.MenuItem>
-                            <WexSidebar.MenuButton
-                              isActive={selectedCategory === "Contributions & Investments"}
-                              onClick={() => setSelectedCategory("Contributions & Investments")}
-                              className="h-[31px] min-h-[31px] whitespace-normal px-3 py-[6px] data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:font-normal"
-                            >
-                              Investments
-                            </WexSidebar.MenuButton>
-                          </WexSidebar.MenuItem>
-                          <WexSidebar.MenuItem>
-                            <WexSidebar.MenuButton
-                              isActive={selectedCategory === "Distributions"}
-                              onClick={() => setSelectedCategory("Distributions")}
-                              className="h-[31px] min-h-[31px] whitespace-normal px-3 py-[6px] data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:font-normal"
-                            >
-                              Distributions
-                            </WexSidebar.MenuButton>
-                          </WexSidebar.MenuItem>
-                          <WexSidebar.MenuItem>
-                            <WexSidebar.MenuButton
-                              isActive={selectedCategory === "Statements & Tax Documents"}
-                              onClick={() => setSelectedCategory("Statements & Tax Documents")}
-                              className="h-[31px] min-h-[31px] whitespace-normal px-3 py-[6px] data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:font-normal"
-                            >
-                              Documents
-                            </WexSidebar.MenuButton>
-                          </WexSidebar.MenuItem>
-
-
-                          <WexSidebar.GroupLabel className="px-3 mt-6">
-                            MANAGE
-                          </WexSidebar.GroupLabel>
                           <WexSidebar.MenuItem>
                             <WexSidebar.MenuButton
                               isActive={selectedCategory === "archive"}
                               onClick={() => setSelectedCategory("archive")}
-                              className="h-[31px] min-h-[31px] whitespace-normal px-3 py-[6px] data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:font-normal"
+                              className="h-[32px] min-h-[32px] whitespace-normal px-3 py-1 rounded-md data-[active=true]:bg-[#0058a3] data-[active=true]:text-white data-[active=true]:font-semibold"
                             >
-                              Archive
+                              <div className="flex items-center gap-2 w-full">
+                                <Archive className="h-5 w-5 shrink-0" />
+                                <span className="text-sm tracking-[0.07px]">Archived</span>
+                              </div>
+                            </WexSidebar.MenuButton>
+                          </WexSidebar.MenuItem>
+
+                          <WexSidebar.GroupLabel className="px-3 py-[7px] mt-6">
+                            <span className="text-xs font-medium text-[#243746] uppercase tracking-[0.24px]">CATEGORIES</span>
+                          </WexSidebar.GroupLabel>
+                          <WexSidebar.MenuItem>
+                            <WexSidebar.MenuButton
+                              isActive={selectedCategory === "Account & Security"}
+                              onClick={() => setSelectedCategory("Account & Security")}
+                              className="h-[32px] min-h-[32px] whitespace-normal px-3 py-1 rounded-md data-[active=true]:bg-[#0058a3] data-[active=true]:text-white data-[active=true]:font-semibold"
+                            >
+                              <div className="flex items-center gap-2 w-full">
+                                <Shield className="h-5 w-5 shrink-0" />
+                                <span className="text-sm tracking-[0.07px]">Account & Security</span>
+                              </div>
+                            </WexSidebar.MenuButton>
+                          </WexSidebar.MenuItem>
+                          <WexSidebar.MenuItem>
+                            <WexSidebar.MenuButton
+                              isActive={selectedCategory === "Money Activity"}
+                              onClick={() => setSelectedCategory("Money Activity")}
+                              className="h-[32px] min-h-[32px] whitespace-normal px-3 py-1 rounded-md data-[active=true]:bg-[#0058a3] data-[active=true]:text-white data-[active=true]:font-semibold"
+                            >
+                              <div className="flex items-center gap-2 w-full">
+                                <DollarSign className="h-5 w-5 shrink-0" />
+                                <span className="text-sm tracking-[0.07px]">Money Activity</span>
+                              </div>
+                            </WexSidebar.MenuButton>
+                          </WexSidebar.MenuItem>
+                          <WexSidebar.MenuItem>
+                            <WexSidebar.MenuButton
+                              isActive={selectedCategory === "Tax & Statements"}
+                              onClick={() => setSelectedCategory("Tax & Statements")}
+                              className="h-[32px] min-h-[32px] whitespace-normal px-3 py-1 rounded-md data-[active=true]:bg-[#0058a3] data-[active=true]:text-white data-[active=true]:font-semibold"
+                            >
+                              <div className="flex items-center gap-2 w-full">
+                                <FileSpreadsheet className="h-5 w-5 shrink-0" />
+                                <span className="text-sm tracking-[0.07px]">Tax & Statements</span>
+                              </div>
                             </WexSidebar.MenuButton>
                           </WexSidebar.MenuItem>
                         </WexSidebar.Menu>
@@ -1156,10 +1208,13 @@ export default function MessageCenter() {
                   </WexSidebar.Content>
                 </WexSidebar>
 
-                {/* Main Content Area */}
+                {/* Main Content Area - Flex container ready for two-panel design */}
                 <WexSidebar.Inset className="flex-1 min-w-0 bg-wex-card-bg md:peer-data-[variant=inset]:!m-0 md:peer-data-[variant=inset]:!rounded-none md:peer-data-[variant=inset]:!shadow-none md:peer-data-[variant=inset]:!ml-0 md:peer-data-[state=collapsed]:peer-data-[variant=inset]:!ml-0">
-                  <div className="flex h-full flex-col">
-                    <div className="p-4 sm:p-6">
+                  {/* Flex wrapper for two-panel layout (table + detail panel) */}
+                  <div className="flex h-full w-full">
+                    {/* Table Container - Full width when no message selected, shrinks when detail panel is visible */}
+                    <div className="flex-1 min-w-0 flex flex-col">
+                      <div className="p-4 sm:p-6 flex-1 flex flex-col">
                 {filteredMessages.length === 0 ? (
                   /* Empty State */
                   <WexEmpty className="border-0 py-12">
@@ -1190,18 +1245,25 @@ export default function MessageCenter() {
                             if (target.closest('button') || target.closest('[role="checkbox"]') || target.closest('input[type="checkbox"]')) {
                               return;
                             }
-                            handleMessageClick(message);
+                            // In mobile view, open modal; desktop uses side panel
+                            if (isMobile) {
+                              setSelectedMessage(message);
+                              setIsModalOpen(true);
+                              if (!message.isRead) {
+                                updateMessage(message.id, { isRead: true });
+                              }
+                            } else {
+                              handleMessageClick(message);
+                            }
                           }}
                         >
                           <WexCard.Content className="space-y-3 p-4">
                             <div className="flex items-start justify-between gap-3">
                               <div className="flex flex-1 items-start gap-2">
-                                {message.hasAttachment ? (
+                                {message.hasAttachment && (
                                   <Paperclip className="mt-0.5 h-4 w-4 shrink-0 text-[#0058a3]" />
-                                ) : (
-                                  <div className="h-4 w-4 shrink-0" />
                                 )}
-                                <div className="space-y-1">
+                                <div className="space-y-1 flex-1">
                                   <p
                                     className={`text-sm tracking-[-0.084px] ${
                                       !message.isRead
@@ -1215,6 +1277,11 @@ export default function MessageCenter() {
                                 </div>
                               </div>
                               <div className="flex items-center gap-1">
+                                {(message.subject.toLowerCase().includes("warning") || 
+                                  message.subject.toLowerCase().includes("alert") ||
+                                  message.subject.toLowerCase().includes("action required")) && (
+                                  <AlertTriangle className="h-4 w-4 shrink-0 text-[#c8102e]" />
+                                )}
                                 <button
                                   onClick={(e) => handleToggleStar(message, e)}
                                   className="cursor-pointer rounded-full p-2 hover:bg-gray-100"
@@ -1232,35 +1299,34 @@ export default function MessageCenter() {
                               </div>
                             </div>
 
-                            <div className="flex flex-wrap items-center gap-2">
-                              <WexBadge
-                                className="rounded-md px-2 py-1 text-xs font-bold whitespace-nowrap"
-                                style={{
-                                  backgroundColor: message.categoryColor,
-                                  color: message.categoryTextColor,
-                                }}
-                              >
-                                {message.category}
-                              </WexBadge>
-                            </div>
-
                             <div className="flex flex-wrap gap-2">
                               <WexButton
                                 variant="ghost"
                                 size="sm"
                                 onClick={(e) => handleToggleReadStatus(message, e)}
-                                className="px-3"
+                                className="px-3 flex items-center gap-2 text-[#0058a3] hover:text-[#0058a3]"
                               >
-                                {message.isRead ? "Mark Unread" : "Mark Read"}
+                                {message.isRead ? (
+                                  <>
+                                    <MailOpen className="h-4 w-4" />
+                                    <span>Mark as Unread</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <MailCheck className="h-4 w-4" />
+                                    <span>Mark Read</span>
+                                  </>
+                                )}
                               </WexButton>
                               {selectedCategory !== "archive" ? (
                                 <WexButton
                                   variant="ghost"
                                   size="sm"
                                   onClick={(e) => handleArchive(message, e)}
-                                  className="px-3"
+                                  className="px-3 flex items-center gap-2 text-[#0058a3] hover:text-[#0058a3]"
                                 >
-                                  Archive
+                                  <Archive className="h-4 w-4" />
+                                  <span>Archive</span>
                                 </WexButton>
                               ) : (
                                 <WexButton
@@ -1279,103 +1345,180 @@ export default function MessageCenter() {
                     </div>
 
                     {/* Desktop Table */}
-                    <div className="hidden md:block">
-                      <div className="overflow-x-auto">
+                    <div className="hidden md:block flex-1 flex flex-col min-h-0">
+                      <div className="overflow-x-auto overflow-y-scroll flex-1" style={{ overflowY: 'scroll' }}>
                         <WexTable>
                           {/* Table Header */}
                           <WexTable.Header>
-                            <WexTable.Row className="border-b border-[#e4e6e9]">
-                              <WexTable.Head className="w-[47px] px-3.5 py-2.5 text-left">
-                                <WexCheckbox
-                                  checked={
-                                    paginatedMessages.length > 0 &&
-                                    paginatedMessages.every((msg) => selectedMessageIds.has(msg.id))
-                                  }
-                                  onCheckedChange={(checked) => {
-                                    if (checked) {
-                                      // Select all messages on current page
-                                      const newSelected = new Set(selectedMessageIds);
-                                      paginatedMessages.forEach((msg) => newSelected.add(msg.id));
-                                      setSelectedMessageIds(newSelected);
-                                    } else {
-                                      // Deselect all messages on current page
-                                      const newSelected = new Set(selectedMessageIds);
-                                      paginatedMessages.forEach((msg) => newSelected.delete(msg.id));
-                                      setSelectedMessageIds(newSelected);
-                                    }
-                                  }}
-                                />
-                              </WexTable.Head>
-                              <WexTable.Head className="w-[47px] px-3.5 py-2.5"></WexTable.Head>
-                              <WexTable.Head className="w-[401px] px-3.5 py-2.5 text-left">
-                                <span className="text-sm font-semibold text-[#243746]">Subject</span>
-                              </WexTable.Head>
-                              <WexTable.Head className="w-[277px] px-3.5 py-2.5 text-left">
-                                <span className="text-sm font-semibold text-[#243746]">Category</span>
-                              </WexTable.Head>
-                              <WexTable.Head className="w-[170px] px-3.5 py-2.5 text-left">
-                                <span className="text-sm font-semibold text-[#243746]">Delivery Date</span>
-                              </WexTable.Head>
-                              <WexTable.Head className="w-[129px] px-3.5 py-2.5 text-right">
-                                <span className="text-sm font-semibold text-[#243746]">Action</span>
-                              </WexTable.Head>
-                            </WexTable.Row>
+                            {selectedMessageIds.size > 0 ? (
+                              // Bulk Action Bar
+                              <WexTable.Row className="border-b border-[#e4e6e9] !bg-[#0058a3]">
+                                <WexTable.Head colSpan={5} className="px-3.5 py-2.5 !bg-[#0058a3] !text-white !h-10 min-h-0">
+                                  <div className="flex items-center gap-4 h-full min-h-0">
+                                    <div className="w-[24px] h-[24px] flex items-center justify-center flex-shrink-0 box-border" style={{ width: '24px', height: '24px', minWidth: '24px', minHeight: '24px', maxWidth: '24px', maxHeight: '24px', boxSizing: 'border-box' }}>
+                                      <WexCheckbox
+                                        checked={
+                                          paginatedMessages.length > 0
+                                            ? paginatedMessages.every((msg) => selectedMessageIds.has(msg.id))
+                                              ? true
+                                              : paginatedMessages.some((msg) => selectedMessageIds.has(msg.id))
+                                              ? "indeterminate"
+                                              : false
+                                            : false
+                                        }
+                                        onCheckedChange={(checked) => {
+                                          if (checked) {
+                                            // Select all messages on current page
+                                            const newSelected = new Set(selectedMessageIds);
+                                            paginatedMessages.forEach((msg) => newSelected.add(msg.id));
+                                            setSelectedMessageIds(newSelected);
+                                          } else {
+                                            // Deselect all messages on current page
+                                            const newSelected = new Set(selectedMessageIds);
+                                            paginatedMessages.forEach((msg) => newSelected.delete(msg.id));
+                                            setSelectedMessageIds(newSelected);
+                                          }
+                                        }}
+                                        className="border-white data-[state=checked]:bg-white data-[state=checked]:border-white data-[state=indeterminate]:bg-white data-[state=indeterminate]:border-white [&>svg]:text-[#0058a3] h-5 w-5 flex-shrink-0"
+                                        style={{ width: '20px', height: '20px', minWidth: '20px', minHeight: '20px', maxWidth: '20px', maxHeight: '20px', boxSizing: 'border-box' }}
+                                      />
+                                    </div>
+                                    <span className="text-sm font-normal text-white tracking-[-0.084px] shrink-0">
+                                      {selectedMessageIds.size} {selectedMessageIds.size === 1 ? 'Message' : 'Messages'} Selected
+                                    </span>
+                                    <div className="flex items-center gap-0 shrink-0">
+                                      <button
+                                        onClick={handleBulkMarkUnread}
+                                        className="flex items-center gap-[7px] px-[10.5px] py-0.5 rounded-[6px] text-sm font-medium text-white hover:bg-white/20 transition-colors h-auto"
+                                      >
+                                        <MailOpen className="h-[14px] w-[14px]" />
+                                        <span>Mark Unread</span>
+                                      </button>
+                                      <button
+                                        onClick={handleBulkArchive}
+                                        className="flex items-center gap-[8px] px-[10.5px] py-0.5 rounded-[6px] text-sm font-medium text-white hover:bg-white/20 transition-colors ml-0 h-auto"
+                                      >
+                                        <Archive className="h-[14px] w-[14px]" />
+                                        <span>Archive</span>
+                                      </button>
+                                    </div>
+                                  </div>
+                                </WexTable.Head>
+                              </WexTable.Row>
+                            ) : (
+                              // Regular Table Header
+                              <WexTable.Row className="border-b border-[#e4e6e9] bg-[#f7f7f7]">
+                                <WexTable.Head className="w-[47px] px-3.5 py-2.5 text-left bg-[#f7f7f7] flex-shrink-0" style={{ width: '47px', minWidth: '47px', maxWidth: '47px' }}>
+                                  <div className="w-[24px] h-[24px] flex items-center justify-center flex-shrink-0 box-border" style={{ width: '24px', height: '24px', minWidth: '24px', minHeight: '24px', maxWidth: '24px', maxHeight: '24px', boxSizing: 'border-box' }}>
+                                    <WexCheckbox
+                                      checked={
+                                        paginatedMessages.length > 0
+                                          ? paginatedMessages.every((msg) => selectedMessageIds.has(msg.id))
+                                            ? true
+                                            : paginatedMessages.some((msg) => selectedMessageIds.has(msg.id))
+                                            ? "indeterminate"
+                                            : false
+                                          : false
+                                      }
+                                      onCheckedChange={(checked) => {
+                                        if (checked) {
+                                          // Select all messages on current page
+                                          const newSelected = new Set(selectedMessageIds);
+                                          paginatedMessages.forEach((msg) => newSelected.add(msg.id));
+                                          setSelectedMessageIds(newSelected);
+                                        } else {
+                                          // Deselect all messages on current page
+                                          const newSelected = new Set(selectedMessageIds);
+                                          paginatedMessages.forEach((msg) => newSelected.delete(msg.id));
+                                          setSelectedMessageIds(newSelected);
+                                        }
+                                      }}
+                                      className="h-5 w-5 flex-shrink-0"
+                                      style={{ width: '20px', height: '20px', minWidth: '20px', minHeight: '20px', maxWidth: '20px', maxHeight: '20px', boxSizing: 'border-box' }}
+                                    />
+                                  </div>
+                                </WexTable.Head>
+                                <WexTable.Head className="w-[40px] px-3.5 py-2.5 text-center bg-[#f7f7f7] flex-shrink-0" style={{ width: '40px', minWidth: '40px', maxWidth: '40px' }}>
+                                </WexTable.Head>
+                                <WexTable.Head className="px-3.5 py-2.5 text-left bg-[#f7f7f7] min-w-0">
+                                  <span className="text-sm font-semibold text-[#243746]">Subject</span>
+                                </WexTable.Head>
+                                <WexTable.Head className="px-3.5 py-2.5 text-left bg-[#f7f7f7] min-w-0">
+                                  <span className="text-sm font-semibold text-[#243746]">Date</span>
+                                </WexTable.Head>
+                                <WexTable.Head className="w-[129px] px-3.5 py-2.5 text-right bg-[#f7f7f7] flex-shrink-0" style={{ width: '129px', minWidth: '129px', maxWidth: '129px' }}>
+                                  <span className="text-sm font-semibold text-[#243746]">Action</span>
+                                </WexTable.Head>
+                              </WexTable.Row>
+                            )}
                           </WexTable.Header>
                           {/* Table Body */}
                           <WexTable.Body>
                             {paginatedMessages.map((message) => (
                             <WexTable.Row
                               key={message.id}
-                              className="cursor-pointer border-b border-[#e4e6e9] hover:bg-gray-50"
+                              className={cn(
+                                "cursor-pointer border-b border-[#e4e6e9] hover:bg-gray-50",
+                                selectedMessage?.id === message.id && "bg-[#fbfbfb]"
+                              )}
                               onClick={(e) => {
-                                // Don't open modal if clicking on checkbox, star button, or dropdown menu
+                                // Don't open modal if clicking on checkbox or dropdown menu
                                 const target = e.target as HTMLElement;
-                                if (target.closest('button') || target.closest('[role="checkbox"]') || target.closest('input[type="checkbox"]') || target.closest('[role="menu"]')) {
+                                if (target.closest('[role="checkbox"]') || target.closest('input[type="checkbox"]') || target.closest('[role="menu"]')) {
                                   return;
                                 }
                                 handleMessageClick(message);
                               }}
                             >
-                              <WexTable.Cell className="px-3.5 py-2.5">
-                                <WexCheckbox
-                                  checked={selectedMessageIds.has(message.id)}
-                                  onCheckedChange={(checked) => {
-                                    const newSelected = new Set(selectedMessageIds);
-                                    if (checked) {
-                                      newSelected.add(message.id);
-                                    } else {
-                                      newSelected.delete(message.id);
-                                    }
-                                    setSelectedMessageIds(newSelected);
-                                  }}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                  }}
-                                />
-                              </WexTable.Cell>
-                              <WexTable.Cell className="px-3.5 py-2.5">
-                                <button
-                                  onClick={(e) => handleToggleStar(message, e)}
-                                  className="cursor-pointer hover:opacity-80 transition-opacity"
-                                  aria-label={message.isStarred ? "Unstar message" : "Star message"}
-                                >
-                                  <Star
-                                    className={cn(
-                                      "h-4 w-4",
-                                      message.isStarred
-                                        ? "fill-yellow-400 text-yellow-400"
-                                        : "text-[#a5aeb4]"
-                                    )}
+                              <WexTable.Cell className="px-3.5 py-2.5" style={{ width: '47px', minWidth: '47px', maxWidth: '47px' }}>
+                                <div className="w-[24px] h-[24px] flex items-center justify-center box-border" style={{ width: '24px', height: '24px', minWidth: '24px', minHeight: '24px', maxWidth: '24px', maxHeight: '24px', boxSizing: 'border-box' }}>
+                                  <WexCheckbox
+                                    checked={selectedMessageIds.has(message.id)}
+                                    onCheckedChange={(checked) => {
+                                      const newSelected = new Set(selectedMessageIds);
+                                      if (checked) {
+                                        newSelected.add(message.id);
+                                      } else {
+                                        newSelected.delete(message.id);
+                                      }
+                                      setSelectedMessageIds(newSelected);
+                                    }}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                    }}
+                                    className="h-5 w-5 flex-shrink-0"
+                                    style={{ width: '20px', height: '20px', minWidth: '20px', minHeight: '20px', maxWidth: '20px', maxHeight: '20px', boxSizing: 'border-box' }}
                                   />
-                                </button>
+                                </div>
+                              </WexTable.Cell>
+                              <WexTable.Cell className="px-3.5 py-2.5 text-center" style={{ width: '40px', minWidth: '40px', maxWidth: '40px' }}>
+                                <div className="flex items-center justify-center">
+                                  <WexButton
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-5 w-5 shrink-0"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleToggleStar(message, e);
+                                    }}
+                                    aria-label={message.isStarred ? "Unstar message" : "Star message"}
+                                  >
+                                    <Star
+                                      className={cn(
+                                        "h-4 w-4",
+                                        message.isStarred
+                                          ? "fill-[#fbbf24] text-[#fbbf24]"
+                                          : "text-[#9ca3af] hover:text-[#fbbf24]"
+                                      )}
+                                    />
+                                  </WexButton>
+                                </div>
                               </WexTable.Cell>
                               <WexTable.Cell className="px-3.5 py-2.5">
                                 <div className="flex items-center gap-2">
                                   {message.hasAttachment ? (
-                                    <Paperclip className="h-4 w-4 shrink-0 text-[#0058a3]" />
-                                  ) : (
-                                    <div className="h-4 w-4 shrink-0" />
-                                  )}
+                                    <Paperclip className="h-3.5 w-3.5 shrink-0 text-[#0058a3]" />
+                                  ) : null}
                                   <span
                                     className={`text-sm tracking-[-0.084px] ${
                                       !message.isRead
@@ -1385,18 +1528,14 @@ export default function MessageCenter() {
                                   >
                                     {message.subject}
                                   </span>
+                                  {(message.subject.toLowerCase().includes("warning") || 
+                                     message.subject.toLowerCase().includes("alert") ||
+                                     message.subject.toLowerCase().includes("action required")) && (
+                                    <div className="flex items-center shrink-0 ml-3 mr-12">
+                                      <AlertTriangle className="h-6 w-6 text-[#c8102e]" />
+                                    </div>
+                                  )}
                                 </div>
-                              </WexTable.Cell>
-                              <WexTable.Cell className="px-3.5 py-2.5 min-w-[200px]">
-                                <WexBadge
-                                  className="rounded-md px-2 py-1 text-xs font-bold whitespace-nowrap"
-                                  style={{
-                                    backgroundColor: message.categoryColor,
-                                    color: message.categoryTextColor,
-                                  }}
-                                >
-                                  {message.category}
-                                </WexBadge>
                               </WexTable.Cell>
                               <WexTable.Cell className="px-3.5 py-2.5">
                                 <span
@@ -1406,10 +1545,10 @@ export default function MessageCenter() {
                                       : "font-normal text-[#243746]"
                                   }`}
                                 >
-                                  {message.deliveryDate}
+                                  {selectedMessage ? message.deliveryDate.split(' ')[0] : message.deliveryDate}
                                 </span>
                               </WexTable.Cell>
-                              <WexTable.Cell className="px-3.5 py-2.5 text-right">
+                              <WexTable.Cell className="px-3.5 py-2.5 text-right" style={{ width: '129px', minWidth: '129px', maxWidth: '129px' }}>
                                 <WexDropdownMenu>
                                   <WexDropdownMenu.Trigger asChild>
                                     <WexButton
@@ -1432,7 +1571,7 @@ export default function MessageCenter() {
                                               onClick={(e) => handleToggleReadStatus(message, e)}
                                               className="flex cursor-pointer items-center gap-[7px] rounded-[4px] px-[10.5px] py-[7px] text-sm text-[#243746] outline-none hover:bg-gray-50 focus:bg-gray-50"
                                             >
-                                              <Inbox className="h-3.5 w-3.5 shrink-0 text-[#243746]" />
+                                              <MailCheck className="h-[14px] w-[14px] shrink-0 text-[#243746]" />
                                               <span>Mark as read</span>
                                             </WexDropdownMenu.Item>
                                           )}
@@ -1441,15 +1580,15 @@ export default function MessageCenter() {
                                               onClick={(e) => handleToggleReadStatus(message, e)}
                                               className="flex cursor-pointer items-center gap-[7px] rounded-[4px] px-[10.5px] py-[7px] text-sm text-[#243746] outline-none hover:bg-gray-50 focus:bg-gray-50"
                                             >
-                                              <Inbox className="h-3.5 w-3.5 shrink-0 text-[#243746]" />
+                                              <MailOpen className="h-[14px] w-[14px] shrink-0 text-[#243746]" />
                                               <span>Mark as unread</span>
                                             </WexDropdownMenu.Item>
                                           )}
                                           <WexDropdownMenu.Item
                                             onClick={(e) => handleArchive(message, e)}
-                                            className="flex cursor-pointer items-center gap-[7px] rounded-[4px] px-[10.5px] py-[7px] text-sm text-[#243746] outline-none hover:bg-gray-50 focus:bg-gray-50"
+                                            className="flex cursor-pointer items-center gap-[8px] rounded-[4px] px-[10.5px] py-[7px] text-sm text-[#243746] outline-none hover:bg-gray-50 focus:bg-gray-50"
                                           >
-                                            <Trash2 className="h-3.5 w-3.5 shrink-0 text-[#243746]" />
+                                            <Archive className="h-[14px] w-[14px] shrink-0 text-[#243746]" />
                                             <span>Archive</span>
                                           </WexDropdownMenu.Item>
                                         </>
@@ -1459,7 +1598,7 @@ export default function MessageCenter() {
                                           onClick={(e) => handleUnarchive(message, e)}
                                           className="flex cursor-pointer items-center gap-[7px] rounded-[4px] px-[10.5px] py-[7px] text-sm text-[#243746] outline-none hover:bg-gray-50 focus:bg-gray-50"
                                         >
-                                          <Inbox className="h-3.5 w-3.5 shrink-0 text-[#7c858e]" />
+                                          <Inbox className="h-[14px] w-[14px] shrink-0 text-[#7c858e]" />
                                           <span>Move to inbox</span>
                                         </WexDropdownMenu.Item>
                                       )}
@@ -1565,7 +1704,75 @@ export default function MessageCenter() {
                     </div>
                   </div>
                     )}
+                      </div>
                     </div>
+                    {/* Right Panel - Detail View - Desktop Only */}
+                    {selectedMessage && !isMobile && (
+                      <div className="w-[400px] shrink-0 border-l border-wex-card-border bg-white rounded-br-2xl rounded-tr-2xl flex flex-col h-full">
+                        <div className="flex flex-col gap-3 p-6 flex-1 overflow-y-auto">
+                          {/* Header with alert icon, subject, and close button */}
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-3 flex-1 min-w-0">
+                              {(selectedMessage.subject.toLowerCase().includes("warning") || 
+                                selectedMessage.subject.toLowerCase().includes("alert") ||
+                                selectedMessage.subject.toLowerCase().includes("action required")) && (
+                                <AlertTriangle className="h-6 w-6 shrink-0 text-[#c8102e]" />
+                              )}
+                              <h3 className="text-sm font-semibold text-[#1d2c38] tracking-[-0.084px] leading-6 flex-1 min-w-0">
+                                {selectedMessage.subject}
+                              </h3>
+                            </div>
+                            <WexButton
+                              variant="ghost"
+                              size="icon"
+                              className="h-6 w-6 shrink-0"
+                              onClick={handleCloseDetailPanel}
+                              aria-label="Close detail panel"
+                            >
+                              <X className="h-3.5 w-3.5" />
+                            </WexButton>
+                          </div>
+                          
+                          {/* Date sent */}
+                          <div className="text-sm text-[#515f6b] tracking-[-0.084px] leading-6">
+                            <span>Date sent: </span>
+                            <span className="text-[#1d2c38]">
+                              {selectedMessage.deliveryDate.split(' ')[0]}
+                            </span>
+                          </div>
+                          
+                          {/* Attachment */}
+                          {selectedMessage.hasAttachment && (
+                            <div className="border border-[#edeff0] rounded-md h-[68px] px-4 bg-white flex items-center">
+                              <div className="flex items-center gap-4 w-full">
+                                <FileText className="h-[22px] w-[22px] text-[#0058a3] shrink-0" />
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-sm font-semibold text-[#0058a3] tracking-[-0.084px] leading-6 truncate">
+                                    {selectedMessage.attachmentFileName || "Attachment.pdf"}
+                                  </p>
+                                </div>
+                                <WexButton
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-6 w-6 shrink-0"
+                                  aria-label="Download attachment"
+                                >
+                                  <Download className="h-5 w-5 text-[#1d2c38]" />
+                                </WexButton>
+                              </div>
+                            </div>
+                          )}
+                          
+                          {/* Divider */}
+                          <WexSeparator />
+                          
+                          {/* Message body */}
+                          <div className="text-sm text-[#1d2c38] tracking-[-0.084px] leading-6">
+                            {selectedMessage.body || "Please see attachment."}
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </WexSidebar.Inset>
               </div>
@@ -1576,58 +1783,70 @@ export default function MessageCenter() {
 
       <ConsumerFooter />
 
-      {/* Message Detail Modal */}
-      <WexDialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <WexDialog.Content className="w-full max-w-lg p-6 md:w-[442px]">
-          <div className="space-y-0">
-            {/* Header */}
-            <div className="space-y-0 mb-4">
-              <WexDialog.Title className="text-base font-semibold text-[#1d2c38] tracking-[-0.176px] leading-6 mb-0">
-                {selectedMessage?.subject}
-              </WexDialog.Title>
-              <p className="text-sm text-[#1d2c38] tracking-[-0.084px] leading-6 mt-3">
-                {selectedMessage?.deliveryDate}
-              </p>
-              <WexSeparator className="my-3.5" />
-            </div>
+      {/* Message Detail Modal - Mobile Only */}
+      {isMobile && (
+        <WexDialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+          <WexDialog.Content 
+            position="bottom"
+            className="md:hidden w-[375px] max-w-[375px] p-6 rounded-2xl border border-[#edeff0] overflow-hidden flex flex-col max-h-[90vh]"
+          >
+            <div className="flex flex-col flex-1 min-h-0 overflow-y-auto">
+              {/* Header */}
+              <div className="space-y-0 mb-0 flex-shrink-0">
+                <WexDialog.Title className="text-base font-semibold text-[#1d2c38] tracking-[-0.176px] leading-6 mb-0 break-words">
+                  {selectedMessage?.subject}
+                </WexDialog.Title>
+                <p className="text-sm text-[#1d2c38] tracking-[-0.084px] leading-6 mt-3 whitespace-nowrap">
+                  {selectedMessage?.deliveryDate}
+                </p>
+                <WexSeparator className="my-3.5" />
+              </div>
 
-            {/* Content */}
-            <div className="space-y-0 min-h-[173px]">
-              <p className="text-sm text-[#1d2c38] tracking-[-0.084px] leading-6 mb-4">
-                {selectedMessage?.body || "Please see attachment."}
-              </p>
-              
-              {selectedMessage?.hasAttachment && (
-                <div className="border border-[#edeff0] rounded-md h-[68px] px-4 py-0 bg-white flex items-center">
-                  <div className="flex items-center gap-4 w-full">
-                    <FileText className="h-[22px] w-[22px] text-[#0058a3] shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-[#0058a3] tracking-[-0.084px] leading-6 truncate">
-                        {selectedMessage.attachmentFileName || "Attachment.pdf"}
-                      </p>
+              {/* Content */}
+              <div className="space-y-5 mt-0 flex-1 min-h-0">
+                <p className="text-sm text-[#1d2c38] tracking-[-0.084px] leading-6 break-words">
+                  {selectedMessage?.body || "Please see attachment."}
+                </p>
+                
+                {selectedMessage?.hasAttachment && (
+                  <div className="border border-[#edeff0] rounded-md h-[68px] px-4 bg-white flex items-center flex-shrink-0">
+                    <div className="flex items-center gap-4 w-full min-w-0">
+                      <FileText className="h-[22px] w-[22px] text-[#0058a3] shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-[#0058a3] tracking-[-0.084px] leading-6 truncate">
+                          {selectedMessage.attachmentFileName || "Attachment.pdf"}
+                        </p>
+                      </div>
+                      <WexButton
+                        variant="ghost"
+                        size="icon"
+                        className="h-[22px] w-[22px] shrink-0"
+                        aria-label="Download attachment"
+                      >
+                        <Download className="h-[22px] w-[22px] text-[#1d2c38]" />
+                      </WexButton>
                     </div>
-                    <WexButton
-                      variant="ghost"
-                      size="icon"
-                      className="h-[22px] w-[22px] shrink-0"
-                      aria-label="Download attachment"
-                    >
-                      <Download className="h-[22px] w-[22px] text-[#1d2c38]" />
-                    </WexButton>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
 
-            {/* Footer */}
-            <div className="flex justify-end pt-4 mt-4">
-              <WexButton intent="primary" onClick={handleCloseModal} className="px-3 py-2">
-                Close
-              </WexButton>
+                {/* Footer - Close Button */}
+                <div className="w-full pt-0 flex-shrink-0">
+                  <WexButton 
+                    intent="primary" 
+                    onClick={() => {
+                      setIsModalOpen(false);
+                      setSelectedMessage(null);
+                    }} 
+                    className="w-full px-3 py-2"
+                  >
+                    Close
+                  </WexButton>
+                </div>
+              </div>
             </div>
-          </div>
-        </WexDialog.Content>
-      </WexDialog>
+          </WexDialog.Content>
+        </WexDialog>
+      )}
     </div>
   );
 }
