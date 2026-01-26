@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { WexButton } from "@/components/wex/wex-button";
 import { WexCard } from "@/components/wex/wex-card";
-import { WexBadge } from "@/components/wex/wex-badge";
 import { WexCheckbox } from "@/components/wex/wex-checkbox";
 import { WexSelect } from "@/components/wex/wex-select";
 import { WexSeparator } from "@/components/wex/wex-separator";
@@ -25,18 +24,14 @@ import {
   Settings,
   Inbox,
   Download,
-  Trash2,
   AlertTriangle,
-  MessageSquare,
   Archive,
   Shield,
   DollarSign,
-  Receipt,
   Mails,
   Mail,
   MailCheck,
   MailOpen,
-  SquareMinus,
   X,
   FileSpreadsheet,
 } from "lucide-react";
@@ -844,10 +839,6 @@ export default function MessageCenter() {
     setSelectedMessage(null);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedMessage(null);
-  };
 
   const handleToggleReadStatus = (message: Message, e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent row click
@@ -907,9 +898,6 @@ export default function MessageCenter() {
     return messages.filter((message) => !message.isRead && !message.isArchived).length;
   }, [messages]);
 
-  const recentlyViewedCount = useMemo(() => {
-    return messages.filter((message) => message.isRead && !message.isArchived).length;
-  }, [messages]);
 
   const filteredMessages = useMemo(() => {
     if (selectedCategory === null) {

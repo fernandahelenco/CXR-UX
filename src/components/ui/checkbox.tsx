@@ -44,12 +44,14 @@ const Checkbox = React.forwardRef<
   CheckboxProps
 >(({ className, checkboxSize, checked, ...props }, ref) => {
   const isIndeterminate = checked === "indeterminate";
+  
   return (
     <CheckboxPrimitive.Root
       ref={ref}
       className={cn(
         checkboxVariants({ checkboxSize }),
         isIndeterminate && "data-[state=indeterminate]:bg-wex-checkbox-checked-bg data-[state=indeterminate]:border-wex-checkbox-checked-bg",
+        checked === true && "!bg-[#0058a3] !border-[#0058a3]",
         "flex-shrink-0",
         className
       )}
@@ -72,7 +74,7 @@ const Checkbox = React.forwardRef<
         <CheckboxPrimitive.Indicator
           className={cn("grid place-content-center")}
         >
-          <Check className={cn(checkIconSizes[checkboxSize || "md"], "!text-[#0058a3]")} />
+          <Check className={cn(checkIconSizes[checkboxSize || "md"], "text-white")} />
         </CheckboxPrimitive.Indicator>
       )}
     </CheckboxPrimitive.Root>
