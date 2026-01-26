@@ -1,0 +1,1 @@
+import{j as e,b8 as n,i}from"./index-DR-Vk8Ta.js";function r({className:a,...s}){return e.jsx(n,{role:"status","aria-label":"Loading",className:i("size-4 animate-spin",a),...s})}const o=r;export{o as W};
