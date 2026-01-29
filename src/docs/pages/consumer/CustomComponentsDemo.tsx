@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { ConsumerNavigation } from "./ConsumerNavigation";
 import { ConsumerFooter } from "./Footer";
-import { Stepper, type Step, Workspace } from "./components";
+import { Stepper, type Step, Workspace, FloatLabelSelect } from "./components";
 import { SelectCard, SelectCardGroup, type SelectCardProps } from "./components";
 import { WexCard } from "@/components/wex";
 import { WexSeparator } from "@/components/wex";
 import { WexButton } from "@/components/wex";
+import { WexSelect } from "@/components/wex";
 
 /**
  * Custom Components Demo Page
@@ -69,6 +70,8 @@ export default function CustomComponentsDemo() {
   const [checkboxValues, setCheckboxValues] = useState<string[]>([]);
   const [radioValue, setRadioValue] = useState<string>("");
   const [isWorkspaceOpen, setIsWorkspaceOpen] = useState(false);
+  const [relationship, setRelationship] = useState<string>("");
+  const [emptyStateRelationship, setEmptyStateRelationship] = useState<string>("");
 
   return (
     <div className="min-h-screen bg-[#F1FAFE]">
@@ -197,6 +200,123 @@ export default function CustomComponentsDemo() {
                 disabled={true}
               />
             </div>
+          </div>
+        </WexCard>
+
+        <WexSeparator />
+
+        {/* FloatLabelSelect Component Demo */}
+        <WexCard className="p-6">
+          <div className="mb-6">
+            <h2 className="text-2xl font-semibold text-foreground mb-2">
+              FloatLabelSelect Component
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              A dropdown select with a floating label that animates from inside the select to above it when a value is selected.
+            </p>
+          </div>
+
+          <div className="space-y-8">
+            {/* States Demo */}
+            <div>
+              <h3 className="text-lg font-semibold text-foreground mb-4">
+                States
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl">
+                {/* Empty State */}
+                <div>
+                  <p className="text-sm font-medium text-foreground mb-3">Empty State (Interactive)</p>
+                  <FloatLabelSelect
+                    label="Relationship"
+                    value={emptyStateRelationship}
+                    onValueChange={setEmptyStateRelationship}
+                  >
+                    <WexSelect.Item value="spouse">Spouse</WexSelect.Item>
+                    <WexSelect.Item value="child">Child</WexSelect.Item>
+                    <WexSelect.Item value="parent">Parent</WexSelect.Item>
+                    <WexSelect.Item value="dependent">Dependent</WexSelect.Item>
+                  </FloatLabelSelect>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Value: {emptyStateRelationship || "None"}
+                  </p>
+                </div>
+
+                {/* Filled State */}
+                <div>
+                  <p className="text-sm font-medium text-foreground mb-3">Filled State (Interactive)</p>
+                  <FloatLabelSelect
+                    label="Relationship"
+                    value={relationship}
+                    onValueChange={setRelationship}
+                  >
+                    <WexSelect.Item value="spouse">Spouse</WexSelect.Item>
+                    <WexSelect.Item value="child">Child</WexSelect.Item>
+                    <WexSelect.Item value="parent">Parent</WexSelect.Item>
+                    <WexSelect.Item value="dependent">Dependent</WexSelect.Item>
+                  </FloatLabelSelect>
+                </div>
+              </div>
+            </div>
+
+            {/* Sizes Demo */}
+            <div>
+              <h3 className="text-lg font-semibold text-foreground mb-4">
+                Sizes
+              </h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Three sizes for different contexts.
+              </p>
+              <div className="space-y-4 max-w-md">
+                <div>
+                  <p className="text-xs text-muted-foreground mb-2">Small</p>
+                  <FloatLabelSelect
+                    label="Relationship"
+                    value={relationship}
+                    onValueChange={setRelationship}
+                    size="sm"
+                  >
+                    <WexSelect.Item value="spouse">Spouse</WexSelect.Item>
+                    <WexSelect.Item value="child">Child</WexSelect.Item>
+                    <WexSelect.Item value="parent">Parent</WexSelect.Item>
+                    <WexSelect.Item value="dependent">Dependent</WexSelect.Item>
+                  </FloatLabelSelect>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground mb-2">Medium (Default)</p>
+                  <FloatLabelSelect
+                    label="Relationship"
+                    value={relationship}
+                    onValueChange={setRelationship}
+                    size="md"
+                  >
+                    <WexSelect.Item value="spouse">Spouse</WexSelect.Item>
+                    <WexSelect.Item value="child">Child</WexSelect.Item>
+                    <WexSelect.Item value="parent">Parent</WexSelect.Item>
+                    <WexSelect.Item value="dependent">Dependent</WexSelect.Item>
+                  </FloatLabelSelect>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground mb-2">Large</p>
+                  <FloatLabelSelect
+                    label="Relationship"
+                    value={relationship}
+                    onValueChange={setRelationship}
+                    size="lg"
+                  >
+                    <WexSelect.Item value="spouse">Spouse</WexSelect.Item>
+                    <WexSelect.Item value="child">Child</WexSelect.Item>
+                    <WexSelect.Item value="parent">Parent</WexSelect.Item>
+                    <WexSelect.Item value="dependent">Dependent</WexSelect.Item>
+                  </FloatLabelSelect>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6 p-4 bg-muted rounded-md">
+            <p className="text-sm text-muted-foreground">
+              Selected Value: <strong className="text-foreground">{relationship || "None"}</strong>
+            </p>
           </div>
         </WexCard>
 

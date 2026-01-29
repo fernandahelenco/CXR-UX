@@ -1778,7 +1778,7 @@ export default function MessageCenter() {
             position="bottom"
             className="md:hidden w-[375px] max-w-[375px] p-6 rounded-2xl border border-[#edeff0] overflow-hidden flex flex-col max-h-[90vh]"
           >
-            <div className="flex flex-col flex-1 min-h-0 overflow-y-auto">
+            <div className="flex flex-col flex-1 min-h-0 overflow-y-hidden">
               {/* Header */}
               <div className="space-y-0 mb-0 flex-shrink-0">
                 <WexDialog.Title className="text-base font-semibold text-[#1d2c38] tracking-[-0.176px] leading-6 mb-0 break-words">
