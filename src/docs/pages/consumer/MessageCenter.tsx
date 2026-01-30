@@ -1011,6 +1011,7 @@ export default function MessageCenter() {
                   intent="primary"
                   variant="outline"
                   className="flex items-center gap-2 border-[#0058a3] text-[#0058a3] md:h-[44px]"
+                  onClick={() => navigate("/account-documents")}
                 >
                   <FileText className="h-4 w-4" />
                   Account Documents

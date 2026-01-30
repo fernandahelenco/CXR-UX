@@ -248,6 +248,17 @@ export const navigationItems = [
     ]
   },
   { label: "Claims", href: "/claims", icon: "receipt", hasDropdown: false },
-  { label: "Resources", href: "/resources", icon: "file-text", hasDropdown: false },
+  { 
+    label: "Resources", 
+    href: "#", 
+    icon: "file-text", 
+    hasDropdown: true,
+    subItems: [
+      { label: "Resources", href: "/resources" },
+      { label: "Forms & Documents", href: "/resources?section=forms" },
+      { label: "Videos & Guides", href: "/resources?section=videos" },
+      { label: "FAQs", href: "/resources?section=faqs" },
+    ]
+  },
 ];
 
