@@ -1,1 +1,0 @@
-import{j as s,i as r}from"./index-DR-Vk8Ta.js";function a({title:t,description:e,children:n,className:o}){return s.jsxs("section",{className:r(o),children:[s.jsx("h2",{className:"text-xl font-display font-semibold text-foreground mb-4",children:t}),e&&s.jsx("p",{className:"text-muted-foreground mb-6",children:e}),s.jsx("div",{children:n})]})}export{a as S};
