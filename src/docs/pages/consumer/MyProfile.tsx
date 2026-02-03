@@ -122,13 +122,15 @@ export default function MyProfile() {
   
   // Sync email toggles with "Go paperless" toggle and turn off paper toggles
   useEffect(() => {
-    setHsaAccountSummaryEmail(goPaperless);
-    setHsaTaxDocumentsEmail(goPaperless);
-    // When "Go paperless" is turned on, turn off paper toggles
-    if (goPaperless) {
-      setHsaAccountSummaryPaper(false);
-      setHsaTaxDocumentsPaper(false);
-    }
+    queueMicrotask(() => {
+      setHsaAccountSummaryEmail(goPaperless);
+      setHsaTaxDocumentsEmail(goPaperless);
+      // When "Go paperless" is turned on, turn off paper toggles
+      if (goPaperless) {
+        setHsaAccountSummaryPaper(false);
+        setHsaTaxDocumentsPaper(false);
+      }
+    });
   }, [goPaperless]);
   
   // Handler for HSA Account Summary Paper toggle
@@ -328,11 +330,13 @@ export default function MyProfile() {
   useEffect(() => {
     const subPage = searchParams.get("subPage");
     const validSubPages: SubPage[] = ["my-profile", "dependents", "beneficiaries", "banking", "debit-card", "login-security", "communication", "report-lost-stolen", "order-replacement-card"];
-    if (subPage && validSubPages.includes(subPage as SubPage)) {
-      setActiveSubPage(subPage as SubPage);
-    } else if (!subPage) {
-      setActiveSubPage("my-profile");
-    }
+    queueMicrotask(() => {
+      if (subPage && validSubPages.includes(subPage as SubPage)) {
+        setActiveSubPage(subPage as SubPage);
+      } else if (!subPage) {
+        setActiveSubPage("my-profile");
+      }
+    });
   }, [searchParams]);
 
   // Verification code resend timer countdown
@@ -707,36 +711,42 @@ export default function MyProfile() {
   // Reset form when modal closes (only if not editing)
   useEffect(() => {
     if (!isAddDependentModalOpen && !editingDependentId) {
-      resetForm();
-      setEditingDependentId(null);
+      queueMicrotask(() => {
+        resetForm();
+        setEditingDependentId(null);
+      });
     }
   }, [isAddDependentModalOpen, editingDependentId]);
 
   // Reset beneficiary form when modal closes (only if not editing)
   useEffect(() => {
     if (!isAddBeneficiaryModalOpen && !editingBeneficiaryId) {
-      resetBeneficiaryForm();
-      setEditingBeneficiaryId(null);
+      queueMicrotask(() => {
+        resetBeneficiaryForm();
+        setEditingBeneficiaryId(null);
+      });
     }
   }, [isAddBeneficiaryModalOpen, editingBeneficiaryId]);
 
   // Reset bank account form and step when modal closes
   useEffect(() => {
     if (!isAddBankAccountModalOpen) {
-      setBankAccountFormData({
-        verificationMethod: "text",
-        verificationCode: "",
-        routingNumber: "",
-        accountNumber: "",
-        confirmAccountNumber: "",
-        accountNickname: "",
-        accountType: "checking",
-        selectedDirectDepositOptions: [],
+      queueMicrotask(() => {
+        setBankAccountFormData({
+          verificationMethod: "text",
+          verificationCode: "",
+          routingNumber: "",
+          accountNumber: "",
+          confirmAccountNumber: "",
+          accountNickname: "",
+          accountType: "checking",
+          selectedDirectDepositOptions: [],
+        });
+        setBankAccountStep("step1");
+        setEditingBankAccountId(null);
+        setShowVerificationCode(false);
+        setResendTimer(0);
       });
-      setBankAccountStep("step1");
-      setEditingBankAccountId(null);
-      setShowVerificationCode(false);
-      setResendTimer(0);
     }
   }, [isAddBankAccountModalOpen]);
 
@@ -753,7 +763,7 @@ export default function MyProfile() {
   // Start timer when verification code is shown
   useEffect(() => {
     if (showVerificationCode && resendTimer === 0) {
-      setResendTimer(45); // 45 seconds
+      queueMicrotask(() => setResendTimer(45)); // 45 seconds
     }
   }, [showVerificationCode]);
 
@@ -1774,7 +1784,7 @@ export default function MyProfile() {
           </>
         );
 
-      case "report-lost-stolen":
+      case "report-lost-stolen": {
         // Get card ID from URL params
         const cardId = searchParams.get("cardId");
         const cardToReport = debitCards.find((card) => card.id === cardId);
@@ -2174,8 +2184,9 @@ export default function MyProfile() {
             </WexDialog>
           </>
         );
+      }
 
-      case "order-replacement-card":
+      case "order-replacement-card": {
         // Get card ID from URL params
         const orderCardId = searchParams.get("cardId");
         const cardToOrder = debitCards.find((card) => card.id === orderCardId);
@@ -2507,6 +2518,7 @@ export default function MyProfile() {
             </WexDialog>
           </>
         );
+      }
 
       case "login-security":
         return (

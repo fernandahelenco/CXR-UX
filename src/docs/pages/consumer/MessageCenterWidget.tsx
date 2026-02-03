@@ -283,7 +283,7 @@ export function MessageCenterWidget() {
       setUnreadCount(event.detail);
     };
 
-    window.addEventListener(UNREAD_COUNT_CHANGED_EVENT as any, handleUnreadCountChange);
+    window.addEventListener(UNREAD_COUNT_CHANGED_EVENT, handleUnreadCountChange as EventListener);
     
     // Refresh messages when component mounts or becomes visible
     const refreshMessages = () => {
@@ -295,7 +295,7 @@ export function MessageCenterWidget() {
     window.addEventListener('focus', refreshMessages);
 
     return () => {
-      window.removeEventListener(UNREAD_COUNT_CHANGED_EVENT as any, handleUnreadCountChange);
+      window.removeEventListener(UNREAD_COUNT_CHANGED_EVENT, handleUnreadCountChange as EventListener);
       window.removeEventListener('focus', refreshMessages);
     };
   }, []);

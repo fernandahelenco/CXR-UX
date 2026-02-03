@@ -95,8 +95,8 @@ export function ConsumerNavigation() {
 
   // Listen for unread count changes
   useEffect(() => {
-    // Set initial count
-    setUnreadCount(getUnreadCount());
+    // Set initial count (defer to avoid sync setState in effect)
+    queueMicrotask(() => setUnreadCount(getUnreadCount()));
 
     // Listen for unread count change events
     const handleUnreadCountChange = (event: CustomEvent) => {
@@ -122,7 +122,7 @@ export function ConsumerNavigation() {
 
   // Close the mobile menu when route changes
   useEffect(() => {
-    setIsMenuOpen(false);
+    queueMicrotask(() => setIsMenuOpen(false));
   }, [location.pathname]);
 
   return (
