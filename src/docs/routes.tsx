@@ -238,7 +238,7 @@ export function DocsRoutes() {
         />
         
         {/* Custom Components Demo route - bypasses DocsLayout */}
-        <Route path="/custom-components-demo" element={withConsumerLight(<CustomComponentsDemo />)} />
+        <Route path="/custom-components-demo" element={withLightOnly(<CustomComponentsDemo />)} />
         
         {/* Standalone HSA Enrollment route - bypasses DocsLayout */}
         <Route path="hsa-enrollment" element={withConsumerLight(<HSAEnrollmentPage />)} />
