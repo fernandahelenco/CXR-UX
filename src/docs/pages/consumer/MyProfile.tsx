@@ -117,9 +117,7 @@ export default function MyProfile() {
   const [followUpNoticeText, setFollowUpNoticeText] = useState(true);
   const [purchaseMadeEmail, setPurchaseMadeEmail] = useState(true);
   const [purchaseMadeText, setPurchaseMadeText] = useState(true);
-  const [cardSuspendedEmail, setCardSuspendedEmail] = useState(true);
   const [cardSuspendedText, setCardSuspendedText] = useState(true);
-  const [cardPurseSuspendedEmail, setCardPurseSuspendedEmail] = useState(true);
   const [cardPurseSuspendedText, setCardPurseSuspendedText] = useState(true);
   
   // Sync email toggles with "Go paperless" toggle and turn off paper toggles
