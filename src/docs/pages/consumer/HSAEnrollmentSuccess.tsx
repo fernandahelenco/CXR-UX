@@ -1,5 +1,3 @@
-import { useNavigate } from "react-router-dom";
-import { WexButton } from "@/components/wex/wex-button";
 import { Printer } from "lucide-react";
 
 /**
@@ -7,18 +5,8 @@ import { Printer } from "lucide-react";
  * Displayed after successful enrollment submission
  */
 export default function HSAEnrollmentSuccess() {
-  const navigate = useNavigate();
-
-  const handleGoHome = () => {
-    navigate("/");
-  };
-
-  const handlePrint = () => {
-    window.print();
-  };
-
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-8">
+    <div className="flex flex-1 items-center justify-center px-8 py-16">
       <div className="flex flex-col items-center max-w-[442px] w-full">
         {/* Success Illustration */}
         <div className="mb-8 w-[362px] h-[317px] flex items-center justify-center">
@@ -78,25 +66,10 @@ export default function HSAEnrollmentSuccess() {
           You will receive an email with your enrollment information.
         </p>
 
-        {/* Go Home Button */}
-        <div className="mb-3">
-          <WexButton
-            intent="primary"
-            onClick={handleGoHome}
-            className="px-4 py-2"
-          >
-            Go Home
-          </WexButton>
-        </div>
-
-        {/* Print Button */}
-        <button
-          onClick={handlePrint}
-          className="flex items-center gap-1.5 px-3 py-1 text-sm leading-6 tracking-[-0.084px] text-[#1d2c38] hover:underline rounded-md hover:bg-gray-50 transition-colors"
-        >
+        <div className="flex items-center gap-2 text-sm text-[#7c858e]">
           <Printer className="w-4 h-4" />
-          <span>Print enrollment information</span>
-        </button>
+          <span>Use the footer actions to print or return home.</span>
+        </div>
       </div>
     </div>
   );

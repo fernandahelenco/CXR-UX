@@ -62,7 +62,7 @@ export function Workspace({
     <WexDialog open={open} onOpenChange={onOpenChange}>
       <WexDialog.Content
         className={cn(
-          "bg-transparent border-0 shadow-none pt-6 px-6 pb-0 w-full h-full max-w-none",
+          "bg-transparent border-0 shadow-none pt-6 px-6 pb-0 w-full h-screen max-h-screen max-w-none flex items-start",
           "[&>div:last-child]:hidden", // Hide default close button
           className
         )}
@@ -70,11 +70,9 @@ export function Workspace({
         onEscapeKeyDown={(e) => e.preventDefault()} // Prevent closing on Esc key
       >
         {/* Centered Panel with margins */}
-        <div className="mx-auto w-full h-full max-w-[1920px] flex flex-col">
+        <div className="mx-auto w-full h-[calc(100vh-24px)] max-w-[1920px] flex flex-col">
           {/* Main Panel */}
-          <div 
-            className="bg-white rounded-t-2xl shadow-[0px_8px_16px_0px_rgba(2,13,36,0.15),0px_0px_1px_0px_rgba(2,13,36,0.3)] flex flex-col h-full overflow-hidden"
-          >
+          <div className="bg-white rounded-t-2xl shadow-[0px_8px_16px_0px_rgba(2,13,36,0.15),0px_0px_1px_0px_rgba(2,13,36,0.3)] flex flex-col h-full overflow-hidden">
             {/* Header */}
             <div className="h-16 border-b border-[#e4e6e9] bg-white rounded-tl-2xl rounded-tr-2xl flex items-center justify-between px-4 shrink-0">
               <div className="flex items-center">
@@ -96,12 +94,12 @@ export function Workspace({
             {/* Body: Content */}
             <div className="flex flex-1 min-h-0 overflow-hidden">
               {stepperContent && (
-                <div className="w-[280px] border-r border-[#e4e6e9] bg-[#f7f7f7] p-6 overflow-y-auto">
+                <div className="w-[280px] min-h-0 border-r border-[#e4e6e9] bg-[#f7f7f7] p-6 overflow-y-auto">
                   {stepperContent}
                 </div>
               )}
               {/* Main Content Area */}
-              <div className="flex-1 bg-white overflow-y-auto">
+              <div className="flex-1 min-h-0 bg-white overflow-y-auto">
                 {children}
               </div>
             </div>
