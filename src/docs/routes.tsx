@@ -52,27 +52,6 @@ const LoginPage = React.lazy(() => import("@/docs/pages/Login"));
 // Custom Components Demo page - standalone route
 const CustomComponentsDemo = React.lazy(() => import("@/docs/pages/consumer/CustomComponentsDemo"));
 
-// HSA Enrollment page - standalone route
-const HSAEnrollmentPage = React.lazy(() => import("@/docs/pages/consumer/HSAEnrollmentPage"));
-
-// HSA Profile Review page - standalone route
-const HSAProfileReview = React.lazy(() => import("@/docs/pages/consumer/HSAProfileReview"));
-
-// HSA Dependents page - standalone route
-const HSADependentsPage = React.lazy(() => import("@/docs/pages/consumer/HSADependentsPage"));
-
-// HSA Beneficiaries page - standalone route
-const HSABeneficiariesPage = React.lazy(() => import("@/docs/pages/consumer/HSABeneficiariesPage"));
-
-// HSA Reimbursement page - standalone route
-const HSAReimbursementPage = React.lazy(() => import("@/docs/pages/consumer/HSAReimbursementPage"));
-
-// HSA Enrollment Review page - standalone route
-const HSAEnrollmentReview = React.lazy(() => import("@/docs/pages/consumer/HSAEnrollmentReview"));
-
-// HSA Enrollment Success page - standalone route
-const HSAEnrollmentSuccess = React.lazy(() => import("@/docs/pages/consumer/HSAEnrollmentSuccess"));
-
 // Foundation pages
 const TokenArchitecturePage = React.lazy(() => import("@/docs/pages/foundations/TokenArchitecturePage"));
 const ColorsPage = React.lazy(() => import("@/docs/pages/foundations/ColorsPage"));
@@ -239,27 +218,6 @@ export function DocsRoutes() {
         
         {/* Custom Components Demo route - bypasses DocsLayout */}
         <Route path="/custom-components-demo" element={withLightOnly(<CustomComponentsDemo />)} />
-        
-        {/* Standalone HSA Enrollment route - bypasses DocsLayout */}
-        <Route path="hsa-enrollment" element={withConsumerLight(<HSAEnrollmentPage />)} />
-        
-        {/* Standalone HSA Profile Review route - bypasses DocsLayout */}
-        <Route path="hsa-enrollment/profile" element={withConsumerLight(<HSAProfileReview />)} />
-        
-        {/* Standalone HSA Dependents route - bypasses DocsLayout */}
-        <Route path="hsa-enrollment/dependents" element={withConsumerLight(<HSADependentsPage />)} />
-        
-        {/* Standalone HSA Beneficiaries route - bypasses DocsLayout */}
-        <Route path="hsa-enrollment/beneficiaries" element={withConsumerLight(<HSABeneficiariesPage />)} />
-        
-        {/* Standalone HSA Reimbursement route - bypasses DocsLayout */}
-        <Route path="hsa-enrollment/reimbursement" element={withConsumerLight(<HSAReimbursementPage />)} />
-        
-        {/* Standalone HSA Enrollment Review route - bypasses DocsLayout */}
-        <Route path="hsa-enrollment/review" element={withConsumerLight(<HSAEnrollmentReview />)} />
-        
-        {/* Standalone HSA Enrollment Success route - bypasses DocsLayout */}
-        <Route path="hsa-enrollment/success" element={withConsumerLight(<HSAEnrollmentSuccess />)} />
         
         <Route element={<ProtectedDocsLayout />}>
           {/* Design System overview moved to /design-system */}
