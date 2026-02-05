@@ -1011,6 +1011,7 @@ export default function MessageCenter() {
                   intent="primary"
                   variant="outline"
                   className="flex items-center gap-2 border-[#0058a3] text-[#0058a3] md:h-[44px]"
+                  onClick={() => navigate("/account-documents")}
                 >
                   <FileText className="h-4 w-4" />
                   Account Documents
@@ -1334,7 +1335,7 @@ export default function MessageCenter() {
 
                     {/* Desktop Table */}
                     <div className="hidden md:block flex-1 flex flex-col min-h-0">
-                      <div className="overflow-x-auto overflow-y-scroll flex-1" style={{ overflowY: 'scroll' }}>
+                      <div className="overflow-x-auto flex-1">
                         <WexTable>
                           {/* Table Header */}
                           <WexTable.Header>
@@ -1697,7 +1698,7 @@ export default function MessageCenter() {
                     {/* Right Panel - Detail View - Desktop Only */}
                     {selectedMessage && !isMobile && (
                       <div className="w-[400px] shrink-0 border-l border-wex-card-border bg-white rounded-br-2xl rounded-tr-2xl flex flex-col h-full">
-                        <div className="flex flex-col gap-3 p-6 flex-1 overflow-y-auto">
+                        <div className="flex flex-col gap-3 p-6 flex-1">
                           {/* Header with alert icon, subject, and close button */}
                           <div className="flex items-center justify-between gap-3">
                             <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -1778,7 +1779,7 @@ export default function MessageCenter() {
             position="bottom"
             className="md:hidden w-[375px] max-w-[375px] p-6 rounded-2xl border border-[#edeff0] overflow-hidden flex flex-col max-h-[90vh]"
           >
-            <div className="flex flex-col flex-1 min-h-0 overflow-y-auto">
+            <div className="flex flex-col flex-1 min-h-0 overflow-y-hidden">
               {/* Header */}
               <div className="space-y-0 mb-0 flex-shrink-0">
                 <WexDialog.Title className="text-base font-semibold text-[#1d2c38] tracking-[-0.176px] leading-6 mb-0 break-words">

@@ -23,6 +23,8 @@ import { Stepper } from "./components/Stepper";
 import { ConsumerNavigation } from "./ConsumerNavigation";
 import emptyStateIllustration from "./img/empty-state-illustration.svg";
 import { Pencil, Info, Plus, Calendar, X, Trash2, MoreVertical, Eye, RefreshCw, AlertCircle } from "lucide-react";
+import { WexSwitch } from "@/components/wex/wex-switch";
+import { WexTabs } from "@/components/wex/wex-tabs";
 
 type SubPage = "my-profile" | "dependents" | "beneficiaries" | "banking" | "debit-card" | "login-security" | "communication" | "report-lost-stolen" | "order-replacement-card";
 
@@ -148,6 +150,69 @@ function saveBankAccountsToStorage(bankAccounts: BankAccount[]): void {
 export default function MyProfile() {
   const personalName = "Emily Rose Smith";
   const [searchParams, setSearchParams] = useSearchParams();
+  
+  // Communication preferences state
+  const [activeTab, setActiveTab] = useState("statements");
+  const [hsaAccountSummaryPaper, setHsaAccountSummaryPaper] = useState(false);
+  const [hsaAccountSummaryEmail, setHsaAccountSummaryEmail] = useState(true);
+  const [hsaTaxDocumentsPaper, setHsaTaxDocumentsPaper] = useState(false);
+  const [hsaTaxDocumentsEmail, setHsaTaxDocumentsEmail] = useState(true);
+  const [goPaperless, setGoPaperless] = useState(false);
+  
+  // Contact information state
+  const [isContactInfoModalOpen, setIsContactInfoModalOpen] = useState(false);
+  const [mobileNumber, setMobileNumber] = useState("123-456-7890");
+  const [emailAddress, setEmailAddress] = useState("emily.smith@exampleemail.com");
+  
+  // Contributions preferences state
+  const [contributionPostedEmail, setContributionPostedEmail] = useState(true);
+  const [balanceBelowAmount, setBalanceBelowAmount] = useState("");
+  const [balanceBelowEmail, setBalanceBelowEmail] = useState(true);
+  const [contributionsWithinAmount, setContributionsWithinAmount] = useState("");
+  const [contributionsWithinEmail, setContributionsWithinEmail] = useState(true);
+  
+  // Payments preferences state
+  const [paymentIssuedEmail, setPaymentIssuedEmail] = useState(true);
+  const [withdrawalExceedsAmount, setWithdrawalExceedsAmount] = useState("");
+  const [withdrawalExceedsEmail, setWithdrawalExceedsEmail] = useState(true);
+  
+  // WEX Benefits Card preferences state
+  const [cardMailedEmail, setCardMailedEmail] = useState(true);
+  const [cardMailedText, setCardMailedText] = useState(true);
+  const [followUpNoticeText, setFollowUpNoticeText] = useState(true);
+  const [purchaseMadeEmail, setPurchaseMadeEmail] = useState(true);
+  const [purchaseMadeText, setPurchaseMadeText] = useState(true);
+  const [cardSuspendedText, setCardSuspendedText] = useState(true);
+  const [cardPurseSuspendedText, setCardPurseSuspendedText] = useState(true);
+  
+  // Sync email toggles with "Go paperless" toggle and turn off paper toggles
+  useEffect(() => {
+    setHsaAccountSummaryEmail(goPaperless);
+    setHsaTaxDocumentsEmail(goPaperless);
+    // When "Go paperless" is turned on, turn off paper toggles
+    if (goPaperless) {
+      setHsaAccountSummaryPaper(false);
+      setHsaTaxDocumentsPaper(false);
+    }
+  }, [goPaperless]);
+  
+  // Handler for HSA Account Summary Paper toggle
+  const handleHsaAccountSummaryPaperChange = (checked: boolean) => {
+    setHsaAccountSummaryPaper(checked);
+    // If turning Paper ON and goPaperless is ON, turn off goPaperless
+    if (checked && goPaperless) {
+      setGoPaperless(false);
+    }
+  };
+  
+  // Handler for HSA Tax Documents Paper toggle
+  const handleHsaTaxDocumentsPaperChange = (checked: boolean) => {
+    setHsaTaxDocumentsPaper(checked);
+    // If turning Paper ON and goPaperless is ON, turn off goPaperless
+    if (checked && goPaperless) {
+      setGoPaperless(false);
+    }
+  };
   
   // Dependents state
   const [dependents, setDependents] = useState<Dependent[]>(() => loadDependentsFromStorage());
@@ -2705,80 +2770,610 @@ export default function MyProfile() {
       case "communication":
         return (
           <>
-            <div className="pt-4 pb-2">
-              <div className="px-6 flex items-center">
-                <h2 className="text-2xl font-semibold text-gray-800">Communication Preferences</h2>
+
+            {/* Contact Information Section */}
+            <div className="px-6 pt-6 pb-6">
+              <div className="flex items-center gap-4 mb-4">
+                <h2 className="text-xl font-medium leading-8 tracking-[-0.34px] text-[#243746]">
+                  Contact information
+                </h2>
+                <WexButton
+                  variant="ghost"
+                  size="sm"
+                  className="flex items-center gap-1.5 px-3 py-1 text-sm font-medium text-[#0058a3] hover:bg-gray-100"
+                  onClick={() => setIsContactInfoModalOpen(true)}
+                >
+                  <Pencil className="h-4 w-4 text-[#0058a3]" />
+                  Edit
+                </WexButton>
               </div>
-              <WexSeparator className="mt-4" />
+              <div className="flex flex-col gap-2 text-sm tracking-[-0.084px]">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[#515f6b]">Mobile number:</span>
+                  <span className="text-[#1d2c38]">{mobileNumber}</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[#515f6b]">Email address:</span>
+                  <span className="text-[#1d2c38]">{emailAddress}</span>
+                </div>
+              </div>
             </div>
-            <div className="space-y-0">
-              <div className="px-6 pt-4 pb-6">
-                <div className="mb-4 flex items-center gap-4">
-                  <h3 className="text-xl font-medium text-gray-800">Email Preferences</h3>
-                  <WexButton
-                    variant="ghost"
-                    size="sm"
-                    className="text-primary hover:text-primary active:text-primary [&>svg]:text-primary"
+
+            {/* Tabs */}
+            <div className="px-6">
+              <WexTabs value={activeTab} onValueChange={setActiveTab}>
+                <WexTabs.List className="bg-white border-b border-[#e4e6e9] border-solid flex items-end pr-[37px]">
+                  <WexTabs.Trigger
+                    value="statements"
+                    className="bg-transparent border-b border-solid pb-[15px] pt-[14px] px-[15.75px] text-sm leading-normal font-normal data-[state=active]:font-bold data-[state=active]:text-[#0058a3] data-[state=active]:border-[#0058a3] data-[state=inactive]:text-[#515f6b] data-[state=inactive]:border-[#e4e6e9]"
                   >
-                    <Pencil />
-                    Edit
-                  </WexButton>
-                </div>
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-700">Account notifications</span>
-                    <span className="text-gray-500">Enabled</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-700">Marketing emails</span>
-                    <span className="text-gray-500">Disabled</span>
-                  </div>
-                </div>
-              </div>
-              <WexSeparator />
-              <div className="px-6 pt-4 pb-6">
-                <div className="mb-4 flex items-center gap-4">
-                  <h3 className="text-xl font-medium text-gray-800">SMS Preferences</h3>
-                  <WexButton
-                    variant="ghost"
-                    size="sm"
-                    className="text-primary hover:text-primary active:text-primary [&>svg]:text-primary"
+                    Statements
+                  </WexTabs.Trigger>
+                  <WexTabs.Trigger
+                    value="contributions"
+                    className="bg-transparent border-b border-solid pb-[15px] pt-[14px] px-[15.75px] text-sm leading-normal font-normal data-[state=active]:font-bold data-[state=active]:text-[#0058a3] data-[state=active]:border-[#0058a3] data-[state=inactive]:text-[#515f6b] data-[state=inactive]:border-[#e4e6e9]"
                   >
-                    <Pencil />
-                    Edit
-                  </WexButton>
-                </div>
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-700">Transaction alerts</span>
-                    <span className="text-gray-500">Enabled</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-700">Security alerts</span>
-                    <span className="text-gray-500">Enabled</span>
-                  </div>
-                </div>
-              </div>
-              <WexSeparator />
-              <div className="px-6 pt-4 pb-6">
-                <div className="mb-4 flex items-center gap-4">
-                  <h3 className="text-xl font-medium text-gray-800">Push Notifications</h3>
-                  <WexButton
-                    variant="ghost"
-                    size="sm"
-                    className="text-primary hover:text-primary active:text-primary [&>svg]:text-primary"
+                    Contributions
+                  </WexTabs.Trigger>
+                  <WexTabs.Trigger
+                    value="payments"
+                    className="bg-transparent border-b border-solid pb-[15px] pt-[14px] px-[15.75px] text-sm leading-normal font-normal data-[state=active]:font-bold data-[state=active]:text-[#0058a3] data-[state=active]:border-[#0058a3] data-[state=inactive]:text-[#515f6b] data-[state=inactive]:border-[#e4e6e9]"
                   >
-                    <Pencil />
-                    Edit
-                  </WexButton>
-                </div>
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-700">Mobile app notifications</span>
-                    <span className="text-gray-500">Enabled</span>
+                    Payments
+                  </WexTabs.Trigger>
+                  <WexTabs.Trigger
+                    value="wex-benefits-card"
+                    className="bg-transparent border-b border-solid pb-[15px] pt-[14px] px-[15.75px] text-sm leading-normal font-normal data-[state=active]:font-bold data-[state=active]:text-[#0058a3] data-[state=active]:border-[#0058a3] data-[state=inactive]:text-[#515f6b] data-[state=inactive]:border-[#e4e6e9]"
+                  >
+                    WEX Benefits Card
+                  </WexTabs.Trigger>
+                </WexTabs.List>
+
+                {/* Statements Tab Content */}
+                <WexTabs.Content value="statements" className="pt-6">
+                  <div className="flex flex-col gap-6">
+                    {/* Statement Delivery Preferences Header */}
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-xl font-bold leading-8 tracking-[-0.34px] text-[#243746]">
+                          Statement delivery preferences
+                        </h3>
+                        <div className="flex items-center gap-2">
+                          <WexSwitch
+                            checked={goPaperless}
+                            onCheckedChange={setGoPaperless}
+                            switchSize="sm"
+                            className="!h-[21px] !w-[35px]"
+                            style={{ height: "21px", width: "35px" }}
+                          />
+                          <span className="text-sm font-normal text-[#243746]">Go paperless</span>
+                        </div>
+                      </div>
+                      <p className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#1d2c38] max-w-[1094px]">
+                        Set how you want to receive your account documents. Select either Paper, Email, and/or Text for each statement type. Standard text message rates may apply. Disable text alerts by unchecking the boxes below. By opting into our text alerts, you agree to our{" "}
+                        <a href="#" className="text-[#0058a3] hover:underline">terms of service</a>. Please review our{" "}
+                        <a href="#" className="text-[#0058a3] hover:underline">privacy policy</a> for more information.
+                      </p>
+                    </div>
+
+                    {/* Table Header */}
+                    <div className="h-6">
+                      <div className="flex items-center justify-between h-full px-6">
+                        <div style={{ width: "493px" }}>
+                          <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Statements</span>
+                        </div>
+                        <div className="flex items-center" style={{ gap: "153px" }}>
+                          <div style={{ width: "35px" }}>
+                            <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Paper</span>
+                          </div>
+                          <div style={{ width: "35px" }}>
+                            <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Email</span>
+                          </div>
+                          <div style={{ width: "80px" }}>
+                            <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Text</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* HSA Account Summary Row */}
+                    <div className="border-t border-[#e4e6e9]">
+                      <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
+                        <div className="flex flex-col gap-1" style={{ width: "493px" }}>
+                          <div className="flex flex-col gap-1">
+                            <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
+                              HSA Account Summary
+                            </h4>
+                            <p className="text-sm font-normal italic leading-6 tracking-[-0.084px] text-[#1d2c38]">
+                              $1.50 fee per printed summary
+                            </p>
+                            <p className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#1d2c38]">
+                              Automatically emailed based on whether or not you have an email address.
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center" style={{ gap: "153px" }}>
+                          <div style={{ width: "35px", height: "21px" }}>
+                            <WexSwitch
+                              checked={hsaAccountSummaryPaper}
+                              onCheckedChange={handleHsaAccountSummaryPaperChange}
+                              switchSize="sm"
+                              className="!h-[21px] !w-[35px]"
+                              style={{ height: "21px", width: "35px" }}
+                            />
+                          </div>
+                          <div style={{ width: "35px", height: "21px" }}>
+                            <WexSwitch
+                              checked={hsaAccountSummaryEmail}
+                              onCheckedChange={setHsaAccountSummaryEmail}
+                              switchSize="sm"
+                              className="!h-[21px] !w-[35px]"
+                              style={{ height: "21px", width: "35px" }}
+                            />
+                          </div>
+                          <span className="text-xs font-normal leading-6 text-black" style={{ width: "80px" }}>Not available</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* HSA Tax Documents Row */}
+                    <div className="border-t border-[#e4e6e9]">
+                      <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
+                        <div className="flex flex-col gap-1" style={{ width: "493px" }}>
+                          <div className="flex flex-col gap-1">
+                            <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
+                              HSA Tax Documents
+                            </h4>
+                            <p className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#1d2c38]">
+                              Automatically emailed based on whether or not you have an email address.
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center" style={{ gap: "153px" }}>
+                          <div style={{ width: "35px", height: "21px" }}>
+                            <WexSwitch
+                              checked={hsaTaxDocumentsPaper}
+                              onCheckedChange={handleHsaTaxDocumentsPaperChange}
+                              switchSize="sm"
+                              className="!h-[21px] !w-[35px]"
+                              style={{ height: "21px", width: "35px" }}
+                            />
+                          </div>
+                          <div style={{ width: "35px", height: "21px" }}>
+                            <WexSwitch
+                              checked={hsaTaxDocumentsEmail}
+                              onCheckedChange={setHsaTaxDocumentsEmail}
+                              switchSize="sm"
+                              className="!h-[21px] !w-[35px]"
+                              style={{ height: "21px", width: "35px" }}
+                            />
+                          </div>
+                          <span className="text-xs font-normal leading-6 text-black" style={{ width: "80px" }}>Not available</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
+                </WexTabs.Content>
+
+                {/* Contributions Tab Content */}
+                <WexTabs.Content value="contributions" className="pt-6">
+                  <div className="flex flex-col gap-6">
+                    {/* Notification Preferences Header */}
+                    <div className="flex flex-col gap-1 px-6">
+                      <h3 className="text-xl font-bold leading-8 tracking-[-0.34px] text-[#243746]">
+                        Notification preferences
+                      </h3>
+                      <p className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#1d2c38] max-w-[1094px]">
+                        Manage how you receive real-time alerts for account activity. You can enable Email and/or Text for each notification. Standard text message rates may apply. Disable text alerts by unchecking the boxes below. By opting into our text alerts, you agree to our{" "}
+                        <a href="#" className="text-[#0058a3] hover:underline">terms of service</a>. Please review our{" "}
+                        <a href="#" className="text-[#0058a3] hover:underline">privacy policy</a> for more information.
+                      </p>
+                    </div>
+
+                    {/* Table Header */}
+                    <div className="h-6">
+                      <div className="flex items-center justify-between h-full px-6">
+                        <div style={{ width: "493px" }}>
+                          <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Notification type</span>
+                        </div>
+                        <div className="flex items-center" style={{ gap: "153px" }}>
+                          <div style={{ width: "35px" }}>
+                            <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Paper</span>
+                          </div>
+                          <div style={{ width: "35px" }}>
+                            <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Email</span>
+                          </div>
+                          <div style={{ width: "80px" }}>
+                            <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Text</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Contribution Posted Row */}
+                    <div className="border-t border-[#e4e6e9]">
+                      <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
+                        <div style={{ width: "493px" }}>
+                          <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
+                            Contribution posted to your HSA
+                          </h4>
+                        </div>
+                        <div className="flex items-center" style={{ gap: "153px" }}>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
+                          <div style={{ width: "35px", height: "21px" }}>
+                            <WexSwitch
+                              checked={contributionPostedEmail}
+                              onCheckedChange={setContributionPostedEmail}
+                              switchSize="sm"
+                              className="!h-[21px] !w-[35px]"
+                              style={{ height: "21px", width: "35px" }}
+                            />
+                          </div>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "80px" }}>Not available</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Balance Below Row */}
+                    <div className="border-t border-[#e4e6e9]">
+                      <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
+                        <div className="flex flex-col gap-1" style={{ width: "493px" }}>
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
+                              HSA available cash balance is below
+                            </span>
+                            <div className="flex items-center border border-[#a5aeb4] rounded-md overflow-hidden shadow-[0px_1px_2px_0px_rgba(18,18,23,0.05)]">
+                              <div className="bg-white border-r border-[#a5aeb4] px-2 py-2 text-sm text-[#a5aeb4] flex items-center justify-center min-w-[35px]">
+                                $
+                              </div>
+                              <input
+                                type="text"
+                                value={balanceBelowAmount}
+                                onChange={(e) => setBalanceBelowAmount(e.target.value)}
+                                className="px-3 py-2 text-sm border-0 focus:outline-none focus:ring-0 bg-white"
+                                style={{ minWidth: "80px", width: "80px" }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center" style={{ gap: "153px" }}>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
+                          <div style={{ width: "35px", height: "21px" }}>
+                            <WexSwitch
+                              checked={balanceBelowEmail}
+                              onCheckedChange={setBalanceBelowEmail}
+                              switchSize="sm"
+                              className="!h-[21px] !w-[35px]"
+                              style={{ height: "21px", width: "35px" }}
+                            />
+                          </div>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "80px" }}>Not available</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Contributions Within Row */}
+                    <div className="border-t border-[#e4e6e9]">
+                      <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
+                        <div className="flex flex-col gap-1" style={{ width: "493px" }}>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
+                              HSA contributions year-to-date are within
+                            </span>
+                            <div className="flex items-center border border-[#a5aeb4] rounded-md overflow-hidden shadow-[0px_1px_2px_0px_rgba(18,18,23,0.05)]">
+                              <div className="bg-white border-r border-[#a5aeb4] px-2 py-2 text-sm text-[#a5aeb4] flex items-center justify-center min-w-[35px]">
+                                $
+                              </div>
+                              <input
+                                type="text"
+                                value={contributionsWithinAmount}
+                                onChange={(e) => setContributionsWithinAmount(e.target.value)}
+                                className="px-3 py-2 text-sm border-0 focus:outline-none focus:ring-0 bg-white"
+                                style={{ minWidth: "80px", width: "80px" }}
+                              />
+                            </div>
+                            <span className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
+                              of the IRS maximum
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex items-center" style={{ gap: "153px" }}>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
+                          <div style={{ width: "35px", height: "21px" }}>
+                            <WexSwitch
+                              checked={contributionsWithinEmail}
+                              onCheckedChange={setContributionsWithinEmail}
+                              switchSize="sm"
+                              className="!h-[21px] !w-[35px]"
+                              style={{ height: "21px", width: "35px" }}
+                            />
+                          </div>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "80px" }}>Not available</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </WexTabs.Content>
+                {/* Payments Tab Content */}
+                <WexTabs.Content value="payments" className="pt-6">
+                  <div className="flex flex-col gap-6">
+                    {/* Notification Preferences Header */}
+                    <div className="flex flex-col gap-1 px-6">
+                      <h3 className="text-xl font-bold leading-8 tracking-[-0.34px] text-[#243746]">
+                        Notification preferences
+                      </h3>
+                      <p className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#1d2c38] max-w-[1094px]">
+                        Manage how you receive real-time alerts for account activity. You can enable Email and/or Text for each notification. Standard text message rates may apply. Disable text alerts by unchecking the boxes below. By opting into our text alerts, you agree to our{" "}
+                        <a href="#" className="text-[#0058a3] hover:underline">terms of service</a>. Please review our{" "}
+                        <a href="#" className="text-[#0058a3] hover:underline">privacy policy</a> for more information.
+                      </p>
+                    </div>
+
+                    {/* Table Header */}
+                    <div className="h-6">
+                      <div className="flex items-center justify-between h-full px-6">
+                        <div style={{ width: "493px" }}>
+                          <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Notification type</span>
+                        </div>
+                        <div className="flex items-center" style={{ gap: "153px" }}>
+                          <div style={{ width: "35px" }}>
+                            <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Paper</span>
+                          </div>
+                          <div style={{ width: "35px" }}>
+                            <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Email</span>
+                          </div>
+                          <div style={{ width: "80px" }}>
+                            <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Text</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Payment Issued Row */}
+                    <div className="border-t border-[#e4e6e9]">
+                      <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
+                        <div className="flex flex-col gap-1" style={{ width: "493px" }}>
+                          <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
+                            Payment issued out of your HSA
+                          </h4>
+                          <p className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#1d2c38]">
+                            Automatically emailed based on whether or not you have an email address.
+                          </p>
+                        </div>
+                        <div className="flex items-center" style={{ gap: "153px" }}>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
+                          <div style={{ width: "35px", height: "21px" }}>
+                            <WexSwitch
+                              checked={paymentIssuedEmail}
+                              onCheckedChange={setPaymentIssuedEmail}
+                              switchSize="sm"
+                              className="!h-[21px] !w-[35px]"
+                              style={{ height: "21px", width: "35px" }}
+                            />
+                          </div>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "80px" }}>Not available</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Withdrawal Exceeds Row */}
+                    <div className="border-t border-[#e4e6e9]">
+                      <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
+                        <div className="flex flex-col gap-1" style={{ width: "493px" }}>
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
+                              Withdrawal from your HSA exceeds
+                            </span>
+                            <div className="flex items-center border border-[#a5aeb4] rounded-md overflow-hidden shadow-[0px_1px_2px_0px_rgba(18,18,23,0.05)]">
+                              <div className="bg-white border-r border-[#a5aeb4] px-2 py-2 text-sm text-[#a5aeb4] flex items-center justify-center min-w-[35px]">
+                                $
+                              </div>
+                              <input
+                                type="text"
+                                value={withdrawalExceedsAmount}
+                                onChange={(e) => setWithdrawalExceedsAmount(e.target.value)}
+                                className="px-3 py-2 text-sm border-0 focus:outline-none focus:ring-0 bg-white"
+                                style={{ minWidth: "80px", width: "80px" }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center" style={{ gap: "153px" }}>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
+                          <div style={{ width: "35px", height: "21px" }}>
+                            <WexSwitch
+                              checked={withdrawalExceedsEmail}
+                              onCheckedChange={setWithdrawalExceedsEmail}
+                              switchSize="sm"
+                              className="!h-[21px] !w-[35px]"
+                              style={{ height: "21px", width: "35px" }}
+                            />
+                          </div>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "80px" }}>Not available</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </WexTabs.Content>
+                {/* WEX Benefits Card Tab Content */}
+                <WexTabs.Content value="wex-benefits-card" className="pt-6">
+                  <div className="flex flex-col gap-6">
+                    {/* Notification Preferences Header */}
+                    <div className="flex flex-col gap-1 px-6">
+                      <h3 className="text-xl font-bold leading-8 tracking-[-0.34px] text-[#243746]">
+                        Notification preferences
+                      </h3>
+                      <p className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#1d2c38] max-w-[1094px]">
+                        Manage how you receive real-time alerts for account activity. You can enable Email and/or Text for each notification. Standard text message rates may apply. Disable text alerts by unchecking the boxes below. By opting into our text alerts, you agree to our{" "}
+                        <a href="#" className="text-[#0058a3] hover:underline">terms of service</a>. Please review our{" "}
+                        <a href="#" className="text-[#0058a3] hover:underline">privacy policy</a> for more information.
+                      </p>
+                    </div>
+
+                    {/* Table Header */}
+                    <div className="h-6">
+                      <div className="flex items-center justify-between h-full px-6">
+                        <div style={{ width: "493px" }}>
+                          <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Notification type</span>
+                        </div>
+                        <div className="flex items-center" style={{ gap: "153px" }}>
+                          <div style={{ width: "35px" }}>
+                            <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Paper</span>
+                          </div>
+                          <div style={{ width: "35px" }}>
+                            <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Email</span>
+                          </div>
+                          <div style={{ width: "80px" }}>
+                            <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Text</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Card Mailed Row */}
+                    <div className="border-t border-[#e4e6e9]">
+                      <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
+                        <div style={{ width: "493px" }}>
+                          <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
+                            WEX Benefit Card has been mailed
+                          </h4>
+                        </div>
+                        <div className="flex items-center" style={{ gap: "153px" }}>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
+                          <div style={{ width: "35px", height: "21px" }}>
+                            <WexSwitch
+                              checked={cardMailedEmail}
+                              onCheckedChange={setCardMailedEmail}
+                              switchSize="sm"
+                              className="!h-[21px] !w-[35px]"
+                              style={{ height: "21px", width: "35px" }}
+                            />
+                          </div>
+                          <div style={{ width: "80px", height: "21px" }}>
+                            <WexSwitch
+                              checked={cardMailedText}
+                              onCheckedChange={setCardMailedText}
+                              switchSize="sm"
+                              className="!h-[21px] !w-[35px]"
+                              style={{ height: "21px", width: "35px" }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Follow Up Notice Row */}
+                    <div className="border-t border-[#e4e6e9]">
+                      <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
+                        <div className="flex flex-col gap-1" style={{ width: "493px" }}>
+                          <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
+                            WEX Benefit Card follow up notice has been sent
+                          </h4>
+                          <p className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#1d2c38]">
+                            Automatically alert when a debit card follow up notice has been sent about on of your purchases. Helps to quickly know when a receipt needs to be supplied.
+                          </p>
+                        </div>
+                        <div className="flex items-center" style={{ gap: "153px" }}>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
+                          <div style={{ width: "80px", height: "21px" }}>
+                            <WexSwitch
+                              checked={followUpNoticeText}
+                              onCheckedChange={setFollowUpNoticeText}
+                              switchSize="sm"
+                              className="!h-[21px] !w-[35px]"
+                              style={{ height: "21px", width: "35px" }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Purchase Made Row */}
+                    <div className="border-t border-[#e4e6e9]">
+                      <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
+                        <div className="flex flex-col gap-1" style={{ width: "493px" }}>
+                          <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
+                            WEX Benefit Card purchase has been made
+                          </h4>
+                          <p className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#1d2c38]">
+                            Automatically alert when a debit card purchase has been made on one of your accounts. Helps to quickly identify possible fraudulent activity.
+                          </p>
+                        </div>
+                        <div className="flex items-center" style={{ gap: "153px" }}>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
+                          <div style={{ width: "35px", height: "21px" }}>
+                            <WexSwitch
+                              checked={purchaseMadeEmail}
+                              onCheckedChange={setPurchaseMadeEmail}
+                              switchSize="sm"
+                              className="!h-[21px] !w-[35px]"
+                              style={{ height: "21px", width: "35px" }}
+                            />
+                          </div>
+                          <div style={{ width: "80px", height: "21px" }}>
+                            <WexSwitch
+                              checked={purchaseMadeText}
+                              onCheckedChange={setPurchaseMadeText}
+                              switchSize="sm"
+                              className="!h-[21px] !w-[35px]"
+                              style={{ height: "21px", width: "35px" }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Card Suspended Row */}
+                    <div className="border-t border-[#e4e6e9]">
+                      <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
+                        <div style={{ width: "493px" }}>
+                          <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
+                            WEX Benefits Card has been suspended or unsuspended
+                          </h4>
+                        </div>
+                        <div className="flex items-center" style={{ gap: "153px" }}>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
+                          <div style={{ width: "80px", height: "21px" }}>
+                            <WexSwitch
+                              checked={cardSuspendedText}
+                              onCheckedChange={setCardSuspendedText}
+                              switchSize="sm"
+                              className="!h-[21px] !w-[35px]"
+                              style={{ height: "21px", width: "35px" }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Card Purse Suspended Row */}
+                    <div className="border-t border-[#e4e6e9]">
+                      <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
+                        <div style={{ width: "493px" }}>
+                          <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
+                            WEX Benefit Card Purse has been suspended or unsuspended
+                          </h4>
+                        </div>
+                        <div className="flex items-center" style={{ gap: "153px" }}>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
+                          <div style={{ width: "80px", height: "21px" }}>
+                            <WexSwitch
+                              checked={cardPurseSuspendedText}
+                              onCheckedChange={setCardPurseSuspendedText}
+                              switchSize="sm"
+                              className="!h-[21px] !w-[35px]"
+                              style={{ height: "21px", width: "35px" }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </WexTabs.Content>
+              </WexTabs>
             </div>
           </>
         );
@@ -3825,6 +4420,59 @@ export default function MyProfile() {
           </WexAlertDialog.Footer>
         </WexAlertDialog.Content>
       </WexAlertDialog>
+
+      {/* Edit Contact Information Modal */}
+      <WexDialog open={isContactInfoModalOpen} onOpenChange={setIsContactInfoModalOpen}>
+        <WexDialog.Content className="w-[448px] p-0 gap-6 [&>div:last-child]:hidden">
+          <div className="flex items-center justify-between p-[17.5px] border-b border-[#edeff0]">
+            <WexDialog.Title className="text-[17.5px] font-semibold text-[#243746] leading-normal">
+              Edit Contact Information
+            </WexDialog.Title>
+            <WexDialog.Close asChild>
+              <WexButton
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0"
+              >
+                <X className="h-4 w-4" />
+              </WexButton>
+            </WexDialog.Close>
+          </div>
+          
+          <div className="flex flex-col gap-4 px-[17.5px] pb-[17.5px]">
+            <WexFloatLabel
+              label="Mobile Phone Number"
+              value={mobileNumber}
+              onChange={(e) => setMobileNumber(e.target.value)}
+            />
+            
+            <WexFloatLabel
+              label="Email Address"
+              value={emailAddress}
+              onChange={(e) => setEmailAddress(e.target.value)}
+            />
+          </div>
+          
+          <WexDialog.Footer className="flex gap-2 justify-end p-[17.5px] border-t border-[#edeff0]">
+            <WexButton
+              intent="secondary"
+              variant="outline"
+              onClick={() => setIsContactInfoModalOpen(false)}
+            >
+              Cancel
+            </WexButton>
+            <WexButton
+              intent="primary"
+              onClick={() => {
+                setIsContactInfoModalOpen(false);
+                // Here you would typically save the data to your backend
+              }}
+            >
+              Save
+            </WexButton>
+          </WexDialog.Footer>
+        </WexDialog.Content>
+      </WexDialog>
     </div>
   );
 }

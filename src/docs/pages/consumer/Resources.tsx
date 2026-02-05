@@ -14,39 +14,38 @@ import {
   ChevronDown,
 } from "lucide-react";
 
-// Mock data for resources
+// Resource data from Figma design
 const documents = [
-  { id: "1", name: "Document name" },
-  { id: "2", name: "Document name" },
-  { id: "3", name: "Document name" },
-  { id: "4", name: "Document name" },
-  { id: "5", name: "Document name" },
-  { id: "6", name: "Document name" },
-  { id: "7", name: "Document name" },
-  { id: "8", name: "Document name" },
-  { id: "9", name: "Document name" },
-  { id: "10", name: "Document name" },
-  { id: "11", name: "Document name" },
-  { id: "12", name: "Document name" },
+  { id: "1", name: "CCPA" },
+  { id: "2", name: "Consumer E-Statement Disclosure and Consent" },
+  { id: "3", name: "Deductible Verification Form" },
+  { id: "4", name: "Health Reimbursement Arrangement (HRA) Opt-Out Waiver Form" },
+  { id: "5", name: "Health Savings Account HSA Death Beneficiary Change Form" },
+  { id: "6", name: "HSA Tax Documents" },
+  { id: "7", name: "Medical Necessity Form" },
+  { id: "8", name: "Privacy Policy" },
+  { id: "9", name: "Qualified Reservist Distribution Request Form" },
+  { id: "10", name: "Security" },
+  { id: "11", name: "Terms and Conditions" },
 ];
 
 const videos = [
-  { id: "1", name: "Video name" },
-  { id: "2", name: "Video name" },
+  { id: "1", name: "Getting started with your online account" },
+  { id: "2", name: "How to order a new replacement WEX benefits debit card" },
 ];
 
 const howDoILinks = [
-  { id: "1", name: "External link" },
-  { id: "2", name: "External link" },
-  { id: "3", name: "External link" },
-  { id: "4", name: "External link" },
+  { id: "1", name: "Change Payment Method" },
+  { id: "2", name: "Report Card Lost or Stolen" },
+  { id: "3", name: "Update Notification Preferences" },
+  { id: "4", name: "Download Mobile App" },
 ];
 
 const quickLinks = [
-  { id: "1", name: "External link" },
-  { id: "2", name: "External link" },
-  { id: "3", name: "External link" },
-  { id: "4", name: "External link" },
+  { id: "1", name: "Benefits Toolkit" },
+  { id: "2", name: "Blog" },
+  { id: "3", name: "Customer Service" },
+  { id: "4", name: "Mobile App" },
 ];
 
 export default function Resources() {
@@ -89,7 +88,7 @@ export default function Resources() {
                           Documents
                         </h3>
                         <WexCollapsible.Trigger asChild>
-                          <WexButton variant="ghost" size="icon" className="h-4 w-4">
+                          <WexButton variant="ghost" className="h-auto w-auto p-0 flex items-center justify-center">
                             {documentsOpen ? (
                               <ChevronUp className="h-3.5 w-3.5" />
                             ) : (
@@ -124,7 +123,7 @@ export default function Resources() {
                           Plan Summaries
                         </h3>
                         <WexCollapsible.Trigger asChild>
-                          <WexButton variant="ghost" size="icon" className="h-4 w-4">
+                          <WexButton variant="ghost" className="h-auto w-auto p-0 flex items-center justify-center">
                             {planSummariesOpen ? (
                               <ChevronUp className="h-3.5 w-3.5" />
                             ) : (
@@ -142,12 +141,12 @@ export default function Resources() {
 
                     {/* Rules and Agreements Section */}
                     <WexCollapsible open={rulesOpen} onOpenChange={setRulesOpen}>
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center justify-between">
                         <h3 className="text-base font-bold text-foreground tracking-[-0.176px]">
-                          Rules and agreements
+                          Rules and Agreements
                         </h3>
                         <WexCollapsible.Trigger asChild>
-                          <WexButton variant="ghost" size="icon" className="h-4 w-4">
+                          <WexButton variant="ghost" className="h-auto w-auto p-0 flex items-center justify-center">
                             {rulesOpen ? (
                               <ChevronUp className="h-3.5 w-3.5" />
                             ) : (
@@ -166,16 +165,16 @@ export default function Resources() {
                 </WexCard.Content>
               </WexCard>
 
-              {/* Health Savings Accounts Card */}
+              {/* Get the most out of your online account Card */}
               <WexCard>
                 <WexCard.Content className="p-6">
                   <div className="flex flex-col gap-3">
                     <div className="flex flex-col gap-1">
                       <h2 className="text-[20px] font-medium leading-[32px] tracking-[-0.34px] text-foreground">
-                        Health Savings Accounts
+                        Get the most out of your online account
                       </h2>
                       <p className="text-base leading-6 text-foreground">
-                        Check out the videos below for guidance on some of the most common HSA questions.
+                        Check out the videos below for guidance on some of the most common topics we get asked about.
                       </p>
                     </div>
                     <WexSeparator />
@@ -262,10 +261,10 @@ export default function Resources() {
                     <WexCollapsible open={quickLinksOpen} onOpenChange={setQuickLinksOpen}>
                       <div className="flex items-center justify-between">
                         <h3 className="text-base font-bold text-foreground tracking-[-0.176px]">
-                          External quick links
+                          External Quick Links
                         </h3>
                         <WexCollapsible.Trigger asChild>
-                          <WexButton variant="ghost" size="icon" className="h-4 w-4">
+                          <WexButton variant="ghost" className="h-auto w-auto p-0 flex items-center justify-center">
                             {quickLinksOpen ? (
                               <ChevronUp className="h-3.5 w-3.5" />
                             ) : (
