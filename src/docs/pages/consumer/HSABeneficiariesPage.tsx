@@ -609,8 +609,8 @@ export default function HSABeneficiariesPage() {
                       onClick={handleAddNewBeneficiary}
                       className="self-start px-3 py-1"
                     >
-                      <Plus className="h-4 w-4 mr-1.5" />
-                      Add New Beneficiary
+                      <Plus className="h-4 w-4" />
+                      <span>Add New Beneficiary</span>
                     </WexButton>
                   </div>
 
