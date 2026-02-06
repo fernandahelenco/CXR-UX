@@ -288,6 +288,8 @@ export default function MyProfile() {
   const [authorizedSignerToRemove, setAuthorizedSignerToRemove] = useState<AuthorizedSigner | null>(null);
   const [isAuthorizedSignerCalendarOpen, setIsAuthorizedSignerCalendarOpen] = useState(false);
   const [isAuthorizedSignerSsnInvalid, setIsAuthorizedSignerSsnInvalid] = useState(false);
+  const [isViewAuthorizedSignerModalOpen, setIsViewAuthorizedSignerModalOpen] = useState(false);
+  const [viewingAuthorizedSigner, setViewingAuthorizedSigner] = useState<AuthorizedSigner | null>(null);
   
   // Banking modal state
   const [isAddBankAccountModalOpen, setIsAddBankAccountModalOpen] = useState(false);
@@ -647,6 +649,11 @@ export default function MyProfile() {
       zipCode: "",
     });
     setIsAuthorizedSignerSsnInvalid(false);
+  };
+
+  const handleViewAuthorizedSigner = (signer: AuthorizedSigner) => {
+    setViewingAuthorizedSigner(signer);
+    setIsViewAuthorizedSignerModalOpen(true);
   };
 
   const handleEditAuthorizedSigner = (signer: AuthorizedSigner) => {
@@ -1344,9 +1351,7 @@ export default function MyProfile() {
                         <WexDropdownMenu.Content align="end">
                           <WexDropdownMenu.Item
                             className="flex items-center gap-2 px-3 py-2 cursor-pointer"
-                            onClick={() => {
-                              // TODO: Implement view functionality
-                            }}
+                            onClick={() => handleViewAuthorizedSigner(signer)}
                           >
                             <Eye className="h-4 w-4" />
                             <span className="text-sm text-[#243746] leading-none">View</span>
@@ -4413,6 +4418,81 @@ export default function MyProfile() {
           </WexAlertDialog.Footer>
         </WexAlertDialog.Content>
       </WexAlertDialog>
+
+      {/* View Authorized Signer Modal */}
+      <WexDialog open={isViewAuthorizedSignerModalOpen} onOpenChange={setIsViewAuthorizedSignerModalOpen}>
+        <WexDialog.Content className="w-[448px]" size="md">
+          <WexDialog.Header>
+            <WexDialog.Title>View Authorized Signer</WexDialog.Title>
+          </WexDialog.Header>
+          
+          <div className="space-y-4">
+            {viewingAuthorizedSigner && (
+              <>
+                {/* Name */}
+                <div className="space-y-0.5 mt-0">
+                  <WexLabel className="text-xs text-muted-foreground mb-0 font-normal">Name</WexLabel>
+                  <p className="text-base font-normal text-[#243746] m-0 mt-0">
+                    {viewingAuthorizedSigner.firstName} {viewingAuthorizedSigner.middleName ? `${viewingAuthorizedSigner.middleName} ` : ""}{viewingAuthorizedSigner.lastName}
+                  </p>
+                </div>
+
+                {/* SSN, Birth Date, Type - 3 columns */}
+                <div className="grid grid-cols-3 gap-x-4 gap-y-[14px] mt-2">
+                  <div className="space-y-0.5 mt-0">
+                    <WexLabel className="text-xs text-muted-foreground mb-0 font-normal">SSN</WexLabel>
+                    <p className="text-base font-normal text-[#243746] m-0 mt-0">{viewingAuthorizedSigner.ssn}</p>
+                  </div>
+                  <div className="space-y-0.5 mt-0">
+                    <WexLabel className="text-xs text-muted-foreground mb-0 font-normal">Birth Date</WexLabel>
+                    <p className="text-base font-normal text-[#243746] m-0 mt-0">{viewingAuthorizedSigner.birthDate}</p>
+                  </div>
+                  <div className="space-y-0.5 mt-0">
+                    <WexLabel className="text-xs text-muted-foreground mb-0 font-normal">Type</WexLabel>
+                    <p className="text-base font-normal text-[#243746] capitalize m-0 mt-0">{viewingAuthorizedSigner.type}</p>
+                  </div>
+                </div>
+
+                {/* Phone */}
+                <div className="space-y-0.5 mt-0">
+                  <WexLabel className="text-xs text-muted-foreground mb-0 font-normal">Phone</WexLabel>
+                  <p className="text-base font-normal text-[#243746] m-0 mt-0">{viewingAuthorizedSigner.phone}</p>
+                </div>
+
+                {/* Address Line 1 */}
+                <div className="space-y-0.5 mt-0">
+                  <WexLabel className="text-xs text-muted-foreground mb-0 font-normal">Address Line 1</WexLabel>
+                  <p className="text-base font-normal text-[#243746] m-0 mt-0">{viewingAuthorizedSigner.addressLine1}</p>
+                </div>
+
+                {/* Address Line 2 - conditional */}
+                {viewingAuthorizedSigner.addressLine2 && (
+                  <div className="space-y-0.5 mt-0">
+                    <WexLabel className="text-xs text-muted-foreground mb-0 font-normal">Address Line 2</WexLabel>
+                    <p className="text-base font-normal text-[#243746] m-0 mt-0">{viewingAuthorizedSigner.addressLine2}</p>
+                  </div>
+                )}
+
+                {/* City, State, Zip Code */}
+                <div className="grid grid-cols-3 gap-x-4 gap-y-[14px] mt-2">
+                  <div className="space-y-0.5 mt-0">
+                    <WexLabel className="text-xs text-muted-foreground mb-0 font-normal">City</WexLabel>
+                    <p className="text-base font-normal text-[#243746] m-0 mt-0">{viewingAuthorizedSigner.city}</p>
+                  </div>
+                  <div className="space-y-0.5 mt-0">
+                    <WexLabel className="text-xs text-muted-foreground mb-0 font-normal">State</WexLabel>
+                    <p className="text-base font-normal text-[#243746] m-0 mt-0">{viewingAuthorizedSigner.state}</p>
+                  </div>
+                  <div className="space-y-0.5 mt-0">
+                    <WexLabel className="text-xs text-muted-foreground mb-0 font-normal">Zip Code</WexLabel>
+                    <p className="text-base font-normal text-[#243746] m-0 mt-0">{viewingAuthorizedSigner.zipCode}</p>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </WexDialog.Content>
+      </WexDialog>
 
       {/* Add Bank Account Multi-Step Modal */}
       <WexDialog open={isAddBankAccountModalOpen} onOpenChange={setIsAddBankAccountModalOpen}>
