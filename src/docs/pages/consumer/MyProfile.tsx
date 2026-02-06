@@ -22,7 +22,7 @@ import { WexSidebar } from "@/components/wex/wex-sidebar";
 import { Stepper } from "./components/Stepper";
 import { ConsumerNavigation } from "./ConsumerNavigation";
 import emptyStateIllustration from "./img/empty-state-illustration.svg";
-import { Pencil, Info, Plus, Calendar, X, Trash2, MoreVertical, Eye, RefreshCw, AlertCircle } from "lucide-react";
+import { Pencil, Info, Plus, Calendar, X, Trash2, MoreVertical, Eye, RefreshCw, AlertCircle, User, Users, HeartPlus, ShieldCheck, Landmark, CreditCard, Bell, UserLock } from "lucide-react";
 import { WexSwitch } from "@/components/wex/wex-switch";
 import { WexTabs } from "@/components/wex/wex-tabs";
 
@@ -937,15 +937,33 @@ export default function MyProfile() {
     }
   }, [showVerificationCode]);
 
-  const menuItems: { label: string; key: SubPage }[] = [
-    { label: "My Profile", key: "my-profile" },
-    { label: "Dependents", key: "dependents" },
-    { label: "Beneficiaries", key: "beneficiaries" },
-    { label: "Authorized Signers", key: "authorized-signers" },
-    { label: "Banking", key: "banking" },
-    { label: "Debit Card", key: "debit-card" },
-    { label: "Login & Security", key: "login-security" },
-    { label: "Communication Preferences", key: "communication" },
+  const menuSections: { 
+    title: string; 
+    items: { label: string; key: SubPage; icon: React.ComponentType<{ className?: string }> }[] 
+  }[] = [
+    {
+      title: "ACCOUNT",
+      items: [
+        { label: "My Profile", key: "my-profile", icon: User },
+        { label: "Dependents", key: "dependents", icon: Users },
+        { label: "Beneficiaries", key: "beneficiaries", icon: HeartPlus },
+        { label: "Authorized Signers", key: "authorized-signers", icon: ShieldCheck },
+      ],
+    },
+    {
+      title: "PAYMENTS",
+      items: [
+        { label: "Bank Accounts", key: "banking", icon: Landmark },
+        { label: "Debit Card", key: "debit-card", icon: CreditCard },
+      ],
+    },
+    {
+      title: "PREFERENCES & SECURITY",
+      items: [
+        { label: "Login & Security", key: "login-security", icon: UserLock },
+        { label: "Communication Preferences", key: "communication", icon: Bell },
+      ],
+    },
   ];
 
   const renderContent = (subPage: SubPage) => {
@@ -1362,7 +1380,7 @@ export default function MyProfile() {
           <>
             <div className="pt-4 pb-2">
               <div className="px-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <h2 className="text-2xl font-semibold text-gray-800">Banking</h2>
+                <h2 className="text-2xl font-semibold text-gray-800">Bank Accounts</h2>
                 <WexButton
                   intent="primary"
                   variant="outline"
@@ -3493,11 +3511,13 @@ export default function MyProfile() {
                       <WexSelect.Value placeholder="Choose section" />
                     </WexSelect.Trigger>
                     <WexSelect.Content>
-                      {menuItems.map((item) => (
-                        <WexSelect.Item key={item.key} value={item.key}>
-                          {item.label}
-                        </WexSelect.Item>
-                      ))}
+                      {menuSections.flatMap((section) =>
+                        section.items.map((item) => (
+                          <WexSelect.Item key={item.key} value={item.key}>
+                            {item.label}
+                          </WexSelect.Item>
+                        ))
+                      )}
                     </WexSelect.Content>
                   </WexSelect>
                 </div>
@@ -3511,22 +3531,43 @@ export default function MyProfile() {
                 {/* Left Sidebar (desktop) */}
                 <WexSidebar
                   collapsible="none"
-                  className="hidden md:flex w-[240px] border-r border-wex-card-border bg-wex-card-bg flex-col h-auto"
+                  className="hidden md:flex w-[264px] border-r border-wex-card-border bg-wex-card-bg flex-col h-auto"
                 >
                   <WexSidebar.Content className="flex-1 h-full px-2 py-4">
                     <WexSidebar.Group className="flex-1 h-full">
                       <WexSidebar.GroupContent className="flex-1 h-full">
                         <WexSidebar.Menu className="flex-1 h-full">
-                          {menuItems.map((item) => (
-                            <WexSidebar.MenuItem key={item.key}>
-                              <WexSidebar.MenuButton
-                                isActive={activeSubPage === item.key}
-                                onClick={() => handleSubPageChange(item.key)}
-                                className="h-[31px] min-h-[31px] whitespace-normal px-3 py-[6px] data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:font-normal"
-                              >
-                                {item.label}
-                              </WexSidebar.MenuButton>
-                            </WexSidebar.MenuItem>
+                          {menuSections.map((section, sectionIndex) => (
+                            <div key={section.title}>
+                              <WexSidebar.GroupLabel className="px-3 py-[7px]">
+                                <span className="text-xs font-medium text-sidebar-foreground/70 uppercase tracking-[0.24px]">
+                                  {section.title}
+                                </span>
+                              </WexSidebar.GroupLabel>
+                              <div className="space-y-1">
+                                {section.items.map((item) => {
+                                  const Icon = item.icon;
+                                  const isActive = activeSubPage === item.key;
+                                  return (
+                                    <WexSidebar.MenuItem key={item.key}>
+                                      <WexSidebar.MenuButton
+                                        isActive={isActive}
+                                        onClick={() => handleSubPageChange(item.key)}
+                                        className="h-[32px] min-h-[32px] whitespace-normal px-3 py-1 rounded-md data-[active=true]:bg-[#E4F5FD] data-[active=true]:text-[#00437c] data-[active=false]:text-[#1d2c38]"
+                                      >
+                                        <div className="flex items-center gap-2 w-full">
+                                          <Icon className={`h-[14px] w-[14px] shrink-0 ${isActive ? 'text-[#00437c]' : 'text-[#1d2c38]'}`} />
+                                          <span className="text-sm tracking-[-0.084px]">{item.label}</span>
+                                        </div>
+                                      </WexSidebar.MenuButton>
+                                    </WexSidebar.MenuItem>
+                                  );
+                                })}
+                              </div>
+                              {sectionIndex < menuSections.length - 1 && (
+                                <WexSidebar.Separator className="my-2" />
+                              )}
+                            </div>
                           ))}
                         </WexSidebar.Menu>
                       </WexSidebar.GroupContent>
