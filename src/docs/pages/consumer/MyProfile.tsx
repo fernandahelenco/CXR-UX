@@ -22,7 +22,7 @@ import { WexSidebar } from "@/components/wex/wex-sidebar";
 import { Stepper } from "./components/Stepper";
 import { ConsumerNavigation } from "./ConsumerNavigation";
 import emptyStateIllustration from "./img/empty-state-illustration.svg";
-import { Pencil, Info, Plus, Calendar, X, Trash2, MoreVertical, Eye, RefreshCw, AlertCircle, User, Users, HeartPlus, ShieldCheck, Landmark, CreditCard, Bell, UserLock } from "lucide-react";
+import { Pencil, Info, Plus, Calendar, X, Trash2, MoreVertical, Eye, RefreshCw, AlertCircle, User, Users, HeartPlus, ShieldCheck, Landmark, CreditCard, Bell, UserLock, Lock } from "lucide-react";
 import { WexSwitch } from "@/components/wex/wex-switch";
 import { WexTabs } from "@/components/wex/wex-tabs";
 
@@ -1128,16 +1128,30 @@ export default function MyProfile() {
                 <WexEmpty className="border-0 py-12">
                   <WexEmpty.Header>
                     <WexEmpty.Media variant="default">
-                      <img 
-                        src={emptyStateIllustration} 
-                        alt="" 
-                        className="h-[191px] w-[235px]"
-                      />
+                      <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-gray-100">
+                        <Users className="h-10 w-10 text-gray-400" />
+                      </div>
                     </WexEmpty.Media>
-                    <WexEmpty.Title className="text-base font-normal text-[#243746]">
-                      You have no dependents added yet
+                    <WexEmpty.Title className="text-lg font-semibold text-[#243746]">
+                      Add a Dependent
                     </WexEmpty.Title>
+                    <WexEmpty.Description>
+                      You have no dependents added yet. Add a dependent to manage their information and benefits.
+                    </WexEmpty.Description>
                   </WexEmpty.Header>
+                  <WexEmpty.Content>
+                    <WexButton
+                      intent="primary"
+                      onClick={() => {
+                        resetForm();
+                        setEditingDependentId(null);
+                        setIsAddDependentModalOpen(true);
+                      }}
+                    >
+                      <Plus className="h-4 w-4" />
+                      <span>Add Dependent</span>
+                    </WexButton>
+                  </WexEmpty.Content>
                 </WexEmpty>
               </div>
             ) : (
@@ -1216,16 +1230,30 @@ export default function MyProfile() {
                 <WexEmpty className="border-0 py-12">
                   <WexEmpty.Header>
                     <WexEmpty.Media variant="default">
-                      <img 
-                        src={emptyStateIllustration} 
-                        alt="" 
-                        className="h-[191px] w-[235px]"
-                      />
+                      <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-gray-100">
+                        <HeartPlus className="h-10 w-10 text-gray-400" />
+                      </div>
                     </WexEmpty.Media>
-                    <WexEmpty.Title className="text-base font-normal text-[#243746]">
-                      You have no beneficiaries added yet
+                    <WexEmpty.Title className="text-lg font-semibold text-[#243746]">
+                      Add a Beneficiary
                     </WexEmpty.Title>
+                    <WexEmpty.Description>
+                      You have no beneficiaries added yet. Add a beneficiary to designate who will receive your benefits.
+                    </WexEmpty.Description>
                   </WexEmpty.Header>
+                  <WexEmpty.Content>
+                    <WexButton
+                      intent="primary"
+                      onClick={() => {
+                        resetBeneficiaryForm();
+                        setEditingBeneficiaryId(null);
+                        setIsAddBeneficiaryModalOpen(true);
+                      }}
+                    >
+                      <Plus className="h-4 w-4" />
+                      <span>Add Beneficiary</span>
+                    </WexButton>
+                  </WexEmpty.Content>
                 </WexEmpty>
               </div>
             ) : (
@@ -1308,16 +1336,30 @@ export default function MyProfile() {
                 <WexEmpty className="border-0 py-12">
                   <WexEmpty.Header>
                     <WexEmpty.Media variant="default">
-                      <img 
-                        src={emptyStateIllustration} 
-                        alt="" 
-                        className="h-[191px] w-[235px]"
-                      />
+                      <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-gray-100">
+                        <ShieldCheck className="h-10 w-10 text-gray-400" />
+                      </div>
                     </WexEmpty.Media>
-                    <WexEmpty.Title className="text-base font-normal text-[#243746]">
-                      You have no authorized signers added yet
+                    <WexEmpty.Title className="text-lg font-semibold text-[#243746]">
+                      Add an Authorized Signer
                     </WexEmpty.Title>
+                    <WexEmpty.Description>
+                      You have no authorized signers added yet. Add an authorized signer to grant them permission to act on your behalf.
+                    </WexEmpty.Description>
                   </WexEmpty.Header>
+                  <WexEmpty.Content>
+                    <WexButton
+                      intent="primary"
+                      onClick={() => {
+                        resetAuthorizedSignerForm();
+                        setEditingAuthorizedSignerId(null);
+                        setIsAddAuthorizedSignerModalOpen(true);
+                      }}
+                    >
+                      <Plus className="h-4 w-4" />
+                      <span>Add Authorized Signer</span>
+                    </WexButton>
+                  </WexEmpty.Content>
                 </WexEmpty>
               </div>
             ) : (
@@ -1418,17 +1460,45 @@ export default function MyProfile() {
                 <WexEmpty className="border-0 py-12">
                   <WexEmpty.Header>
                     <WexEmpty.Media variant="default">
-                      <img 
-                        src={emptyStateIllustration} 
-                        alt="" 
-                        className="h-[191px] w-[235px]"
-                      />
+                      <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-gray-100">
+                        <Landmark className="h-10 w-10 text-gray-400" />
+                      </div>
                     </WexEmpty.Media>
-                    <WexEmpty.Title className="text-base font-normal text-[#243746]">
-                      You have no bank accounts added yet
+                    <WexEmpty.Title className="text-lg font-semibold text-[#243746]">
+                      Add a Bank Account
                     </WexEmpty.Title>
+                    <WexEmpty.Description>
+                      You have no bank accounts added yet. Connect a bank account to receive reimbursements and deposits directly.
+                    </WexEmpty.Description>
                   </WexEmpty.Header>
+                  <WexEmpty.Content>
+                    <WexButton
+                      intent="primary"
+                      onClick={() => {
+                        setBankAccountFormData({
+                          verificationMethod: "text",
+                          verificationCode: "",
+                          accountType: "checking",
+                          accountNumber: "",
+                          confirmAccountNumber: "",
+                          routingNumber: "",
+                          accountNickname: "",
+                          selectedDirectDepositOptions: [],
+                        });
+                        setBankAccountStep("step1");
+                        setEditingBankAccountId(null);
+                        setIsAddBankAccountModalOpen(true);
+                      }}
+                    >
+                      <Plus className="h-4 w-4" />
+                      <span>Add Bank Account</span>
+                    </WexButton>
+                  </WexEmpty.Content>
                 </WexEmpty>
+                <div className="mt-6 flex items-center gap-2 text-sm text-muted-foreground">
+                  <Lock className="h-4 w-4" />
+                  <span>Your bank information is protected</span>
+                </div>
               </div>
             ) : (
               <div className="p-6 space-y-4">
