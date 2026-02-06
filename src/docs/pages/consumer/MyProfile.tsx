@@ -20,6 +20,7 @@ import { WexDropdownMenu } from "@/components/wex/wex-dropdown-menu";
 import { wexToast } from "@/components/wex/wex-toast";
 import { WexSidebar } from "@/components/wex/wex-sidebar";
 import { Stepper } from "./components/Stepper";
+import { Workspace, SelectCard, FloatLabelSelect } from "./components";
 import { ConsumerNavigation } from "./ConsumerNavigation";
 import { Pencil, Info, Plus, Calendar, X, Trash2, MoreVertical, Eye, RefreshCw, AlertCircle, User, Users, HeartPlus, ShieldCheck, Landmark, CreditCard, Bell, UserLock, Lock } from "lucide-react";
 import { WexSwitch } from "@/components/wex/wex-switch";
@@ -54,6 +55,18 @@ type Beneficiary = {
   city: string;
   state: string;
   zipCode: string;
+};
+
+type WorkspaceBeneficiary = {
+  id: string;
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+  relationship: string;
+  sharePercentage: string; // e.g., "100", "50"
+  source: "dependent" | "added"; // Track if from dependent selection or manual add
+  dependentId?: string; // If source is "dependent", store the dependent ID
+  beneficiaryType: "primary" | "contingent";
 };
 
 type AuthorizedSigner = {
@@ -359,10 +372,43 @@ export default function MyProfile() {
   
   // Beneficiary modal state
   const [isAddBeneficiaryModalOpen, setIsAddBeneficiaryModalOpen] = useState(false);
+  const [isAddBeneficiaryWorkspaceOpen, setIsAddBeneficiaryWorkspaceOpen] = useState(false);
+  const [selectedDependentIds, setSelectedDependentIds] = useState<string[]>([]);
+  const [workspaceBeneficiaries, setWorkspaceBeneficiaries] = useState<WorkspaceBeneficiary[]>([]);
+  const [splitSharesEqually, setSplitSharesEqually] = useState(false);
+  
+  // Load existing beneficiaries into workspace when it opens
+  useEffect(() => {
+    if (isAddBeneficiaryWorkspaceOpen) {
+      const existingWorkspaceBeneficiaries: WorkspaceBeneficiary[] = beneficiaries.map((ben) => ({
+        id: ben.id,
+        firstName: ben.firstName,
+        middleName: ben.middleName || undefined,
+        lastName: ben.lastName,
+        relationship: ben.relationship,
+        sharePercentage: ben.sharePercentage || (beneficiaries.length === 1 ? "100" : "0"),
+        source: "added",
+        beneficiaryType: ben.beneficiaryType,
+      }));
+      // Preserve any dependents that were already selected in the workspace
+      setWorkspaceBeneficiaries((prev) => {
+        const dependentBeneficiaries = prev.filter(wb => wb.source === "dependent");
+        return [...existingWorkspaceBeneficiaries, ...dependentBeneficiaries];
+      });
+    }
+  }, [isAddBeneficiaryWorkspaceOpen, beneficiaries]);
+  
+  const [isRemoveWorkspaceBeneficiaryConfirmOpen, setIsRemoveWorkspaceBeneficiaryConfirmOpen] = useState(false);
+  const [workspaceBeneficiaryToRemove, setWorkspaceBeneficiaryToRemove] = useState<WorkspaceBeneficiary | null>(null);
   const [editingBeneficiaryId, setEditingBeneficiaryId] = useState<string | null>(null);
   const [isRemoveBeneficiaryConfirmOpen, setIsRemoveBeneficiaryConfirmOpen] = useState(false);
   const [beneficiaryToRemove, setBeneficiaryToRemove] = useState<Beneficiary | null>(null);
   const [isBeneficiaryCalendarOpen, setIsBeneficiaryCalendarOpen] = useState(false);
+  
+  // Dependent beneficiary type selection dialog state
+  const [isDependentTypeDialogOpen, setIsDependentTypeDialogOpen] = useState(false);
+  const [pendingDependent, setPendingDependent] = useState<Dependent | null>(null);
+  const [selectedDependentType, setSelectedDependentType] = useState<"primary" | "contingent">("primary");
   
   // Authorized signer modal state
   const [isAddAuthorizedSignerModalOpen, setIsAddAuthorizedSignerModalOpen] = useState(false);
@@ -702,6 +748,21 @@ export default function MyProfile() {
       };
       setBeneficiaries((prev) => [...prev, newBeneficiary]);
       
+      // Add to workspace beneficiaries if workspace is open
+      if (isAddBeneficiaryWorkspaceOpen) {
+        const workspaceBeneficiary: WorkspaceBeneficiary = {
+          id: newBeneficiary.id,
+          firstName: newBeneficiary.firstName,
+          middleName: newBeneficiary.middleName,
+          lastName: newBeneficiary.lastName,
+          relationship: newBeneficiary.relationship,
+          sharePercentage: workspaceBeneficiaries.length === 0 ? "100" : "0",
+          source: "added",
+          beneficiaryType: newBeneficiary.beneficiaryType,
+        };
+        setWorkspaceBeneficiaries([...workspaceBeneficiaries, workspaceBeneficiary]);
+      }
+      
       // Show success toast for add
       wexToast.success("Beneficiary successfully added", {
         description: `${fullName} is now a beneficiary`,
@@ -710,6 +771,217 @@ export default function MyProfile() {
     resetBeneficiaryForm();
     setEditingBeneficiaryId(null);
     setIsAddBeneficiaryModalOpen(false);
+  };
+
+  // Workspace beneficiary handlers
+  const handleSharePercentageChange = (beneficiaryId: string, value: string) => {
+    setWorkspaceBeneficiaries((prev) =>
+      prev.map((ben) =>
+        ben.id === beneficiaryId
+          ? { ...ben, sharePercentage: value }
+          : ben
+      )
+    );
+  };
+
+  const handleRemoveWorkspaceBeneficiaryClick = (beneficiary: WorkspaceBeneficiary) => {
+    setWorkspaceBeneficiaryToRemove(beneficiary);
+    setIsRemoveWorkspaceBeneficiaryConfirmOpen(true);
+  };
+
+  const handleAddDependentAsBeneficiary = () => {
+    if (!pendingDependent) return;
+    
+    setSelectedDependentIds([...selectedDependentIds, pendingDependent.id]);
+    // Add dependent as workspace beneficiary with selected type
+    const workspaceBeneficiary: WorkspaceBeneficiary = {
+      id: `dependent-${pendingDependent.id}`,
+      firstName: pendingDependent.firstName,
+      middleName: pendingDependent.middleName,
+      lastName: pendingDependent.lastName,
+      relationship: pendingDependent.relationship,
+      sharePercentage: workspaceBeneficiaries.length === 0 ? "100" : "0",
+      source: "dependent",
+      dependentId: pendingDependent.id,
+      beneficiaryType: selectedDependentType,
+    };
+    setWorkspaceBeneficiaries([...workspaceBeneficiaries, workspaceBeneficiary]);
+    
+    // Close dialog and reset state
+    setIsDependentTypeDialogOpen(false);
+    setPendingDependent(null);
+    setSelectedDependentType("primary");
+  };
+
+  const handleRemoveWorkspaceBeneficiary = () => {
+    if (!workspaceBeneficiaryToRemove) return;
+    
+    const beneficiaryId = workspaceBeneficiaryToRemove.id;
+    if (workspaceBeneficiaryToRemove.source === "dependent" && workspaceBeneficiaryToRemove.dependentId) {
+      // If it's from a dependent, uncheck the dependent
+      setSelectedDependentIds(selectedDependentIds.filter(id => id !== workspaceBeneficiaryToRemove.dependentId));
+    }
+    setWorkspaceBeneficiaries(workspaceBeneficiaries.filter(b => b.id !== beneficiaryId));
+    setIsRemoveWorkspaceBeneficiaryConfirmOpen(false);
+    setWorkspaceBeneficiaryToRemove(null);
+  };
+
+  const handleSplitSharesToggle = (checked: boolean) => {
+    setSplitSharesEqually(checked);
+    if (checked && workspaceBeneficiaries.length > 0) {
+      setWorkspaceBeneficiaries((prev) => {
+        const primaryBeneficiaries = prev.filter((ben) => ben.beneficiaryType === "primary");
+        const contingentBeneficiaries = prev.filter((ben) => ben.beneficiaryType === "contingent");
+        
+        return prev.map((ben) => {
+          if (ben.beneficiaryType === "primary" && primaryBeneficiaries.length > 0) {
+            // Calculate equal shares for primary beneficiaries
+            const equalShare = Math.floor(100 / primaryBeneficiaries.length);
+            const remainder = 100 % primaryBeneficiaries.length;
+            const primaryIndex = primaryBeneficiaries.findIndex((p) => p.id === ben.id);
+            return {
+              ...ben,
+              sharePercentage: primaryIndex === primaryBeneficiaries.length - 1
+                ? (equalShare + remainder).toString()
+                : equalShare.toString(),
+            };
+          } else if (ben.beneficiaryType === "contingent" && contingentBeneficiaries.length > 0) {
+            // Calculate equal shares for contingent beneficiaries
+            const equalShare = Math.floor(100 / contingentBeneficiaries.length);
+            const remainder = 100 % contingentBeneficiaries.length;
+            const contingentIndex = contingentBeneficiaries.findIndex((c) => c.id === ben.id);
+            return {
+              ...ben,
+              sharePercentage: contingentIndex === contingentBeneficiaries.length - 1
+                ? (equalShare + remainder).toString()
+                : equalShare.toString(),
+            };
+          }
+          return ben;
+        });
+      });
+    }
+  };
+
+  // Calculate total share percentage
+  const calculateTotalShares = () => {
+    return workspaceBeneficiaries.reduce((total, ben) => {
+      const share = parseFloat(ben.sharePercentage) || 0;
+      return total + share;
+    }, 0);
+  };
+
+  const calculatePrimaryTotalShares = () => {
+    return workspaceBeneficiaries
+      .filter((ben) => ben.beneficiaryType === "primary")
+      .reduce((total, ben) => {
+        const share = parseFloat(ben.sharePercentage) || 0;
+        return total + share;
+      }, 0);
+  };
+
+  const calculateContingentTotalShares = () => {
+    return workspaceBeneficiaries
+      .filter((ben) => ben.beneficiaryType === "contingent")
+      .reduce((total, ben) => {
+        const share = parseFloat(ben.sharePercentage) || 0;
+        return total + share;
+      }, 0);
+  };
+
+  // Check if shares are valid
+  const areSharesValid = () => {
+    if (workspaceBeneficiaries.length === 0) return true;
+    if (splitSharesEqually) return true; // Skip validation when split equally is on
+    
+    const primaryBeneficiaries = workspaceBeneficiaries.filter((ben) => ben.beneficiaryType === "primary");
+    const contingentBeneficiaries = workspaceBeneficiaries.filter((ben) => ben.beneficiaryType === "contingent");
+    
+    // Check if any primary beneficiary has 0% or empty share
+    const hasZeroPrimaryShare = primaryBeneficiaries.some(
+      (ben) => !ben.sharePercentage || parseFloat(ben.sharePercentage) === 0
+    );
+    
+    // Check if any contingent beneficiary has 0% or empty share
+    const hasZeroContingentShare = contingentBeneficiaries.some(
+      (ben) => !ben.sharePercentage || parseFloat(ben.sharePercentage) === 0
+    );
+    
+    if (hasZeroPrimaryShare || hasZeroContingentShare) return false;
+    
+    // Check if primary total equals 100%
+    if (primaryBeneficiaries.length > 0) {
+      const primaryTotal = calculatePrimaryTotalShares();
+      if (Math.abs(primaryTotal - 100) >= 0.01) return false;
+    }
+    
+    // Check if contingent total equals 100%
+    if (contingentBeneficiaries.length > 0) {
+      const contingentTotal = calculateContingentTotalShares();
+      if (Math.abs(contingentTotal - 100) >= 0.01) return false;
+    }
+    
+    return true;
+  };
+
+  // Get error message
+  const getSharesErrorMessage = () => {
+    if (workspaceBeneficiaries.length === 0) return null;
+    if (splitSharesEqually) return null; // No error when split equally is on
+    
+    const primaryBeneficiaries = workspaceBeneficiaries.filter((ben) => ben.beneficiaryType === "primary");
+    const contingentBeneficiaries = workspaceBeneficiaries.filter((ben) => ben.beneficiaryType === "contingent");
+    
+    const errors: string[] = [];
+    let hasPrimaryError = false;
+    let hasContingentError = false;
+    
+    // Check primary beneficiaries
+    if (primaryBeneficiaries.length > 0) {
+      const hasZeroPrimaryShare = primaryBeneficiaries.some(
+        (ben) => !ben.sharePercentage || parseFloat(ben.sharePercentage) === 0
+      );
+      
+      if (hasZeroPrimaryShare) {
+        errors.push("Primary beneficiaries: A beneficiary cannot have 0% as shares");
+        hasPrimaryError = true;
+      } else {
+        const primaryTotal = calculatePrimaryTotalShares();
+        if (Math.abs(primaryTotal - 100) >= 0.01) {
+          errors.push("Total allocation for primary beneficiaries must equal 100%");
+          hasPrimaryError = true;
+        }
+      }
+    }
+    
+    // Check contingent beneficiaries
+    if (contingentBeneficiaries.length > 0) {
+      const hasZeroContingentShare = contingentBeneficiaries.some(
+        (ben) => !ben.sharePercentage || parseFloat(ben.sharePercentage) === 0
+      );
+      
+      if (hasZeroContingentShare) {
+        errors.push("Contingent beneficiaries: A beneficiary cannot have 0% as shares");
+        hasContingentError = true;
+      } else {
+        const contingentTotal = calculateContingentTotalShares();
+        if (Math.abs(contingentTotal - 100) >= 0.01) {
+          errors.push("Total allocation for contingent beneficiaries must equal 100%");
+          hasContingentError = true;
+        }
+      }
+    }
+    
+    if (errors.length === 0) return null;
+    
+    // If both types have allocation errors (not zero share errors), show combined message
+    if (hasPrimaryError && hasContingentError && 
+        errors.some(e => e.includes("Total allocation for primary")) &&
+        errors.some(e => e.includes("Total allocation for contingent"))) {
+      return "Total allocation must equal to 100%, for each type of beneficiary";
+    }
+    
+    return errors.join(" ");
   };
 
   const handleRemoveBeneficiaryClick = (beneficiary: Beneficiary) => {
@@ -1379,7 +1651,8 @@ export default function MyProfile() {
                   onClick={() => {
                     resetBeneficiaryForm();
                     setEditingBeneficiaryId(null);
-                    setIsAddBeneficiaryModalOpen(true);
+                    setSelectedDependentIds([]);
+                    setIsAddBeneficiaryWorkspaceOpen(true);
                   }}
                 >
                   <Plus className="h-4 w-4" />
@@ -1410,7 +1683,8 @@ export default function MyProfile() {
                       onClick={() => {
                         resetBeneficiaryForm();
                         setEditingBeneficiaryId(null);
-                        setIsAddBeneficiaryModalOpen(true);
+                        setSelectedDependentIds([]);
+                        setIsAddBeneficiaryWorkspaceOpen(true);
                       }}
                     >
                       <Plus className="h-4 w-4" />
@@ -1526,7 +1800,7 @@ export default function MyProfile() {
                   }}
                 >
                   <Plus className="h-4 w-4" />
-                  <span className="sm:ml-2">Add Authorized Signer</span>
+                  <span>Add Authorized Signer</span>
                 </WexButton>
               </div>
               <WexSeparator className="mt-4" />
@@ -1563,10 +1837,14 @@ export default function MyProfile() {
                 </WexEmpty>
               </div>
             ) : (
-              <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                 {authorizedSigners.map((signer) => (
-                  <WexCard key={signer.id} className="p-4 w-80">
-                    <div className="flex items-start justify-between">
+                  <WexCard
+                    key={signer.id}
+                    className="p-4 bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)]"
+                  >
+                    <WexCard.Content className="p-0">
+                      <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <h3 className="text-lg font-semibold text-[#243746] mb-0">
                           {signer.firstName} {signer.middleName ? `${signer.middleName} ` : ""}{signer.lastName}
@@ -1614,7 +1892,8 @@ export default function MyProfile() {
                           </WexDropdownMenu.Item>
                         </WexDropdownMenu.Content>
                       </WexDropdownMenu>
-                    </div>
+                      </div>
+                    </WexCard.Content>
                   </WexCard>
                 ))}
               </div>
@@ -3983,30 +4262,16 @@ export default function MyProfile() {
                 </WexPopover.Content>
               </WexPopover>
               
-              {/* Gender Select with Float Label Wrapper */}
-              <div className="relative flex-1">
-                <WexSelect
-                  value={formData.gender}
-                  onValueChange={(value) => handleFormChange("gender", value)}
-                >
-                  <WexSelect.Trigger className={`h-14 w-full rounded-md px-3 text-sm shadow-sm border border-wex-input-border bg-wex-input-bg text-wex-input-fg hover:border-wex-input-border-hover focus:outline-none focus:border-wex-input-border-focus focus:ring-1 focus:ring-wex-input-focus-ring ${formData.gender ? "pt-2 pb-2" : "pt-5 pb-2"}`}>
-                    <WexSelect.Value placeholder=" " />
-                  </WexSelect.Trigger>
-                  <WexSelect.Content>
-                    <WexSelect.Item value="male">Male</WexSelect.Item>
-                    <WexSelect.Item value="female">Female</WexSelect.Item>
-                  </WexSelect.Content>
-                </WexSelect>
-                <label
-                  className={`absolute pointer-events-none transition-all duration-200 ease-out origin-top-left ${
-                    formData.gender
-                      ? "left-3 top-2 text-xs text-[#7c858e] scale-75 -translate-y-2.5"
-                      : "left-3 top-4 text-sm text-[#7c858e]"
-                  }`}
-                >
-                  Gender
-                </label>
-              </div>
+              {/* Gender Select */}
+              <FloatLabelSelect
+                label="Gender"
+                value={formData.gender}
+                onValueChange={(value) => handleFormChange("gender", value)}
+                className="flex-1"
+              >
+                <WexSelect.Item value="male">Male</WexSelect.Item>
+                <WexSelect.Item value="female">Female</WexSelect.Item>
+              </FloatLabelSelect>
             </div>
 
             {/* Full time student Radio Group */}
@@ -4028,30 +4293,15 @@ export default function MyProfile() {
               </WexRadioGroup>
             </div>
 
-            {/* Relationship Select with Float Label Wrapper */}
-            <div className="relative w-full">
-              <WexSelect
-                value={formData.relationship}
-                onValueChange={(value) => handleFormChange("relationship", value)}
-              >
-                <WexSelect.Trigger className={`h-14 w-full rounded-md px-3 text-sm shadow-sm border border-wex-input-border bg-wex-input-bg text-wex-input-fg hover:border-wex-input-border-hover focus:outline-none focus:border-wex-input-border-focus focus:ring-1 focus:ring-wex-input-focus-ring ${formData.relationship ? "pt-2 pb-2" : "pt-5 pb-2"}`}>
-                  <WexSelect.Value placeholder=" " />
-                </WexSelect.Trigger>
-                <WexSelect.Content>
-                  <WexSelect.Item value="spouse">Spouse</WexSelect.Item>
-                  <WexSelect.Item value="dependent">Dependent</WexSelect.Item>
-                </WexSelect.Content>
-              </WexSelect>
-              <label
-                className={`absolute pointer-events-none transition-all duration-200 ease-out origin-top-left ${
-                  formData.relationship
-                    ? "left-3 top-2 text-xs text-[#7c858e] scale-75 -translate-y-2.5"
-                    : "left-3 top-4 text-sm text-[#7c858e]"
-                }`}
-              >
-                Relationship
-              </label>
-            </div>
+            {/* Relationship Select */}
+            <FloatLabelSelect
+              label="Relationship"
+              value={formData.relationship}
+              onValueChange={(value) => handleFormChange("relationship", value)}
+            >
+              <WexSelect.Item value="spouse">Spouse</WexSelect.Item>
+              <WexSelect.Item value="dependent">Dependent</WexSelect.Item>
+            </FloatLabelSelect>
           </div>
 
           {/* Footer */}
@@ -4258,31 +4508,17 @@ export default function MyProfile() {
                 </WexPopover.Content>
               </WexPopover>
 
-              {/* Relationship Select with Float Label Wrapper */}
-              <div className="relative flex-1">
-                <WexSelect
-                  value={beneficiaryFormData.relationship}
-                  onValueChange={(value) => handleBeneficiaryFormChange("relationship", value)}
-                >
-                  <WexSelect.Trigger className={`h-14 w-full rounded-md px-3 text-sm shadow-sm border border-wex-input-border bg-wex-input-bg text-wex-input-fg hover:border-wex-input-border-hover focus:outline-none focus:border-wex-input-border-focus focus:ring-1 focus:ring-wex-input-focus-ring ${beneficiaryFormData.relationship ? "pt-2 pb-2" : "pt-5 pb-2"}`}>
-                    <WexSelect.Value placeholder=" " />
-                  </WexSelect.Trigger>
-                  <WexSelect.Content>
-                    <WexSelect.Item value="spouse">Spouse</WexSelect.Item>
-                    <WexSelect.Item value="dependent">Dependent</WexSelect.Item>
-                    <WexSelect.Item value="other">Other</WexSelect.Item>
-                  </WexSelect.Content>
-                </WexSelect>
-                <label
-                  className={`absolute pointer-events-none transition-all duration-200 ease-out origin-top-left ${
-                    beneficiaryFormData.relationship
-                      ? "left-3 top-2 text-xs text-[#7c858e] scale-75 -translate-y-2.5"
-                      : "left-3 top-4 text-sm text-[#7c858e]"
-                  }`}
-                >
-                  Relationship
-                </label>
-              </div>
+              {/* Relationship Select */}
+              <FloatLabelSelect
+                label="Relationship"
+                value={beneficiaryFormData.relationship}
+                onValueChange={(value) => handleBeneficiaryFormChange("relationship", value)}
+                className="flex-1"
+              >
+                <WexSelect.Item value="spouse">Spouse</WexSelect.Item>
+                <WexSelect.Item value="dependent">Dependent</WexSelect.Item>
+                <WexSelect.Item value="other">Other</WexSelect.Item>
+              </FloatLabelSelect>
             </div>
 
             {/* Beneficiary Type Radio Group */}
@@ -4326,33 +4562,19 @@ export default function MyProfile() {
             
             {/* State and Zip Code on same row */}
             <div className="flex gap-4">
-              {/* State Select with Float Label Wrapper */}
-              <div className="relative flex-1">
-                <WexSelect
-                  value={beneficiaryFormData.state}
-                  onValueChange={(value) => handleBeneficiaryFormChange("state", value)}
-                >
-                  <WexSelect.Trigger className={`h-14 w-full rounded-md px-3 text-sm shadow-sm border border-wex-input-border bg-wex-input-bg text-wex-input-fg hover:border-wex-input-border-hover focus:outline-none focus:border-wex-input-border-focus focus:ring-1 focus:ring-wex-input-focus-ring ${beneficiaryFormData.state ? "pt-2 pb-2" : "pt-5 pb-2"}`}>
-                    <WexSelect.Value placeholder=" " />
-                  </WexSelect.Trigger>
-                  <WexSelect.Content>
-                    {usStates.map((state) => (
-                      <WexSelect.Item key={state} value={state}>
-                        {state}
-                      </WexSelect.Item>
-                    ))}
-                  </WexSelect.Content>
-                </WexSelect>
-                <label
-                  className={`absolute pointer-events-none transition-all duration-200 ease-out origin-top-left ${
-                    beneficiaryFormData.state
-                      ? "left-3 top-2 text-xs text-[#7c858e] scale-75 -translate-y-2.5"
-                      : "left-3 top-4 text-sm text-[#7c858e]"
-                  }`}
-                >
-                  Select State
-                </label>
-              </div>
+              {/* State Select */}
+              <FloatLabelSelect
+                label="Select State"
+                value={beneficiaryFormData.state}
+                onValueChange={(value) => handleBeneficiaryFormChange("state", value)}
+                className="flex-1"
+              >
+                {usStates.map((state) => (
+                  <WexSelect.Item key={state} value={state}>
+                    {state}
+                  </WexSelect.Item>
+                ))}
+              </FloatLabelSelect>
 
               <WexFloatLabel
                 label="Zip Code"
@@ -4595,34 +4817,19 @@ export default function MyProfile() {
               </div>
             </div>
 
-            {/* Type Select with Float Label Wrapper */}
-            <div className="relative w-full">
-              <WexSelect
-                value={authorizedSignerFormData.type}
-                onValueChange={(value) => handleAuthorizedSignerFormChange("type", value)}
-              >
-                <WexSelect.Trigger className={`h-14 w-full rounded-md px-3 text-sm shadow-sm border border-wex-input-border bg-wex-input-bg text-wex-input-fg hover:border-wex-input-border-hover focus:outline-none focus:border-wex-input-border-focus focus:ring-1 focus:ring-wex-input-focus-ring ${authorizedSignerFormData.type ? "pt-2 pb-2" : "pt-5 pb-2"}`}>
-                  <WexSelect.Value placeholder=" " />
-                </WexSelect.Trigger>
-                <WexSelect.Content>
-                  <WexSelect.Item value="authorized-representative">Authorized Representative</WexSelect.Item>
-                  <WexSelect.Item value="authorized-signer">Authorized Signer</WexSelect.Item>
-                  <WexSelect.Item value="conservator">Conservator</WexSelect.Item>
-                  <WexSelect.Item value="guardian">Guardian</WexSelect.Item>
-                  <WexSelect.Item value="parent">Parent</WexSelect.Item>
-                  <WexSelect.Item value="power-of-attorney">Power of Attorney</WexSelect.Item>
-                </WexSelect.Content>
-              </WexSelect>
-              <label
-                className={`absolute pointer-events-none transition-all duration-200 ease-out origin-top-left ${
-                  authorizedSignerFormData.type
-                    ? "left-3 top-2 text-xs text-[#7c858e] scale-75 -translate-y-2.5"
-                    : "left-3 top-4 text-sm text-[#7c858e]"
-                }`}
-              >
-                Type
-              </label>
-            </div>
+            {/* Type Select */}
+            <FloatLabelSelect
+              label="Type"
+              value={authorizedSignerFormData.type}
+              onValueChange={(value) => handleAuthorizedSignerFormChange("type", value)}
+            >
+              <WexSelect.Item value="authorized-representative">Authorized Representative</WexSelect.Item>
+              <WexSelect.Item value="authorized-signer">Authorized Signer</WexSelect.Item>
+              <WexSelect.Item value="conservator">Conservator</WexSelect.Item>
+              <WexSelect.Item value="guardian">Guardian</WexSelect.Item>
+              <WexSelect.Item value="parent">Parent</WexSelect.Item>
+              <WexSelect.Item value="power-of-attorney">Power of Attorney</WexSelect.Item>
+            </FloatLabelSelect>
 
             {/* Phone */}
             <WexFloatLabel
@@ -4654,77 +4861,64 @@ export default function MyProfile() {
 
             {/* State & Zip Code on same row */}
             <div className="flex gap-4">
-              <div className="relative flex-1">
-                <WexSelect
-                  value={authorizedSignerFormData.state}
-                  onValueChange={(value) => handleAuthorizedSignerFormChange("state", value)}
-                >
-                  <WexSelect.Trigger className={`h-14 w-full rounded-md px-3 text-sm shadow-sm border border-wex-input-border bg-wex-input-bg text-wex-input-fg hover:border-wex-input-border-hover focus:outline-none focus:border-wex-input-border-focus focus:ring-1 focus:ring-wex-input-focus-ring ${authorizedSignerFormData.state ? "pt-2 pb-2" : "pt-5 pb-2"}`}>
-                    <WexSelect.Value placeholder=" " />
-                  </WexSelect.Trigger>
-                  <WexSelect.Content>
-                    <WexSelect.Item value="AL">Alabama</WexSelect.Item>
-                    <WexSelect.Item value="AK">Alaska</WexSelect.Item>
-                    <WexSelect.Item value="AZ">Arizona</WexSelect.Item>
-                    <WexSelect.Item value="AR">Arkansas</WexSelect.Item>
-                    <WexSelect.Item value="CA">California</WexSelect.Item>
-                    <WexSelect.Item value="CO">Colorado</WexSelect.Item>
-                    <WexSelect.Item value="CT">Connecticut</WexSelect.Item>
-                    <WexSelect.Item value="DE">Delaware</WexSelect.Item>
-                    <WexSelect.Item value="FL">Florida</WexSelect.Item>
-                    <WexSelect.Item value="GA">Georgia</WexSelect.Item>
-                    <WexSelect.Item value="HI">Hawaii</WexSelect.Item>
-                    <WexSelect.Item value="ID">Idaho</WexSelect.Item>
-                    <WexSelect.Item value="IL">Illinois</WexSelect.Item>
-                    <WexSelect.Item value="IN">Indiana</WexSelect.Item>
-                    <WexSelect.Item value="IA">Iowa</WexSelect.Item>
-                    <WexSelect.Item value="KS">Kansas</WexSelect.Item>
-                    <WexSelect.Item value="KY">Kentucky</WexSelect.Item>
-                    <WexSelect.Item value="LA">Louisiana</WexSelect.Item>
-                    <WexSelect.Item value="ME">Maine</WexSelect.Item>
-                    <WexSelect.Item value="MD">Maryland</WexSelect.Item>
-                    <WexSelect.Item value="MA">Massachusetts</WexSelect.Item>
-                    <WexSelect.Item value="MI">Michigan</WexSelect.Item>
-                    <WexSelect.Item value="MN">Minnesota</WexSelect.Item>
-                    <WexSelect.Item value="MS">Mississippi</WexSelect.Item>
-                    <WexSelect.Item value="MO">Missouri</WexSelect.Item>
-                    <WexSelect.Item value="MT">Montana</WexSelect.Item>
-                    <WexSelect.Item value="NE">Nebraska</WexSelect.Item>
-                    <WexSelect.Item value="NV">Nevada</WexSelect.Item>
-                    <WexSelect.Item value="NH">New Hampshire</WexSelect.Item>
-                    <WexSelect.Item value="NJ">New Jersey</WexSelect.Item>
-                    <WexSelect.Item value="NM">New Mexico</WexSelect.Item>
-                    <WexSelect.Item value="NY">New York</WexSelect.Item>
-                    <WexSelect.Item value="NC">North Carolina</WexSelect.Item>
-                    <WexSelect.Item value="ND">North Dakota</WexSelect.Item>
-                    <WexSelect.Item value="OH">Ohio</WexSelect.Item>
-                    <WexSelect.Item value="OK">Oklahoma</WexSelect.Item>
-                    <WexSelect.Item value="OR">Oregon</WexSelect.Item>
-                    <WexSelect.Item value="PA">Pennsylvania</WexSelect.Item>
-                    <WexSelect.Item value="RI">Rhode Island</WexSelect.Item>
-                    <WexSelect.Item value="SC">South Carolina</WexSelect.Item>
-                    <WexSelect.Item value="SD">South Dakota</WexSelect.Item>
-                    <WexSelect.Item value="TN">Tennessee</WexSelect.Item>
-                    <WexSelect.Item value="TX">Texas</WexSelect.Item>
-                    <WexSelect.Item value="UT">Utah</WexSelect.Item>
-                    <WexSelect.Item value="VT">Vermont</WexSelect.Item>
-                    <WexSelect.Item value="VA">Virginia</WexSelect.Item>
-                    <WexSelect.Item value="WA">Washington</WexSelect.Item>
-                    <WexSelect.Item value="WV">West Virginia</WexSelect.Item>
-                    <WexSelect.Item value="WI">Wisconsin</WexSelect.Item>
-                    <WexSelect.Item value="WY">Wyoming</WexSelect.Item>
-                  </WexSelect.Content>
-                </WexSelect>
-                <label
-                  className={`absolute pointer-events-none transition-all duration-200 ease-out origin-top-left ${
-                    authorizedSignerFormData.state
-                      ? "left-3 top-2 text-xs text-[#7c858e] scale-75 -translate-y-2.5"
-                      : "left-3 top-4 text-sm text-[#7c858e]"
-                  }`}
-                >
-                  Select State
-                </label>
-              </div>
+              {/* State Select */}
+              <FloatLabelSelect
+                label="Select State"
+                value={authorizedSignerFormData.state}
+                onValueChange={(value) => handleAuthorizedSignerFormChange("state", value)}
+                className="flex-1"
+              >
+                <WexSelect.Item value="AL">Alabama</WexSelect.Item>
+                <WexSelect.Item value="AK">Alaska</WexSelect.Item>
+                <WexSelect.Item value="AZ">Arizona</WexSelect.Item>
+                <WexSelect.Item value="AR">Arkansas</WexSelect.Item>
+                <WexSelect.Item value="CA">California</WexSelect.Item>
+                <WexSelect.Item value="CO">Colorado</WexSelect.Item>
+                <WexSelect.Item value="CT">Connecticut</WexSelect.Item>
+                <WexSelect.Item value="DE">Delaware</WexSelect.Item>
+                <WexSelect.Item value="FL">Florida</WexSelect.Item>
+                <WexSelect.Item value="GA">Georgia</WexSelect.Item>
+                <WexSelect.Item value="HI">Hawaii</WexSelect.Item>
+                <WexSelect.Item value="ID">Idaho</WexSelect.Item>
+                <WexSelect.Item value="IL">Illinois</WexSelect.Item>
+                <WexSelect.Item value="IN">Indiana</WexSelect.Item>
+                <WexSelect.Item value="IA">Iowa</WexSelect.Item>
+                <WexSelect.Item value="KS">Kansas</WexSelect.Item>
+                <WexSelect.Item value="KY">Kentucky</WexSelect.Item>
+                <WexSelect.Item value="LA">Louisiana</WexSelect.Item>
+                <WexSelect.Item value="ME">Maine</WexSelect.Item>
+                <WexSelect.Item value="MD">Maryland</WexSelect.Item>
+                <WexSelect.Item value="MA">Massachusetts</WexSelect.Item>
+                <WexSelect.Item value="MI">Michigan</WexSelect.Item>
+                <WexSelect.Item value="MN">Minnesota</WexSelect.Item>
+                <WexSelect.Item value="MS">Mississippi</WexSelect.Item>
+                <WexSelect.Item value="MO">Missouri</WexSelect.Item>
+                <WexSelect.Item value="MT">Montana</WexSelect.Item>
+                <WexSelect.Item value="NE">Nebraska</WexSelect.Item>
+                <WexSelect.Item value="NV">Nevada</WexSelect.Item>
+                <WexSelect.Item value="NH">New Hampshire</WexSelect.Item>
+                <WexSelect.Item value="NJ">New Jersey</WexSelect.Item>
+                <WexSelect.Item value="NM">New Mexico</WexSelect.Item>
+                <WexSelect.Item value="NY">New York</WexSelect.Item>
+                <WexSelect.Item value="NC">North Carolina</WexSelect.Item>
+                <WexSelect.Item value="ND">North Dakota</WexSelect.Item>
+                <WexSelect.Item value="OH">Ohio</WexSelect.Item>
+                <WexSelect.Item value="OK">Oklahoma</WexSelect.Item>
+                <WexSelect.Item value="OR">Oregon</WexSelect.Item>
+                <WexSelect.Item value="PA">Pennsylvania</WexSelect.Item>
+                <WexSelect.Item value="RI">Rhode Island</WexSelect.Item>
+                <WexSelect.Item value="SC">South Carolina</WexSelect.Item>
+                <WexSelect.Item value="SD">South Dakota</WexSelect.Item>
+                <WexSelect.Item value="TN">Tennessee</WexSelect.Item>
+                <WexSelect.Item value="TX">Texas</WexSelect.Item>
+                <WexSelect.Item value="UT">Utah</WexSelect.Item>
+                <WexSelect.Item value="VT">Vermont</WexSelect.Item>
+                <WexSelect.Item value="VA">Virginia</WexSelect.Item>
+                <WexSelect.Item value="WA">Washington</WexSelect.Item>
+                <WexSelect.Item value="WV">West Virginia</WexSelect.Item>
+                <WexSelect.Item value="WI">Wisconsin</WexSelect.Item>
+                <WexSelect.Item value="WY">Wyoming</WexSelect.Item>
+              </FloatLabelSelect>
               <WexFloatLabel
                 label="Zip Code"
                 value={authorizedSignerFormData.zipCode}
@@ -4799,71 +4993,73 @@ export default function MyProfile() {
 
       {/* View Authorized Signer Modal */}
       <WexDialog open={isViewAuthorizedSignerModalOpen} onOpenChange={setIsViewAuthorizedSignerModalOpen}>
-        <WexDialog.Content className="w-[448px]" size="md">
+        <WexDialog.Content size="md">
           <WexDialog.Header>
             <WexDialog.Title>View Authorized Signer</WexDialog.Title>
           </WexDialog.Header>
-          
-          <div className="space-y-4">
+
+          <div className="mt-4 flex flex-col gap-6">
             {viewingAuthorizedSigner && (
               <>
                 {/* Name */}
-                <div className="space-y-0.5 mt-0">
-                  <WexLabel className="text-xs text-muted-foreground mb-0 font-normal">Name</WexLabel>
-                  <p className="text-base font-normal text-[#243746] m-0 mt-0">
+                <div>
+                  <label className="text-sm text-[#7c858e] block">Name</label>
+                  <p className="text-lg text-[#243746]">
                     {viewingAuthorizedSigner.firstName} {viewingAuthorizedSigner.middleName ? `${viewingAuthorizedSigner.middleName} ` : ""}{viewingAuthorizedSigner.lastName}
                   </p>
                 </div>
 
-                {/* SSN, Birth Date, Type - 3 columns */}
-                <div className="grid grid-cols-3 gap-x-4 gap-y-[14px] mt-2">
-                  <div className="space-y-0.5 mt-0">
-                    <WexLabel className="text-xs text-muted-foreground mb-0 font-normal">SSN</WexLabel>
-                    <p className="text-base font-normal text-[#243746] m-0 mt-0">{viewingAuthorizedSigner.ssn}</p>
+                {/* SSN, Birth Date - 2 columns */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm text-[#7c858e] block">SSN</label>
+                    <p className="text-lg text-[#243746]">{viewingAuthorizedSigner.ssn}</p>
                   </div>
-                  <div className="space-y-0.5 mt-0">
-                    <WexLabel className="text-xs text-muted-foreground mb-0 font-normal">Birth Date</WexLabel>
-                    <p className="text-base font-normal text-[#243746] m-0 mt-0">{viewingAuthorizedSigner.birthDate}</p>
-                  </div>
-                  <div className="space-y-0.5 mt-0">
-                    <WexLabel className="text-xs text-muted-foreground mb-0 font-normal">Type</WexLabel>
-                    <p className="text-base font-normal text-[#243746] capitalize m-0 mt-0">{viewingAuthorizedSigner.type}</p>
+                  <div>
+                    <label className="text-sm text-[#7c858e] block">Birth Date</label>
+                    <p className="text-lg text-[#243746]">{viewingAuthorizedSigner.birthDate}</p>
                   </div>
                 </div>
 
-                {/* Phone */}
-                <div className="space-y-0.5 mt-0">
-                  <WexLabel className="text-xs text-muted-foreground mb-0 font-normal">Phone</WexLabel>
-                  <p className="text-base font-normal text-[#243746] m-0 mt-0">{viewingAuthorizedSigner.phone}</p>
+                {/* Type, Phone - 2 columns */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm text-[#7c858e] block">Type</label>
+                    <p className="text-lg text-[#243746] capitalize">{viewingAuthorizedSigner.type}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm text-[#7c858e] block">Phone</label>
+                    <p className="text-lg text-[#243746]">{viewingAuthorizedSigner.phone}</p>
+                  </div>
                 </div>
 
                 {/* Address Line 1 */}
-                <div className="space-y-0.5 mt-0">
-                  <WexLabel className="text-xs text-muted-foreground mb-0 font-normal">Address Line 1</WexLabel>
-                  <p className="text-base font-normal text-[#243746] m-0 mt-0">{viewingAuthorizedSigner.addressLine1}</p>
+                <div>
+                  <label className="text-sm text-[#7c858e] block">Address Line 1</label>
+                  <p className="text-lg text-[#243746]">{viewingAuthorizedSigner.addressLine1}</p>
                 </div>
 
                 {/* Address Line 2 - conditional */}
                 {viewingAuthorizedSigner.addressLine2 && (
-                  <div className="space-y-0.5 mt-0">
-                    <WexLabel className="text-xs text-muted-foreground mb-0 font-normal">Address Line 2</WexLabel>
-                    <p className="text-base font-normal text-[#243746] m-0 mt-0">{viewingAuthorizedSigner.addressLine2}</p>
+                  <div>
+                    <label className="text-sm text-[#7c858e] block">Address Line 2</label>
+                    <p className="text-lg text-[#243746]">{viewingAuthorizedSigner.addressLine2}</p>
                   </div>
                 )}
 
                 {/* City, State, Zip Code */}
-                <div className="grid grid-cols-3 gap-x-4 gap-y-[14px] mt-2">
-                  <div className="space-y-0.5 mt-0">
-                    <WexLabel className="text-xs text-muted-foreground mb-0 font-normal">City</WexLabel>
-                    <p className="text-base font-normal text-[#243746] m-0 mt-0">{viewingAuthorizedSigner.city}</p>
+                <div className="grid grid-cols-3 gap-4">
+                  <div>
+                    <label className="text-sm text-[#7c858e] block">City</label>
+                    <p className="text-lg text-[#243746]">{viewingAuthorizedSigner.city}</p>
                   </div>
-                  <div className="space-y-0.5 mt-0">
-                    <WexLabel className="text-xs text-muted-foreground mb-0 font-normal">State</WexLabel>
-                    <p className="text-base font-normal text-[#243746] m-0 mt-0">{viewingAuthorizedSigner.state}</p>
+                  <div>
+                    <label className="text-sm text-[#7c858e] block">State</label>
+                    <p className="text-lg text-[#243746]">{viewingAuthorizedSigner.state}</p>
                   </div>
-                  <div className="space-y-0.5 mt-0">
-                    <WexLabel className="text-xs text-muted-foreground mb-0 font-normal">Zip Code</WexLabel>
-                    <p className="text-base font-normal text-[#243746] m-0 mt-0">{viewingAuthorizedSigner.zipCode}</p>
+                  <div>
+                    <label className="text-sm text-[#7c858e] block">Zip Code</label>
+                    <p className="text-lg text-[#243746]">{viewingAuthorizedSigner.zipCode}</p>
                   </div>
                 </div>
               </>
@@ -5262,6 +5458,315 @@ export default function MyProfile() {
               }}
             >
               Save
+            </WexButton>
+          </WexDialog.Footer>
+        </WexDialog.Content>
+      </WexDialog>
+
+      {/* Add Beneficiary Workspace */}
+      <Workspace
+        open={isAddBeneficiaryWorkspaceOpen}
+        onOpenChange={(open) => {
+          setIsAddBeneficiaryWorkspaceOpen(open);
+          if (!open) {
+            // Reset workspace state when closing
+            setWorkspaceBeneficiaries([]);
+            setSelectedDependentIds([]);
+            setSplitSharesEqually(false);
+          }
+        }}
+        title="Add Beneficiary"
+        showFooter={true}
+        primaryButton={
+          <WexButton 
+            intent="primary" 
+            onClick={() => {
+              // TODO: handle next step
+              setIsAddBeneficiaryWorkspaceOpen(false);
+            }}
+            disabled={workspaceBeneficiaries.length > 0 && !areSharesValid()}
+          >
+            Save
+          </WexButton>
+        }
+        tertiaryButton={
+          <WexButton variant="ghost" onClick={() => setIsAddBeneficiaryWorkspaceOpen(false)}>
+            Cancel
+          </WexButton>
+        }
+      >
+        <div className="flex h-full">
+          {/* Left Section - 2/3 width */}
+          <div className="flex-[2] p-6 overflow-y-auto">
+            {/* Heading */}
+            <h2 className="text-2xl font-semibold text-[#243746] mb-2">Beneficiaries</h2>
+            
+            {/* Description */}
+            <p className="text-sm text-[#243746] mb-6">
+              Designate your beneficiaries to protect your assets; note that in community property or common-law states,{" "}
+              <button
+                type="button"
+                className="text-[#0058a3] hover:underline font-semibold"
+                onClick={() => {
+                  // TODO: handle spousal consent link
+                }}
+              >
+                spousal consent
+              </button>
+              {" "}is required to name someone other than your spouse.
+            </p>
+
+            {/* Add Beneficiary Button */}
+            <WexButton
+              intent="primary"
+              className="mb-8"
+              onClick={() => {
+                resetBeneficiaryForm();
+                setEditingBeneficiaryId(null);
+                setIsAddBeneficiaryModalOpen(true);
+              }}
+            >
+              <Plus className="h-4 w-4" />
+              <span>Add Beneficiary</span>
+            </WexButton>
+
+            {/* Select an existing dependent section - only show if dependents exist */}
+            {dependents.length > 0 && (() => {
+              // Filter out dependents that are already in workspace beneficiaries
+              const availableDependents = dependents.filter(
+                (dependent) => !workspaceBeneficiaries.some((wb) => wb.dependentId === dependent.id)
+              );
+              
+              return availableDependents.length > 0 ? (
+                <>
+                  <h3 className="text-lg font-semibold text-[#243746] mb-4">Select an existing dependent</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                     {availableDependents.map((dependent) => (
+                       <SelectCard
+                         key={dependent.id}
+                         id={dependent.id}
+                         title={`${dependent.firstName} ${dependent.middleName ? `${dependent.middleName} ` : ""}${dependent.lastName}`}
+                         subtext={dependent.relationship.charAt(0).toUpperCase() + dependent.relationship.slice(1)}
+                         description=""
+                         type="checkbox"
+                         checked={workspaceBeneficiaries.some((wb) => wb.dependentId === dependent.id)}
+                         icon={<Users className="h-6 w-6 text-muted-foreground" />}
+                         onCheckedChange={(checked) => {
+                           if (checked) {
+                             // Show dialog to select beneficiary type
+                             setPendingDependent(dependent);
+                             setSelectedDependentType("primary");
+                             setIsDependentTypeDialogOpen(true);
+                           } else {
+                             // Remove dependent from workspace beneficiaries
+                             const beneficiaryToRemove = workspaceBeneficiaries.find((wb) => wb.dependentId === dependent.id);
+                             if (beneficiaryToRemove) {
+                               setSelectedDependentIds(selectedDependentIds.filter(id => id !== dependent.id));
+                               setWorkspaceBeneficiaries(workspaceBeneficiaries.filter(b => b.id !== beneficiaryToRemove.id));
+                             }
+                           }
+                         }}
+                         showLink={false}
+                       />
+                     ))}
+                  </div>
+                </>
+              ) : null;
+            })()}
+          </div>
+
+          {/* Right Section - 1/3 width */}
+          <div className="flex-1 border-l border-[#e4e6e9] bg-white flex flex-col relative">
+            {/* Scrollable content */}
+            <div className="flex-1 overflow-y-auto p-6">
+              <h3 className="text-lg font-semibold text-[#243746] mb-4">Your Beneficiaries</h3>
+              
+              {/* Split shares equally toggle - only show when beneficiaries exist */}
+              {workspaceBeneficiaries.length > 0 && (
+                <div className="flex items-center gap-2 mb-6">
+                  <WexSwitch
+                    checked={splitSharesEqually}
+                    onCheckedChange={handleSplitSharesToggle}
+                  />
+                  <label className="text-sm text-[#243746]">Split shares equally</label>
+                </div>
+              )}
+
+              {/* Beneficiaries list */}
+              {workspaceBeneficiaries.length === 0 ? (
+                <p className="text-sm text-muted-foreground">No beneficiaries added/selected yet</p>
+              ) : (
+                <div className="space-y-4">
+                  {[...workspaceBeneficiaries].sort((a, b) => {
+                    // Sort primary first, then contingent
+                    if (a.beneficiaryType === "primary" && b.beneficiaryType === "contingent") return -1;
+                    if (a.beneficiaryType === "contingent" && b.beneficiaryType === "primary") return 1;
+                    return 0;
+                  }).map((beneficiary) => (
+                    <WexCard key={beneficiary.id} className="p-4 border border-[#0058a3]">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1 flex items-start gap-2">
+                          {beneficiary.source === "dependent" ? (
+                            <Users className="h-6 w-6 text-muted-foreground shrink-0 mt-0.5" />
+                          ) : (
+                            <HeartPlus className="h-6 w-6 text-muted-foreground shrink-0 mt-0.5" />
+                          )}
+                          <div className="flex-1">
+                            <h4 className="text-base font-semibold text-[#243746]">
+                              {beneficiary.firstName} {beneficiary.middleName ? `${beneficiary.middleName} ` : ""}{beneficiary.lastName}
+                            </h4>
+                            <div className="flex items-center gap-2 mt-1">
+                              <p className="text-xs text-gray-500 capitalize">{beneficiary.relationship}</p>
+                              <WexBadge
+                                intent={beneficiary.beneficiaryType === "primary" ? "info" : "default"}
+                                size="sm"
+                                className="text-xs"
+                              >
+                                {beneficiary.beneficiaryType === "primary" ? "Primary" : "Contingent"}
+                              </WexBadge>
+                            </div>
+                          </div>
+                        </div>
+                        {beneficiary.source === "dependent" ? (
+                          <WexCheckbox 
+                            checked={true} 
+                            onCheckedChange={(checked) => {
+                              if (!checked) {
+                                const beneficiaryId = beneficiary.id;
+                                if (beneficiary.dependentId) {
+                                  // Uncheck the dependent
+                                  setSelectedDependentIds(selectedDependentIds.filter(id => id !== beneficiary.dependentId));
+                                }
+                                setWorkspaceBeneficiaries(workspaceBeneficiaries.filter(b => b.id !== beneficiaryId));
+                              }
+                            }}
+                          />
+                        ) : (
+                          <WexButton
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-[#d23f57] hover:bg-red-50"
+                            onClick={() => handleRemoveWorkspaceBeneficiaryClick(beneficiary)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </WexButton>
+                        )}
+                      </div>
+                      <WexFloatLabel
+                        label="Share Percentage"
+                        type="number"
+                        value={beneficiary.sharePercentage}
+                        onChange={(e) => handleSharePercentageChange(beneficiary.id, e.target.value)}
+                        disabled={splitSharesEqually}
+                        rightIcon={<span className="text-sm text-muted-foreground">%</span>}
+                        invalid={
+                          !splitSharesEqually && (
+                            !beneficiary.sharePercentage || 
+                            parseFloat(beneficiary.sharePercentage) === 0 ||
+                            !areSharesValid()
+                          )
+                        }
+                      />
+                    </WexCard>
+                  ))}
+                </div>
+              )}
+            </div>
+            
+            {/* Error message - fixed at bottom */}
+            {workspaceBeneficiaries.length > 0 && getSharesErrorMessage() && (
+              <div className="sticky bottom-0 left-0 right-0 bg-red-50 py-2 px-4 flex items-center gap-2 text-red-500 z-10">
+                <AlertCircle className="h-4 w-4 shrink-0" />
+                <p className="text-sm font-normal">{getSharesErrorMessage()}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </Workspace>
+
+      {/* Remove Workspace Beneficiary Confirmation Modal */}
+      <WexAlertDialog open={isRemoveWorkspaceBeneficiaryConfirmOpen} onOpenChange={setIsRemoveWorkspaceBeneficiaryConfirmOpen}>
+        <WexAlertDialog.Content className="w-[448px]">
+          <WexAlertDialog.Header>
+            <WexAlertDialog.Title>Remove Beneficiary</WexAlertDialog.Title>
+          </WexAlertDialog.Header>
+          <WexAlertDialog.Description>
+            Are you sure you want to remove <strong>{workspaceBeneficiaryToRemove ? `${workspaceBeneficiaryToRemove.firstName} ${workspaceBeneficiaryToRemove.middleName ? `${workspaceBeneficiaryToRemove.middleName} ` : ""}${workspaceBeneficiaryToRemove.lastName}` : ""}</strong> from your beneficiaries? This action cannot be undone.
+          </WexAlertDialog.Description>
+          <WexAlertDialog.Footer>
+            <WexAlertDialog.Cancel asChild>
+              <WexButton variant="outline" onClick={() => {
+                setIsRemoveWorkspaceBeneficiaryConfirmOpen(false);
+                setWorkspaceBeneficiaryToRemove(null);
+              }}>
+                Cancel
+              </WexButton>
+            </WexAlertDialog.Cancel>
+            <WexAlertDialog.Action asChild>
+              <WexButton
+                intent="destructive"
+                className="!bg-wex-button-destructive-bg !text-wex-button-destructive-fg !border !border-wex-button-destructive-border hover:!bg-wex-button-destructive-hover-bg active:!bg-wex-button-destructive-active-bg"
+                onClick={handleRemoveWorkspaceBeneficiary}
+              >
+                Remove
+              </WexButton>
+            </WexAlertDialog.Action>
+          </WexAlertDialog.Footer>
+        </WexAlertDialog.Content>
+      </WexAlertDialog>
+
+      {/* Select Beneficiary Type Dialog */}
+      <WexDialog open={isDependentTypeDialogOpen} onOpenChange={setIsDependentTypeDialogOpen}>
+        <WexDialog.Content className="w-[448px]">
+          <WexDialog.Header>
+            <WexDialog.Title>Select beneficiary type</WexDialog.Title>
+          </WexDialog.Header>
+          <WexDialog.Description>
+            Select the beneficiary type for <strong>{pendingDependent ? `${pendingDependent.firstName} ${pendingDependent.middleName ? `${pendingDependent.middleName} ` : ""}${pendingDependent.lastName}` : ""}</strong>.
+          </WexDialog.Description>
+          <div className="py-4">
+            <WexRadioGroup
+              value={selectedDependentType}
+              onValueChange={(value) => setSelectedDependentType(value as "primary" | "contingent")}
+              className="flex flex-col gap-4"
+            >
+              <div className="flex items-start space-x-3">
+                <WexRadioGroup.Item value="primary" id="dependent-type-primary" className="mt-1" />
+                <div className="flex-1">
+                  <WexLabel htmlFor="dependent-type-primary" className="cursor-pointer font-semibold text-[#243746]">
+                    Primary
+                  </WexLabel>
+                  <p className="text-sm text-gray-500 mt-1">
+                    They are the ones to inherit your assets in the event of your death, according to chosen share percentage.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-3">
+                <WexRadioGroup.Item value="contingent" id="dependent-type-contingent" className="mt-1" />
+                <div className="flex-1">
+                  <WexLabel htmlFor="dependent-type-contingent" className="cursor-pointer font-semibold text-[#243746]">
+                    Contingent
+                  </WexLabel>
+                  <p className="text-sm text-gray-500 mt-1">
+                    They will receive your assets in the event of your primaries passing or choosing not to receive.
+                  </p>
+                </div>
+              </div>
+            </WexRadioGroup>
+          </div>
+          <WexDialog.Footer>
+            <WexButton
+              variant="outline"
+              onClick={() => {
+                setIsDependentTypeDialogOpen(false);
+                setPendingDependent(null);
+                setSelectedDependentType("primary");
+              }}
+            >
+              Cancel
+            </WexButton>
+            <WexButton onClick={handleAddDependentAsBeneficiary}>
+              Add
             </WexButton>
           </WexDialog.Footer>
         </WexDialog.Content>
