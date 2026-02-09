@@ -909,8 +909,10 @@ export default function MyProfile() {
   // Reset authorized signer form when modal closes (only if not editing)
   useEffect(() => {
     if (!isAddAuthorizedSignerModalOpen && !editingAuthorizedSignerId) {
-      resetAuthorizedSignerForm();
-      setEditingAuthorizedSignerId(null);
+      queueMicrotask(() => {
+        resetAuthorizedSignerForm();
+        setEditingAuthorizedSignerId(null);
+      });
     }
   }, [isAddAuthorizedSignerModalOpen, editingAuthorizedSignerId]);
 
