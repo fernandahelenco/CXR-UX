@@ -1089,7 +1089,7 @@ export default function MessageCenter() {
                         <WexSidebar.Menu className="flex-1 h-full">
                           {/* Activity Section */}
                           <WexSidebar.GroupLabel className="px-3 py-[7px]">
-                            <span className="text-xs font-medium text-[#243746] uppercase tracking-[0.24px]">ACTIVITY</span>
+                            <span className="text-xs font-medium text-sidebar-foreground/70 uppercase tracking-[0.24px]">ACTIVITY</span>
                           </WexSidebar.GroupLabel>
                           <WexSidebar.MenuItem>
                             <WexSidebar.MenuButton
@@ -1153,7 +1153,7 @@ export default function MessageCenter() {
                           </WexSidebar.MenuItem>
 
                           <WexSidebar.GroupLabel className="px-3 py-[7px] mt-6">
-                            <span className="text-xs font-medium text-[#243746] uppercase tracking-[0.24px]">CATEGORIES</span>
+                            <span className="text-xs font-medium text-sidebar-foreground/70 uppercase tracking-[0.24px]">CATEGORIES</span>
                           </WexSidebar.GroupLabel>
                           <WexSidebar.MenuItem>
                             <WexSidebar.MenuButton

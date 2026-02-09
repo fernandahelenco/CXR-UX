@@ -444,6 +444,7 @@ export function ConsumerNavigation() {
                   { label: "My Profile", subPage: "my-profile" },
                   { label: "Dependents", subPage: "dependents" },
                   { label: "Beneficiaries", subPage: "beneficiaries" },
+                  { label: "Authorized Signers", subPage: "authorized-signers" },
                   { label: "Banking", subPage: "banking" },
                   { label: "Debit Card", subPage: "debit-card" },
                   { label: "Login and Security", subPage: "login-security" },
