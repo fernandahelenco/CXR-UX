@@ -25,6 +25,7 @@ import { ConsumerNavigation } from "./ConsumerNavigation";
 import { Pencil, Info, Plus, Calendar, X, Trash2, MoreVertical, Eye, RefreshCw, AlertCircle, User, Users, HeartPlus, ShieldCheck, Landmark, CreditCard, Bell, UserLock, Lock } from "lucide-react";
 import { WexSwitch } from "@/components/wex/wex-switch";
 import { WexTabs } from "@/components/wex/wex-tabs";
+import { WexTooltip } from "@/components/wex/wex-tooltip";
 
 type SubPage = "my-profile" | "dependents" | "beneficiaries" | "authorized-signers" | "banking" | "debit-card" | "login-security" | "communication" | "report-lost-stolen" | "order-replacement-card";
 
@@ -373,6 +374,9 @@ export default function MyProfile() {
   // Beneficiary modal state
   const [isAddBeneficiaryModalOpen, setIsAddBeneficiaryModalOpen] = useState(false);
   const [isAddBeneficiaryWorkspaceOpen, setIsAddBeneficiaryWorkspaceOpen] = useState(false);
+  const [isEditPercentagesModalOpen, setIsEditPercentagesModalOpen] = useState(false);
+  const [editPercentagesShares, setEditPercentagesShares] = useState<Record<string, string>>({});
+  const [editPercentagesSplitEqually, setEditPercentagesSplitEqually] = useState(false);
   const [selectedDependentIds, setSelectedDependentIds] = useState<string[]>([]);
   const [workspaceBeneficiaries, setWorkspaceBeneficiaries] = useState<WorkspaceBeneficiary[]>([]);
   const [splitSharesEqually, setSplitSharesEqually] = useState(false);
@@ -380,23 +384,44 @@ export default function MyProfile() {
   // Load existing beneficiaries into workspace when it opens
   useEffect(() => {
     if (isAddBeneficiaryWorkspaceOpen) {
-      const existingWorkspaceBeneficiaries: WorkspaceBeneficiary[] = beneficiaries.map((ben) => ({
-        id: ben.id,
-        firstName: ben.firstName,
-        middleName: ben.middleName || undefined,
-        lastName: ben.lastName,
-        relationship: ben.relationship,
-        sharePercentage: ben.sharePercentage || (beneficiaries.length === 1 ? "100" : "0"),
-        source: "added",
-        beneficiaryType: ben.beneficiaryType,
-      }));
+      const existingWorkspaceBeneficiaries: WorkspaceBeneficiary[] = beneficiaries.map((ben) => {
+        // Check if this beneficiary matches a dependent by SSN
+        const matchingDependent = dependents.find((dep) => dep.ssn === ben.ssn);
+        
+        if (matchingDependent) {
+          // This beneficiary was originally from a dependent
+          return {
+            id: ben.id,
+            firstName: ben.firstName,
+            middleName: ben.middleName || undefined,
+            lastName: ben.lastName,
+            relationship: ben.relationship,
+            sharePercentage: ben.sharePercentage || (beneficiaries.length === 1 ? "100" : "0"),
+            source: "dependent" as const,
+            dependentId: matchingDependent.id,
+            beneficiaryType: ben.beneficiaryType,
+          };
+        } else {
+          // This beneficiary was manually added
+          return {
+            id: ben.id,
+            firstName: ben.firstName,
+            middleName: ben.middleName || undefined,
+            lastName: ben.lastName,
+            relationship: ben.relationship,
+            sharePercentage: ben.sharePercentage || (beneficiaries.length === 1 ? "100" : "0"),
+            source: "added" as const,
+            beneficiaryType: ben.beneficiaryType,
+          };
+        }
+      });
       // Preserve any dependents that were already selected in the workspace
       setWorkspaceBeneficiaries((prev) => {
         const dependentBeneficiaries = prev.filter(wb => wb.source === "dependent");
         return [...existingWorkspaceBeneficiaries, ...dependentBeneficiaries];
       });
     }
-  }, [isAddBeneficiaryWorkspaceOpen, beneficiaries]);
+  }, [isAddBeneficiaryWorkspaceOpen, beneficiaries, dependents]);
   
   const [isRemoveWorkspaceBeneficiaryConfirmOpen, setIsRemoveWorkspaceBeneficiaryConfirmOpen] = useState(false);
   const [workspaceBeneficiaryToRemove, setWorkspaceBeneficiaryToRemove] = useState<WorkspaceBeneficiary | null>(null);
@@ -861,6 +886,100 @@ export default function MyProfile() {
         });
       });
     }
+  };
+
+  const handleSaveWorkspaceBeneficiaries = () => {
+    setBeneficiaries((prev) => {
+      // Build beneficiaries list from scratch based on workspace only
+      // If workspace is empty, this will result in an empty list (clearing all beneficiaries)
+      const updatedBeneficiaries: Beneficiary[] = [];
+      
+      workspaceBeneficiaries.forEach((workspaceBen) => {
+        if (workspaceBen.source === "dependent") {
+          // Find the dependent
+          const dependent = dependents.find((dep) => dep.id === workspaceBen.dependentId);
+          if (!dependent) {
+            console.warn(`Dependent with ID ${workspaceBen.dependentId} not found`);
+            return;
+          }
+
+          // Check if beneficiary already exists in previous list (by SSN to preserve existing data)
+          const existingBeneficiary = prev.find(
+            (ben) => ben.ssn === dependent.ssn
+          );
+
+          if (existingBeneficiary) {
+            // Update existing beneficiary with new share percentage and beneficiary type
+            updatedBeneficiaries.push({
+              ...existingBeneficiary,
+              sharePercentage: workspaceBen.sharePercentage,
+              beneficiaryType: workspaceBen.beneficiaryType,
+            });
+          } else {
+            // Convert dependent to full Beneficiary object
+            const newBeneficiary: Beneficiary = {
+              id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+              firstName: dependent.firstName,
+              middleName: dependent.middleName || undefined,
+              lastName: dependent.lastName,
+              ssn: dependent.ssn,
+              birthDate: dependent.birthDate,
+              relationship: dependent.relationship,
+              beneficiaryType: workspaceBen.beneficiaryType,
+              sharePercentage: workspaceBen.sharePercentage,
+              addressLine1: "", // Empty since dependents don't have addresses
+              addressLine2: undefined,
+              city: "",
+              state: "",
+              zipCode: "",
+            };
+            updatedBeneficiaries.push(newBeneficiary);
+          }
+        } else if (workspaceBen.source === "added") {
+          // Find existing beneficiary by ID
+          const existingBeneficiary = prev.find(
+            (ben) => ben.id === workspaceBen.id
+          );
+
+          if (existingBeneficiary) {
+            // Update existing beneficiary with new share percentage
+            updatedBeneficiaries.push({
+              ...existingBeneficiary,
+              sharePercentage: workspaceBen.sharePercentage,
+            });
+          } else {
+            // This shouldn't happen, but handle edge case
+            console.warn(`Beneficiary with ID ${workspaceBen.id} not found in beneficiaries list`);
+          }
+        }
+      });
+
+      // Save to storage
+      saveBeneficiariesToStorage(updatedBeneficiaries);
+
+      return updatedBeneficiaries;
+    });
+
+    // Show success toast
+    const count = workspaceBeneficiaries.length;
+    if (count === 0) {
+      wexToast.success("All beneficiaries removed", {
+        description: "All beneficiaries have been cleared.",
+      });
+    } else {
+      wexToast.success(
+        count === 1 ? "Beneficiary saved" : `${count} beneficiaries saved`,
+        {
+          description: "Your beneficiaries have been updated with their share percentages.",
+        }
+      );
+    }
+
+    // Close workspace and reset state
+    setIsAddBeneficiaryWorkspaceOpen(false);
+    setWorkspaceBeneficiaries([]);
+    setSelectedDependentIds([]);
+    setSplitSharesEqually(false);
   };
 
   // Calculate total share percentage
@@ -1643,21 +1762,41 @@ export default function MyProfile() {
             <div className="pt-4 pb-2">
               <div className="px-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <h2 className="text-2xl font-semibold text-gray-800">Beneficiaries</h2>
-                <WexButton
-                  intent="primary"
-                  variant="outline"
-                  size="sm"
-                  className="w-full sm:w-auto justify-center border-[#0058a3] text-[#0058a3] hover:bg-blue-50"
-                  onClick={() => {
-                    resetBeneficiaryForm();
-                    setEditingBeneficiaryId(null);
-                    setSelectedDependentIds([]);
-                    setIsAddBeneficiaryWorkspaceOpen(true);
-                  }}
-                >
-                  <Plus className="h-4 w-4" />
-                  <span>Add Beneficiary</span>
-                </WexButton>
+                <div className="flex gap-2 w-full sm:w-auto">
+                  <WexButton
+                    intent="primary"
+                    variant="ghost"
+                    size="sm"
+                    className="w-full sm:w-auto justify-center"
+                    onClick={() => {
+                      // Initialize share percentages from current beneficiaries
+                      const initialShares: Record<string, string> = {};
+                      beneficiaries.forEach((ben) => {
+                        initialShares[ben.id] = ben.sharePercentage || (beneficiaries.length === 1 ? "100" : "0");
+                      });
+                      setEditPercentagesShares(initialShares);
+                      setEditPercentagesSplitEqually(false);
+                      setIsEditPercentagesModalOpen(true);
+                    }}
+                  >
+                    Edit Shares
+                  </WexButton>
+                  <WexButton
+                    intent="primary"
+                    variant="outline"
+                    size="sm"
+                    className="w-full sm:w-auto justify-center border-[#0058a3] text-[#0058a3] hover:bg-blue-50"
+                    onClick={() => {
+                      resetBeneficiaryForm();
+                      setEditingBeneficiaryId(null);
+                      setSelectedDependentIds([]);
+                      setIsAddBeneficiaryWorkspaceOpen(true);
+                    }}
+                  >
+                    <Plus className="h-4 w-4" />
+                    <span>Add Beneficiary</span>
+                  </WexButton>
+                </div>
               </div>
               <WexSeparator className="mt-4" />
             </div>
@@ -1750,16 +1889,48 @@ export default function MyProfile() {
                                 <Eye className="h-3.5 w-3.5 text-[#7c858e]" />
                                 <span className="text-sm text-[#243746] leading-none">View</span>
                               </WexDropdownMenu.Item>
-                              <WexDropdownMenu.Item
-                                className="flex items-center gap-2 px-3 py-2 cursor-pointer"
-                                onClick={() => {
-                                  handleEditBeneficiary(beneficiary);
-                                  setOpenBeneficiaryDropdownId(null);
-                                }}
-                              >
-                                <Pencil className="h-3.5 w-3.5 text-[#7c858e]" />
-                                <span className="text-sm text-[#243746] leading-none">Edit</span>
-                              </WexDropdownMenu.Item>
+                              {(() => {
+                                const isDependent = dependents.some((dep) => dep.ssn === beneficiary.ssn);
+                                
+                                const editItem = (
+                                  <WexDropdownMenu.Item
+                                    className={`flex items-center gap-2 px-3 py-2 ${
+                                      isDependent
+                                        ? "cursor-not-allowed opacity-50"
+                                        : "cursor-pointer"
+                                    }`}
+                                    disabled={isDependent}
+                                    onClick={() => {
+                                      if (!isDependent) {
+                                        handleEditBeneficiary(beneficiary);
+                                        setOpenBeneficiaryDropdownId(null);
+                                      }
+                                    }}
+                                  >
+                                    <Pencil className="h-3.5 w-3.5 text-[#7c858e]" />
+                                    <span className="text-sm text-[#243746] leading-none">Edit</span>
+                                  </WexDropdownMenu.Item>
+                                );
+
+                                if (isDependent) {
+                                  return (
+                                    <div className="w-full">
+                                      <WexTooltip>
+                                        <WexTooltip.Trigger asChild>
+                                          <div className="w-full">
+                                            {editItem}
+                                          </div>
+                                        </WexTooltip.Trigger>
+                                        <WexTooltip.Content>
+                                          You can edit personal dependent information going to the dependent section on the left menubar
+                                        </WexTooltip.Content>
+                                      </WexTooltip>
+                                    </div>
+                                  );
+                                }
+
+                                return editItem;
+                              })()}
                               <WexDropdownMenu.Item
                                 className="flex items-center gap-2 px-3 py-2 cursor-pointer"
                                 onClick={() => {
@@ -5480,10 +5651,7 @@ export default function MyProfile() {
         primaryButton={
           <WexButton 
             intent="primary" 
-            onClick={() => {
-              // TODO: handle next step
-              setIsAddBeneficiaryWorkspaceOpen(false);
-            }}
+            onClick={handleSaveWorkspaceBeneficiaries}
             disabled={workspaceBeneficiaries.length > 0 && !areSharesValid()}
           >
             Save
@@ -5519,6 +5687,7 @@ export default function MyProfile() {
             {/* Add Beneficiary Button */}
             <WexButton
               intent="primary"
+              variant="outline"
               className="mb-8"
               onClick={() => {
                 resetBeneficiaryForm();
@@ -5532,9 +5701,14 @@ export default function MyProfile() {
 
             {/* Select an existing dependent section - only show if dependents exist */}
             {dependents.length > 0 && (() => {
-              // Filter out dependents that are already in workspace beneficiaries
+              // Filter out dependents that are currently in workspace beneficiaries
+              // Allow dependents that were previously saved as beneficiaries to reappear when unchecked
               const availableDependents = dependents.filter(
-                (dependent) => !workspaceBeneficiaries.some((wb) => wb.dependentId === dependent.id)
+                (dependent) => {
+                  // Only check if dependent is currently in workspace beneficiaries
+                  const isInWorkspace = workspaceBeneficiaries.some((wb) => wb.dependentId === dependent.id);
+                  return !isInWorkspace;
+                }
               );
               
               return availableDependents.length > 0 ? (
@@ -5581,8 +5755,8 @@ export default function MyProfile() {
             <div className="flex-1 overflow-y-auto p-6">
               <h3 className="text-lg font-semibold text-[#243746] mb-4">Your Beneficiaries</h3>
               
-              {/* Split shares equally toggle - only show when beneficiaries exist */}
-              {workspaceBeneficiaries.length > 0 && (
+              {/* Split shares equally toggle - only show when more than 1 beneficiary exists */}
+              {workspaceBeneficiaries.length > 1 && (
                 <div className="flex items-center gap-2 mb-6">
                   <WexSwitch
                     checked={splitSharesEqually}
@@ -5767,6 +5941,158 @@ export default function MyProfile() {
             </WexButton>
             <WexButton onClick={handleAddDependentAsBeneficiary}>
               Add
+            </WexButton>
+          </WexDialog.Footer>
+        </WexDialog.Content>
+      </WexDialog>
+
+      {/* Edit Percentages Modal */}
+      <WexDialog open={isEditPercentagesModalOpen} onOpenChange={setIsEditPercentagesModalOpen}>
+        <WexDialog.Content className="w-[600px] p-0 [&>div:last-child]:hidden">
+          {/* Header */}
+          <div className="flex items-center justify-between px-[24px] pt-[12px] pb-1">
+            <WexDialog.Title className="text-base font-semibold text-[#243746] tracking-[-0.176px] leading-6">
+              Edit Percentages
+            </WexDialog.Title>
+            <WexDialog.Close asChild>
+              <WexButton
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6"
+                aria-label="Close"
+              >
+                <X className="h-4 w-4 text-[#515F6B]" />
+              </WexButton>
+            </WexDialog.Close>
+          </div>
+
+          {/* Content */}
+          <div className="px-[24px] pb-0 flex flex-col gap-4">
+            {/* Description */}
+            <p className="text-sm text-[#243746]">
+              Update the share percentage for the beneficiaries, they must add up to 100%.
+            </p>
+
+            {/* Split shares equally toggle */}
+            {beneficiaries.length > 1 && (
+              <div className="flex items-center gap-2">
+                <WexSwitch
+                  checked={editPercentagesSplitEqually}
+                  onCheckedChange={(checked) => {
+                    setEditPercentagesSplitEqually(checked);
+                    if (checked && beneficiaries.length > 0) {
+                      // Calculate equal shares
+                      const equalShare = Math.floor(100 / beneficiaries.length);
+                      const remainder = 100 % beneficiaries.length;
+                      const updatedShares: Record<string, string> = {};
+                      beneficiaries.forEach((ben, index) => {
+                        // Last beneficiary gets the remainder
+                        updatedShares[ben.id] = index === beneficiaries.length - 1
+                          ? (equalShare + remainder).toString()
+                          : equalShare.toString();
+                      });
+                      setEditPercentagesShares(updatedShares);
+                    }
+                  }}
+                />
+                <label className="text-sm text-[#243746]">Split shares equally</label>
+              </div>
+            )}
+
+            {/* Beneficiaries Grid */}
+            {beneficiaries.length > 0 ? (
+              <div className="grid grid-cols-2 gap-4">
+                {beneficiaries.map((beneficiary) => (
+                  <div key={beneficiary.id} className="flex flex-col gap-2">
+                    <h4 className="text-sm font-semibold text-[#243746]">
+                      {beneficiary.firstName} {beneficiary.middleName ? `${beneficiary.middleName} ` : ""}{beneficiary.lastName}
+                    </h4>
+                    <WexFloatLabel
+                      label="Share percentage"
+                      type="number"
+                      value={editPercentagesShares[beneficiary.id] || beneficiary.sharePercentage || "0"}
+                      onChange={(e) => {
+                        setEditPercentagesShares((prev) => ({
+                          ...prev,
+                          [beneficiary.id]: e.target.value,
+                        }));
+                      }}
+                      disabled={editPercentagesSplitEqually}
+                      rightIcon={<span className="text-sm text-muted-foreground">%</span>}
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-gray-500">No beneficiaries to edit.</p>
+            )}
+
+            {/* Validation Error */}
+            {(() => {
+              if (editPercentagesSplitEqually) return null; // Skip validation when split equally is on
+              
+              const total = beneficiaries.reduce((sum, ben) => {
+                const share = parseFloat(editPercentagesShares[ben.id] || ben.sharePercentage || "0");
+                return sum + (isNaN(share) ? 0 : share);
+              }, 0);
+              const isValid = Math.abs(total - 100) < 0.01;
+              
+              if (!isValid && beneficiaries.length > 0) {
+                return (
+                  <div className="flex items-center gap-2 text-red-500 text-sm">
+                    <AlertCircle className="h-4 w-4 shrink-0" />
+                    <span>Shares percentage should equal to 100%</span>
+                  </div>
+                );
+              }
+              return null;
+            })()}
+          </div>
+
+          {/* Footer */}
+          <WexDialog.Footer className="flex gap-2 justify-end px-[24px] pb-[24px]">
+            <WexButton
+              variant="ghost"
+              onClick={() => {
+                setIsEditPercentagesModalOpen(false);
+                setEditPercentagesShares({});
+                setEditPercentagesSplitEqually(false);
+              }}
+            >
+              Cancel
+            </WexButton>
+            <WexButton
+              intent="primary"
+              disabled={(() => {
+                if (editPercentagesSplitEqually) return false; // Always enabled when split equally is on
+                const total = beneficiaries.reduce((sum, ben) => {
+                  const share = parseFloat(editPercentagesShares[ben.id] || ben.sharePercentage || "0");
+                  return sum + (isNaN(share) ? 0 : share);
+                }, 0);
+                return beneficiaries.length === 0 || Math.abs(total - 100) >= 0.01;
+              })()}
+              onClick={() => {
+                // Update beneficiaries with new share percentages
+                setBeneficiaries((prev) => {
+                  const updated = prev.map((ben) => ({
+                    ...ben,
+                    sharePercentage: editPercentagesShares[ben.id] || ben.sharePercentage || "0",
+                  }));
+                  saveBeneficiariesToStorage(updated);
+                  return updated;
+                });
+
+                // Show success toast
+                wexToast.success("Share percentages updated", {
+                  description: "Beneficiary share percentages have been updated successfully.",
+                });
+
+                // Close modal and reset state
+                setIsEditPercentagesModalOpen(false);
+                setEditPercentagesShares({});
+              }}
+            >
+              Save
             </WexButton>
           </WexDialog.Footer>
         </WexDialog.Content>
