@@ -38,13 +38,13 @@ export function PaletteRampEditor({
   className,
 }: PaletteRampEditorProps) {
   const ramp = PALETTE_RAMPS.find((r) => r.name === rampName);
-  if (!ramp) return null;
-
-  // Generate preview ramp from base color
+  // Generate preview ramp from base color (hooks must be called before any return)
   const baseHex = tokenToHex(baseColor) || "#000000";
   const generatedRamp = React.useMemo(() => {
     return generateRampFromBase(baseHex, rampName);
   }, [baseHex, rampName]);
+
+  if (!ramp) return null;
 
   // Get current color for each shade (override or generated)
   const getShadeColor = (shade: number): string => {

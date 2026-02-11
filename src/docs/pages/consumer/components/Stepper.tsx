@@ -92,7 +92,7 @@ export function Stepper({ steps, currentStepId, onStepChange, className }: Stepp
   /**
    * Flatten all step IDs in order (primary and secondary)
    */
-  const getAllStepIds = (): string[] => {
+  const getAllStepIds = React.useCallback((): string[] => {
     const ids: string[] = [];
     steps.forEach((step) => {
       ids.push(step.id);
@@ -103,7 +103,7 @@ export function Stepper({ steps, currentStepId, onStepChange, className }: Stepp
       }
     });
     return ids;
-  };
+  }, [steps]);
 
   /**
    * Check if a primary step has been reached (current or completed)
@@ -121,7 +121,7 @@ export function Stepper({ steps, currentStepId, onStepChange, className }: Stepp
     onStepChange(stepId);
   };
 
-  const allStepIds = React.useMemo(() => getAllStepIds(), [steps]);
+  const allStepIds = React.useMemo(() => getAllStepIds(), [getAllStepIds]);
 
   return (
     <div className={cn("relative flex flex-col gap-6", className)}>
