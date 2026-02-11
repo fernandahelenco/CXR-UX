@@ -1,1 +1,0 @@
-import{j as e,b9 as n,i}from"./index-6zo69QwL.js";function r({className:a,...s}){return e.jsx(n,{role:"status","aria-label":"Loading",className:i("size-4 animate-spin",a),...s})}const o=r;export{o as W};
