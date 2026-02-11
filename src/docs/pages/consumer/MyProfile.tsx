@@ -22,7 +22,6 @@ import { WexSidebar } from "@/components/wex/wex-sidebar";
 import { Stepper } from "./components/Stepper";
 import { ConsumerNavigation } from "./ConsumerNavigation";
 import { Pencil, Info, Plus, Calendar, X, Trash2, MoreVertical, Eye, RefreshCw, AlertCircle, User, Users, HeartPlus, ShieldCheck, Landmark, CreditCard, Bell, UserLock, Lock } from "lucide-react";
-import { WexSwitch } from "@/components/wex/wex-switch";
 import { WexTabs } from "@/components/wex/wex-tabs";
 
 type SubPage = "my-profile" | "dependents" | "beneficiaries" | "authorized-signers" | "banking" | "debit-card" | "login-security" | "communication" | "report-lost-stolen" | "order-replacement-card";
@@ -134,6 +133,137 @@ export default function MyProfile() {
   const [purchaseMadeText, setPurchaseMadeText] = useState(true);
   const [cardSuspendedText, setCardSuspendedText] = useState(true);
   const [cardPurseSuspendedText, setCardPurseSuspendedText] = useState(true);
+  
+  // Unsaved changes tracking
+  const [pendingTabChange, setPendingTabChange] = useState<string | null>(null);
+  const [isUnsavedChangesDialogOpen, setIsUnsavedChangesDialogOpen] = useState(false);
+  
+  // Saved state - tracks the last saved values
+  const [savedState, setSavedState] = useState(() => ({
+    // Statements
+    hsaAccountSummaryPaper: false,
+    hsaAccountSummaryEmail: true,
+    hsaTaxDocumentsPaper: false,
+    hsaTaxDocumentsEmail: true,
+    goPaperless: false,
+    // Contributions
+    contributionPostedEmail: true,
+    balanceBelowAmount: "",
+    balanceBelowEmail: true,
+    contributionsWithinAmount: "",
+    contributionsWithinEmail: true,
+    // Payments
+    paymentIssuedEmail: true,
+    withdrawalExceedsAmount: "",
+    withdrawalExceedsEmail: true,
+    // WEX Benefits Card
+    cardMailedEmail: true,
+    cardMailedText: true,
+    followUpNoticeText: true,
+    purchaseMadeEmail: true,
+    purchaseMadeText: true,
+    cardSuspendedText: true,
+    cardPurseSuspendedText: true,
+  }));
+  
+  // Check if there are unsaved changes
+  const hasUnsavedChanges = () => {
+    return (
+      hsaAccountSummaryPaper !== savedState.hsaAccountSummaryPaper ||
+      hsaAccountSummaryEmail !== savedState.hsaAccountSummaryEmail ||
+      hsaTaxDocumentsPaper !== savedState.hsaTaxDocumentsPaper ||
+      hsaTaxDocumentsEmail !== savedState.hsaTaxDocumentsEmail ||
+      goPaperless !== savedState.goPaperless ||
+      contributionPostedEmail !== savedState.contributionPostedEmail ||
+      balanceBelowAmount !== savedState.balanceBelowAmount ||
+      balanceBelowEmail !== savedState.balanceBelowEmail ||
+      contributionsWithinAmount !== savedState.contributionsWithinAmount ||
+      contributionsWithinEmail !== savedState.contributionsWithinEmail ||
+      paymentIssuedEmail !== savedState.paymentIssuedEmail ||
+      withdrawalExceedsAmount !== savedState.withdrawalExceedsAmount ||
+      withdrawalExceedsEmail !== savedState.withdrawalExceedsEmail ||
+      cardMailedEmail !== savedState.cardMailedEmail ||
+      cardMailedText !== savedState.cardMailedText ||
+      followUpNoticeText !== savedState.followUpNoticeText ||
+      purchaseMadeEmail !== savedState.purchaseMadeEmail ||
+      purchaseMadeText !== savedState.purchaseMadeText ||
+      cardSuspendedText !== savedState.cardSuspendedText ||
+      cardPurseSuspendedText !== savedState.cardPurseSuspendedText
+    );
+  };
+  
+  // Handle tab change with unsaved changes check
+  const handleTabChange = (newTab: string) => {
+    if (hasUnsavedChanges()) {
+      setPendingTabChange(newTab);
+      setIsUnsavedChangesDialogOpen(true);
+    } else {
+      setActiveTab(newTab);
+    }
+  };
+  
+  // Handle save from dialog
+  const handleSaveAndSwitch = () => {
+    // Save current state
+    setSavedState({
+      hsaAccountSummaryPaper,
+      hsaAccountSummaryEmail,
+      hsaTaxDocumentsPaper,
+      hsaTaxDocumentsEmail,
+      goPaperless,
+      contributionPostedEmail,
+      balanceBelowAmount,
+      balanceBelowEmail,
+      contributionsWithinAmount,
+      contributionsWithinEmail,
+      paymentIssuedEmail,
+      withdrawalExceedsAmount,
+      withdrawalExceedsEmail,
+      cardMailedEmail,
+      cardMailedText,
+      followUpNoticeText,
+      purchaseMadeEmail,
+      purchaseMadeText,
+      cardSuspendedText,
+      cardPurseSuspendedText,
+    });
+    wexToast.success("Communication preferences saved successfully");
+    setIsUnsavedChangesDialogOpen(false);
+    if (pendingTabChange) {
+      setActiveTab(pendingTabChange);
+      setPendingTabChange(null);
+    }
+  };
+  
+  // Handle discard changes
+  const handleDiscardAndSwitch = () => {
+    // Reset to saved state
+    setHsaAccountSummaryPaper(savedState.hsaAccountSummaryPaper);
+    setHsaAccountSummaryEmail(savedState.hsaAccountSummaryEmail);
+    setHsaTaxDocumentsPaper(savedState.hsaTaxDocumentsPaper);
+    setHsaTaxDocumentsEmail(savedState.hsaTaxDocumentsEmail);
+    setGoPaperless(savedState.goPaperless);
+    setContributionPostedEmail(savedState.contributionPostedEmail);
+    setBalanceBelowAmount(savedState.balanceBelowAmount);
+    setBalanceBelowEmail(savedState.balanceBelowEmail);
+    setContributionsWithinAmount(savedState.contributionsWithinAmount);
+    setContributionsWithinEmail(savedState.contributionsWithinEmail);
+    setPaymentIssuedEmail(savedState.paymentIssuedEmail);
+    setWithdrawalExceedsAmount(savedState.withdrawalExceedsAmount);
+    setWithdrawalExceedsEmail(savedState.withdrawalExceedsEmail);
+    setCardMailedEmail(savedState.cardMailedEmail);
+    setCardMailedText(savedState.cardMailedText);
+    setFollowUpNoticeText(savedState.followUpNoticeText);
+    setPurchaseMadeEmail(savedState.purchaseMadeEmail);
+    setPurchaseMadeText(savedState.purchaseMadeText);
+    setCardSuspendedText(savedState.cardSuspendedText);
+    setCardPurseSuspendedText(savedState.cardPurseSuspendedText);
+    setIsUnsavedChangesDialogOpen(false);
+    if (pendingTabChange) {
+      setActiveTab(pendingTabChange);
+      setPendingTabChange(null);
+    }
+  };
   
   // Sync email toggles with "Go paperless" toggle and turn off paper toggles
   useEffect(() => {
@@ -2951,21 +3081,21 @@ export default function MyProfile() {
                 <h2 className="text-xl font-medium leading-8 tracking-[-0.34px] text-[#243746]">
                   Contact information
                 </h2>
-                <WexButton
-                  variant="ghost"
-                  size="sm"
+                  <WexButton
+                    variant="ghost"
+                    size="sm"
                   className="flex items-center gap-1.5 px-3 py-1 text-sm font-medium text-[#0058a3] hover:bg-gray-100"
                   onClick={() => setIsContactInfoModalOpen(true)}
-                >
+                  >
                   <Pencil className="h-4 w-4 text-[#0058a3]" />
-                  Edit
-                </WexButton>
-              </div>
+                    Edit
+                  </WexButton>
+                </div>
               <div className="flex flex-col gap-2 text-sm tracking-[-0.084px]">
                 <div className="flex items-center gap-1.5">
                   <span className="text-[#515f6b]">Mobile number:</span>
                   <span className="text-[#1d2c38]">{mobileNumber}</span>
-                </div>
+                  </div>
                 <div className="flex items-center gap-1.5">
                   <span className="text-[#515f6b]">Email address:</span>
                   <span className="text-[#1d2c38]">{emailAddress}</span>
@@ -2975,7 +3105,7 @@ export default function MyProfile() {
 
             {/* Tabs */}
             <div className="px-6">
-              <WexTabs value={activeTab} onValueChange={setActiveTab}>
+              <WexTabs value={activeTab} onValueChange={handleTabChange}>
                 <WexTabs.List className="bg-white border-b border-[#e4e6e9] border-solid flex items-end pr-[37px]">
                   <WexTabs.Trigger
                     value="statements"
@@ -3004,31 +3134,28 @@ export default function MyProfile() {
                 </WexTabs.List>
 
                 {/* Statements Tab Content */}
-                <WexTabs.Content value="statements" className="pt-6">
+                <WexTabs.Content value="statements" className="pt-6 pb-6">
                   <div className="flex flex-col gap-6">
                     {/* Statement Delivery Preferences Header */}
                     <div className="flex flex-col gap-1">
-                      <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between">
                         <h3 className="text-xl font-bold leading-8 tracking-[-0.34px] text-[#243746]">
                           Statement delivery preferences
                         </h3>
                         <div className="flex items-center gap-2">
-                          <WexSwitch
+                          <span className="text-sm font-normal text-[#243746]">Go paperless</span>
+                          <WexCheckbox
                             checked={goPaperless}
                             onCheckedChange={setGoPaperless}
-                            switchSize="sm"
-                            className="!h-[21px] !w-[35px]"
-                            style={{ height: "21px", width: "35px" }}
                           />
-                          <span className="text-sm font-normal text-[#243746]">Go paperless</span>
-                        </div>
-                      </div>
+                  </div>
+                </div>
                       <p className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#1d2c38] max-w-[1094px]">
                         Set how you want to receive your account documents. Select either Paper, Email, and/or Text for each statement type. Standard text message rates may apply. Disable text alerts by unchecking the boxes below. By opting into our text alerts, you agree to our{" "}
                         <a href="#" className="text-[#0058a3] hover:underline">terms of service</a>. Please review our{" "}
                         <a href="#" className="text-[#0058a3] hover:underline">privacy policy</a> for more information.
                       </p>
-                    </div>
+              </div>
 
                     {/* Table Header */}
                     <div className="h-6">
@@ -3037,13 +3164,13 @@ export default function MyProfile() {
                           <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Statements</span>
                         </div>
                         <div className="flex items-center" style={{ gap: "153px" }}>
-                          <div style={{ width: "35px" }}>
+                          <div style={{ width: "35px" }} className="flex justify-center">
                             <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Paper</span>
                           </div>
-                          <div style={{ width: "35px" }}>
+                          <div style={{ width: "35px" }} className="flex justify-center">
                             <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Email</span>
                           </div>
-                          <div style={{ width: "80px" }}>
+                          <div style={{ width: "80px" }} className="flex justify-center">
                             <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Text</span>
                           </div>
                         </div>
@@ -3067,25 +3194,21 @@ export default function MyProfile() {
                           </div>
                         </div>
                         <div className="flex items-center" style={{ gap: "153px" }}>
-                          <div style={{ width: "35px", height: "21px" }}>
-                            <WexSwitch
+                          <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
+                            <WexCheckbox
                               checked={hsaAccountSummaryPaper}
                               onCheckedChange={handleHsaAccountSummaryPaperChange}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
                             />
                           </div>
-                          <div style={{ width: "35px", height: "21px" }}>
-                            <WexSwitch
+                          <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
+                            <WexCheckbox
                               checked={hsaAccountSummaryEmail}
                               onCheckedChange={setHsaAccountSummaryEmail}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
                             />
                           </div>
-                          <span className="text-xs font-normal leading-6 text-black" style={{ width: "80px" }}>Not available</span>
+                          <div style={{ width: "80px" }} className="flex justify-center">
+                            <span className="text-xs font-normal leading-6 text-black">Not available</span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -3104,33 +3227,95 @@ export default function MyProfile() {
                           </div>
                         </div>
                         <div className="flex items-center" style={{ gap: "153px" }}>
-                          <div style={{ width: "35px", height: "21px" }}>
-                            <WexSwitch
+                          <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
+                            <WexCheckbox
                               checked={hsaTaxDocumentsPaper}
                               onCheckedChange={handleHsaTaxDocumentsPaperChange}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
                             />
                           </div>
-                          <div style={{ width: "35px", height: "21px" }}>
-                            <WexSwitch
+                          <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
+                            <WexCheckbox
                               checked={hsaTaxDocumentsEmail}
                               onCheckedChange={setHsaTaxDocumentsEmail}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
                             />
                           </div>
-                          <span className="text-xs font-normal leading-6 text-black" style={{ width: "80px" }}>Not available</span>
+                          <div style={{ width: "80px" }} className="flex justify-center">
+                            <span className="text-xs font-normal leading-6 text-black">Not available</span>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
+
+                  {/* Footer Actions */}
+                  <div className="flex items-center justify-end gap-3 pt-6 mt-6 border-t border-[#e4e6e9]">
+                    <WexButton
+                      intent="secondary"
+                      variant="outline"
+                      onClick={() => {
+                        // Cancel action - reset to saved values
+                        setHsaAccountSummaryPaper(savedState.hsaAccountSummaryPaper);
+                        setHsaAccountSummaryEmail(savedState.hsaAccountSummaryEmail);
+                        setHsaTaxDocumentsPaper(savedState.hsaTaxDocumentsPaper);
+                        setHsaTaxDocumentsEmail(savedState.hsaTaxDocumentsEmail);
+                        setGoPaperless(savedState.goPaperless);
+                        setContributionPostedEmail(savedState.contributionPostedEmail);
+                        setBalanceBelowAmount(savedState.balanceBelowAmount);
+                        setBalanceBelowEmail(savedState.balanceBelowEmail);
+                        setContributionsWithinAmount(savedState.contributionsWithinAmount);
+                        setContributionsWithinEmail(savedState.contributionsWithinEmail);
+                        setPaymentIssuedEmail(savedState.paymentIssuedEmail);
+                        setWithdrawalExceedsAmount(savedState.withdrawalExceedsAmount);
+                        setWithdrawalExceedsEmail(savedState.withdrawalExceedsEmail);
+                        setCardMailedEmail(savedState.cardMailedEmail);
+                        setCardMailedText(savedState.cardMailedText);
+                        setFollowUpNoticeText(savedState.followUpNoticeText);
+                        setPurchaseMadeEmail(savedState.purchaseMadeEmail);
+                        setPurchaseMadeText(savedState.purchaseMadeText);
+                        setCardSuspendedText(savedState.cardSuspendedText);
+                        setCardPurseSuspendedText(savedState.cardPurseSuspendedText);
+                      }}
+                      className="min-w-[100px]"
+                    >
+                      Cancel
+                    </WexButton>
+                    <WexButton
+                      intent="primary"
+                      onClick={() => {
+                        // Save preferences action
+                        setSavedState({
+                          hsaAccountSummaryPaper,
+                          hsaAccountSummaryEmail,
+                          hsaTaxDocumentsPaper,
+                          hsaTaxDocumentsEmail,
+                          goPaperless,
+                          contributionPostedEmail,
+                          balanceBelowAmount,
+                          balanceBelowEmail,
+                          contributionsWithinAmount,
+                          contributionsWithinEmail,
+                          paymentIssuedEmail,
+                          withdrawalExceedsAmount,
+                          withdrawalExceedsEmail,
+                          cardMailedEmail,
+                          cardMailedText,
+                          followUpNoticeText,
+                          purchaseMadeEmail,
+                          purchaseMadeText,
+                          cardSuspendedText,
+                          cardPurseSuspendedText,
+                        });
+                        wexToast.success("Communication preferences saved successfully");
+                      }}
+                      className="min-w-[100px] bg-[#0058a3] text-white hover:bg-[#0058a3]/90"
+                    >
+                      Save preferences
+                    </WexButton>
+                  </div>
                 </WexTabs.Content>
 
                 {/* Contributions Tab Content */}
-                <WexTabs.Content value="contributions" className="pt-6">
+                <WexTabs.Content value="contributions" className="pt-6 pb-6">
                   <div className="flex flex-col gap-6">
                     {/* Notification Preferences Header */}
                     <div className="flex flex-col gap-1 px-6">
@@ -3142,22 +3327,22 @@ export default function MyProfile() {
                         <a href="#" className="text-[#0058a3] hover:underline">terms of service</a>. Please review our{" "}
                         <a href="#" className="text-[#0058a3] hover:underline">privacy policy</a> for more information.
                       </p>
-                    </div>
+                  </div>
 
                     {/* Table Header */}
                     <div className="h-6">
                       <div className="flex items-center justify-between h-full px-6">
                         <div style={{ width: "493px" }}>
                           <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Notification type</span>
-                        </div>
+                  </div>
                         <div className="flex items-center" style={{ gap: "153px" }}>
-                          <div style={{ width: "35px" }}>
+                          <div style={{ width: "35px" }} className="flex justify-center">
                             <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Paper</span>
-                          </div>
-                          <div style={{ width: "35px" }}>
+                </div>
+                          <div style={{ width: "35px" }} className="flex justify-center">
                             <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Email</span>
-                          </div>
-                          <div style={{ width: "80px" }}>
+              </div>
+                          <div style={{ width: "80px" }} className="flex justify-center">
                             <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Text</span>
                           </div>
                         </div>
@@ -3173,17 +3358,18 @@ export default function MyProfile() {
                           </h4>
                         </div>
                         <div className="flex items-center" style={{ gap: "153px" }}>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
-                          <div style={{ width: "35px", height: "21px" }}>
-                            <WexSwitch
+                          <div style={{ width: "35px" }} className="flex justify-center">
+                            <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                          </div>
+                          <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
+                            <WexCheckbox
                               checked={contributionPostedEmail}
                               onCheckedChange={setContributionPostedEmail}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
                             />
                           </div>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "80px" }}>Not available</span>
+                          <div style={{ width: "80px" }} className="flex justify-center">
+                            <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -3211,17 +3397,18 @@ export default function MyProfile() {
                           </div>
                         </div>
                         <div className="flex items-center" style={{ gap: "153px" }}>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
-                          <div style={{ width: "35px", height: "21px" }}>
-                            <WexSwitch
+                          <div style={{ width: "35px" }} className="flex justify-center">
+                            <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                          </div>
+                          <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
+                            <WexCheckbox
                               checked={balanceBelowEmail}
                               onCheckedChange={setBalanceBelowEmail}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
                             />
                           </div>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "80px" }}>Not available</span>
+                          <div style={{ width: "80px" }} className="flex justify-center">
+                            <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -3252,24 +3439,91 @@ export default function MyProfile() {
                           </div>
                         </div>
                         <div className="flex items-center" style={{ gap: "153px" }}>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
-                          <div style={{ width: "35px", height: "21px" }}>
-                            <WexSwitch
+                          <div style={{ width: "35px" }} className="flex justify-center">
+                            <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                          </div>
+                          <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
+                            <WexCheckbox
                               checked={contributionsWithinEmail}
                               onCheckedChange={setContributionsWithinEmail}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
                             />
                           </div>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "80px" }}>Not available</span>
+                          <div style={{ width: "80px" }} className="flex justify-center">
+                            <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
+
+                  {/* Footer Actions */}
+                  <div className="flex items-center justify-end gap-3 pt-6 mt-6 border-t border-[#e4e6e9]">
+                    <WexButton
+                      intent="secondary"
+                      variant="outline"
+                      onClick={() => {
+                        // Cancel action - reset to saved values
+                        setHsaAccountSummaryPaper(savedState.hsaAccountSummaryPaper);
+                        setHsaAccountSummaryEmail(savedState.hsaAccountSummaryEmail);
+                        setHsaTaxDocumentsPaper(savedState.hsaTaxDocumentsPaper);
+                        setHsaTaxDocumentsEmail(savedState.hsaTaxDocumentsEmail);
+                        setGoPaperless(savedState.goPaperless);
+                        setContributionPostedEmail(savedState.contributionPostedEmail);
+                        setBalanceBelowAmount(savedState.balanceBelowAmount);
+                        setBalanceBelowEmail(savedState.balanceBelowEmail);
+                        setContributionsWithinAmount(savedState.contributionsWithinAmount);
+                        setContributionsWithinEmail(savedState.contributionsWithinEmail);
+                        setPaymentIssuedEmail(savedState.paymentIssuedEmail);
+                        setWithdrawalExceedsAmount(savedState.withdrawalExceedsAmount);
+                        setWithdrawalExceedsEmail(savedState.withdrawalExceedsEmail);
+                        setCardMailedEmail(savedState.cardMailedEmail);
+                        setCardMailedText(savedState.cardMailedText);
+                        setFollowUpNoticeText(savedState.followUpNoticeText);
+                        setPurchaseMadeEmail(savedState.purchaseMadeEmail);
+                        setPurchaseMadeText(savedState.purchaseMadeText);
+                        setCardSuspendedText(savedState.cardSuspendedText);
+                        setCardPurseSuspendedText(savedState.cardPurseSuspendedText);
+                      }}
+                      className="min-w-[100px]"
+                    >
+                      Cancel
+                    </WexButton>
+                    <WexButton
+                      intent="primary"
+                      onClick={() => {
+                        // Save preferences action
+                        setSavedState({
+                          hsaAccountSummaryPaper,
+                          hsaAccountSummaryEmail,
+                          hsaTaxDocumentsPaper,
+                          hsaTaxDocumentsEmail,
+                          goPaperless,
+                          contributionPostedEmail,
+                          balanceBelowAmount,
+                          balanceBelowEmail,
+                          contributionsWithinAmount,
+                          contributionsWithinEmail,
+                          paymentIssuedEmail,
+                          withdrawalExceedsAmount,
+                          withdrawalExceedsEmail,
+                          cardMailedEmail,
+                          cardMailedText,
+                          followUpNoticeText,
+                          purchaseMadeEmail,
+                          purchaseMadeText,
+                          cardSuspendedText,
+                          cardPurseSuspendedText,
+                        });
+                        wexToast.success("Communication preferences saved successfully");
+                      }}
+                      className="min-w-[100px] bg-[#0058a3] text-white hover:bg-[#0058a3]/90"
+                    >
+                      Save preferences
+                    </WexButton>
+                  </div>
                 </WexTabs.Content>
                 {/* Payments Tab Content */}
-                <WexTabs.Content value="payments" className="pt-6">
+                <WexTabs.Content value="payments" className="pt-6 pb-6">
                   <div className="flex flex-col gap-6">
                     {/* Notification Preferences Header */}
                     <div className="flex flex-col gap-1 px-6">
@@ -3281,22 +3535,22 @@ export default function MyProfile() {
                         <a href="#" className="text-[#0058a3] hover:underline">terms of service</a>. Please review our{" "}
                         <a href="#" className="text-[#0058a3] hover:underline">privacy policy</a> for more information.
                       </p>
-                    </div>
+                  </div>
 
                     {/* Table Header */}
                     <div className="h-6">
                       <div className="flex items-center justify-between h-full px-6">
                         <div style={{ width: "493px" }}>
                           <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Notification type</span>
-                        </div>
+                </div>
                         <div className="flex items-center" style={{ gap: "153px" }}>
-                          <div style={{ width: "35px" }}>
+                          <div style={{ width: "35px" }} className="flex justify-center">
                             <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Paper</span>
-                          </div>
-                          <div style={{ width: "35px" }}>
+              </div>
+                          <div style={{ width: "35px" }} className="flex justify-center">
                             <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Email</span>
                           </div>
-                          <div style={{ width: "80px" }}>
+                          <div style={{ width: "80px" }} className="flex justify-center">
                             <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Text</span>
                           </div>
                         </div>
@@ -3315,17 +3569,18 @@ export default function MyProfile() {
                           </p>
                         </div>
                         <div className="flex items-center" style={{ gap: "153px" }}>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
-                          <div style={{ width: "35px", height: "21px" }}>
-                            <WexSwitch
+                          <div style={{ width: "35px" }} className="flex justify-center">
+                            <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                          </div>
+                          <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
+                            <WexCheckbox
                               checked={paymentIssuedEmail}
                               onCheckedChange={setPaymentIssuedEmail}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
                             />
                           </div>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "80px" }}>Not available</span>
+                          <div style={{ width: "80px" }} className="flex justify-center">
+                            <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -3353,24 +3608,91 @@ export default function MyProfile() {
                           </div>
                         </div>
                         <div className="flex items-center" style={{ gap: "153px" }}>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
-                          <div style={{ width: "35px", height: "21px" }}>
-                            <WexSwitch
+                          <div style={{ width: "35px" }} className="flex justify-center">
+                            <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                          </div>
+                          <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
+                            <WexCheckbox
                               checked={withdrawalExceedsEmail}
                               onCheckedChange={setWithdrawalExceedsEmail}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
                             />
                           </div>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "80px" }}>Not available</span>
+                          <div style={{ width: "80px" }} className="flex justify-center">
+                            <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
+
+                  {/* Footer Actions */}
+                  <div className="flex items-center justify-end gap-3 pt-6 mt-6 border-t border-[#e4e6e9]">
+                    <WexButton
+                      intent="secondary"
+                      variant="outline"
+                      onClick={() => {
+                        // Cancel action - reset to saved values
+                        setHsaAccountSummaryPaper(savedState.hsaAccountSummaryPaper);
+                        setHsaAccountSummaryEmail(savedState.hsaAccountSummaryEmail);
+                        setHsaTaxDocumentsPaper(savedState.hsaTaxDocumentsPaper);
+                        setHsaTaxDocumentsEmail(savedState.hsaTaxDocumentsEmail);
+                        setGoPaperless(savedState.goPaperless);
+                        setContributionPostedEmail(savedState.contributionPostedEmail);
+                        setBalanceBelowAmount(savedState.balanceBelowAmount);
+                        setBalanceBelowEmail(savedState.balanceBelowEmail);
+                        setContributionsWithinAmount(savedState.contributionsWithinAmount);
+                        setContributionsWithinEmail(savedState.contributionsWithinEmail);
+                        setPaymentIssuedEmail(savedState.paymentIssuedEmail);
+                        setWithdrawalExceedsAmount(savedState.withdrawalExceedsAmount);
+                        setWithdrawalExceedsEmail(savedState.withdrawalExceedsEmail);
+                        setCardMailedEmail(savedState.cardMailedEmail);
+                        setCardMailedText(savedState.cardMailedText);
+                        setFollowUpNoticeText(savedState.followUpNoticeText);
+                        setPurchaseMadeEmail(savedState.purchaseMadeEmail);
+                        setPurchaseMadeText(savedState.purchaseMadeText);
+                        setCardSuspendedText(savedState.cardSuspendedText);
+                        setCardPurseSuspendedText(savedState.cardPurseSuspendedText);
+                      }}
+                      className="min-w-[100px]"
+                    >
+                      Cancel
+                    </WexButton>
+                    <WexButton
+                      intent="primary"
+                      onClick={() => {
+                        // Save preferences action
+                        setSavedState({
+                          hsaAccountSummaryPaper,
+                          hsaAccountSummaryEmail,
+                          hsaTaxDocumentsPaper,
+                          hsaTaxDocumentsEmail,
+                          goPaperless,
+                          contributionPostedEmail,
+                          balanceBelowAmount,
+                          balanceBelowEmail,
+                          contributionsWithinAmount,
+                          contributionsWithinEmail,
+                          paymentIssuedEmail,
+                          withdrawalExceedsAmount,
+                          withdrawalExceedsEmail,
+                          cardMailedEmail,
+                          cardMailedText,
+                          followUpNoticeText,
+                          purchaseMadeEmail,
+                          purchaseMadeText,
+                          cardSuspendedText,
+                          cardPurseSuspendedText,
+                        });
+                        wexToast.success("Communication preferences saved successfully");
+                      }}
+                      className="min-w-[100px] bg-[#0058a3] text-white hover:bg-[#0058a3]/90"
+                    >
+                      Save preferences
+                    </WexButton>
+                  </div>
                 </WexTabs.Content>
                 {/* WEX Benefits Card Tab Content */}
-                <WexTabs.Content value="wex-benefits-card" className="pt-6">
+                <WexTabs.Content value="wex-benefits-card" className="pt-6 pb-6">
                   <div className="flex flex-col gap-6">
                     {/* Notification Preferences Header */}
                     <div className="flex flex-col gap-1 px-6">
@@ -3391,13 +3713,13 @@ export default function MyProfile() {
                           <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Notification type</span>
                         </div>
                         <div className="flex items-center" style={{ gap: "153px" }}>
-                          <div style={{ width: "35px" }}>
+                          <div style={{ width: "35px" }} className="flex justify-center">
                             <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Paper</span>
                           </div>
-                          <div style={{ width: "35px" }}>
+                          <div style={{ width: "35px" }} className="flex justify-center">
                             <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Email</span>
                           </div>
-                          <div style={{ width: "80px" }}>
+                          <div style={{ width: "80px" }} className="flex justify-center">
                             <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Text</span>
                           </div>
                         </div>
@@ -3413,23 +3735,19 @@ export default function MyProfile() {
                           </h4>
                         </div>
                         <div className="flex items-center" style={{ gap: "153px" }}>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
-                          <div style={{ width: "35px", height: "21px" }}>
-                            <WexSwitch
+                          <div style={{ width: "35px" }} className="flex justify-center">
+                            <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                          </div>
+                          <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
+                            <WexCheckbox
                               checked={cardMailedEmail}
                               onCheckedChange={setCardMailedEmail}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
                             />
                           </div>
-                          <div style={{ width: "80px", height: "21px" }}>
-                            <WexSwitch
+                          <div style={{ width: "80px", height: "21px" }} className="flex justify-center">
+                            <WexCheckbox
                               checked={cardMailedText}
                               onCheckedChange={setCardMailedText}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
                             />
                           </div>
                         </div>
@@ -3448,15 +3766,16 @@ export default function MyProfile() {
                           </p>
                         </div>
                         <div className="flex items-center" style={{ gap: "153px" }}>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
-                          <div style={{ width: "80px", height: "21px" }}>
-                            <WexSwitch
+                          <div style={{ width: "35px" }} className="flex justify-center">
+                            <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                          </div>
+                          <div style={{ width: "35px" }} className="flex justify-center">
+                            <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                          </div>
+                          <div style={{ width: "80px", height: "21px" }} className="flex justify-center">
+                            <WexCheckbox
                               checked={followUpNoticeText}
                               onCheckedChange={setFollowUpNoticeText}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
                             />
                           </div>
                         </div>
@@ -3475,23 +3794,19 @@ export default function MyProfile() {
                           </p>
                         </div>
                         <div className="flex items-center" style={{ gap: "153px" }}>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
-                          <div style={{ width: "35px", height: "21px" }}>
-                            <WexSwitch
+                          <div style={{ width: "35px" }} className="flex justify-center">
+                            <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                          </div>
+                          <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
+                            <WexCheckbox
                               checked={purchaseMadeEmail}
                               onCheckedChange={setPurchaseMadeEmail}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
                             />
                           </div>
-                          <div style={{ width: "80px", height: "21px" }}>
-                            <WexSwitch
+                          <div style={{ width: "80px", height: "21px" }} className="flex justify-center">
+                            <WexCheckbox
                               checked={purchaseMadeText}
                               onCheckedChange={setPurchaseMadeText}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
                             />
                           </div>
                         </div>
@@ -3507,15 +3822,16 @@ export default function MyProfile() {
                           </h4>
                         </div>
                         <div className="flex items-center" style={{ gap: "153px" }}>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
-                          <div style={{ width: "80px", height: "21px" }}>
-                            <WexSwitch
+                          <div style={{ width: "35px" }} className="flex justify-center">
+                            <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                          </div>
+                          <div style={{ width: "35px" }} className="flex justify-center">
+                            <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                          </div>
+                          <div style={{ width: "80px", height: "21px" }} className="flex justify-center">
+                            <WexCheckbox
                               checked={cardSuspendedText}
                               onCheckedChange={setCardSuspendedText}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
                             />
                           </div>
                         </div>
@@ -3531,24 +3847,119 @@ export default function MyProfile() {
                           </h4>
                         </div>
                         <div className="flex items-center" style={{ gap: "153px" }}>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
-                          <div style={{ width: "80px", height: "21px" }}>
-                            <WexSwitch
+                          <div style={{ width: "35px" }} className="flex justify-center">
+                            <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                          </div>
+                          <div style={{ width: "35px" }} className="flex justify-center">
+                            <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                          </div>
+                          <div style={{ width: "80px", height: "21px" }} className="flex justify-center">
+                            <WexCheckbox
                               checked={cardPurseSuspendedText}
                               onCheckedChange={setCardPurseSuspendedText}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
                             />
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
+
+                  {/* Footer Actions */}
+                  <div className="flex items-center justify-end gap-3 pt-6 mt-6 border-t border-[#e4e6e9]">
+                    <WexButton
+                      intent="secondary"
+                      variant="outline"
+                      onClick={() => {
+                        // Cancel action - reset to saved values
+                        setHsaAccountSummaryPaper(savedState.hsaAccountSummaryPaper);
+                        setHsaAccountSummaryEmail(savedState.hsaAccountSummaryEmail);
+                        setHsaTaxDocumentsPaper(savedState.hsaTaxDocumentsPaper);
+                        setHsaTaxDocumentsEmail(savedState.hsaTaxDocumentsEmail);
+                        setGoPaperless(savedState.goPaperless);
+                        setContributionPostedEmail(savedState.contributionPostedEmail);
+                        setBalanceBelowAmount(savedState.balanceBelowAmount);
+                        setBalanceBelowEmail(savedState.balanceBelowEmail);
+                        setContributionsWithinAmount(savedState.contributionsWithinAmount);
+                        setContributionsWithinEmail(savedState.contributionsWithinEmail);
+                        setPaymentIssuedEmail(savedState.paymentIssuedEmail);
+                        setWithdrawalExceedsAmount(savedState.withdrawalExceedsAmount);
+                        setWithdrawalExceedsEmail(savedState.withdrawalExceedsEmail);
+                        setCardMailedEmail(savedState.cardMailedEmail);
+                        setCardMailedText(savedState.cardMailedText);
+                        setFollowUpNoticeText(savedState.followUpNoticeText);
+                        setPurchaseMadeEmail(savedState.purchaseMadeEmail);
+                        setPurchaseMadeText(savedState.purchaseMadeText);
+                        setCardSuspendedText(savedState.cardSuspendedText);
+                        setCardPurseSuspendedText(savedState.cardPurseSuspendedText);
+                      }}
+                      className="min-w-[100px]"
+                    >
+                      Cancel
+                    </WexButton>
+                    <WexButton
+                      intent="primary"
+                      onClick={() => {
+                        // Save preferences action
+                        setSavedState({
+                          hsaAccountSummaryPaper,
+                          hsaAccountSummaryEmail,
+                          hsaTaxDocumentsPaper,
+                          hsaTaxDocumentsEmail,
+                          goPaperless,
+                          contributionPostedEmail,
+                          balanceBelowAmount,
+                          balanceBelowEmail,
+                          contributionsWithinAmount,
+                          contributionsWithinEmail,
+                          paymentIssuedEmail,
+                          withdrawalExceedsAmount,
+                          withdrawalExceedsEmail,
+                          cardMailedEmail,
+                          cardMailedText,
+                          followUpNoticeText,
+                          purchaseMadeEmail,
+                          purchaseMadeText,
+                          cardSuspendedText,
+                          cardPurseSuspendedText,
+                        });
+                        wexToast.success("Communication preferences saved successfully");
+                      }}
+                      className="min-w-[100px] bg-[#0058a3] text-white hover:bg-[#0058a3]/90"
+                    >
+                      Save preferences
+                    </WexButton>
+                  </div>
                 </WexTabs.Content>
               </WexTabs>
             </div>
+
+            {/* Unsaved Changes Dialog */}
+            <WexAlertDialog open={isUnsavedChangesDialogOpen} onOpenChange={setIsUnsavedChangesDialogOpen}>
+              <WexAlertDialog.Content>
+                <WexAlertDialog.Header>
+                  <WexAlertDialog.Title>Unsaved Changes</WexAlertDialog.Title>
+                  <WexAlertDialog.Description>
+                    You have unsaved changes to your communication preferences. What would you like to do?
+                  </WexAlertDialog.Description>
+                </WexAlertDialog.Header>
+                <WexAlertDialog.Footer>
+                  <WexAlertDialog.Cancel
+                    onClick={() => {
+                      setIsUnsavedChangesDialogOpen(false);
+                      setPendingTabChange(null);
+                    }}
+                  >
+                    Cancel
+                  </WexAlertDialog.Cancel>
+                  <WexAlertDialog.Action
+                    onClick={handleSaveAndSwitch}
+                    className="bg-[#0058a3] text-white hover:bg-[#0058a3]/90"
+                  >
+                    Save preferences
+                  </WexAlertDialog.Action>
+                </WexAlertDialog.Footer>
+              </WexAlertDialog.Content>
+            </WexAlertDialog>
           </>
         );
 
@@ -3587,9 +3998,9 @@ export default function MyProfile() {
                     <WexSelect.Content>
                       {menuSections.flatMap((section) =>
                         section.items.map((item) => (
-                          <WexSelect.Item key={item.key} value={item.key}>
-                            {item.label}
-                          </WexSelect.Item>
+                        <WexSelect.Item key={item.key} value={item.key}>
+                          {item.label}
+                        </WexSelect.Item>
                         ))
                       )}
                     </WexSelect.Content>
@@ -3623,18 +4034,18 @@ export default function MyProfile() {
                                   const Icon = item.icon;
                                   const isActive = activeSubPage === item.key;
                                   return (
-                                    <WexSidebar.MenuItem key={item.key}>
-                                      <WexSidebar.MenuButton
+                            <WexSidebar.MenuItem key={item.key}>
+                              <WexSidebar.MenuButton
                                         isActive={isActive}
-                                        onClick={() => handleSubPageChange(item.key)}
+                                onClick={() => handleSubPageChange(item.key)}
                                         className="h-[32px] min-h-[32px] whitespace-normal px-3 py-1 rounded-md data-[active=true]:bg-[#E4F5FD] data-[active=true]:text-[#00437c] data-[active=false]:text-[#1d2c38]"
-                                      >
+                              >
                                         <div className="flex items-center gap-2 w-full">
                                           <Icon className={`h-[14px] w-[14px] shrink-0 ${isActive ? 'text-[#00437c]' : 'text-[#1d2c38]'}`} />
                                           <span className="text-sm tracking-[-0.084px]">{item.label}</span>
                                         </div>
-                                      </WexSidebar.MenuButton>
-                                    </WexSidebar.MenuItem>
+                              </WexSidebar.MenuButton>
+                            </WexSidebar.MenuItem>
                                   );
                                 })}
                               </div>

@@ -1079,123 +1079,150 @@ export default function MessageCenter() {
             <WexCard className="rounded-2xl overflow-hidden h-full w-full">
               <div className="flex h-full w-full">
                 {/* Left Sidebar */}
-                <WexSidebar
-                  collapsible="none"
-                  className="hidden md:flex w-[252px] border-r border-wex-card-border bg-wex-card-bg flex-col h-auto shrink-0"
-                >
-                  <WexSidebar.Content className="flex-1 h-full px-4 py-4">
-                    <WexSidebar.Group className="flex-1 h-full">
-                      <WexSidebar.GroupContent className="flex-1 h-full">
-                        <WexSidebar.Menu className="flex-1 h-full">
-                          {/* Activity Section */}
-                          <WexSidebar.GroupLabel className="px-3 py-[7px]">
-                            <span className="text-xs font-medium text-sidebar-foreground/70 uppercase tracking-[0.24px]">ACTIVITY</span>
-                          </WexSidebar.GroupLabel>
-                          <WexSidebar.MenuItem>
-                            <WexSidebar.MenuButton
-                              isActive={selectedCategory === null}
-                              onClick={() => setSelectedCategory(null)}
-                              className="h-[32px] min-h-[32px] whitespace-normal px-3 py-1 rounded-md data-[active=true]:bg-[#0058a3] data-[active=true]:text-white data-[active=true]:font-semibold"
-                            >
-                              <div className="flex items-center gap-2 w-full">
-                                <Mails className="h-5 w-5 shrink-0" />
-                                <span className="text-sm tracking-[-0.084px]">All Messages</span>
-                              </div>
-                            </WexSidebar.MenuButton>
-                          </WexSidebar.MenuItem>
-                          <WexSidebar.MenuItem>
-                            <WexSidebar.MenuButton
-                              isActive={selectedCategory === "action-required"}
-                              onClick={() => setSelectedCategory("action-required")}
-                              className="h-[32px] min-h-[32px] whitespace-normal px-3 py-1 rounded-md data-[active=true]:bg-[#0058a3] data-[active=true]:text-white data-[active=true]:font-semibold"
-                            >
-                              <div className="flex items-center gap-2 w-full">
-                                <AlertTriangle className="h-5 w-5 shrink-0" />
-                                <span className="text-sm tracking-[0.07px]">Action Required</span>
-                              </div>
-                            </WexSidebar.MenuButton>
-                          </WexSidebar.MenuItem>
-                          <WexSidebar.MenuItem>
-                            <WexSidebar.MenuButton
-                              isActive={selectedCategory === "unread"}
-                              onClick={() => setSelectedCategory("unread")}
-                              className="h-[32px] min-h-[32px] whitespace-normal px-3 py-1 rounded-md data-[active=true]:bg-[#0058a3] data-[active=true]:text-white data-[active=true]:font-semibold"
-                            >
-                              <div className="flex items-center gap-2 w-full">
-                                <Mail className="h-5 w-5 shrink-0" />
-                                <span className="text-sm tracking-[0.07px]">Unread ({unreadCount})</span>
-                              </div>
-                            </WexSidebar.MenuButton>
-                          </WexSidebar.MenuItem>
-                          <WexSidebar.MenuItem>
-                            <WexSidebar.MenuButton
-                              isActive={selectedCategory === "starred"}
-                              onClick={() => setSelectedCategory("starred")}
-                              className="h-[32px] min-h-[32px] whitespace-normal px-3 py-1 rounded-md data-[active=true]:bg-[#0058a3] data-[active=true]:text-white data-[active=true]:font-semibold"
-                            >
-                              <div className="flex items-center gap-2 w-full">
-                                <Star className="h-5 w-5 shrink-0" />
-                                <span className="text-sm tracking-[0.07px]">Starred</span>
-                              </div>
-                            </WexSidebar.MenuButton>
-                          </WexSidebar.MenuItem>
-                          <WexSidebar.MenuItem>
-                            <WexSidebar.MenuButton
-                              isActive={selectedCategory === "archive"}
-                              onClick={() => setSelectedCategory("archive")}
-                              className="h-[32px] min-h-[32px] whitespace-normal px-3 py-1 rounded-md data-[active=true]:bg-[#0058a3] data-[active=true]:text-white data-[active=true]:font-semibold"
-                            >
-                              <div className="flex items-center gap-2 w-full">
-                                <Archive className="h-5 w-5 shrink-0" />
-                                <span className="text-sm tracking-[0.07px]">Archived</span>
-                              </div>
-                            </WexSidebar.MenuButton>
-                          </WexSidebar.MenuItem>
+                <div className="hidden md:flex w-[252px] bg-white border-r border-[#e4e6e9] flex-col h-full shrink-0 rounded-bl-2xl rounded-tl-2xl">
+                  <div className="flex flex-col gap-4 p-4 h-full">
+                    {/* Activity Section */}
+                    <div className="flex flex-col gap-3">
+                      <p className="text-[13px] font-normal text-[#7c858e] uppercase leading-normal">
+                        Activity
+                      </p>
+                      <div className="flex flex-col gap-2">
+                        <button
+                          onClick={() => setSelectedCategory(null)}
+                          className={`flex items-center gap-[7px] px-[10.5px] py-[7px] rounded-[4px] w-full cursor-pointer ${
+                            selectedCategory === null
+                              ? "bg-[#E4F5FD]"
+                              : "bg-transparent hover:bg-[#f7f7f7]"
+                          }`}
+                        >
+                          <Mails className={`h-6 w-6 shrink-0 ${selectedCategory === null ? "text-[#00437c]" : "text-[#243746]"}`} />
+                          <span className={`text-[14px] leading-none flex-1 text-left ${
+                            selectedCategory === null ? "text-[#00437c]" : "text-[#243746]"
+                          }`}>
+                            All Messages
+                          </span>
+                        </button>
+                        <button
+                          onClick={() => setSelectedCategory("action-required")}
+                          className={`flex items-center gap-[7px] px-[10.5px] py-[7px] rounded-[4px] w-full cursor-pointer ${
+                            selectedCategory === "action-required"
+                              ? "bg-[#E4F5FD]"
+                              : "bg-transparent hover:bg-[#f7f7f7]"
+                          }`}
+                        >
+                          <AlertTriangle className={`h-6 w-6 shrink-0 ${selectedCategory === "action-required" ? "text-[#00437c]" : "text-[#243746]"}`} />
+                          <span className={`text-[14px] leading-none flex-1 text-left ${
+                            selectedCategory === "action-required" ? "text-[#00437c]" : "text-[#243746]"
+                          }`}>
+                            Action Required
+                          </span>
+                        </button>
+                        <button
+                          onClick={() => setSelectedCategory("unread")}
+                          className={`flex items-center gap-[7px] px-[10.5px] py-[7px] rounded-[4px] w-full cursor-pointer ${
+                            selectedCategory === "unread"
+                              ? "bg-[#E4F5FD]"
+                              : "bg-transparent hover:bg-[#f7f7f7]"
+                          }`}
+                        >
+                          <Mail className={`h-6 w-6 shrink-0 ${selectedCategory === "unread" ? "text-[#00437c]" : "text-[#243746]"}`} />
+                          <span className={`text-[14px] leading-none flex-1 text-left ${
+                            selectedCategory === "unread" ? "text-[#00437c]" : "text-[#243746]"
+                          }`}>
+                            Unread ({unreadCount})
+                          </span>
+                        </button>
+                        <button
+                          onClick={() => setSelectedCategory("starred")}
+                          className={`flex items-center gap-[7px] px-[10.5px] py-[7px] rounded-[4px] w-full cursor-pointer ${
+                            selectedCategory === "starred"
+                              ? "bg-[#E4F5FD]"
+                              : "bg-transparent hover:bg-[#f7f7f7]"
+                          }`}
+                        >
+                          <Star className={`h-6 w-6 shrink-0 ${selectedCategory === "starred" ? "text-[#00437c]" : "text-[#243746]"}`} />
+                          <span className={`text-[14px] leading-none flex-1 text-left ${
+                            selectedCategory === "starred" ? "text-[#00437c]" : "text-[#243746]"
+                          }`}>
+                            Starred
+                          </span>
+                        </button>
+                        <button
+                          onClick={() => setSelectedCategory("archive")}
+                          className={`flex items-center gap-[7px] px-[10.5px] py-[7px] rounded-[4px] w-full cursor-pointer ${
+                            selectedCategory === "archive"
+                              ? "bg-[#E4F5FD]"
+                              : "bg-transparent hover:bg-[#f7f7f7]"
+                          }`}
+                        >
+                          <Archive className={`h-6 w-6 shrink-0 ${selectedCategory === "archive" ? "text-[#00437c]" : "text-[#243746]"}`} />
+                          <span className={`text-[14px] leading-none flex-1 text-left ${
+                            selectedCategory === "archive" ? "text-[#00437c]" : "text-[#243746]"
+                          }`}>
+                            Archive
+                          </span>
+                        </button>
+                      </div>
+                    </div>
 
-                          <WexSidebar.GroupLabel className="px-3 py-[7px] mt-6">
-                            <span className="text-xs font-medium text-sidebar-foreground/70 uppercase tracking-[0.24px]">CATEGORIES</span>
-                          </WexSidebar.GroupLabel>
-                          <WexSidebar.MenuItem>
-                            <WexSidebar.MenuButton
-                              isActive={selectedCategory === "Account & Security"}
-                              onClick={() => setSelectedCategory("Account & Security")}
-                              className="h-[32px] min-h-[32px] whitespace-normal px-3 py-1 rounded-md data-[active=true]:bg-[#0058a3] data-[active=true]:text-white data-[active=true]:font-semibold"
-                            >
-                              <div className="flex items-center gap-2 w-full">
-                                <Shield className="h-5 w-5 shrink-0" />
-                                <span className="text-sm tracking-[0.07px]">Account & Security</span>
-                              </div>
-                            </WexSidebar.MenuButton>
-                          </WexSidebar.MenuItem>
-                          <WexSidebar.MenuItem>
-                            <WexSidebar.MenuButton
-                              isActive={selectedCategory === "Money Activity"}
-                              onClick={() => setSelectedCategory("Money Activity")}
-                              className="h-[32px] min-h-[32px] whitespace-normal px-3 py-1 rounded-md data-[active=true]:bg-[#0058a3] data-[active=true]:text-white data-[active=true]:font-semibold"
-                            >
-                              <div className="flex items-center gap-2 w-full">
-                                <DollarSign className="h-5 w-5 shrink-0" />
-                                <span className="text-sm tracking-[0.07px]">Money Activity</span>
-                              </div>
-                            </WexSidebar.MenuButton>
-                          </WexSidebar.MenuItem>
-                          <WexSidebar.MenuItem>
-                            <WexSidebar.MenuButton
-                              isActive={selectedCategory === "Tax & Statements"}
-                              onClick={() => setSelectedCategory("Tax & Statements")}
-                              className="h-[32px] min-h-[32px] whitespace-normal px-3 py-1 rounded-md data-[active=true]:bg-[#0058a3] data-[active=true]:text-white data-[active=true]:font-semibold"
-                            >
-                              <div className="flex items-center gap-2 w-full">
-                                <FileSpreadsheet className="h-5 w-5 shrink-0" />
-                                <span className="text-sm tracking-[0.07px]">Tax & Statements</span>
-                              </div>
-                            </WexSidebar.MenuButton>
-                          </WexSidebar.MenuItem>
-                        </WexSidebar.Menu>
-                      </WexSidebar.GroupContent>
-                    </WexSidebar.Group>
-                  </WexSidebar.Content>
-                </WexSidebar>
+                    {/* Separator */}
+                    <div className="h-px bg-[#e4e6e9] w-full" />
+
+                    {/* Categories Section */}
+                    <div className="flex flex-col gap-3">
+                      <p className="text-[13px] font-normal text-[#7c858e] uppercase leading-normal">
+                        Categories
+                      </p>
+                      <div className="flex flex-col gap-2">
+                        <button
+                          onClick={() => setSelectedCategory("Account & Security")}
+                          className={`flex items-center gap-[7px] px-[10.5px] py-[7px] rounded-[4px] w-full cursor-pointer ${
+                            selectedCategory === "Account & Security"
+                              ? "bg-[#E4F5FD]"
+                              : "bg-transparent hover:bg-[#f7f7f7]"
+                          }`}
+                        >
+                          <Shield className={`h-6 w-6 shrink-0 ${selectedCategory === "Account & Security" ? "text-[#00437c]" : "text-[#243746]"}`} />
+                          <span className={`text-[14px] leading-none flex-1 text-left ${
+                            selectedCategory === "Account & Security" ? "text-[#00437c]" : "text-[#243746]"
+                          }`}>
+                            Account & Security
+                          </span>
+                        </button>
+                        <button
+                          onClick={() => setSelectedCategory("Money Activity")}
+                          className={`flex items-center gap-[7px] px-[10.5px] py-[7px] rounded-[4px] w-full cursor-pointer ${
+                            selectedCategory === "Money Activity"
+                              ? "bg-[#E4F5FD]"
+                              : "bg-transparent hover:bg-[#f7f7f7]"
+                          }`}
+                        >
+                          <DollarSign className={`h-6 w-6 shrink-0 ${selectedCategory === "Money Activity" ? "text-[#00437c]" : "text-[#243746]"}`} />
+                          <span className={`text-[14px] leading-none flex-1 text-left ${
+                            selectedCategory === "Money Activity" ? "text-[#00437c]" : "text-[#243746]"
+                          }`}>
+                            Money Activity
+                          </span>
+                        </button>
+                        <button
+                          onClick={() => setSelectedCategory("Tax & Statements")}
+                          className={`flex items-center gap-[7px] px-[10.5px] py-[7px] rounded-[4px] w-full cursor-pointer ${
+                            selectedCategory === "Tax & Statements"
+                              ? "bg-[#E4F5FD]"
+                              : "bg-transparent hover:bg-[#f7f7f7]"
+                          }`}
+                        >
+                          <FileSpreadsheet className={`h-6 w-6 shrink-0 ${selectedCategory === "Tax & Statements" ? "text-[#00437c]" : "text-[#243746]"}`} />
+                          <span className={`text-[14px] leading-none flex-1 text-left ${
+                            selectedCategory === "Tax & Statements" ? "text-[#00437c]" : "text-[#243746]"
+                          }`}>
+                            Tax & Statements
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
                 {/* Main Content Area - Flex container ready for two-panel design */}
                 <WexSidebar.Inset className="flex-1 min-w-0 bg-wex-card-bg md:peer-data-[variant=inset]:!m-0 md:peer-data-[variant=inset]:!rounded-none md:peer-data-[variant=inset]:!shadow-none md:peer-data-[variant=inset]:!ml-0 md:peer-data-[state=collapsed]:peer-data-[variant=inset]:!ml-0">
