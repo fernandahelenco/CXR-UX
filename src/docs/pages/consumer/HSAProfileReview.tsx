@@ -1,28 +1,10 @@
 import * as React from "react";
-import { useNavigate } from "react-router-dom";
-import { WexButton } from "@/components/wex/wex-button";
 import { WexFloatLabel } from "@/components/wex/wex-float-label";
 import { WexLabel } from "@/components/wex/wex-label";
 import { WexRadioGroup } from "@/components/wex/wex-radio-group";
 import { WexCheckbox } from "@/components/wex/wex-checkbox";
-import { Stepper } from "./components/Stepper";
-import type { Step } from "./components/Stepper";
-
-/**
- * Stepper steps configuration
- */
-const enrollmentSteps: Step[] = [
-  { id: "eligibility", label: "Eligibility" },
-  { id: "profile", label: "Profile" },
-  { id: "dependents", label: "Dependents" },
-  { id: "beneficiaries", label: "Beneficiaries" },
-  { id: "reimbursement", label: "Reimbursement" },
-  { id: "review", label: "Review" },
-];
 
 export default function HSAProfileReview() {
-  const navigate = useNavigate();
-
   // Form state
   const [formData, setFormData] = React.useState({
     firstName: "Crystal",
@@ -55,45 +37,19 @@ export default function HSAProfileReview() {
     setFormData((prev) => ({ ...prev, mailingAddressSame: checked }));
   };
 
-  const handleCancel = () => {
-    navigate("/");
-  };
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/7aa8f91a-0aaf-498c-a001-87600c3e0184',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'HSAProfileReview.tsx:58',message:'render start',data:{email:formData.email,mailingAddressSame:formData.mailingAddressSame},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H4'})}).catch(()=>{});
+  // #endregion agent log
 
-  const handleBack = () => {
-    navigate("/hsa-enrollment");
-  };
-
-  const handleContinue = () => {
-    navigate("/hsa-enrollment/dependents");
-  };
+  React.useEffect(() => {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/7aa8f91a-0aaf-498c-a001-87600c3e0184',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'HSAProfileReview.tsx:62',message:'form data updated',data:{email:formData.email,maritalStatus:formData.maritalStatus},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H5'})}).catch(()=>{});
+    // #endregion agent log
+  }, [formData.email, formData.maritalStatus]);
 
   return (
-    <div className="min-h-screen bg-white flex">
-      {/* Left Sidebar */}
-      <div className="w-[240px] bg-[#FAFAFA] min-h-screen overflow-clip relative rounded-tr-[32px] shrink-0">
-        {/* Title */}
-        <p className="absolute font-bold leading-[40px] left-[32px] text-[30px] text-[#243746] top-[56px] tracking-[-0.63px]">
-          Enrollment
-        </p>
-
-        {/* Stepper */}
-        <div className="absolute left-[32px] top-[128px]">
-          <Stepper
-            steps={enrollmentSteps}
-            currentStepId="profile"
-            onStepChange={() => {
-              // Step navigation disabled for now
-            }}
-          />
-        </div>
-      </div>
-
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-h-screen relative">
-        {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto pb-32">
-          <div className="flex justify-center pt-14 px-8">
-            <div className="w-[362px] flex flex-col gap-12">
+    <div className="flex flex-1 flex-col items-center pt-14 pb-16 px-8">
+      <div className="w-[362px] flex flex-col gap-12">
               {/* Profile Section */}
               <div className="flex flex-col gap-4">
                 <h2 className="text-2xl font-bold leading-8 tracking-[-0.456px] text-black">
@@ -292,40 +248,6 @@ export default function HSAProfileReview() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Footer */}
-        <div className="absolute bottom-[32px] left-[32px] right-[32px] flex items-center justify-between">
-          {/* Cancel Button */}
-          <WexButton
-            variant="ghost"
-            onClick={handleCancel}
-            className="px-4 py-2"
-          >
-            Cancel
-          </WexButton>
-
-          {/* Back and Continue Buttons */}
-          <div className="flex gap-2 items-center">
-            <WexButton
-              intent="secondary"
-              variant="outline"
-              onClick={handleBack}
-              className="px-4 py-2"
-            >
-              Back
-            </WexButton>
-            <WexButton
-              intent="primary"
-              onClick={handleContinue}
-              className="px-4 py-2"
-            >
-              Save & Continue
-            </WexButton>
-          </div>
-        </div>
-      </div>
-    </div>
   );
 }
 
