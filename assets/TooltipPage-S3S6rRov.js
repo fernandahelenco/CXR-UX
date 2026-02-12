@@ -1,0 +1,36 @@
+import{j as e,o as t,W as i}from"./index-BOCzOiCa.js";import{C as l}from"./ComponentPage-Bmag_T2k.js";import{S as o}from"./Section-B6IIjY1w.js";import{E as s,P as a,S as d,T as c}from"./PropsTable-8PW4pmst.js";import{C as p}from"./CodeBlock-DItF1vK0.js";import{G as n}from"./ProseBlock-6YJ1ZPHE.js";import{S as x}from"./settings-DSbKiT-q.js";import{I as h}from"./info-BG0mvevC.js";import{C as m}from"./circle-question-mark-CC1kHS63.js";import"./triangle-alert-8HQe2d-i.js";import"./sun-MPk2ZJru.js";import"./contrast-1QdVzTcJ.js";import"./eye-D64M99TB.js";import"./flask-conical-Bwc0XbjW.js";import"./palette-xQwd5Lkl.js";import"./prism-css-DGVY_akA.js";import"./copy-TMadlRXl.js";const j=[{name:"delayDuration",type:"number",default:"700",description:"Delay before tooltip appears (ms)"},{name:"skipDelayDuration",type:"number",default:"300",description:"Skip delay when moving between triggers (ms)"}],u=[{name:"side",type:'"top" | "right" | "bottom" | "left"',default:'"top"',description:"Preferred side to render"},{name:"sideOffset",type:"number",default:"4",description:"Offset from the trigger"},{name:"className",type:"string",description:"Additional CSS classes"}],g=[{element:"Content",property:"Background",token:"--wex-component-tooltip-bg"},{element:"Content",property:"Text",token:"--wex-component-tooltip-fg"},{element:"Content",property:"Border",token:"--wex-component-tooltip-border"}];function U(){return e.jsxs(l,{title:"Tooltip",description:"A popup that displays information with customizable delay duration.",status:"stable",registryKey:"tooltip",children:[e.jsxs(o,{title:"Overview",children:[e.jsx(s,{children:e.jsx(t.Provider,{children:e.jsxs(t,{children:[e.jsx(t.Trigger,{asChild:!0,children:e.jsx(i,{variant:"outline",children:"Hover me"})}),e.jsx(t.Content,{children:e.jsx("p",{children:"This is a tooltip"})})]})})}),e.jsx(n,{children:"Use Tooltip for simple text hints. For interactive content or complex previews, use HoverCard instead."})]}),e.jsxs(o,{title:"Delay Duration",description:"Control how quickly the tooltip appears.",children:[e.jsx(s,{title:"Different Delays",children:e.jsx(t.Provider,{children:e.jsxs("div",{className:"flex gap-4",children:[e.jsxs(t,{children:[e.jsx(t.Trigger,{asChild:!0,children:e.jsx(i,{variant:"outline",size:"sm",children:"Default (700ms)"})}),e.jsx(t.Content,{children:e.jsx("p",{children:"Standard delay"})})]}),e.jsxs(t,{delayDuration:0,children:[e.jsx(t.Trigger,{asChild:!0,children:e.jsx(i,{variant:"outline",size:"sm",children:"Instant (0ms)"})}),e.jsx(t.Content,{children:e.jsx("p",{children:"No delay!"})})]}),e.jsxs(t,{delayDuration:300,children:[e.jsx(t.Trigger,{asChild:!0,children:e.jsx(i,{variant:"outline",size:"sm",children:"Quick (300ms)"})}),e.jsx(t.Content,{children:e.jsx("p",{children:"Quick delay"})})]}),e.jsxs(t,{delayDuration:1500,children:[e.jsx(t.Trigger,{asChild:!0,children:e.jsx(i,{variant:"outline",size:"sm",children:"Slow (1500ms)"})}),e.jsx(t.Content,{children:e.jsx("p",{children:"Longer delay"})})]})]})})}),e.jsx(n,{children:"Use instant tooltips (0ms) for icon buttons where users need immediate feedback. Use longer delays for secondary information that shouldn't distract."})]}),e.jsx(o,{title:"Positions",description:"Tooltip can appear on any side.",children:e.jsx(s,{children:e.jsx(t.Provider,{children:e.jsx("div",{className:"flex gap-4",children:["top","right","bottom","left"].map(r=>e.jsxs(t,{children:[e.jsx(t.Trigger,{asChild:!0,children:e.jsx(i,{variant:"outline",size:"sm",className:"capitalize",children:r})}),e.jsx(t.Content,{side:r,children:e.jsxs("p",{children:["Tooltip on ",r]})})]},r))})})})}),e.jsx(o,{title:"Use Cases",description:"Common tooltip patterns.",children:e.jsxs("div",{className:"space-y-6",children:[e.jsx(s,{title:"Icon Buttons",description:"Essential for icon-only buttons.",children:e.jsx(t.Provider,{children:e.jsxs("div",{className:"flex gap-2",children:[e.jsxs(t,{delayDuration:0,children:[e.jsx(t.Trigger,{asChild:!0,children:e.jsxs(i,{variant:"ghost",size:"icon",children:[e.jsx("span",{className:"sr-only",children:"Settings"}),e.jsx(x,{className:"h-4 w-4"})]})}),e.jsx(t.Content,{children:"Settings"})]}),e.jsxs(t,{delayDuration:0,children:[e.jsx(t.Trigger,{asChild:!0,children:e.jsxs(i,{variant:"ghost",size:"icon",children:[e.jsx("span",{className:"sr-only",children:"Information"}),e.jsx(h,{className:"h-4 w-4"})]})}),e.jsx(t.Content,{children:"More information"})]}),e.jsxs(t,{delayDuration:0,children:[e.jsx(t.Trigger,{asChild:!0,children:e.jsxs(i,{variant:"ghost",size:"icon",children:[e.jsx("span",{className:"sr-only",children:"Help"}),e.jsx(m,{className:"h-4 w-4"})]})}),e.jsx(t.Content,{children:"Get help"})]})]})})}),e.jsx(s,{title:"Truncated Text",description:"Show full text on hover.",children:e.jsx(t.Provider,{children:e.jsxs(t,{children:[e.jsx(t.Trigger,{asChild:!0,children:e.jsx("div",{className:"w-32 truncate cursor-help",children:"This is a very long text that gets truncated"})}),e.jsx(t.Content,{children:e.jsx("p",{children:"This is a very long text that gets truncated"})})]})})}),e.jsx(s,{title:"Disabled Button Explanation",description:"Explain why an action is disabled.",children:e.jsx(t.Provider,{children:e.jsxs(t,{children:[e.jsx(t.Trigger,{asChild:!0,children:e.jsx("span",{tabIndex:0,children:e.jsx(i,{disabled:!0,children:"Submit"})})}),e.jsx(t.Content,{children:e.jsx("p",{children:"Complete all required fields to submit"})})]})})})]})}),e.jsx(o,{title:"Accessibility",children:e.jsxs("div",{className:"space-y-4",children:[e.jsxs("div",{className:"rounded-lg border border-border bg-card p-4",children:[e.jsx("h3",{className:"font-medium mb-2",children:"Keyboard Support"}),e.jsx("p",{className:"text-sm text-muted-foreground",children:"Tooltips appear on focus, not just hover, ensuring keyboard users can access the information."})]}),e.jsxs("div",{className:"rounded-lg border border-border bg-card p-4",children:[e.jsx("h3",{className:"font-medium mb-2",children:"Icon Buttons"}),e.jsxs("p",{className:"text-sm text-muted-foreground",children:["When using tooltips on icon-only buttons, include"," ",e.jsx("code",{className:"bg-muted px-1 rounded",children:"sr-only"})," text for screen readers as a fallback."]})]})]})}),e.jsx(o,{title:"Usage",children:e.jsx(p,{code:`import { WexTooltip } from "@/components/wex";
+
+// Wrap your app or section with Provider (once)
+<WexTooltip.Provider>
+  {/* Your app content */}
+</WexTooltip.Provider>
+
+// Basic tooltip
+<WexTooltip>
+  <WexTooltip.Trigger asChild>
+    <Button>Hover me</Button>
+  </WexTooltip.Trigger>
+  <WexTooltip.Content>
+    Tooltip text
+  </WexTooltip.Content>
+</WexTooltip>
+
+// Custom delay (instant for icon buttons)
+<WexTooltip delayDuration={0}>
+  <WexTooltip.Trigger asChild>
+    <Button size="icon">
+      <Settings />
+    </Button>
+  </WexTooltip.Trigger>
+  <WexTooltip.Content>Settings</WexTooltip.Content>
+</WexTooltip>
+
+// Custom position
+<WexTooltip>
+  <WexTooltip.Trigger asChild>
+    <Button>Trigger</Button>
+  </WexTooltip.Trigger>
+  <WexTooltip.Content side="right" sideOffset={8}>
+    Right side tooltip
+  </WexTooltip.Content>
+</WexTooltip>`})}),e.jsxs(o,{title:"API Reference",children:[e.jsx(a,{props:j,title:"WexTooltip.Provider"}),e.jsx(d,{name:"WexTooltip.Content",props:u})]}),e.jsx(c,{tokens:g,className:"mt-12"})]})}export{U as default};
