@@ -21,12 +21,11 @@ import { wexToast } from "@/components/wex/wex-toast";
 import { WexSidebar } from "@/components/wex/wex-sidebar";
 import { Stepper } from "./components/Stepper";
 import { ConsumerNavigation } from "./ConsumerNavigation";
-import emptyStateIllustration from "./img/empty-state-illustration.svg";
-import { Pencil, Info, Plus, Calendar, X, Trash2, MoreVertical, Eye, RefreshCw, AlertCircle } from "lucide-react";
+import { Pencil, Info, Plus, Calendar, X, Trash2, MoreVertical, Eye, RefreshCw, AlertCircle, User, Users, HeartPlus, ShieldCheck, Landmark, CreditCard, Bell, UserLock, Lock } from "lucide-react";
 import { WexSwitch } from "@/components/wex/wex-switch";
 import { WexTabs } from "@/components/wex/wex-tabs";
 
-type SubPage = "my-profile" | "dependents" | "beneficiaries" | "banking" | "debit-card" | "login-security" | "communication" | "report-lost-stolen" | "order-replacement-card";
+type SubPage = "my-profile" | "dependents" | "beneficiaries" | "authorized-signers" | "banking" | "debit-card" | "login-security" | "communication" | "report-lost-stolen" | "order-replacement-card";
 
 type Dependent = {
   id: string;
@@ -48,6 +47,22 @@ type Beneficiary = {
   birthDate: string;
   relationship: string;
   beneficiaryType: "primary" | "contingent";
+  addressLine1: string;
+  addressLine2?: string;
+  city: string;
+  state: string;
+  zipCode: string;
+};
+
+type AuthorizedSigner = {
+  id: string;
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+  ssn: string;
+  birthDate: string;
+  type: string;
+  phone: string;
   addressLine1: string;
   addressLine2?: string;
   city: string;
@@ -122,13 +137,15 @@ export default function MyProfile() {
   
   // Sync email toggles with "Go paperless" toggle and turn off paper toggles
   useEffect(() => {
-    setHsaAccountSummaryEmail(goPaperless);
-    setHsaTaxDocumentsEmail(goPaperless);
-    // When "Go paperless" is turned on, turn off paper toggles
-    if (goPaperless) {
-      setHsaAccountSummaryPaper(false);
-      setHsaTaxDocumentsPaper(false);
-    }
+    queueMicrotask(() => {
+      setHsaAccountSummaryEmail(goPaperless);
+      setHsaTaxDocumentsEmail(goPaperless);
+      // When "Go paperless" is turned on, turn off paper toggles
+      if (goPaperless) {
+        setHsaAccountSummaryPaper(false);
+        setHsaTaxDocumentsPaper(false);
+      }
+    });
   }, [goPaperless]);
   
   // Handler for HSA Account Summary Paper toggle
@@ -154,6 +171,9 @@ export default function MyProfile() {
   
   // Beneficiaries state
   const [beneficiaries, setBeneficiaries] = useState<Beneficiary[]>([]);
+  
+  // Authorized signers state
+  const [authorizedSigners, setAuthorizedSigners] = useState<AuthorizedSigner[]>([]);
   
   // Banking state
   const [bankAccounts, setBankAccounts] = useState<BankAccount[]>([]);
@@ -262,6 +282,16 @@ export default function MyProfile() {
   const [beneficiaryToRemove, setBeneficiaryToRemove] = useState<Beneficiary | null>(null);
   const [isBeneficiaryCalendarOpen, setIsBeneficiaryCalendarOpen] = useState(false);
   
+  // Authorized signer modal state
+  const [isAddAuthorizedSignerModalOpen, setIsAddAuthorizedSignerModalOpen] = useState(false);
+  const [editingAuthorizedSignerId, setEditingAuthorizedSignerId] = useState<string | null>(null);
+  const [isRemoveAuthorizedSignerConfirmOpen, setIsRemoveAuthorizedSignerConfirmOpen] = useState(false);
+  const [authorizedSignerToRemove, setAuthorizedSignerToRemove] = useState<AuthorizedSigner | null>(null);
+  const [isAuthorizedSignerCalendarOpen, setIsAuthorizedSignerCalendarOpen] = useState(false);
+  const [isAuthorizedSignerSsnInvalid, setIsAuthorizedSignerSsnInvalid] = useState(false);
+  const [isViewAuthorizedSignerModalOpen, setIsViewAuthorizedSignerModalOpen] = useState(false);
+  const [viewingAuthorizedSigner, setViewingAuthorizedSigner] = useState<AuthorizedSigner | null>(null);
+  
   // Banking modal state
   const [isAddBankAccountModalOpen, setIsAddBankAccountModalOpen] = useState(false);
   const [editingBankAccountId, setEditingBankAccountId] = useState<string | null>(null);
@@ -296,6 +326,22 @@ export default function MyProfile() {
     zipCode: "",
   });
   
+  // Form state for authorized signers
+  const [authorizedSignerFormData, setAuthorizedSignerFormData] = useState({
+    firstName: "",
+    middleName: "",
+    lastName: "",
+    ssn: "",
+    birthDate: "",
+    type: "",
+    phone: "",
+    addressLine1: "",
+    addressLine2: "",
+    city: "",
+    state: "",
+    zipCode: "",
+  });
+  
   // Form state for bank accounts
   const [bankAccountFormData, setBankAccountFormData] = useState({
     verificationMethod: "text" as "text" | "email",
@@ -317,7 +363,7 @@ export default function MyProfile() {
 
   const [activeSubPage, setActiveSubPage] = useState<SubPage>(() => {
     const subPage = searchParams.get("subPage");
-    const validSubPages: SubPage[] = ["my-profile", "dependents", "beneficiaries", "banking", "debit-card", "login-security", "communication", "report-lost-stolen", "order-replacement-card"];
+    const validSubPages: SubPage[] = ["my-profile", "dependents", "beneficiaries", "authorized-signers", "banking", "debit-card", "login-security", "communication", "report-lost-stolen", "order-replacement-card"];
     if (subPage && validSubPages.includes(subPage as SubPage)) {
       return subPage as SubPage;
     }
@@ -327,12 +373,14 @@ export default function MyProfile() {
   // Sync activeSubPage with URL params
   useEffect(() => {
     const subPage = searchParams.get("subPage");
-    const validSubPages: SubPage[] = ["my-profile", "dependents", "beneficiaries", "banking", "debit-card", "login-security", "communication", "report-lost-stolen", "order-replacement-card"];
-    if (subPage && validSubPages.includes(subPage as SubPage)) {
-      setActiveSubPage(subPage as SubPage);
-    } else if (!subPage) {
-      setActiveSubPage("my-profile");
-    }
+    const validSubPages: SubPage[] = ["my-profile", "dependents", "beneficiaries", "authorized-signers", "banking", "debit-card", "login-security", "communication", "report-lost-stolen", "order-replacement-card"];
+    queueMicrotask(() => {
+      if (subPage && validSubPages.includes(subPage as SubPage)) {
+        setActiveSubPage(subPage as SubPage);
+      } else if (!subPage) {
+        setActiveSubPage("my-profile");
+      }
+    });
   }, [searchParams]);
 
   // Verification code resend timer countdown
@@ -575,6 +623,140 @@ export default function MyProfile() {
     });
   };
 
+  // Authorized signer handlers
+  const handleAuthorizedSignerFormChange = (field: string, value: string) => {
+    setAuthorizedSignerFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const validateAuthorizedSignerSsn = (value: string): boolean => {
+    if (value === "") return false;
+    return !/^[0-9-]*$/.test(value);
+  };
+
+  const resetAuthorizedSignerForm = () => {
+    setAuthorizedSignerFormData({
+      firstName: "",
+      middleName: "",
+      lastName: "",
+      ssn: "",
+      birthDate: "",
+      type: "",
+      phone: "",
+      addressLine1: "",
+      addressLine2: "",
+      city: "",
+      state: "",
+      zipCode: "",
+    });
+    setIsAuthorizedSignerSsnInvalid(false);
+  };
+
+  const handleViewAuthorizedSigner = (signer: AuthorizedSigner) => {
+    setViewingAuthorizedSigner(signer);
+    setIsViewAuthorizedSignerModalOpen(true);
+  };
+
+  const handleEditAuthorizedSigner = (signer: AuthorizedSigner) => {
+    setAuthorizedSignerFormData({
+      firstName: signer.firstName,
+      middleName: signer.middleName || "",
+      lastName: signer.lastName,
+      ssn: signer.ssn,
+      birthDate: signer.birthDate,
+      type: signer.type,
+      phone: signer.phone,
+      addressLine1: signer.addressLine1,
+      addressLine2: signer.addressLine2 || "",
+      city: signer.city,
+      state: signer.state,
+      zipCode: signer.zipCode,
+    });
+    setEditingAuthorizedSignerId(signer.id);
+    setIsAddAuthorizedSignerModalOpen(true);
+  };
+
+  const handleSaveAuthorizedSigner = () => {
+    const fullName = `${authorizedSignerFormData.firstName} ${authorizedSignerFormData.lastName}`;
+    
+    if (editingAuthorizedSignerId) {
+      // Update existing authorized signer
+      setAuthorizedSigners((prev) =>
+        prev.map((signer) =>
+          signer.id === editingAuthorizedSignerId
+            ? {
+                ...signer,
+                firstName: authorizedSignerFormData.firstName,
+                middleName: authorizedSignerFormData.middleName || undefined,
+                lastName: authorizedSignerFormData.lastName,
+                ssn: authorizedSignerFormData.ssn,
+                birthDate: authorizedSignerFormData.birthDate,
+                type: authorizedSignerFormData.type,
+                phone: authorizedSignerFormData.phone,
+                addressLine1: authorizedSignerFormData.addressLine1,
+                addressLine2: authorizedSignerFormData.addressLine2 || undefined,
+                city: authorizedSignerFormData.city,
+                state: authorizedSignerFormData.state,
+                zipCode: authorizedSignerFormData.zipCode,
+              }
+            : signer
+        )
+      );
+      
+      // Show success toast for edit
+      wexToast.success("Authorized signer successfully updated", {
+        description: `${fullName}'s information has been updated`,
+      });
+    } else {
+      // Add new authorized signer
+      const newAuthorizedSigner: AuthorizedSigner = {
+        id: Date.now().toString(),
+        firstName: authorizedSignerFormData.firstName,
+        middleName: authorizedSignerFormData.middleName || undefined,
+        lastName: authorizedSignerFormData.lastName,
+        ssn: authorizedSignerFormData.ssn,
+        birthDate: authorizedSignerFormData.birthDate,
+        type: authorizedSignerFormData.type,
+        phone: authorizedSignerFormData.phone,
+        addressLine1: authorizedSignerFormData.addressLine1,
+        addressLine2: authorizedSignerFormData.addressLine2 || undefined,
+        city: authorizedSignerFormData.city,
+        state: authorizedSignerFormData.state,
+        zipCode: authorizedSignerFormData.zipCode,
+      };
+      setAuthorizedSigners((prev) => [...prev, newAuthorizedSigner]);
+      
+      // Show success toast for add
+      wexToast.success("Authorized signer successfully added", {
+        description: `${fullName} is now an authorized signer`,
+      });
+    }
+    resetAuthorizedSignerForm();
+    setEditingAuthorizedSignerId(null);
+    setIsAddAuthorizedSignerModalOpen(false);
+  };
+
+  const handleRemoveAuthorizedSignerClick = (signer: AuthorizedSigner) => {
+    setAuthorizedSignerToRemove(signer);
+    setIsRemoveAuthorizedSignerConfirmOpen(true);
+  };
+
+  const handleRemoveAuthorizedSigner = (id: string) => {
+    const signer = authorizedSigners.find((s) => s.id === id);
+    const fullName = signer ? `${signer.firstName} ${signer.lastName}` : "Authorized Signer";
+    
+    setAuthorizedSigners((prev) => prev.filter((s) => s.id !== id));
+    setIsRemoveAuthorizedSignerConfirmOpen(false);
+    setAuthorizedSignerToRemove(null);
+    
+    // Show success toast for removal
+    wexToast.success("Authorized signer successfully removed", {
+      description: `${fullName} has been removed from your authorized signers`,
+    });
+  };
+
   // Bank account handlers
   const handleBankAccountFormChange = (field: string, value: string) => {
     setBankAccountFormData((prev) => ({
@@ -707,36 +889,52 @@ export default function MyProfile() {
   // Reset form when modal closes (only if not editing)
   useEffect(() => {
     if (!isAddDependentModalOpen && !editingDependentId) {
-      resetForm();
-      setEditingDependentId(null);
+      queueMicrotask(() => {
+        resetForm();
+        setEditingDependentId(null);
+      });
     }
   }, [isAddDependentModalOpen, editingDependentId]);
 
   // Reset beneficiary form when modal closes (only if not editing)
   useEffect(() => {
     if (!isAddBeneficiaryModalOpen && !editingBeneficiaryId) {
-      resetBeneficiaryForm();
-      setEditingBeneficiaryId(null);
+      queueMicrotask(() => {
+        resetBeneficiaryForm();
+        setEditingBeneficiaryId(null);
+      });
     }
   }, [isAddBeneficiaryModalOpen, editingBeneficiaryId]);
+
+  // Reset authorized signer form when modal closes (only if not editing)
+  useEffect(() => {
+    if (!isAddAuthorizedSignerModalOpen && !editingAuthorizedSignerId) {
+      queueMicrotask(() => {
+        resetAuthorizedSignerForm();
+        setEditingAuthorizedSignerId(null);
+      });
+    }
+  }, [isAddAuthorizedSignerModalOpen, editingAuthorizedSignerId]);
 
   // Reset bank account form and step when modal closes
   useEffect(() => {
     if (!isAddBankAccountModalOpen) {
-      setBankAccountFormData({
-        verificationMethod: "text",
-        verificationCode: "",
-        routingNumber: "",
-        accountNumber: "",
-        confirmAccountNumber: "",
-        accountNickname: "",
-        accountType: "checking",
-        selectedDirectDepositOptions: [],
+      queueMicrotask(() => {
+        setBankAccountFormData({
+          verificationMethod: "text",
+          verificationCode: "",
+          routingNumber: "",
+          accountNumber: "",
+          confirmAccountNumber: "",
+          accountNickname: "",
+          accountType: "checking",
+          selectedDirectDepositOptions: [],
+        });
+        setBankAccountStep("step1");
+        setEditingBankAccountId(null);
+        setShowVerificationCode(false);
+        setResendTimer(0);
       });
-      setBankAccountStep("step1");
-      setEditingBankAccountId(null);
-      setShowVerificationCode(false);
-      setResendTimer(0);
     }
   }, [isAddBankAccountModalOpen]);
 
@@ -753,18 +951,37 @@ export default function MyProfile() {
   // Start timer when verification code is shown
   useEffect(() => {
     if (showVerificationCode && resendTimer === 0) {
-      setResendTimer(45); // 45 seconds
+      queueMicrotask(() => setResendTimer(45)); // 45 seconds
     }
   }, [showVerificationCode]);
 
-  const menuItems: { label: string; key: SubPage }[] = [
-    { label: "My Profile", key: "my-profile" },
-    { label: "Dependents", key: "dependents" },
-    { label: "Beneficiaries", key: "beneficiaries" },
-    { label: "Banking", key: "banking" },
-    { label: "Debit Card", key: "debit-card" },
-    { label: "Login & Security", key: "login-security" },
-    { label: "Communication Preferences", key: "communication" },
+  const menuSections: { 
+    title: string; 
+    items: { label: string; key: SubPage; icon: React.ComponentType<{ className?: string }> }[] 
+  }[] = [
+    {
+      title: "ACCOUNT",
+      items: [
+        { label: "My Profile", key: "my-profile", icon: User },
+        { label: "Dependents", key: "dependents", icon: Users },
+        { label: "Beneficiaries", key: "beneficiaries", icon: HeartPlus },
+        { label: "Authorized Signers", key: "authorized-signers", icon: ShieldCheck },
+      ],
+    },
+    {
+      title: "PAYMENTS",
+      items: [
+        { label: "Bank Accounts", key: "banking", icon: Landmark },
+        { label: "Debit Card", key: "debit-card", icon: CreditCard },
+      ],
+    },
+    {
+      title: "PREFERENCES & SECURITY",
+      items: [
+        { label: "Login & Security", key: "login-security", icon: UserLock },
+        { label: "Communication Preferences", key: "communication", icon: Bell },
+      ],
+    },
   ];
 
   const renderContent = (subPage: SubPage) => {
@@ -922,16 +1139,30 @@ export default function MyProfile() {
                 <WexEmpty className="border-0 py-12">
                   <WexEmpty.Header>
                     <WexEmpty.Media variant="default">
-                      <img 
-                        src={emptyStateIllustration} 
-                        alt="" 
-                        className="h-[191px] w-[235px]"
-                      />
+                      <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-gray-100">
+                        <Users className="h-10 w-10 text-gray-400" />
+                      </div>
                     </WexEmpty.Media>
-                    <WexEmpty.Title className="text-base font-normal text-[#243746]">
-                      You have no dependents added yet
+                    <WexEmpty.Title className="text-lg font-semibold text-[#243746]">
+                      Add a Dependent
                     </WexEmpty.Title>
+                    <WexEmpty.Description>
+                      You have no dependents added yet. Add a dependent to manage their information and benefits.
+                    </WexEmpty.Description>
                   </WexEmpty.Header>
+                  <WexEmpty.Content>
+                    <WexButton
+                      intent="primary"
+                      onClick={() => {
+                        resetForm();
+                        setEditingDependentId(null);
+                        setIsAddDependentModalOpen(true);
+                      }}
+                    >
+                      <Plus className="h-4 w-4" />
+                      <span>Add Dependent</span>
+                    </WexButton>
+                  </WexEmpty.Content>
                 </WexEmpty>
               </div>
             ) : (
@@ -1010,16 +1241,30 @@ export default function MyProfile() {
                 <WexEmpty className="border-0 py-12">
                   <WexEmpty.Header>
                     <WexEmpty.Media variant="default">
-                      <img 
-                        src={emptyStateIllustration} 
-                        alt="" 
-                        className="h-[191px] w-[235px]"
-                      />
+                      <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-gray-100">
+                        <HeartPlus className="h-10 w-10 text-gray-400" />
+                      </div>
                     </WexEmpty.Media>
-                    <WexEmpty.Title className="text-base font-normal text-[#243746]">
-                      You have no beneficiaries added yet
+                    <WexEmpty.Title className="text-lg font-semibold text-[#243746]">
+                      Add a Beneficiary
                     </WexEmpty.Title>
+                    <WexEmpty.Description>
+                      You have no beneficiaries added yet. Add a beneficiary to designate who will receive your benefits.
+                    </WexEmpty.Description>
                   </WexEmpty.Header>
+                  <WexEmpty.Content>
+                    <WexButton
+                      intent="primary"
+                      onClick={() => {
+                        resetBeneficiaryForm();
+                        setEditingBeneficiaryId(null);
+                        setIsAddBeneficiaryModalOpen(true);
+                      }}
+                    >
+                      <Plus className="h-4 w-4" />
+                      <span>Add Beneficiary</span>
+                    </WexButton>
+                  </WexEmpty.Content>
                 </WexEmpty>
               </div>
             ) : (
@@ -1074,12 +1319,126 @@ export default function MyProfile() {
           </>
         );
 
+      case "authorized-signers":
+        return (
+          <>
+            <div className="pt-4 pb-2">
+              <div className="px-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <h2 className="text-2xl font-semibold text-gray-800">Authorized Signers</h2>
+                <WexButton
+                  intent="primary"
+                  variant="outline"
+                  size="sm"
+                  className="w-full sm:w-auto justify-center border-[#0058a3] text-[#0058a3] hover:bg-blue-50"
+                  onClick={() => {
+                    resetAuthorizedSignerForm();
+                    setEditingAuthorizedSignerId(null);
+                    setIsAddAuthorizedSignerModalOpen(true);
+                  }}
+                >
+                  <Plus className="h-4 w-4" />
+                  <span className="sm:ml-2">Add Authorized Signer</span>
+                </WexButton>
+              </div>
+              <WexSeparator className="mt-4" />
+            </div>
+            {authorizedSigners.length === 0 ? (
+              <div className="flex flex-col items-center justify-center px-8 py-16">
+                <WexEmpty className="border-0 py-12">
+                  <WexEmpty.Header>
+                    <WexEmpty.Media variant="default">
+                      <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-gray-100">
+                        <ShieldCheck className="h-10 w-10 text-gray-400" />
+                      </div>
+                    </WexEmpty.Media>
+                    <WexEmpty.Title className="text-lg font-semibold text-[#243746]">
+                      Add an Authorized Signer
+                    </WexEmpty.Title>
+                    <WexEmpty.Description>
+                      You have no authorized signers added yet. Add an authorized signer to grant them permission to act on your behalf.
+                    </WexEmpty.Description>
+                  </WexEmpty.Header>
+                  <WexEmpty.Content>
+                    <WexButton
+                      intent="primary"
+                      onClick={() => {
+                        resetAuthorizedSignerForm();
+                        setEditingAuthorizedSignerId(null);
+                        setIsAddAuthorizedSignerModalOpen(true);
+                      }}
+                    >
+                      <Plus className="h-4 w-4" />
+                      <span>Add Authorized Signer</span>
+                    </WexButton>
+                  </WexEmpty.Content>
+                </WexEmpty>
+              </div>
+            ) : (
+              <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {authorizedSigners.map((signer) => (
+                  <WexCard key={signer.id} className="p-4 w-80">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold text-[#243746] mb-0">
+                          {signer.firstName} {signer.middleName ? `${signer.middleName} ` : ""}{signer.lastName}
+                        </h3>
+                        <p className="text-[11px] text-gray-500 mb-3 capitalize">
+                          {signer.type}
+                        </p>
+                        <div className="flex gap-1.5 text-sm text-[#243746]">
+                          <span className="text-gray-500">Birth Date:</span>
+                          <span>{signer.birthDate || "Not provided"}</span>
+                        </div>
+                      </div>
+                      <WexDropdownMenu>
+                        <WexDropdownMenu.Trigger asChild>
+                          <WexButton
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 p-0"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <MoreVertical className="h-4 w-4 text-[#243746]" />
+                          </WexButton>
+                        </WexDropdownMenu.Trigger>
+                        <WexDropdownMenu.Content align="end">
+                          <WexDropdownMenu.Item
+                            className="flex items-center gap-2 px-3 py-2 cursor-pointer"
+                            onClick={() => handleViewAuthorizedSigner(signer)}
+                          >
+                            <Eye className="h-4 w-4" />
+                            <span className="text-sm text-[#243746] leading-none">View</span>
+                          </WexDropdownMenu.Item>
+                          <WexDropdownMenu.Item
+                            className="flex items-center gap-2 px-3 py-2 cursor-pointer"
+                            onClick={() => handleEditAuthorizedSigner(signer)}
+                          >
+                            <Pencil className="h-4 w-4" />
+                            <span className="text-sm text-[#243746] leading-none">Edit</span>
+                          </WexDropdownMenu.Item>
+                          <WexDropdownMenu.Item
+                            className="flex items-center gap-2 px-3 py-2 cursor-pointer text-red-500"
+                            onClick={() => handleRemoveAuthorizedSignerClick(signer)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                            <span className="text-sm leading-none">Remove</span>
+                          </WexDropdownMenu.Item>
+                        </WexDropdownMenu.Content>
+                      </WexDropdownMenu>
+                    </div>
+                  </WexCard>
+                ))}
+              </div>
+            )}
+          </>
+        );
+
       case "banking":
         return (
           <>
             <div className="pt-4 pb-2">
               <div className="px-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <h2 className="text-2xl font-semibold text-gray-800">Banking</h2>
+                <h2 className="text-2xl font-semibold text-gray-800">Bank Accounts</h2>
                 <WexButton
                   intent="primary"
                   variant="outline"
@@ -1112,17 +1471,45 @@ export default function MyProfile() {
                 <WexEmpty className="border-0 py-12">
                   <WexEmpty.Header>
                     <WexEmpty.Media variant="default">
-                      <img 
-                        src={emptyStateIllustration} 
-                        alt="" 
-                        className="h-[191px] w-[235px]"
-                      />
+                      <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-gray-100">
+                        <Landmark className="h-10 w-10 text-gray-400" />
+                      </div>
                     </WexEmpty.Media>
-                    <WexEmpty.Title className="text-base font-normal text-[#243746]">
-                      You have no bank accounts added yet
+                    <WexEmpty.Title className="text-lg font-semibold text-[#243746]">
+                      Add a Bank Account
                     </WexEmpty.Title>
+                    <WexEmpty.Description>
+                      You have no bank accounts added yet. Connect a bank account to receive reimbursements and deposits directly.
+                    </WexEmpty.Description>
                   </WexEmpty.Header>
+                  <WexEmpty.Content>
+                    <WexButton
+                      intent="primary"
+                      onClick={() => {
+                        setBankAccountFormData({
+                          verificationMethod: "text",
+                          verificationCode: "",
+                          accountType: "checking",
+                          accountNumber: "",
+                          confirmAccountNumber: "",
+                          routingNumber: "",
+                          accountNickname: "",
+                          selectedDirectDepositOptions: [],
+                        });
+                        setBankAccountStep("step1");
+                        setEditingBankAccountId(null);
+                        setIsAddBankAccountModalOpen(true);
+                      }}
+                    >
+                      <Plus className="h-4 w-4" />
+                      <span>Add Bank Account</span>
+                    </WexButton>
+                  </WexEmpty.Content>
                 </WexEmpty>
+                <div className="mt-6 flex items-center gap-2 text-sm text-muted-foreground">
+                  <Lock className="h-4 w-4" />
+                  <span>Your bank information is protected</span>
+                </div>
               </div>
             ) : (
               <div className="p-6 space-y-4">
@@ -1774,7 +2161,7 @@ export default function MyProfile() {
           </>
         );
 
-      case "report-lost-stolen":
+      case "report-lost-stolen": {
         // Get card ID from URL params
         const cardId = searchParams.get("cardId");
         const cardToReport = debitCards.find((card) => card.id === cardId);
@@ -2174,8 +2561,9 @@ export default function MyProfile() {
             </WexDialog>
           </>
         );
+      }
 
-      case "order-replacement-card":
+      case "order-replacement-card": {
         // Get card ID from URL params
         const orderCardId = searchParams.get("cardId");
         const cardToOrder = debitCards.find((card) => card.id === orderCardId);
@@ -2507,6 +2895,7 @@ export default function MyProfile() {
             </WexDialog>
           </>
         );
+      }
 
       case "login-security":
         return (
@@ -3210,11 +3599,13 @@ export default function MyProfile() {
                       <WexSelect.Value placeholder="Choose section" />
                     </WexSelect.Trigger>
                     <WexSelect.Content>
-                      {menuItems.map((item) => (
-                        <WexSelect.Item key={item.key} value={item.key}>
-                          {item.label}
-                        </WexSelect.Item>
-                      ))}
+                      {menuSections.flatMap((section) =>
+                        section.items.map((item) => (
+                          <WexSelect.Item key={item.key} value={item.key}>
+                            {item.label}
+                          </WexSelect.Item>
+                        ))
+                      )}
                     </WexSelect.Content>
                   </WexSelect>
                 </div>
@@ -3228,22 +3619,43 @@ export default function MyProfile() {
                 {/* Left Sidebar (desktop) */}
                 <WexSidebar
                   collapsible="none"
-                  className="hidden md:flex w-[240px] border-r border-wex-card-border bg-wex-card-bg flex-col h-auto"
+                  className="hidden md:flex w-[264px] border-r border-wex-card-border bg-wex-card-bg flex-col h-auto"
                 >
                   <WexSidebar.Content className="flex-1 h-full px-2 py-4">
                     <WexSidebar.Group className="flex-1 h-full">
                       <WexSidebar.GroupContent className="flex-1 h-full">
                         <WexSidebar.Menu className="flex-1 h-full">
-                          {menuItems.map((item) => (
-                            <WexSidebar.MenuItem key={item.key}>
-                              <WexSidebar.MenuButton
-                                isActive={activeSubPage === item.key}
-                                onClick={() => handleSubPageChange(item.key)}
-                                className="h-[31px] min-h-[31px] whitespace-normal px-3 py-[6px] data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:font-normal"
-                              >
-                                {item.label}
-                              </WexSidebar.MenuButton>
-                            </WexSidebar.MenuItem>
+                          {menuSections.map((section, sectionIndex) => (
+                            <div key={section.title}>
+                              <WexSidebar.GroupLabel className="px-3 py-[7px]">
+                                <span className="text-xs font-medium text-sidebar-foreground/70 uppercase tracking-[0.24px]">
+                                  {section.title}
+                                </span>
+                              </WexSidebar.GroupLabel>
+                              <div className="space-y-1">
+                                {section.items.map((item) => {
+                                  const Icon = item.icon;
+                                  const isActive = activeSubPage === item.key;
+                                  return (
+                                    <WexSidebar.MenuItem key={item.key}>
+                                      <WexSidebar.MenuButton
+                                        isActive={isActive}
+                                        onClick={() => handleSubPageChange(item.key)}
+                                        className="h-[32px] min-h-[32px] whitespace-normal px-3 py-1 rounded-md data-[active=true]:bg-[#E4F5FD] data-[active=true]:text-[#00437c] data-[active=false]:text-[#1d2c38]"
+                                      >
+                                        <div className="flex items-center gap-2 w-full">
+                                          <Icon className={`h-[14px] w-[14px] shrink-0 ${isActive ? 'text-[#00437c]' : 'text-[#1d2c38]'}`} />
+                                          <span className="text-sm tracking-[-0.084px]">{item.label}</span>
+                                        </div>
+                                      </WexSidebar.MenuButton>
+                                    </WexSidebar.MenuItem>
+                                  );
+                                })}
+                              </div>
+                              {sectionIndex < menuSections.length - 1 && (
+                                <WexSidebar.Separator className="my-2" />
+                              )}
+                            </div>
                           ))}
                         </WexSidebar.Menu>
                       </WexSidebar.GroupContent>
@@ -3769,6 +4181,401 @@ export default function MyProfile() {
           </WexAlertDialog.Footer>
         </WexAlertDialog.Content>
       </WexAlertDialog>
+
+      {/* Add New Authorized Signers Modal */}
+      <WexDialog open={isAddAuthorizedSignerModalOpen} onOpenChange={setIsAddAuthorizedSignerModalOpen}>
+        <WexDialog.Content className="w-[448px] p-0 [&>div:last-child]:hidden">
+          {/* Header */}
+          <div className="flex items-center justify-between p-[17.5px]">
+            <WexDialog.Title className="text-base font-semibold text-[#243746] tracking-[-0.176px] leading-6">
+              {editingAuthorizedSignerId ? "Edit Authorized Signer" : "Add Authorized Signer"}
+            </WexDialog.Title>
+            <WexDialog.Close asChild>
+              <WexButton
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6 !border-0 !shadow-none !bg-transparent hover:!bg-wex-button-tertiary-hover-bg"
+                aria-label="Close"
+              >
+                <X className="h-4 w-4 text-[#515F6B]" />
+              </WexButton>
+            </WexDialog.Close>
+          </div>
+
+          {/* Form Content */}
+          <div className="flex flex-col gap-4 px-[24px] pb-0">
+            {/* First Name & MI on same row */}
+            <div className="flex gap-4">
+              <WexFloatLabel
+                label="First Name"
+                value={authorizedSignerFormData.firstName}
+                onChange={(e) => handleAuthorizedSignerFormChange("firstName", e.target.value)}
+                containerClassName="flex-1"
+              />
+              <WexFloatLabel
+                label="MI"
+                value={authorizedSignerFormData.middleName}
+                onChange={(e) => handleAuthorizedSignerFormChange("middleName", e.target.value)}
+                containerClassName="w-20"
+              />
+            </div>
+
+            {/* Last Name */}
+            <WexFloatLabel
+              label="Last Name"
+              value={authorizedSignerFormData.lastName}
+              onChange={(e) => handleAuthorizedSignerFormChange("lastName", e.target.value)}
+            />
+
+            {/* SSN & Birth Date on same row */}
+            <div className="flex gap-4">
+              <div className="relative flex-1">
+                <WexFloatLabel
+                  label="SSN"
+                  value={authorizedSignerFormData.ssn}
+                  onChange={(e) => {
+                    const originalValue = e.target.value;
+                    const filteredValue = originalValue.replace(/[^0-9-]/g, "");
+                    const hasInvalidChars = originalValue !== filteredValue;
+                    setIsAuthorizedSignerSsnInvalid(hasInvalidChars || validateAuthorizedSignerSsn(filteredValue));
+                    handleAuthorizedSignerFormChange("ssn", filteredValue);
+                  }}
+                  invalid={isAuthorizedSignerSsnInvalid}
+                />
+                {isAuthorizedSignerSsnInvalid && (
+                  <p className="text-sm text-destructive font-medium px-3">
+                    SSN must be numbers only
+                  </p>
+                )}
+              </div>
+              <div className="relative flex-1">
+                <WexPopover open={isAuthorizedSignerCalendarOpen} onOpenChange={setIsAuthorizedSignerCalendarOpen}>
+                  <WexPopover.Trigger asChild>
+                    <div className="relative w-full">
+                      <WexFloatLabel
+                        label="Birth Date"
+                        value={authorizedSignerFormData.birthDate}
+                        onChange={(e) => handleAuthorizedSignerFormChange("birthDate", e.target.value)}
+                        onClick={() => setIsAuthorizedSignerCalendarOpen(true)}
+                        rightIcon={<Calendar className="h-4 w-4" />}
+                      />
+                    </div>
+                  </WexPopover.Trigger>
+                  <WexPopover.Content className="w-auto p-0" align="start" side="bottom" sideOffset={4}>
+                    <WexCalendar
+                      mode="single"
+                      selected={
+                        authorizedSignerFormData.birthDate
+                          ? (() => {
+                              const parts = authorizedSignerFormData.birthDate.split("/");
+                              if (parts.length === 3) {
+                                const month = parseInt(parts[0], 10) - 1;
+                                const day = parseInt(parts[1], 10);
+                                const year = parseInt(parts[2], 10);
+                                const date = new Date(year, month, day);
+                                if (!isNaN(date.getTime())) {
+                                  return date;
+                                }
+                              }
+                              const date = new Date(authorizedSignerFormData.birthDate);
+                              return !isNaN(date.getTime()) ? date : undefined;
+                            })()
+                          : undefined
+                      }
+                      onSelect={(date: Date | undefined) => {
+                        if (date) {
+                          const month = String(date.getMonth() + 1).padStart(2, "0");
+                          const day = String(date.getDate()).padStart(2, "0");
+                          const year = date.getFullYear();
+                          handleAuthorizedSignerFormChange("birthDate", `${month}/${day}/${year}`);
+                        } else {
+                          handleAuthorizedSignerFormChange("birthDate", "");
+                        }
+                        setIsAuthorizedSignerCalendarOpen(false);
+                      }}
+                      initialFocus
+                    />
+                  </WexPopover.Content>
+                </WexPopover>
+              </div>
+            </div>
+
+            {/* Type Select with Float Label Wrapper */}
+            <div className="relative w-full">
+              <WexSelect
+                value={authorizedSignerFormData.type}
+                onValueChange={(value) => handleAuthorizedSignerFormChange("type", value)}
+              >
+                <WexSelect.Trigger className={`h-14 w-full rounded-md px-3 text-sm shadow-sm border border-wex-input-border bg-wex-input-bg text-wex-input-fg hover:border-wex-input-border-hover focus:outline-none focus:border-wex-input-border-focus focus:ring-1 focus:ring-wex-input-focus-ring ${authorizedSignerFormData.type ? "pt-2 pb-2" : "pt-5 pb-2"}`}>
+                  <WexSelect.Value placeholder=" " />
+                </WexSelect.Trigger>
+                <WexSelect.Content>
+                  <WexSelect.Item value="authorized-representative">Authorized Representative</WexSelect.Item>
+                  <WexSelect.Item value="authorized-signer">Authorized Signer</WexSelect.Item>
+                  <WexSelect.Item value="conservator">Conservator</WexSelect.Item>
+                  <WexSelect.Item value="guardian">Guardian</WexSelect.Item>
+                  <WexSelect.Item value="parent">Parent</WexSelect.Item>
+                  <WexSelect.Item value="power-of-attorney">Power of Attorney</WexSelect.Item>
+                </WexSelect.Content>
+              </WexSelect>
+              <label
+                className={`absolute pointer-events-none transition-all duration-200 ease-out origin-top-left ${
+                  authorizedSignerFormData.type
+                    ? "left-3 top-2 text-xs text-[#7c858e] scale-75 -translate-y-2.5"
+                    : "left-3 top-4 text-sm text-[#7c858e]"
+                }`}
+              >
+                Type
+              </label>
+            </div>
+
+            {/* Phone */}
+            <WexFloatLabel
+              label="Phone"
+              value={authorizedSignerFormData.phone}
+              onChange={(e) => handleAuthorizedSignerFormChange("phone", e.target.value)}
+            />
+
+            {/* Address Line 1 */}
+            <WexFloatLabel
+              label="Address Line 1"
+              value={authorizedSignerFormData.addressLine1}
+              onChange={(e) => handleAuthorizedSignerFormChange("addressLine1", e.target.value)}
+            />
+
+            {/* Address Line 2 */}
+            <WexFloatLabel
+              label="Address Line 2"
+              value={authorizedSignerFormData.addressLine2}
+              onChange={(e) => handleAuthorizedSignerFormChange("addressLine2", e.target.value)}
+            />
+
+            {/* City */}
+            <WexFloatLabel
+              label="City"
+              value={authorizedSignerFormData.city}
+              onChange={(e) => handleAuthorizedSignerFormChange("city", e.target.value)}
+            />
+
+            {/* State & Zip Code on same row */}
+            <div className="flex gap-4">
+              <div className="relative flex-1">
+                <WexSelect
+                  value={authorizedSignerFormData.state}
+                  onValueChange={(value) => handleAuthorizedSignerFormChange("state", value)}
+                >
+                  <WexSelect.Trigger className={`h-14 w-full rounded-md px-3 text-sm shadow-sm border border-wex-input-border bg-wex-input-bg text-wex-input-fg hover:border-wex-input-border-hover focus:outline-none focus:border-wex-input-border-focus focus:ring-1 focus:ring-wex-input-focus-ring ${authorizedSignerFormData.state ? "pt-2 pb-2" : "pt-5 pb-2"}`}>
+                    <WexSelect.Value placeholder=" " />
+                  </WexSelect.Trigger>
+                  <WexSelect.Content>
+                    <WexSelect.Item value="AL">Alabama</WexSelect.Item>
+                    <WexSelect.Item value="AK">Alaska</WexSelect.Item>
+                    <WexSelect.Item value="AZ">Arizona</WexSelect.Item>
+                    <WexSelect.Item value="AR">Arkansas</WexSelect.Item>
+                    <WexSelect.Item value="CA">California</WexSelect.Item>
+                    <WexSelect.Item value="CO">Colorado</WexSelect.Item>
+                    <WexSelect.Item value="CT">Connecticut</WexSelect.Item>
+                    <WexSelect.Item value="DE">Delaware</WexSelect.Item>
+                    <WexSelect.Item value="FL">Florida</WexSelect.Item>
+                    <WexSelect.Item value="GA">Georgia</WexSelect.Item>
+                    <WexSelect.Item value="HI">Hawaii</WexSelect.Item>
+                    <WexSelect.Item value="ID">Idaho</WexSelect.Item>
+                    <WexSelect.Item value="IL">Illinois</WexSelect.Item>
+                    <WexSelect.Item value="IN">Indiana</WexSelect.Item>
+                    <WexSelect.Item value="IA">Iowa</WexSelect.Item>
+                    <WexSelect.Item value="KS">Kansas</WexSelect.Item>
+                    <WexSelect.Item value="KY">Kentucky</WexSelect.Item>
+                    <WexSelect.Item value="LA">Louisiana</WexSelect.Item>
+                    <WexSelect.Item value="ME">Maine</WexSelect.Item>
+                    <WexSelect.Item value="MD">Maryland</WexSelect.Item>
+                    <WexSelect.Item value="MA">Massachusetts</WexSelect.Item>
+                    <WexSelect.Item value="MI">Michigan</WexSelect.Item>
+                    <WexSelect.Item value="MN">Minnesota</WexSelect.Item>
+                    <WexSelect.Item value="MS">Mississippi</WexSelect.Item>
+                    <WexSelect.Item value="MO">Missouri</WexSelect.Item>
+                    <WexSelect.Item value="MT">Montana</WexSelect.Item>
+                    <WexSelect.Item value="NE">Nebraska</WexSelect.Item>
+                    <WexSelect.Item value="NV">Nevada</WexSelect.Item>
+                    <WexSelect.Item value="NH">New Hampshire</WexSelect.Item>
+                    <WexSelect.Item value="NJ">New Jersey</WexSelect.Item>
+                    <WexSelect.Item value="NM">New Mexico</WexSelect.Item>
+                    <WexSelect.Item value="NY">New York</WexSelect.Item>
+                    <WexSelect.Item value="NC">North Carolina</WexSelect.Item>
+                    <WexSelect.Item value="ND">North Dakota</WexSelect.Item>
+                    <WexSelect.Item value="OH">Ohio</WexSelect.Item>
+                    <WexSelect.Item value="OK">Oklahoma</WexSelect.Item>
+                    <WexSelect.Item value="OR">Oregon</WexSelect.Item>
+                    <WexSelect.Item value="PA">Pennsylvania</WexSelect.Item>
+                    <WexSelect.Item value="RI">Rhode Island</WexSelect.Item>
+                    <WexSelect.Item value="SC">South Carolina</WexSelect.Item>
+                    <WexSelect.Item value="SD">South Dakota</WexSelect.Item>
+                    <WexSelect.Item value="TN">Tennessee</WexSelect.Item>
+                    <WexSelect.Item value="TX">Texas</WexSelect.Item>
+                    <WexSelect.Item value="UT">Utah</WexSelect.Item>
+                    <WexSelect.Item value="VT">Vermont</WexSelect.Item>
+                    <WexSelect.Item value="VA">Virginia</WexSelect.Item>
+                    <WexSelect.Item value="WA">Washington</WexSelect.Item>
+                    <WexSelect.Item value="WV">West Virginia</WexSelect.Item>
+                    <WexSelect.Item value="WI">Wisconsin</WexSelect.Item>
+                    <WexSelect.Item value="WY">Wyoming</WexSelect.Item>
+                  </WexSelect.Content>
+                </WexSelect>
+                <label
+                  className={`absolute pointer-events-none transition-all duration-200 ease-out origin-top-left ${
+                    authorizedSignerFormData.state
+                      ? "left-3 top-2 text-xs text-[#7c858e] scale-75 -translate-y-2.5"
+                      : "left-3 top-4 text-sm text-[#7c858e]"
+                  }`}
+                >
+                  Select State
+                </label>
+              </div>
+              <WexFloatLabel
+                label="Zip Code"
+                value={authorizedSignerFormData.zipCode}
+                onChange={(e) => handleAuthorizedSignerFormChange("zipCode", e.target.value)}
+                containerClassName="flex-1"
+              />
+            </div>
+          </div>
+
+          {/* Footer */}
+          <WexDialog.Footer className="flex gap-2 justify-end p-[17.5px] pt-0">
+            <WexDialog.Close asChild>
+              <WexButton
+                intent="secondary"
+                variant="outline"
+                onClick={() => {
+                  resetAuthorizedSignerForm();
+                  setEditingAuthorizedSignerId(null);
+                  setIsAddAuthorizedSignerModalOpen(false);
+                }}
+              >
+                Cancel
+              </WexButton>
+            </WexDialog.Close>
+            <WexButton
+              intent="primary"
+              onClick={handleSaveAuthorizedSigner}
+              disabled={!authorizedSignerFormData.firstName || !authorizedSignerFormData.lastName || !authorizedSignerFormData.ssn || !authorizedSignerFormData.birthDate || !authorizedSignerFormData.type || !authorizedSignerFormData.phone || !authorizedSignerFormData.addressLine1 || !authorizedSignerFormData.city || !authorizedSignerFormData.state || !authorizedSignerFormData.zipCode || isAuthorizedSignerSsnInvalid}
+            >
+              Save
+            </WexButton>
+          </WexDialog.Footer>
+        </WexDialog.Content>
+      </WexDialog>
+
+      {/* Remove Authorized Signer Confirmation Modal */}
+      <WexAlertDialog open={isRemoveAuthorizedSignerConfirmOpen} onOpenChange={setIsRemoveAuthorizedSignerConfirmOpen}>
+        <WexAlertDialog.Content className="w-[448px] p-0">
+          {/* Header */}
+          <WexAlertDialog.Header className="p-[17.5px] pb-2">
+            <WexAlertDialog.Title className="text-base font-semibold text-[#243746] tracking-[-0.176px] leading-6">
+              Remove Authorized Signer
+            </WexAlertDialog.Title>
+          </WexAlertDialog.Header>
+
+          {/* Content */}
+          <div className="px-[24px] pb-0 pt-0">
+            <WexAlertDialog.Description className="text-sm text-[#243746] leading-6">
+              Are you sure you want to remove <strong>{authorizedSignerToRemove ? `${authorizedSignerToRemove.firstName} ${authorizedSignerToRemove.lastName}` : ""}</strong> from your authorized signers? This action cannot be undone.
+            </WexAlertDialog.Description>
+          </div>
+
+          {/* Footer */}
+          <WexAlertDialog.Footer className="flex gap-2 justify-end p-[17.5px] pt-0">
+            <WexAlertDialog.Cancel asChild>
+              <WexButton intent="secondary" variant="outline">
+                Cancel
+              </WexButton>
+            </WexAlertDialog.Cancel>
+            <WexAlertDialog.Action asChild>
+              <WexButton
+                intent="destructive"
+                className="!bg-wex-button-destructive-bg !text-wex-button-destructive-fg !border !border-wex-button-destructive-border hover:!bg-wex-button-destructive-hover-bg active:!bg-wex-button-destructive-active-bg"
+                onClick={() => authorizedSignerToRemove && handleRemoveAuthorizedSigner(authorizedSignerToRemove.id)}
+              >
+                Remove
+              </WexButton>
+            </WexAlertDialog.Action>
+          </WexAlertDialog.Footer>
+        </WexAlertDialog.Content>
+      </WexAlertDialog>
+
+      {/* View Authorized Signer Modal */}
+      <WexDialog open={isViewAuthorizedSignerModalOpen} onOpenChange={setIsViewAuthorizedSignerModalOpen}>
+        <WexDialog.Content className="w-[448px]" size="md">
+          <WexDialog.Header>
+            <WexDialog.Title>View Authorized Signer</WexDialog.Title>
+          </WexDialog.Header>
+          
+          <div className="space-y-4">
+            {viewingAuthorizedSigner && (
+              <>
+                {/* Name */}
+                <div className="space-y-0.5 mt-0">
+                  <WexLabel className="text-xs text-muted-foreground mb-0 font-normal">Name</WexLabel>
+                  <p className="text-base font-normal text-[#243746] m-0 mt-0">
+                    {viewingAuthorizedSigner.firstName} {viewingAuthorizedSigner.middleName ? `${viewingAuthorizedSigner.middleName} ` : ""}{viewingAuthorizedSigner.lastName}
+                  </p>
+                </div>
+
+                {/* SSN, Birth Date, Type - 3 columns */}
+                <div className="grid grid-cols-3 gap-x-4 gap-y-[14px] mt-2">
+                  <div className="space-y-0.5 mt-0">
+                    <WexLabel className="text-xs text-muted-foreground mb-0 font-normal">SSN</WexLabel>
+                    <p className="text-base font-normal text-[#243746] m-0 mt-0">{viewingAuthorizedSigner.ssn}</p>
+                  </div>
+                  <div className="space-y-0.5 mt-0">
+                    <WexLabel className="text-xs text-muted-foreground mb-0 font-normal">Birth Date</WexLabel>
+                    <p className="text-base font-normal text-[#243746] m-0 mt-0">{viewingAuthorizedSigner.birthDate}</p>
+                  </div>
+                  <div className="space-y-0.5 mt-0">
+                    <WexLabel className="text-xs text-muted-foreground mb-0 font-normal">Type</WexLabel>
+                    <p className="text-base font-normal text-[#243746] capitalize m-0 mt-0">{viewingAuthorizedSigner.type}</p>
+                  </div>
+                </div>
+
+                {/* Phone */}
+                <div className="space-y-0.5 mt-0">
+                  <WexLabel className="text-xs text-muted-foreground mb-0 font-normal">Phone</WexLabel>
+                  <p className="text-base font-normal text-[#243746] m-0 mt-0">{viewingAuthorizedSigner.phone}</p>
+                </div>
+
+                {/* Address Line 1 */}
+                <div className="space-y-0.5 mt-0">
+                  <WexLabel className="text-xs text-muted-foreground mb-0 font-normal">Address Line 1</WexLabel>
+                  <p className="text-base font-normal text-[#243746] m-0 mt-0">{viewingAuthorizedSigner.addressLine1}</p>
+                </div>
+
+                {/* Address Line 2 - conditional */}
+                {viewingAuthorizedSigner.addressLine2 && (
+                  <div className="space-y-0.5 mt-0">
+                    <WexLabel className="text-xs text-muted-foreground mb-0 font-normal">Address Line 2</WexLabel>
+                    <p className="text-base font-normal text-[#243746] m-0 mt-0">{viewingAuthorizedSigner.addressLine2}</p>
+                  </div>
+                )}
+
+                {/* City, State, Zip Code */}
+                <div className="grid grid-cols-3 gap-x-4 gap-y-[14px] mt-2">
+                  <div className="space-y-0.5 mt-0">
+                    <WexLabel className="text-xs text-muted-foreground mb-0 font-normal">City</WexLabel>
+                    <p className="text-base font-normal text-[#243746] m-0 mt-0">{viewingAuthorizedSigner.city}</p>
+                  </div>
+                  <div className="space-y-0.5 mt-0">
+                    <WexLabel className="text-xs text-muted-foreground mb-0 font-normal">State</WexLabel>
+                    <p className="text-base font-normal text-[#243746] m-0 mt-0">{viewingAuthorizedSigner.state}</p>
+                  </div>
+                  <div className="space-y-0.5 mt-0">
+                    <WexLabel className="text-xs text-muted-foreground mb-0 font-normal">Zip Code</WexLabel>
+                    <p className="text-base font-normal text-[#243746] m-0 mt-0">{viewingAuthorizedSigner.zipCode}</p>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </WexDialog.Content>
+      </WexDialog>
 
       {/* Add Bank Account Multi-Step Modal */}
       <WexDialog open={isAddBankAccountModalOpen} onOpenChange={setIsAddBankAccountModalOpen}>

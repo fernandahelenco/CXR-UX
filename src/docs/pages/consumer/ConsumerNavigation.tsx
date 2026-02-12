@@ -95,8 +95,8 @@ export function ConsumerNavigation() {
 
   // Listen for unread count changes
   useEffect(() => {
-    // Set initial count
-    setUnreadCount(getUnreadCount());
+    // Set initial count (defer to avoid sync setState in effect)
+    queueMicrotask(() => setUnreadCount(getUnreadCount()));
 
     // Listen for unread count change events
     const handleUnreadCountChange = (event: CustomEvent) => {
@@ -122,7 +122,7 @@ export function ConsumerNavigation() {
 
   // Close the mobile menu when route changes
   useEffect(() => {
-    setIsMenuOpen(false);
+    queueMicrotask(() => setIsMenuOpen(false));
   }, [location.pathname]);
 
   return (
@@ -444,6 +444,7 @@ export function ConsumerNavigation() {
                   { label: "My Profile", subPage: "my-profile" },
                   { label: "Dependents", subPage: "dependents" },
                   { label: "Beneficiaries", subPage: "beneficiaries" },
+                  { label: "Authorized Signers", subPage: "authorized-signers" },
                   { label: "Banking", subPage: "banking" },
                   { label: "Debit Card", subPage: "debit-card" },
                   { label: "Login and Security", subPage: "login-security" },

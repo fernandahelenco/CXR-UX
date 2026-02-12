@@ -802,14 +802,14 @@ export default function MessageCenter() {
       const updated = prev.map((msg) => (msg.id === id ? { ...msg, ...updates } : msg));
       
       // Save read status to localStorage and update unread count
-      if (updates.hasOwnProperty("isRead")) {
+      if (Object.prototype.hasOwnProperty.call(updates, "isRead")) {
         saveReadStatus(id, updates.isRead as boolean);
         const newUnreadCount = calculateUnreadCount(updated);
         updateUnreadCount(newUnreadCount);
       }
       
       // Save archive status to localStorage and update unread count
-      if (updates.hasOwnProperty("isArchived")) {
+      if (Object.prototype.hasOwnProperty.call(updates, "isArchived")) {
         saveArchiveStatus(id, updates.isArchived as boolean);
         const newUnreadCount = calculateUnreadCount(updated);
         updateUnreadCount(newUnreadCount);
@@ -947,7 +947,7 @@ export default function MessageCenter() {
 
   // Reset to page 1 when filters or items per page change
   useEffect(() => {
-    setCurrentPage(1);
+    queueMicrotask(() => setCurrentPage(1));
   }, [selectedCategory, itemsPerPage]);
 
   const mobileFilterOptions = [
@@ -1089,7 +1089,7 @@ export default function MessageCenter() {
                         <WexSidebar.Menu className="flex-1 h-full">
                           {/* Activity Section */}
                           <WexSidebar.GroupLabel className="px-3 py-[7px]">
-                            <span className="text-xs font-medium text-[#243746] uppercase tracking-[0.24px]">ACTIVITY</span>
+                            <span className="text-xs font-medium text-sidebar-foreground/70 uppercase tracking-[0.24px]">ACTIVITY</span>
                           </WexSidebar.GroupLabel>
                           <WexSidebar.MenuItem>
                             <WexSidebar.MenuButton
@@ -1153,7 +1153,7 @@ export default function MessageCenter() {
                           </WexSidebar.MenuItem>
 
                           <WexSidebar.GroupLabel className="px-3 py-[7px] mt-6">
-                            <span className="text-xs font-medium text-[#243746] uppercase tracking-[0.24px]">CATEGORIES</span>
+                            <span className="text-xs font-medium text-sidebar-foreground/70 uppercase tracking-[0.24px]">CATEGORIES</span>
                           </WexSidebar.GroupLabel>
                           <WexSidebar.MenuItem>
                             <WexSidebar.MenuButton
