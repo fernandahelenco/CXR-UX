@@ -802,14 +802,14 @@ export default function MessageCenter() {
       const updated = prev.map((msg) => (msg.id === id ? { ...msg, ...updates } : msg));
       
       // Save read status to localStorage and update unread count
-      if (updates.hasOwnProperty("isRead")) {
+      if (Object.prototype.hasOwnProperty.call(updates, "isRead")) {
         saveReadStatus(id, updates.isRead as boolean);
         const newUnreadCount = calculateUnreadCount(updated);
         updateUnreadCount(newUnreadCount);
       }
       
       // Save archive status to localStorage and update unread count
-      if (updates.hasOwnProperty("isArchived")) {
+      if (Object.prototype.hasOwnProperty.call(updates, "isArchived")) {
         saveArchiveStatus(id, updates.isArchived as boolean);
         const newUnreadCount = calculateUnreadCount(updated);
         updateUnreadCount(newUnreadCount);
@@ -947,7 +947,7 @@ export default function MessageCenter() {
 
   // Reset to page 1 when filters or items per page change
   useEffect(() => {
-    setCurrentPage(1);
+    queueMicrotask(() => setCurrentPage(1));
   }, [selectedCategory, itemsPerPage]);
 
   const mobileFilterOptions = [

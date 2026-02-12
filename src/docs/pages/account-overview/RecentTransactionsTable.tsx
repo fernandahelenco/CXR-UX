@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { WexCard } from "@/components/wex/wex-card";
 import { WexInput } from "@/components/wex/wex-input";
 import { WexBadge } from "@/components/wex/wex-badge";
@@ -57,8 +57,8 @@ export function RecentTransactionsTable() {
   const paginatedTransactions = filteredTransactions.slice(startIndex, endIndex);
 
   // Reset to page 1 when search query changes
-  useMemo(() => {
-    setCurrentPage(1);
+  useEffect(() => {
+    queueMicrotask(() => setCurrentPage(1));
   }, [searchQuery]);
 
   return (

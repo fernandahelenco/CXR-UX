@@ -289,13 +289,15 @@ export default function MyProfile() {
   
   // Sync email toggles with "Go paperless" toggle and turn off paper toggles
   useEffect(() => {
-    setHsaAccountSummaryEmail(goPaperless);
-    setHsaTaxDocumentsEmail(goPaperless);
-    // When "Go paperless" is turned on, turn off paper toggles
-    if (goPaperless) {
-      setHsaAccountSummaryPaper(false);
-      setHsaTaxDocumentsPaper(false);
-    }
+    queueMicrotask(() => {
+      setHsaAccountSummaryEmail(goPaperless);
+      setHsaTaxDocumentsEmail(goPaperless);
+      // When "Go paperless" is turned on, turn off paper toggles
+      if (goPaperless) {
+        setHsaAccountSummaryPaper(false);
+        setHsaTaxDocumentsPaper(false);
+      }
+    });
   }, [goPaperless]);
   
   // Handler for HSA Account Summary Paper toggle
@@ -524,11 +526,13 @@ export default function MyProfile() {
   useEffect(() => {
     const subPage = searchParams.get("subPage");
     const validSubPages: SubPage[] = ["my-profile", "dependents", "beneficiaries", "authorized-signers", "banking", "debit-card", "login-security", "communication", "report-lost-stolen", "order-replacement-card"];
-    if (subPage && validSubPages.includes(subPage as SubPage)) {
-      setActiveSubPage(subPage as SubPage);
-    } else if (!subPage) {
-      setActiveSubPage("my-profile");
-    }
+    queueMicrotask(() => {
+      if (subPage && validSubPages.includes(subPage as SubPage)) {
+        setActiveSubPage(subPage as SubPage);
+      } else if (!subPage) {
+        setActiveSubPage("my-profile");
+      }
+    });
   }, [searchParams]);
 
   // Intercept navigation away from /my-profile when on communication subPage with unsaved changes
@@ -1058,44 +1062,52 @@ export default function MyProfile() {
   // Reset form when modal closes (only if not editing)
   useEffect(() => {
     if (!isAddDependentModalOpen && !editingDependentId) {
-      resetForm();
-      setEditingDependentId(null);
+      queueMicrotask(() => {
+        resetForm();
+        setEditingDependentId(null);
+      });
     }
   }, [isAddDependentModalOpen, editingDependentId]);
 
   // Reset beneficiary form when modal closes (only if not editing)
   useEffect(() => {
     if (!isAddBeneficiaryModalOpen && !editingBeneficiaryId) {
-      resetBeneficiaryForm();
-      setEditingBeneficiaryId(null);
+      queueMicrotask(() => {
+        resetBeneficiaryForm();
+        setEditingBeneficiaryId(null);
+      });
     }
   }, [isAddBeneficiaryModalOpen, editingBeneficiaryId]);
 
   // Reset authorized signer form when modal closes (only if not editing)
   useEffect(() => {
     if (!isAddAuthorizedSignerModalOpen && !editingAuthorizedSignerId) {
-      resetAuthorizedSignerForm();
-      setEditingAuthorizedSignerId(null);
+      queueMicrotask(() => {
+        resetAuthorizedSignerForm();
+        setEditingAuthorizedSignerId(null);
+      });
     }
   }, [isAddAuthorizedSignerModalOpen, editingAuthorizedSignerId]);
 
   // Reset bank account form and step when modal closes
   useEffect(() => {
     if (!isAddBankAccountModalOpen) {
-      setBankAccountFormData({
-        verificationMethod: "text",
-        verificationCode: "",
-        routingNumber: "",
-        accountNumber: "",
-        confirmAccountNumber: "",
-        accountNickname: "",
-        accountType: "checking",
-        selectedDirectDepositOptions: [],
+      queueMicrotask(() => {
+        setBankAccountFormData({
+          verificationMethod: "text",
+          verificationCode: "",
+          routingNumber: "",
+          accountNumber: "",
+          confirmAccountNumber: "",
+          accountNickname: "",
+          accountType: "checking",
+          selectedDirectDepositOptions: [],
+        });
+        setBankAccountStep("step1");
+        setEditingBankAccountId(null);
+        setShowVerificationCode(false);
+        setResendTimer(0);
       });
-      setBankAccountStep("step1");
-      setEditingBankAccountId(null);
-      setShowVerificationCode(false);
-      setResendTimer(0);
     }
   }, [isAddBankAccountModalOpen]);
 
@@ -1112,7 +1124,7 @@ export default function MyProfile() {
   // Start timer when verification code is shown
   useEffect(() => {
     if (showVerificationCode && resendTimer === 0) {
-      setResendTimer(45); // 45 seconds
+      queueMicrotask(() => setResendTimer(45)); // 45 seconds
     }
   }, [showVerificationCode]);
 
@@ -2322,7 +2334,7 @@ export default function MyProfile() {
           </>
         );
 
-      case "report-lost-stolen":
+      case "report-lost-stolen": {
         // Get card ID from URL params
         const cardId = searchParams.get("cardId");
         const cardToReport = debitCards.find((card) => card.id === cardId);
@@ -2722,8 +2734,9 @@ export default function MyProfile() {
             </WexDialog>
           </>
         );
+      }
 
-      case "order-replacement-card":
+      case "order-replacement-card": {
         // Get card ID from URL params
         const orderCardId = searchParams.get("cardId");
         const cardToOrder = debitCards.find((card) => card.id === orderCardId);
@@ -3055,6 +3068,7 @@ export default function MyProfile() {
             </WexDialog>
           </>
         );
+      }
 
       case "login-security":
         return (
@@ -3067,38 +3081,50 @@ export default function MyProfile() {
             </div>
             <div className="space-y-0">
               <div className="px-6 pt-4 pb-6">
-                <div className="mb-4 flex items-center gap-4">
-                  <h3 className="text-xl font-medium text-gray-800">Password</h3>
-                  <WexButton
-                    variant="ghost"
-                    size="sm"
-                    className="text-primary hover:text-primary active:text-primary [&>svg]:text-primary"
-                  >
-                    <Pencil />
-                    Change Password
-                  </WexButton>
+                <div className="mb-4 flex items-center justify-between">
+                  <h3 className="text-xl font-medium text-gray-800">Login Info</h3>
                 </div>
-                <p className="text-sm text-gray-600">Last updated: 3 months ago</p>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-4">
+                    <div className="flex gap-1.5 text-sm">
+                      <span className="text-gray-500">Username:</span>
+                      <span className="text-gray-800">ux@wex</span>
+                    </div>
+                    <WexButton
+                      variant="ghost"
+                      size="sm"
+                      className="text-primary hover:text-primary active:text-primary [&>svg]:text-primary"
+                    >
+                      <Pencil />
+                      Update Username
+                    </WexButton>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="flex flex-col gap-1">
+                      <div className="flex gap-1.5 text-sm">
+                        <span className="text-gray-500">Password:</span>
+                        <span className="text-gray-800">•••••••••••••••</span>
+                      </div>
+                      <p className="text-sm text-gray-600">Last Update: 01/19/2026</p>
+                    </div>
+                    <WexButton
+                      variant="ghost"
+                      size="sm"
+                      className="text-primary hover:text-primary active:text-primary [&>svg]:text-primary"
+                    >
+                      <Pencil />
+                      Change Password
+                    </WexButton>
+                  </div>
+                </div>
               </div>
               <WexSeparator />
               <div className="px-6 pt-4 pb-6">
-                <div className="mb-4 flex items-center gap-4">
-                  <h3 className="text-xl font-medium text-gray-800">Two-Factor Authentication</h3>
-                  <WexButton
-                    variant="ghost"
-                    size="sm"
-                    className="text-primary hover:text-primary active:text-primary [&>svg]:text-primary"
-                  >
-                    <Pencil />
-                    Manage
-                  </WexButton>
+                <div className="mb-4">
+                  <h3 className="text-xl font-medium text-gray-800">Authentication Methods</h3>
                 </div>
-                <p className="text-sm text-gray-600">Status: Not enabled</p>
-              </div>
-              <WexSeparator />
-              <div className="px-6 pt-4 pb-6">
-                <div className="mb-4 flex items-center gap-4">
-                  <h3 className="text-xl font-medium text-gray-800">Security Questions</h3>
+                <div className="flex items-center gap-4 mb-2">
+                  <span className="text-base font-semibold text-gray-800">Email</span>
                   <WexButton
                     variant="ghost"
                     size="sm"
@@ -3108,7 +3134,54 @@ export default function MyProfile() {
                     Update
                   </WexButton>
                 </div>
-                <p className="text-sm text-gray-600">3 security questions configured</p>
+                <div className="space-y-1 mb-4">
+                  <p className="text-sm text-gray-800">emily.grace@email.com</p>
+                  <p className="text-xs text-gray-600">Last Used: Today</p>
+                </div>
+                <div className="flex items-center gap-4 mb-2">
+                  <span className="text-base font-semibold text-gray-800">Mobile Number</span>
+                  <WexButton
+                    variant="ghost"
+                    size="sm"
+                    className="text-primary hover:text-primary active:text-primary [&>svg]:text-primary"
+                  >
+                    <Pencil />
+                    Update
+                  </WexButton>
+                </div>
+                <div className="space-y-1 mb-4">
+                  <p className="text-sm text-gray-800">+1 (859) 123-1234</p>
+                  <p className="text-xs text-gray-600">Last Used: 12/30/2025</p>
+                </div>
+                <div className="flex items-center gap-4 mb-2">
+                  <span className="text-base font-semibold text-gray-800">Authenticator App</span>
+                  <WexButton
+                    variant="ghost"
+                    size="sm"
+                    className="text-primary hover:text-primary active:text-primary [&>svg]:text-primary"
+                  >
+                    <Pencil />
+                    Setup Now
+                  </WexButton>
+                </div>
+                <div className="mb-4">
+                  <p className="text-sm text-gray-800">Not Setup</p>
+                </div>
+                <div className="mb-4">
+                  <h4 className="text-base font-semibold text-gray-800 mb-3">Authentication Settings</h4>
+                  <div className="flex items-center gap-4">
+                    <span className="text-sm text-gray-800 whitespace-nowrap">MFA Frequency:</span>
+                    <WexSelect defaultValue="only-when-required">
+                      <WexSelect.Trigger className="w-[200px]">
+                        <WexSelect.Value />
+                      </WexSelect.Trigger>
+                      <WexSelect.Content>
+                        <WexSelect.Item value="only-when-required">Only when required</WexSelect.Item>
+                        <WexSelect.Item value="every-login">At every login</WexSelect.Item>
+                      </WexSelect.Content>
+                    </WexSelect>
+                  </div>
+                </div>
               </div>
             </div>
           </>
