@@ -828,7 +828,7 @@ export default function MessageCenter() {
     setSelectedMessage(message);
     // In mobile view, open modal; in desktop view, use side panel
     if (isMobile) {
-      setIsModalOpen(true);
+    setIsModalOpen(true);
     }
     if (!message.isRead) {
       updateMessage(message.id, { isRead: true });
@@ -952,14 +952,13 @@ export default function MessageCenter() {
 
   const mobileFilterOptions = [
     { label: "All Messages", value: "all", section: "Activity" },
+    { label: "Action Required", value: "action-required", section: "Activity" },
     { label: "Unread", value: "unread", section: "Activity" },
-    { label: "Recently Viewed", value: "recently-viewed", section: "Activity" },
     { label: "Starred", value: "starred", section: "Activity" },
-    { label: "Archive", value: "archive", section: "Manage" },
-    { label: "Cards & Security", value: "Cards & Security", section: "Categories" },
-    { label: "Investments", value: "Contributions & Investments", section: "Categories" },
-    { label: "Distributions", value: "Distributions", section: "Categories" },
-    { label: "Documents", value: "Statements & Tax Documents", section: "Categories" },
+    { label: "Archive", value: "archive", section: "Activity" },
+    { label: "Account & Security", value: "Account & Security", section: "Categories" },
+    { label: "Money Activity", value: "Money Activity", section: "Categories" },
+    { label: "Tax & Statements", value: "Tax & Statements", section: "Categories" },
   ];
 
   const handleMobileSelect = (value: string) => {
@@ -1062,11 +1061,6 @@ export default function MessageCenter() {
                             </WexSelect.Item>
                           ))}
                       </WexSelect.Group>
-                      <WexSelect.Separator />
-                      <WexSelect.Group>
-                        <WexSelect.Label>Manage</WexSelect.Label>
-                        <WexSelect.Item value="archive">Archive</WexSelect.Item>
-                      </WexSelect.Group>
                     </WexSelect.Content>
                   </WexSelect>
                 </div>
@@ -1081,14 +1075,14 @@ export default function MessageCenter() {
                 {/* Left Sidebar */}
                 <div className="hidden md:flex w-[252px] bg-white border-r border-[#e4e6e9] flex-col h-full shrink-0 rounded-bl-2xl rounded-tl-2xl">
                   <div className="flex flex-col gap-4 p-4 h-full">
-                    {/* Activity Section */}
+                          {/* Activity Section */}
                     <div className="flex flex-col gap-3">
                       <p className="text-[13px] font-normal text-[#7c858e] uppercase leading-normal">
                         Activity
                       </p>
                       <div className="flex flex-col gap-2">
                         <button
-                          onClick={() => setSelectedCategory(null)}
+                              onClick={() => setSelectedCategory(null)}
                           className={`flex items-center gap-[7px] px-[10.5px] py-[7px] rounded-[4px] w-full cursor-pointer ${
                             selectedCategory === null
                               ? "bg-[#E4F5FD]"
@@ -1099,7 +1093,7 @@ export default function MessageCenter() {
                           <span className={`text-[14px] leading-none flex-1 text-left ${
                             selectedCategory === null ? "text-[#00437c]" : "text-[#243746]"
                           }`}>
-                            All Messages
+                              All Messages
                           </span>
                         </button>
                         <button
@@ -1118,7 +1112,7 @@ export default function MessageCenter() {
                           </span>
                         </button>
                         <button
-                          onClick={() => setSelectedCategory("unread")}
+                              onClick={() => setSelectedCategory("unread")}
                           className={`flex items-center gap-[7px] px-[10.5px] py-[7px] rounded-[4px] w-full cursor-pointer ${
                             selectedCategory === "unread"
                               ? "bg-[#E4F5FD]"
@@ -1129,11 +1123,11 @@ export default function MessageCenter() {
                           <span className={`text-[14px] leading-none flex-1 text-left ${
                             selectedCategory === "unread" ? "text-[#00437c]" : "text-[#243746]"
                           }`}>
-                            Unread ({unreadCount})
+                              Unread ({unreadCount})
                           </span>
                         </button>
                         <button
-                          onClick={() => setSelectedCategory("starred")}
+                              onClick={() => setSelectedCategory("starred")}
                           className={`flex items-center gap-[7px] px-[10.5px] py-[7px] rounded-[4px] w-full cursor-pointer ${
                             selectedCategory === "starred"
                               ? "bg-[#E4F5FD]"
@@ -1144,7 +1138,7 @@ export default function MessageCenter() {
                           <span className={`text-[14px] leading-none flex-1 text-left ${
                             selectedCategory === "starred" ? "text-[#00437c]" : "text-[#243746]"
                           }`}>
-                            Starred
+                              Starred
                           </span>
                         </button>
                         <button
@@ -1269,7 +1263,7 @@ export default function MessageCenter() {
                                 updateMessage(message.id, { isRead: true });
                               }
                             } else {
-                              handleMessageClick(message);
+                            handleMessageClick(message);
                             }
                           }}
                         >
@@ -1372,8 +1366,8 @@ export default function MessageCenter() {
                                 <WexTable.Head colSpan={5} className="px-3.5 py-2.5 !bg-[#0058a3] !text-white !h-10 min-h-0">
                                   <div className="flex items-center gap-4 h-full min-h-0">
                                     <div className="w-[24px] h-[24px] flex items-center justify-center flex-shrink-0 box-border" style={{ width: '24px', height: '24px', minWidth: '24px', minHeight: '24px', maxWidth: '24px', maxHeight: '24px', boxSizing: 'border-box' }}>
-                                      <WexCheckbox
-                                        checked={
+                                <WexCheckbox
+                                  checked={
                                           paginatedMessages.length > 0
                                             ? paginatedMessages.every((msg) => selectedMessageIds.has(msg.id))
                                               ? true
@@ -1381,20 +1375,20 @@ export default function MessageCenter() {
                                               ? "indeterminate"
                                               : false
                                             : false
-                                        }
-                                        onCheckedChange={(checked) => {
-                                          if (checked) {
-                                            // Select all messages on current page
-                                            const newSelected = new Set(selectedMessageIds);
-                                            paginatedMessages.forEach((msg) => newSelected.add(msg.id));
-                                            setSelectedMessageIds(newSelected);
-                                          } else {
-                                            // Deselect all messages on current page
-                                            const newSelected = new Set(selectedMessageIds);
-                                            paginatedMessages.forEach((msg) => newSelected.delete(msg.id));
-                                            setSelectedMessageIds(newSelected);
-                                          }
-                                        }}
+                                  }
+                                  onCheckedChange={(checked) => {
+                                    if (checked) {
+                                      // Select all messages on current page
+                                      const newSelected = new Set(selectedMessageIds);
+                                      paginatedMessages.forEach((msg) => newSelected.add(msg.id));
+                                      setSelectedMessageIds(newSelected);
+                                    } else {
+                                      // Deselect all messages on current page
+                                      const newSelected = new Set(selectedMessageIds);
+                                      paginatedMessages.forEach((msg) => newSelected.delete(msg.id));
+                                      setSelectedMessageIds(newSelected);
+                                    }
+                                  }}
                                         className="border-white data-[state=checked]:bg-white data-[state=checked]:border-white data-[state=indeterminate]:bg-white data-[state=indeterminate]:border-white [&>svg]:text-[#0058a3] h-5 w-5 flex-shrink-0"
                                         style={{ width: '20px', height: '20px', minWidth: '20px', minHeight: '20px', maxWidth: '20px', maxHeight: '20px', boxSizing: 'border-box' }}
                                       />
@@ -1419,7 +1413,7 @@ export default function MessageCenter() {
                                       </button>
                                     </div>
                                   </div>
-                                </WexTable.Head>
+                              </WexTable.Head>
                               </WexTable.Row>
                             ) : (
                               // Regular Table Header
@@ -1453,19 +1447,19 @@ export default function MessageCenter() {
                                       style={{ width: '20px', height: '20px', minWidth: '20px', minHeight: '20px', maxWidth: '20px', maxHeight: '20px', boxSizing: 'border-box' }}
                                     />
                                   </div>
-                                </WexTable.Head>
+                              </WexTable.Head>
                                 <WexTable.Head className="w-[40px] px-3.5 py-2.5 text-center bg-[#f7f7f7] flex-shrink-0" style={{ width: '40px', minWidth: '40px', maxWidth: '40px' }}>
-                                </WexTable.Head>
+                              </WexTable.Head>
                                 <WexTable.Head className="px-3.5 py-2.5 text-left bg-[#f7f7f7] min-w-0">
                                   <span className="text-sm font-semibold text-[#243746]">Subject</span>
-                                </WexTable.Head>
+                              </WexTable.Head>
                                 <WexTable.Head className="px-3.5 py-2.5 text-left bg-[#f7f7f7] min-w-0">
                                   <span className="text-sm font-semibold text-[#243746]">Date</span>
                                 </WexTable.Head>
                                 <WexTable.Head className="w-[129px] px-3.5 py-2.5 text-right bg-[#f7f7f7] flex-shrink-0" style={{ width: '129px', minWidth: '129px', maxWidth: '129px' }}>
-                                  <span className="text-sm font-semibold text-[#243746]">Action</span>
-                                </WexTable.Head>
-                              </WexTable.Row>
+                                <span className="text-sm font-semibold text-[#243746]">Action</span>
+                              </WexTable.Head>
+                            </WexTable.Row>
                             )}
                           </WexTable.Header>
                           {/* Table Body */}
@@ -1488,23 +1482,23 @@ export default function MessageCenter() {
                             >
                               <WexTable.Cell className="px-3.5 py-2.5" style={{ width: '47px', minWidth: '47px', maxWidth: '47px' }}>
                                 <div className="w-[24px] h-[24px] flex items-center justify-center box-border" style={{ width: '24px', height: '24px', minWidth: '24px', minHeight: '24px', maxWidth: '24px', maxHeight: '24px', boxSizing: 'border-box' }}>
-                                  <WexCheckbox
-                                    checked={selectedMessageIds.has(message.id)}
-                                    onCheckedChange={(checked) => {
-                                      const newSelected = new Set(selectedMessageIds);
-                                      if (checked) {
-                                        newSelected.add(message.id);
-                                      } else {
-                                        newSelected.delete(message.id);
-                                      }
-                                      setSelectedMessageIds(newSelected);
-                                    }}
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                    }}
+                                <WexCheckbox
+                                  checked={selectedMessageIds.has(message.id)}
+                                  onCheckedChange={(checked) => {
+                                    const newSelected = new Set(selectedMessageIds);
+                                    if (checked) {
+                                      newSelected.add(message.id);
+                                    } else {
+                                      newSelected.delete(message.id);
+                                    }
+                                    setSelectedMessageIds(newSelected);
+                                  }}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                  }}
                                     className="h-5 w-5 flex-shrink-0"
                                     style={{ width: '20px', height: '20px', minWidth: '20px', minHeight: '20px', maxWidth: '20px', maxHeight: '20px', boxSizing: 'border-box' }}
-                                  />
+                                />
                                 </div>
                               </WexTable.Cell>
                               <WexTable.Cell className="px-3.5 py-2.5 text-center" style={{ width: '40px', minWidth: '40px', maxWidth: '40px' }}>
@@ -1517,16 +1511,16 @@ export default function MessageCenter() {
                                       e.stopPropagation();
                                       handleToggleStar(message, e);
                                     }}
-                                    aria-label={message.isStarred ? "Unstar message" : "Star message"}
-                                  >
-                                    <Star
-                                      className={cn(
-                                        "h-4 w-4",
-                                        message.isStarred
+                                  aria-label={message.isStarred ? "Unstar message" : "Star message"}
+                                >
+                                  <Star
+                                    className={cn(
+                                      "h-4 w-4",
+                                      message.isStarred
                                           ? "fill-[#fbbf24] text-[#fbbf24]"
                                           : "text-[#9ca3af] hover:text-[#fbbf24]"
-                                      )}
-                                    />
+                                    )}
+                                  />
                                   </WexButton>
                                 </div>
                               </WexTable.Cell>
@@ -1720,7 +1714,7 @@ export default function MessageCenter() {
                     </div>
                   </div>
                     )}
-                      </div>
+                    </div>
                     </div>
                     {/* Right Panel - Detail View - Desktop Only */}
                     {selectedMessage && !isMobile && (
@@ -1801,49 +1795,49 @@ export default function MessageCenter() {
 
       {/* Message Detail Modal - Mobile Only */}
       {isMobile && (
-        <WexDialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+      <WexDialog open={isModalOpen} onOpenChange={setIsModalOpen}>
           <WexDialog.Content 
             position="bottom"
             className="md:hidden w-[375px] max-w-[375px] p-6 rounded-2xl border border-[#edeff0] overflow-hidden flex flex-col max-h-[90vh]"
           >
             <div className="flex flex-col flex-1 min-h-0 overflow-y-hidden">
-              {/* Header */}
+            {/* Header */}
               <div className="space-y-0 mb-0 flex-shrink-0">
                 <WexDialog.Title className="text-base font-semibold text-[#1d2c38] tracking-[-0.176px] leading-6 mb-0 break-words">
-                  {selectedMessage?.subject}
-                </WexDialog.Title>
+                {selectedMessage?.subject}
+              </WexDialog.Title>
                 <p className="text-sm text-[#1d2c38] tracking-[-0.084px] leading-6 mt-3 whitespace-nowrap">
-                  {selectedMessage?.deliveryDate}
-                </p>
-                <WexSeparator className="my-3.5" />
-              </div>
+                {selectedMessage?.deliveryDate}
+              </p>
+              <WexSeparator className="my-3.5" />
+            </div>
 
-              {/* Content */}
+            {/* Content */}
               <div className="space-y-5 mt-0 flex-1 min-h-0">
                 <p className="text-sm text-[#1d2c38] tracking-[-0.084px] leading-6 break-words">
-                  {selectedMessage?.body || "Please see attachment."}
-                </p>
-                
-                {selectedMessage?.hasAttachment && (
+                {selectedMessage?.body || "Please see attachment."}
+              </p>
+              
+              {selectedMessage?.hasAttachment && (
                   <div className="border border-[#edeff0] rounded-md h-[68px] px-4 bg-white flex items-center flex-shrink-0">
                     <div className="flex items-center gap-4 w-full min-w-0">
-                      <FileText className="h-[22px] w-[22px] text-[#0058a3] shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-[#0058a3] tracking-[-0.084px] leading-6 truncate">
-                          {selectedMessage.attachmentFileName || "Attachment.pdf"}
-                        </p>
-                      </div>
-                      <WexButton
-                        variant="ghost"
-                        size="icon"
-                        className="h-[22px] w-[22px] shrink-0"
-                        aria-label="Download attachment"
-                      >
-                        <Download className="h-[22px] w-[22px] text-[#1d2c38]" />
-                      </WexButton>
+                    <FileText className="h-[22px] w-[22px] text-[#0058a3] shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-[#0058a3] tracking-[-0.084px] leading-6 truncate">
+                        {selectedMessage.attachmentFileName || "Attachment.pdf"}
+                      </p>
                     </div>
+                    <WexButton
+                      variant="ghost"
+                      size="icon"
+                      className="h-[22px] w-[22px] shrink-0"
+                      aria-label="Download attachment"
+                    >
+                      <Download className="h-[22px] w-[22px] text-[#1d2c38]" />
+                    </WexButton>
                   </div>
-                )}
+                </div>
+              )}
 
                 {/* Footer - Close Button */}
                 <div className="w-full pt-0 flex-shrink-0">
@@ -1855,13 +1849,13 @@ export default function MessageCenter() {
                     }} 
                     className="w-full px-3 py-2"
                   >
-                    Close
-                  </WexButton>
+                Close
+              </WexButton>
                 </div>
-              </div>
             </div>
-          </WexDialog.Content>
-        </WexDialog>
+          </div>
+        </WexDialog.Content>
+      </WexDialog>
       )}
     </div>
   );
