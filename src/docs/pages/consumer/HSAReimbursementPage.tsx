@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Building, Receipt, CreditCard, Info, Copy } from "lucide-react";
-import { WexButton } from "@/components/wex/wex-button";
 import { WexFloatLabel } from "@/components/wex/wex-float-label";
 import { WexLabel } from "@/components/wex/wex-label";
 import { WexRadioGroup } from "@/components/wex/wex-radio-group";

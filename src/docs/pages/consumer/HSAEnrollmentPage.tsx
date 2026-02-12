@@ -1,4 +1,3 @@
-import * as React from "react";
 import { WexCheckbox } from "@/components/wex/wex-checkbox";
 import { WexSelect } from "@/components/wex/wex-select";
 

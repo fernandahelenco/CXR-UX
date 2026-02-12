@@ -235,7 +235,7 @@ export default function HSAEnrollmentWorkspace({ open, onOpenChange }: HSAEnroll
           footerConfig.primary ? (
             <WexButton
               intent={footerConfig.primary.intent}
-              variant={footerConfig.primary.variant}
+              variant={("variant" in footerConfig.primary ? footerConfig.primary.variant : undefined) as React.ComponentProps<typeof WexButton>["variant"]}
               onClick={footerConfig.primary.onClick}
               disabled={footerConfig.primary.disabled}
               className="px-4 py-2"

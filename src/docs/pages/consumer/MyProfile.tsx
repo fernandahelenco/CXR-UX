@@ -247,45 +247,6 @@ export default function MyProfile() {
     }
   };
   
-  // Handle discard changes
-  const handleDiscardAndSwitch = () => {
-    // Reset to saved state
-    setHsaAccountSummaryPaper(savedState.hsaAccountSummaryPaper);
-    setHsaAccountSummaryEmail(savedState.hsaAccountSummaryEmail);
-    setHsaTaxDocumentsPaper(savedState.hsaTaxDocumentsPaper);
-    setHsaTaxDocumentsEmail(savedState.hsaTaxDocumentsEmail);
-    setGoPaperless(savedState.goPaperless);
-    setContributionPostedEmail(savedState.contributionPostedEmail);
-    setBalanceBelowAmount(savedState.balanceBelowAmount);
-    setBalanceBelowEmail(savedState.balanceBelowEmail);
-    setContributionsWithinAmount(savedState.contributionsWithinAmount);
-    setContributionsWithinEmail(savedState.contributionsWithinEmail);
-    setPaymentIssuedEmail(savedState.paymentIssuedEmail);
-    setWithdrawalExceedsAmount(savedState.withdrawalExceedsAmount);
-    setWithdrawalExceedsEmail(savedState.withdrawalExceedsEmail);
-    setCardMailedEmail(savedState.cardMailedEmail);
-    setCardMailedText(savedState.cardMailedText);
-    setFollowUpNoticeText(savedState.followUpNoticeText);
-    setPurchaseMadeEmail(savedState.purchaseMadeEmail);
-    setPurchaseMadeText(savedState.purchaseMadeText);
-    setCardSuspendedText(savedState.cardSuspendedText);
-    setCardPurseSuspendedText(savedState.cardPurseSuspendedText);
-    setIsUnsavedChangesDialogOpen(false);
-    if (pendingTabChange) {
-      setActiveTab(pendingTabChange);
-      setPendingTabChange(null);
-    }
-    // Handle pending navigation
-    if (pendingNavigation) {
-      const url = new URL(pendingNavigation, window.location.origin);
-      const subPage = url.searchParams.get("subPage");
-      if (subPage) {
-        setActiveSubPage(subPage as SubPage);
-        setSearchParams({ subPage });
-      }
-      setPendingNavigation(null);
-    }
-  };
   
   // Sync email toggles with "Go paperless" toggle and turn off paper toggles
   useEffect(() => {
@@ -3266,7 +3227,7 @@ export default function MyProfile() {
                         <span className="text-sm font-normal text-[#243746]">Go paperless</span>
                         <WexCheckbox
                           checked={goPaperless}
-                          onCheckedChange={setGoPaperless}
+                          onCheckedChange={(checked) => setGoPaperless(checked === true)}
                         />
                       </div>
                     </div>
@@ -3319,7 +3280,7 @@ export default function MyProfile() {
                             <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
                               <WexCheckbox
                                 checked={hsaAccountSummaryEmail}
-                                onCheckedChange={setHsaAccountSummaryEmail}
+                                onCheckedChange={(checked) => setHsaAccountSummaryEmail(checked === true)}
                               />
                             </div>
                             <div style={{ width: "80px" }} className="flex justify-center">
@@ -3352,7 +3313,7 @@ export default function MyProfile() {
                             <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
                               <WexCheckbox
                                 checked={hsaTaxDocumentsEmail}
-                                onCheckedChange={setHsaTaxDocumentsEmail}
+                                onCheckedChange={(checked) => setHsaTaxDocumentsEmail(checked === true)}
                               />
                             </div>
                             <div style={{ width: "80px" }} className="flex justify-center">
@@ -3387,7 +3348,7 @@ export default function MyProfile() {
                           <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Email</span>
                           <WexCheckbox
                             checked={hsaAccountSummaryEmail}
-                            onCheckedChange={setHsaAccountSummaryEmail}
+                            onCheckedChange={(checked) => setHsaAccountSummaryEmail(checked === true)}
                           />
                   </div>
                         <div className="flex items-center justify-between">
@@ -3416,7 +3377,7 @@ export default function MyProfile() {
                           <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Email</span>
                           <WexCheckbox
                             checked={hsaTaxDocumentsEmail}
-                            onCheckedChange={setHsaTaxDocumentsEmail}
+                            onCheckedChange={(checked) => setHsaTaxDocumentsEmail(checked === true)}
                           />
                         </div>
                         <div className="flex items-center justify-between">
@@ -3546,7 +3507,7 @@ export default function MyProfile() {
                             <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
                               <WexCheckbox
                                 checked={contributionPostedEmail}
-                                onCheckedChange={setContributionPostedEmail}
+                                onCheckedChange={(checked) => setContributionPostedEmail(checked === true)}
                               />
                             </div>
                             <div style={{ width: "80px" }} className="flex justify-center">
@@ -3585,7 +3546,7 @@ export default function MyProfile() {
                             <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
                               <WexCheckbox
                                 checked={balanceBelowEmail}
-                                onCheckedChange={setBalanceBelowEmail}
+                                onCheckedChange={(checked) => setBalanceBelowEmail(checked === true)}
                               />
                             </div>
                             <div style={{ width: "80px" }} className="flex justify-center">
@@ -3627,7 +3588,7 @@ export default function MyProfile() {
                             <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
                               <WexCheckbox
                                 checked={contributionsWithinEmail}
-                                onCheckedChange={setContributionsWithinEmail}
+                                onCheckedChange={(checked) => setContributionsWithinEmail(checked === true)}
                               />
                             </div>
                             <div style={{ width: "80px" }} className="flex justify-center">
@@ -3653,7 +3614,7 @@ export default function MyProfile() {
                           <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Email</span>
                           <WexCheckbox
                             checked={contributionPostedEmail}
-                            onCheckedChange={setContributionPostedEmail}
+                            onCheckedChange={(checked) => setContributionPostedEmail(checked === true)}
                           />
                   </div>
                         <div className="flex items-center justify-between">
@@ -3691,7 +3652,7 @@ export default function MyProfile() {
                           <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Email</span>
                           <WexCheckbox
                             checked={balanceBelowEmail}
-                            onCheckedChange={setBalanceBelowEmail}
+                            onCheckedChange={(checked) => setBalanceBelowEmail(checked === true)}
                           />
                         </div>
                         <div className="flex items-center justify-between">
@@ -3732,7 +3693,7 @@ export default function MyProfile() {
                           <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Email</span>
                           <WexCheckbox
                             checked={contributionsWithinEmail}
-                            onCheckedChange={setContributionsWithinEmail}
+                            onCheckedChange={(checked) => setContributionsWithinEmail(checked === true)}
                           />
                         </div>
                         <div className="flex items-center justify-between">
@@ -3864,7 +3825,7 @@ export default function MyProfile() {
                             <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
                               <WexCheckbox
                                 checked={paymentIssuedEmail}
-                                onCheckedChange={setPaymentIssuedEmail}
+                                onCheckedChange={(checked) => setPaymentIssuedEmail(checked === true)}
                               />
                             </div>
                             <div style={{ width: "80px" }} className="flex justify-center">
@@ -3903,7 +3864,7 @@ export default function MyProfile() {
                             <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
                               <WexCheckbox
                                 checked={withdrawalExceedsEmail}
-                                onCheckedChange={setWithdrawalExceedsEmail}
+                                onCheckedChange={(checked) => setWithdrawalExceedsEmail(checked === true)}
                               />
                             </div>
                             <div style={{ width: "80px" }} className="flex justify-center">
@@ -3932,7 +3893,7 @@ export default function MyProfile() {
                           <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Email</span>
                           <WexCheckbox
                             checked={paymentIssuedEmail}
-                            onCheckedChange={setPaymentIssuedEmail}
+                            onCheckedChange={(checked) => setPaymentIssuedEmail(checked === true)}
                           />
                 </div>
                         <div className="flex items-center justify-between">
@@ -3970,7 +3931,7 @@ export default function MyProfile() {
                           <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Email</span>
                           <WexCheckbox
                             checked={withdrawalExceedsEmail}
-                            onCheckedChange={setWithdrawalExceedsEmail}
+                            onCheckedChange={(checked) => setWithdrawalExceedsEmail(checked === true)}
                           />
                         </div>
                         <div className="flex items-center justify-between">
@@ -4099,13 +4060,13 @@ export default function MyProfile() {
                             <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
                               <WexCheckbox
                                 checked={cardMailedEmail}
-                                onCheckedChange={setCardMailedEmail}
+                                onCheckedChange={(checked) => setCardMailedEmail(checked === true)}
                               />
                             </div>
                             <div style={{ width: "80px", height: "21px" }} className="flex justify-center">
                               <WexCheckbox
                                 checked={cardMailedText}
-                                onCheckedChange={setCardMailedText}
+                                onCheckedChange={(checked) => setCardMailedText(checked === true)}
                               />
                             </div>
                           </div>
@@ -4133,7 +4094,7 @@ export default function MyProfile() {
                             <div style={{ width: "80px", height: "21px" }} className="flex justify-center">
                               <WexCheckbox
                                 checked={followUpNoticeText}
-                                onCheckedChange={setFollowUpNoticeText}
+                                onCheckedChange={(checked) => setFollowUpNoticeText(checked === true)}
                               />
                             </div>
                           </div>
@@ -4158,13 +4119,13 @@ export default function MyProfile() {
                             <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
                               <WexCheckbox
                                 checked={purchaseMadeEmail}
-                                onCheckedChange={setPurchaseMadeEmail}
+                                onCheckedChange={(checked) => setPurchaseMadeEmail(checked === true)}
                               />
                             </div>
                             <div style={{ width: "80px", height: "21px" }} className="flex justify-center">
                               <WexCheckbox
                                 checked={purchaseMadeText}
-                                onCheckedChange={setPurchaseMadeText}
+                                onCheckedChange={(checked) => setPurchaseMadeText(checked === true)}
                               />
                             </div>
                           </div>
@@ -4189,7 +4150,7 @@ export default function MyProfile() {
                             <div style={{ width: "80px", height: "21px" }} className="flex justify-center">
                               <WexCheckbox
                                 checked={cardSuspendedText}
-                                onCheckedChange={setCardSuspendedText}
+                                onCheckedChange={(checked) => setCardSuspendedText(checked === true)}
                               />
                             </div>
                           </div>
@@ -4214,7 +4175,7 @@ export default function MyProfile() {
                             <div style={{ width: "80px", height: "21px" }} className="flex justify-center">
                               <WexCheckbox
                                 checked={cardPurseSuspendedText}
-                                onCheckedChange={setCardPurseSuspendedText}
+                                onCheckedChange={(checked) => setCardPurseSuspendedText(checked === true)}
                               />
                             </div>
                           </div>
@@ -4237,14 +4198,14 @@ export default function MyProfile() {
                           <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Email</span>
                           <WexCheckbox
                             checked={cardMailedEmail}
-                            onCheckedChange={setCardMailedEmail}
+                            onCheckedChange={(checked) => setCardMailedEmail(checked === true)}
                           />
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Text</span>
                           <WexCheckbox
                             checked={cardMailedText}
-                            onCheckedChange={setCardMailedText}
+                            onCheckedChange={(checked) => setCardMailedText(checked === true)}
                           />
                         </div>
                         <WexSeparator className="my-2" />
@@ -4270,7 +4231,7 @@ export default function MyProfile() {
                           <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Text</span>
                           <WexCheckbox
                             checked={followUpNoticeText}
-                            onCheckedChange={setFollowUpNoticeText}
+                            onCheckedChange={(checked) => setFollowUpNoticeText(checked === true)}
                           />
                         </div>
                         <WexSeparator className="my-2" />
@@ -4292,14 +4253,14 @@ export default function MyProfile() {
                           <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Email</span>
                           <WexCheckbox
                             checked={purchaseMadeEmail}
-                            onCheckedChange={setPurchaseMadeEmail}
+                            onCheckedChange={(checked) => setPurchaseMadeEmail(checked === true)}
                           />
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Text</span>
                           <WexCheckbox
                             checked={purchaseMadeText}
-                            onCheckedChange={setPurchaseMadeText}
+                            onCheckedChange={(checked) => setPurchaseMadeText(checked === true)}
                           />
                         </div>
                         <WexSeparator className="my-2" />
@@ -4322,7 +4283,7 @@ export default function MyProfile() {
                           <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Text</span>
                           <WexCheckbox
                             checked={cardSuspendedText}
-                            onCheckedChange={setCardSuspendedText}
+                            onCheckedChange={(checked) => setCardSuspendedText(checked === true)}
                           />
                         </div>
                         <WexSeparator className="my-2" />
@@ -4345,7 +4306,7 @@ export default function MyProfile() {
                           <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Text</span>
                           <WexCheckbox
                             checked={cardPurseSuspendedText}
-                            onCheckedChange={setCardPurseSuspendedText}
+                            onCheckedChange={(checked) => setCardPurseSuspendedText(checked === true)}
                           />
                         </div>
                       </div>
