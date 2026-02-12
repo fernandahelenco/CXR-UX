@@ -2908,38 +2908,50 @@ export default function MyProfile() {
             </div>
             <div className="space-y-0">
               <div className="px-6 pt-4 pb-6">
-                <div className="mb-4 flex items-center gap-4">
-                  <h3 className="text-xl font-medium text-gray-800">Password</h3>
-                  <WexButton
-                    variant="ghost"
-                    size="sm"
-                    className="text-primary hover:text-primary active:text-primary [&>svg]:text-primary"
-                  >
-                    <Pencil />
-                    Change Password
-                  </WexButton>
+                <div className="mb-4 flex items-center justify-between">
+                  <h3 className="text-xl font-medium text-gray-800">Login Info</h3>
                 </div>
-                <p className="text-sm text-gray-600">Last updated: 3 months ago</p>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-4">
+                    <div className="flex gap-1.5 text-sm">
+                      <span className="text-gray-500">Username:</span>
+                      <span className="text-gray-800">ux@wex</span>
+                    </div>
+                    <WexButton
+                      variant="ghost"
+                      size="sm"
+                      className="text-primary hover:text-primary active:text-primary [&>svg]:text-primary"
+                    >
+                      <Pencil />
+                      Update Username
+                    </WexButton>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="flex flex-col gap-1">
+                      <div className="flex gap-1.5 text-sm">
+                        <span className="text-gray-500">Password:</span>
+                        <span className="text-gray-800">•••••••••••••••</span>
+                      </div>
+                      <p className="text-sm text-gray-600">Last Update: 01/19/2026</p>
+                    </div>
+                    <WexButton
+                      variant="ghost"
+                      size="sm"
+                      className="text-primary hover:text-primary active:text-primary [&>svg]:text-primary"
+                    >
+                      <Pencil />
+                      Change Password
+                    </WexButton>
+                  </div>
+                </div>
               </div>
               <WexSeparator />
               <div className="px-6 pt-4 pb-6">
-                <div className="mb-4 flex items-center gap-4">
-                  <h3 className="text-xl font-medium text-gray-800">Two-Factor Authentication</h3>
-                  <WexButton
-                    variant="ghost"
-                    size="sm"
-                    className="text-primary hover:text-primary active:text-primary [&>svg]:text-primary"
-                  >
-                    <Pencil />
-                    Manage
-                  </WexButton>
+                <div className="mb-4">
+                  <h3 className="text-xl font-medium text-gray-800">Authentication Methods</h3>
                 </div>
-                <p className="text-sm text-gray-600">Status: Not enabled</p>
-              </div>
-              <WexSeparator />
-              <div className="px-6 pt-4 pb-6">
-                <div className="mb-4 flex items-center gap-4">
-                  <h3 className="text-xl font-medium text-gray-800">Security Questions</h3>
+                <div className="flex items-center gap-4 mb-2">
+                  <span className="text-base font-semibold text-gray-800">Email</span>
                   <WexButton
                     variant="ghost"
                     size="sm"
@@ -2949,7 +2961,54 @@ export default function MyProfile() {
                     Update
                   </WexButton>
                 </div>
-                <p className="text-sm text-gray-600">3 security questions configured</p>
+                <div className="space-y-1 mb-4">
+                  <p className="text-sm text-gray-800">emily.grace@email.com</p>
+                  <p className="text-xs text-gray-600">Last Used: Today</p>
+                </div>
+                <div className="flex items-center gap-4 mb-2">
+                  <span className="text-base font-semibold text-gray-800">Mobile Number</span>
+                  <WexButton
+                    variant="ghost"
+                    size="sm"
+                    className="text-primary hover:text-primary active:text-primary [&>svg]:text-primary"
+                  >
+                    <Pencil />
+                    Update
+                  </WexButton>
+                </div>
+                <div className="space-y-1 mb-4">
+                  <p className="text-sm text-gray-800">+1 (859) 123-1234</p>
+                  <p className="text-xs text-gray-600">Last Used: 12/30/2025</p>
+                </div>
+                <div className="flex items-center gap-4 mb-2">
+                  <span className="text-base font-semibold text-gray-800">Authenticator App</span>
+                  <WexButton
+                    variant="ghost"
+                    size="sm"
+                    className="text-primary hover:text-primary active:text-primary [&>svg]:text-primary"
+                  >
+                    <Pencil />
+                    Setup Now
+                  </WexButton>
+                </div>
+                <div className="mb-4">
+                  <p className="text-sm text-gray-800">Not Setup</p>
+                </div>
+                <div className="mb-4">
+                  <h4 className="text-base font-semibold text-gray-800 mb-3">Authentication Settings</h4>
+                  <div className="flex items-center gap-4">
+                    <span className="text-sm text-gray-800 whitespace-nowrap">MFA Frequency:</span>
+                    <WexSelect defaultValue="only-when-required">
+                      <WexSelect.Trigger className="w-[200px]">
+                        <WexSelect.Value />
+                      </WexSelect.Trigger>
+                      <WexSelect.Content>
+                        <WexSelect.Item value="only-when-required">Only when required</WexSelect.Item>
+                        <WexSelect.Item value="every-login">At every login</WexSelect.Item>
+                      </WexSelect.Content>
+                    </WexSelect>
+                  </div>
+                </div>
               </div>
             </div>
           </>
