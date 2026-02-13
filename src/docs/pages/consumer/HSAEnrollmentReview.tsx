@@ -1,22 +1,6 @@
 import * as React from "react";
-import { useNavigate } from "react-router-dom";
-import { WexButton } from "@/components/wex/wex-button";
 import { WexCheckbox } from "@/components/wex/wex-checkbox";
 import { WexLabel } from "@/components/wex/wex-label";
-import { Stepper } from "./components/Stepper";
-import type { Step } from "./components/Stepper";
-
-/**
- * Stepper steps configuration
- */
-const enrollmentSteps: Step[] = [
-  { id: "eligibility", label: "Eligibility" },
-  { id: "profile", label: "Profile" },
-  { id: "dependents", label: "Dependents" },
-  { id: "beneficiaries", label: "Beneficiaries" },
-  { id: "reimbursement", label: "Reimbursement" },
-  { id: "review", label: "Review" },
-];
 
 /**
  * Review data interfaces
@@ -45,13 +29,25 @@ interface Beneficiary {
   relationship: string;
 }
 
-export default function HSAEnrollmentReview() {
-  const navigate = useNavigate();
+export interface HSAEnrollmentReviewProps {
+  affirmation: boolean;
+  onAffirmationChange: (checked: boolean) => void;
+  eligibilityUnderstanding: boolean;
+  onEligibilityUnderstandingChange: (checked: boolean) => void;
+  documentReceipt: boolean;
+  onDocumentReceiptChange: (checked: boolean) => void;
+  onEditStep?: (stepId: "eligibility" | "profile" | "dependents" | "beneficiaries" | "reimbursement") => void;
+}
 
-  // State for checkboxes
-  const [affirmation, setAffirmation] = React.useState(false);
-  const [eligibilityUnderstanding, setEligibilityUnderstanding] = React.useState(false);
-  const [documentReceipt, setDocumentReceipt] = React.useState(false);
+export default function HSAEnrollmentReview({
+  affirmation,
+  onAffirmationChange,
+  eligibilityUnderstanding,
+  onEligibilityUnderstandingChange,
+  documentReceipt,
+  onDocumentReceiptChange,
+  onEditStep,
+}: HSAEnrollmentReviewProps) {
 
   // Mock data - in a real app, this would come from context or API
   const profileData: ProfileData = {
@@ -87,69 +83,25 @@ export default function HSAEnrollmentReview() {
     details: "**** 2454",
   };
 
-  // Handle navigation
-  const handleCancel = () => {
-    navigate("/consumer");
-  };
-
-  const handleBack = () => {
-    navigate("/hsa-enrollment/reimbursement");
-  };
-
-  const handleSubmit = () => {
-    // All checkboxes are validated via disabled button state
-    // TODO: Submit enrollment data
-    console.log("Enrollment submitted");
-    // Navigate to success page
-    navigate("/hsa-enrollment/success");
-  };
-
   const handleEdit = (section: string) => {
-    // Navigate to the specific section to edit
+    if (!onEditStep) {
+      return;
+    }
+
     switch (section) {
       case "eligibility":
-        navigate("/hsa-enrollment");
-        break;
       case "profile":
-        navigate("/hsa-enrollment/profile");
-        break;
       case "dependents":
-        navigate("/hsa-enrollment/dependents");
-        break;
       case "beneficiaries":
-        navigate("/hsa-enrollment/beneficiaries");
-        break;
       case "reimbursement":
-        navigate("/hsa-enrollment/reimbursement");
+        onEditStep(section);
         break;
     }
   };
 
   return (
-    <div className="min-h-screen bg-white flex">
-      {/* Left Sidebar */}
-      <div className="w-[240px] bg-[#FAFAFA] min-h-screen overflow-clip relative rounded-tr-[32px] shrink-0">
-        {/* Title */}
-        <p className="absolute font-bold leading-[40px] left-[32px] text-[30px] text-[#243746] top-[56px] tracking-[-0.63px]">
-          Enrollment
-        </p>
-
-        {/* Stepper */}
-        <div className="absolute left-[32px] top-[128px]">
-          <Stepper
-            steps={enrollmentSteps}
-            currentStepId="review"
-            onStepChange={() => {}}
-          />
-        </div>
-      </div>
-
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-h-screen relative">
-        {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto pb-32">
-          <div className="flex justify-center pt-14 px-8">
-            <div className="w-[400px] flex flex-col gap-12">
+    <div className="flex flex-1 flex-col items-center pt-14 pb-16 px-8">
+      <div className="w-[400px] flex flex-col gap-12">
               {/* Header Section */}
               <div className="flex flex-col gap-4">
                 <h1 className="font-bold text-2xl leading-8 tracking-[-0.456px] text-[#253746]">
@@ -390,7 +342,7 @@ export default function HSAEnrollmentReview() {
                     <WexCheckbox
                       id="affirmation"
                       checked={affirmation}
-                      onCheckedChange={(checked) => setAffirmation(checked as boolean)}
+                      onCheckedChange={(checked) => onAffirmationChange(checked as boolean)}
                       className="mt-0.5"
                       required
                     />
@@ -407,7 +359,7 @@ export default function HSAEnrollmentReview() {
                     <WexCheckbox
                       id="eligibility"
                       checked={eligibilityUnderstanding}
-                      onCheckedChange={(checked) => setEligibilityUnderstanding(checked as boolean)}
+                      onCheckedChange={(checked) => onEligibilityUnderstandingChange(checked as boolean)}
                       className="mt-0.5"
                       required
                     />
@@ -424,7 +376,7 @@ export default function HSAEnrollmentReview() {
                     <WexCheckbox
                       id="documents"
                       checked={documentReceipt}
-                      onCheckedChange={(checked) => setDocumentReceipt(checked as boolean)}
+                      onCheckedChange={(checked) => onDocumentReceiptChange(checked as boolean)}
                       className="mt-0.5"
                       required
                     />
@@ -437,30 +389,6 @@ export default function HSAEnrollmentReview() {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Action Buttons - Fixed at Bottom */}
-        <div className="absolute bottom-[32px] left-[32px] right-[32px] flex items-center justify-between">
-          <WexButton variant="ghost" onClick={handleCancel} className="px-4 py-2">
-            Cancel
-          </WexButton>
-
-          <div className="flex gap-2 items-center">
-            <WexButton intent="secondary" variant="outline" onClick={handleBack} className="px-4 py-2">
-              Back
-            </WexButton>
-            <WexButton 
-              intent="primary" 
-              onClick={handleSubmit} 
-              className="px-4 py-2"
-              disabled={!affirmation || !eligibilityUnderstanding || !documentReceipt}
-            >
-              Submit Enrollment
-            </WexButton>
-          </div>
-        </div>
       </div>
     </div>
   );

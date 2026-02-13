@@ -59,7 +59,7 @@ function getAllIcons(): IconItem[] {
             category,
           });
           seenNames.add(iconName);
-        } catch (error) {
+        } catch {
           // Skip icons that cause errors during categorization
           // Silently skip invalid icons
         }
@@ -159,7 +159,7 @@ function IconDetailModal({
       await navigator.clipboard.writeText(svgString);
       setSvgCopied(true);
       setTimeout(() => setSvgCopied(false), 2000);
-    } catch (err) {
+    } catch {
       // Silently fail - user can try again
     }
   };

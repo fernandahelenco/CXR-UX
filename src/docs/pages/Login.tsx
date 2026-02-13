@@ -132,10 +132,11 @@ export default function Login({ onLoginSuccess }: LoginProps) {
   useEffect(() => {
     if (step === 3) {
       const code = Math.floor(10000 + Math.random() * 90000).toString()
-      setGeneratedCode(code)
-      setCodeError(false)
-      setMfaCode("")
-      
+      queueMicrotask(() => {
+        setGeneratedCode(code)
+        setCodeError(false)
+        setMfaCode("")
+      })
       wexToast(`Your MFA code is: ${code}`, {
         duration: 30000,
         position: 'top-right'
@@ -155,8 +156,10 @@ export default function Login({ onLoginSuccess }: LoginProps) {
   useEffect(() => {
     const savedUsername = localStorage.getItem('wex_saved_username')
     if (savedUsername) {
-      setUsername(savedUsername)
-      setSaveUsername(true)
+      queueMicrotask(() => {
+        setUsername(savedUsername)
+        setSaveUsername(true)
+      })
     }
   }, [])
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useLocation } from "react-router-dom";
 import { WexButton } from "@/components/wex/wex-button";
 import { ConsumerFooter } from "./Footer";
 import { WexAlert } from "@/components/wex/wex-alert";
@@ -23,7 +23,6 @@ import { Stepper } from "./components/Stepper";
 import { Workspace, SelectCard, FloatLabelSelect } from "./components";
 import { ConsumerNavigation } from "./ConsumerNavigation";
 import { Pencil, Info, Plus, Calendar, X, Trash2, MoreVertical, Eye, RefreshCw, AlertCircle, User, Users, HeartPlus, ShieldCheck, Landmark, CreditCard, Bell, UserLock, Lock } from "lucide-react";
-import { WexSwitch } from "@/components/wex/wex-switch";
 import { WexTabs } from "@/components/wex/wex-tabs";
 import { WexTooltip } from "@/components/wex/wex-tooltip";
 
@@ -179,6 +178,7 @@ function saveBankAccountsToStorage(bankAccounts: BankAccount[]): void {
 export default function MyProfile() {
   const personalName = "Emily Rose Smith";
   const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
   
   // Communication preferences state
   const [activeTab, setActiveTab] = useState("statements");
@@ -214,15 +214,130 @@ export default function MyProfile() {
   const [cardSuspendedText, setCardSuspendedText] = useState(true);
   const [cardPurseSuspendedText, setCardPurseSuspendedText] = useState(true);
   
+  // Unsaved changes tracking
+  const [pendingTabChange, setPendingTabChange] = useState<string | null>(null);
+  const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
+  const [isUnsavedChangesDialogOpen, setIsUnsavedChangesDialogOpen] = useState(false);
+  
+  // Saved state - tracks the last saved values
+  const [savedState, setSavedState] = useState(() => ({
+    // Statements
+    hsaAccountSummaryPaper: false,
+    hsaAccountSummaryEmail: true,
+    hsaTaxDocumentsPaper: false,
+    hsaTaxDocumentsEmail: true,
+    goPaperless: false,
+    // Contributions
+    contributionPostedEmail: true,
+    balanceBelowAmount: "",
+    balanceBelowEmail: true,
+    contributionsWithinAmount: "",
+    contributionsWithinEmail: true,
+    // Payments
+    paymentIssuedEmail: true,
+    withdrawalExceedsAmount: "",
+    withdrawalExceedsEmail: true,
+    // WEX Benefits Card
+    cardMailedEmail: true,
+    cardMailedText: true,
+    followUpNoticeText: true,
+    purchaseMadeEmail: true,
+    purchaseMadeText: true,
+    cardSuspendedText: true,
+    cardPurseSuspendedText: true,
+  }));
+  
+  // Check if there are unsaved changes
+  const hasUnsavedChanges = () => {
+    return (
+      hsaAccountSummaryPaper !== savedState.hsaAccountSummaryPaper ||
+      hsaAccountSummaryEmail !== savedState.hsaAccountSummaryEmail ||
+      hsaTaxDocumentsPaper !== savedState.hsaTaxDocumentsPaper ||
+      hsaTaxDocumentsEmail !== savedState.hsaTaxDocumentsEmail ||
+      goPaperless !== savedState.goPaperless ||
+      contributionPostedEmail !== savedState.contributionPostedEmail ||
+      balanceBelowAmount !== savedState.balanceBelowAmount ||
+      balanceBelowEmail !== savedState.balanceBelowEmail ||
+      contributionsWithinAmount !== savedState.contributionsWithinAmount ||
+      contributionsWithinEmail !== savedState.contributionsWithinEmail ||
+      paymentIssuedEmail !== savedState.paymentIssuedEmail ||
+      withdrawalExceedsAmount !== savedState.withdrawalExceedsAmount ||
+      withdrawalExceedsEmail !== savedState.withdrawalExceedsEmail ||
+      cardMailedEmail !== savedState.cardMailedEmail ||
+      cardMailedText !== savedState.cardMailedText ||
+      followUpNoticeText !== savedState.followUpNoticeText ||
+      purchaseMadeEmail !== savedState.purchaseMadeEmail ||
+      purchaseMadeText !== savedState.purchaseMadeText ||
+      cardSuspendedText !== savedState.cardSuspendedText ||
+      cardPurseSuspendedText !== savedState.cardPurseSuspendedText
+    );
+  };
+  
+  // Handle tab change with unsaved changes check
+  const handleTabChange = (newTab: string) => {
+    if (hasUnsavedChanges()) {
+      setPendingTabChange(newTab);
+      setIsUnsavedChangesDialogOpen(true);
+    } else {
+      setActiveTab(newTab);
+    }
+  };
+  
+  // Handle save from dialog
+  const handleSaveAndSwitch = () => {
+    // Save current state
+    setSavedState({
+      hsaAccountSummaryPaper,
+      hsaAccountSummaryEmail,
+      hsaTaxDocumentsPaper,
+      hsaTaxDocumentsEmail,
+      goPaperless,
+      contributionPostedEmail,
+      balanceBelowAmount,
+      balanceBelowEmail,
+      contributionsWithinAmount,
+      contributionsWithinEmail,
+      paymentIssuedEmail,
+      withdrawalExceedsAmount,
+      withdrawalExceedsEmail,
+      cardMailedEmail,
+      cardMailedText,
+      followUpNoticeText,
+      purchaseMadeEmail,
+      purchaseMadeText,
+      cardSuspendedText,
+      cardPurseSuspendedText,
+    });
+    wexToast.success("Communication preferences saved successfully");
+    setIsUnsavedChangesDialogOpen(false);
+    if (pendingTabChange) {
+      setActiveTab(pendingTabChange);
+      setPendingTabChange(null);
+    }
+    // Handle pending navigation
+    if (pendingNavigation) {
+      const url = new URL(pendingNavigation, window.location.origin);
+      const subPage = url.searchParams.get("subPage");
+      if (subPage) {
+        setActiveSubPage(subPage as SubPage);
+        setSearchParams({ subPage });
+      }
+      setPendingNavigation(null);
+    }
+  };
+  
+  
   // Sync email toggles with "Go paperless" toggle and turn off paper toggles
   useEffect(() => {
-    setHsaAccountSummaryEmail(goPaperless);
-    setHsaTaxDocumentsEmail(goPaperless);
-    // When "Go paperless" is turned on, turn off paper toggles
-    if (goPaperless) {
-      setHsaAccountSummaryPaper(false);
-      setHsaTaxDocumentsPaper(false);
-    }
+    queueMicrotask(() => {
+      setHsaAccountSummaryEmail(goPaperless);
+      setHsaTaxDocumentsEmail(goPaperless);
+      // When "Go paperless" is turned on, turn off paper toggles
+      if (goPaperless) {
+        setHsaAccountSummaryPaper(false);
+        setHsaTaxDocumentsPaper(false);
+      }
+    });
   }, [goPaperless]);
   
   // Handler for HSA Account Summary Paper toggle
@@ -530,12 +645,29 @@ export default function MyProfile() {
   useEffect(() => {
     const subPage = searchParams.get("subPage");
     const validSubPages: SubPage[] = ["my-profile", "dependents", "beneficiaries", "authorized-signers", "banking", "debit-card", "login-security", "communication", "report-lost-stolen", "order-replacement-card"];
-    if (subPage && validSubPages.includes(subPage as SubPage)) {
-      setActiveSubPage(subPage as SubPage);
-    } else if (!subPage) {
-      setActiveSubPage("my-profile");
-    }
+    queueMicrotask(() => {
+      if (subPage && validSubPages.includes(subPage as SubPage)) {
+        setActiveSubPage(subPage as SubPage);
+      } else if (!subPage) {
+        setActiveSubPage("my-profile");
+      }
+    });
   }, [searchParams]);
+
+  // Intercept navigation away from /my-profile when on communication subPage with unsaved changes
+  useEffect(() => {
+    // Only check if we're currently on communication subPage and have unsaved changes
+    if (activeSubPage === "communication" && hasUnsavedChanges()) {
+      // Check if navigating away from /my-profile entirely
+      if (location.pathname !== "/my-profile") {
+        // Store the intended destination and show dialog
+        setPendingNavigation(location.pathname + location.search);
+        setIsUnsavedChangesDialogOpen(true);
+        // Revert the navigation by going back
+        window.history.back();
+      }
+    }
+  }, [location.pathname, location.search, activeSubPage]);
 
   // Verification code resend timer countdown
   useEffect(() => {
@@ -548,8 +680,14 @@ export default function MyProfile() {
   }, [verificationResendTimer]);
 
   const handleSubPageChange = (subPage: SubPage) => {
+    // If we're on communication subPage and have unsaved changes, show dialog
+    if (activeSubPage === "communication" && hasUnsavedChanges()) {
+      setPendingNavigation(`/my-profile?subPage=${subPage}`);
+      setIsUnsavedChangesDialogOpen(true);
+    } else {
     setActiveSubPage(subPage);
     setSearchParams({ subPage });
+    }
   };
 
   const handleFormChange = (field: string, value: string | boolean) => {
@@ -1401,44 +1539,52 @@ export default function MyProfile() {
   // Reset form when modal closes (only if not editing)
   useEffect(() => {
     if (!isAddDependentModalOpen && !editingDependentId) {
-      resetForm();
-      setEditingDependentId(null);
+      queueMicrotask(() => {
+        resetForm();
+        setEditingDependentId(null);
+      });
     }
   }, [isAddDependentModalOpen, editingDependentId]);
 
   // Reset beneficiary form when modal closes (only if not editing)
   useEffect(() => {
     if (!isAddBeneficiaryModalOpen && !editingBeneficiaryId) {
-      resetBeneficiaryForm();
-      setEditingBeneficiaryId(null);
+      queueMicrotask(() => {
+        resetBeneficiaryForm();
+        setEditingBeneficiaryId(null);
+      });
     }
   }, [isAddBeneficiaryModalOpen, editingBeneficiaryId]);
 
   // Reset authorized signer form when modal closes (only if not editing)
   useEffect(() => {
     if (!isAddAuthorizedSignerModalOpen && !editingAuthorizedSignerId) {
-      resetAuthorizedSignerForm();
-      setEditingAuthorizedSignerId(null);
+      queueMicrotask(() => {
+        resetAuthorizedSignerForm();
+        setEditingAuthorizedSignerId(null);
+      });
     }
   }, [isAddAuthorizedSignerModalOpen, editingAuthorizedSignerId]);
 
   // Reset bank account form and step when modal closes
   useEffect(() => {
     if (!isAddBankAccountModalOpen) {
-      setBankAccountFormData({
-        verificationMethod: "text",
-        verificationCode: "",
-        routingNumber: "",
-        accountNumber: "",
-        confirmAccountNumber: "",
-        accountNickname: "",
-        accountType: "checking",
-        selectedDirectDepositOptions: [],
+      queueMicrotask(() => {
+        setBankAccountFormData({
+          verificationMethod: "text",
+          verificationCode: "",
+          routingNumber: "",
+          accountNumber: "",
+          confirmAccountNumber: "",
+          accountNickname: "",
+          accountType: "checking",
+          selectedDirectDepositOptions: [],
+        });
+        setBankAccountStep("step1");
+        setEditingBankAccountId(null);
+        setShowVerificationCode(false);
+        setResendTimer(0);
       });
-      setBankAccountStep("step1");
-      setEditingBankAccountId(null);
-      setShowVerificationCode(false);
-      setResendTimer(0);
     }
   }, [isAddBankAccountModalOpen]);
 
@@ -1455,7 +1601,7 @@ export default function MyProfile() {
   // Start timer when verification code is shown
   useEffect(() => {
     if (showVerificationCode && resendTimer === 0) {
-      setResendTimer(45); // 45 seconds
+      queueMicrotask(() => setResendTimer(45)); // 45 seconds
     }
   }, [showVerificationCode]);
 
@@ -2800,7 +2946,7 @@ export default function MyProfile() {
           </>
         );
 
-      case "report-lost-stolen":
+      case "report-lost-stolen": {
         // Get card ID from URL params
         const cardId = searchParams.get("cardId");
         const cardToReport = debitCards.find((card) => card.id === cardId);
@@ -3200,8 +3346,9 @@ export default function MyProfile() {
             </WexDialog>
           </>
         );
+      }
 
-      case "order-replacement-card":
+      case "order-replacement-card": {
         // Get card ID from URL params
         const orderCardId = searchParams.get("cardId");
         const cardToOrder = debitCards.find((card) => card.id === orderCardId);
@@ -3533,6 +3680,7 @@ export default function MyProfile() {
             </WexDialog>
           </>
         );
+      }
 
       case "login-security":
         return (
@@ -3545,38 +3693,50 @@ export default function MyProfile() {
             </div>
             <div className="space-y-0">
               <div className="px-6 pt-4 pb-6">
-                <div className="mb-4 flex items-center gap-4">
-                  <h3 className="text-xl font-medium text-gray-800">Password</h3>
-                  <WexButton
-                    variant="ghost"
-                    size="sm"
-                    className="text-primary hover:text-primary active:text-primary [&>svg]:text-primary"
-                  >
-                    <Pencil />
-                    Change Password
-                  </WexButton>
+                <div className="mb-4 flex items-center justify-between">
+                  <h3 className="text-xl font-medium text-gray-800">Login Info</h3>
                 </div>
-                <p className="text-sm text-gray-600">Last updated: 3 months ago</p>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-4">
+                    <div className="flex gap-1.5 text-sm">
+                      <span className="text-gray-500">Username:</span>
+                      <span className="text-gray-800">ux@wex</span>
+                    </div>
+                    <WexButton
+                      variant="ghost"
+                      size="sm"
+                      className="text-primary hover:text-primary active:text-primary [&>svg]:text-primary"
+                    >
+                      <Pencil />
+                      Update Username
+                    </WexButton>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="flex flex-col gap-1">
+                      <div className="flex gap-1.5 text-sm">
+                        <span className="text-gray-500">Password:</span>
+                        <span className="text-gray-800">•••••••••••••••</span>
+                      </div>
+                      <p className="text-sm text-gray-600">Last Update: 01/19/2026</p>
+                    </div>
+                    <WexButton
+                      variant="ghost"
+                      size="sm"
+                      className="text-primary hover:text-primary active:text-primary [&>svg]:text-primary"
+                    >
+                      <Pencil />
+                      Change Password
+                    </WexButton>
+                  </div>
+                </div>
               </div>
               <WexSeparator />
               <div className="px-6 pt-4 pb-6">
-                <div className="mb-4 flex items-center gap-4">
-                  <h3 className="text-xl font-medium text-gray-800">Two-Factor Authentication</h3>
-                  <WexButton
-                    variant="ghost"
-                    size="sm"
-                    className="text-primary hover:text-primary active:text-primary [&>svg]:text-primary"
-                  >
-                    <Pencil />
-                    Manage
-                  </WexButton>
+                <div className="mb-4">
+                  <h3 className="text-xl font-medium text-gray-800">Authentication Methods</h3>
                 </div>
-                <p className="text-sm text-gray-600">Status: Not enabled</p>
-              </div>
-              <WexSeparator />
-              <div className="px-6 pt-4 pb-6">
-                <div className="mb-4 flex items-center gap-4">
-                  <h3 className="text-xl font-medium text-gray-800">Security Questions</h3>
+                <div className="flex items-center gap-4 mb-2">
+                  <span className="text-base font-semibold text-gray-800">Email</span>
                   <WexButton
                     variant="ghost"
                     size="sm"
@@ -3586,7 +3746,54 @@ export default function MyProfile() {
                     Update
                   </WexButton>
                 </div>
-                <p className="text-sm text-gray-600">3 security questions configured</p>
+                <div className="space-y-1 mb-4">
+                  <p className="text-sm text-gray-800">emily.grace@email.com</p>
+                  <p className="text-xs text-gray-600">Last Used: Today</p>
+                </div>
+                <div className="flex items-center gap-4 mb-2">
+                  <span className="text-base font-semibold text-gray-800">Mobile Number</span>
+                  <WexButton
+                    variant="ghost"
+                    size="sm"
+                    className="text-primary hover:text-primary active:text-primary [&>svg]:text-primary"
+                  >
+                    <Pencil />
+                    Update
+                  </WexButton>
+                </div>
+                <div className="space-y-1 mb-4">
+                  <p className="text-sm text-gray-800">+1 (859) 123-1234</p>
+                  <p className="text-xs text-gray-600">Last Used: 12/30/2025</p>
+                </div>
+                <div className="flex items-center gap-4 mb-2">
+                  <span className="text-base font-semibold text-gray-800">Authenticator App</span>
+                  <WexButton
+                    variant="ghost"
+                    size="sm"
+                    className="text-primary hover:text-primary active:text-primary [&>svg]:text-primary"
+                  >
+                    <Pencil />
+                    Setup Now
+                  </WexButton>
+                </div>
+                <div className="mb-4">
+                  <p className="text-sm text-gray-800">Not Setup</p>
+                </div>
+                <div className="mb-4">
+                  <h4 className="text-base font-semibold text-gray-800 mb-3">Authentication Settings</h4>
+                  <div className="flex items-center gap-4">
+                    <span className="text-sm text-gray-800 whitespace-nowrap">MFA Frequency:</span>
+                    <WexSelect defaultValue="only-when-required">
+                      <WexSelect.Trigger className="w-[200px]">
+                        <WexSelect.Value />
+                      </WexSelect.Trigger>
+                      <WexSelect.Content>
+                        <WexSelect.Item value="only-when-required">Only when required</WexSelect.Item>
+                        <WexSelect.Item value="every-login">At every login</WexSelect.Item>
+                      </WexSelect.Content>
+                    </WexSelect>
+                  </div>
+                </div>
               </div>
             </div>
           </>
@@ -3602,21 +3809,21 @@ export default function MyProfile() {
                 <h2 className="text-xl font-medium leading-8 tracking-[-0.34px] text-[#243746]">
                   Contact information
                 </h2>
-                <WexButton
-                  variant="ghost"
-                  size="sm"
+                  <WexButton
+                    variant="ghost"
+                    size="sm"
                   className="flex items-center gap-1.5 px-3 py-1 text-sm font-medium text-[#0058a3] hover:bg-gray-100"
                   onClick={() => setIsContactInfoModalOpen(true)}
-                >
+                  >
                   <Pencil className="h-4 w-4 text-[#0058a3]" />
-                  Edit
-                </WexButton>
-              </div>
+                    Edit
+                  </WexButton>
+                </div>
               <div className="flex flex-col gap-2 text-sm tracking-[-0.084px]">
                 <div className="flex items-center gap-1.5">
                   <span className="text-[#515f6b]">Mobile number:</span>
                   <span className="text-[#1d2c38]">{mobileNumber}</span>
-                </div>
+                  </div>
                 <div className="flex items-center gap-1.5">
                   <span className="text-[#515f6b]">Email address:</span>
                   <span className="text-[#1d2c38]">{emailAddress}</span>
@@ -3626,7 +3833,7 @@ export default function MyProfile() {
 
             {/* Tabs */}
             <div className="px-6">
-              <WexTabs value={activeTab} onValueChange={setActiveTab}>
+              <WexTabs value={activeTab} onValueChange={handleTabChange}>
                 <WexTabs.List className="bg-white border-b border-[#e4e6e9] border-solid flex items-end pr-[37px]">
                   <WexTabs.Trigger
                     value="statements"
@@ -3655,136 +3862,255 @@ export default function MyProfile() {
                 </WexTabs.List>
 
                 {/* Statements Tab Content */}
-                <WexTabs.Content value="statements" className="pt-6">
+                <WexTabs.Content value="statements" className="pt-6 pb-6">
                   <div className="flex flex-col gap-6">
                     {/* Statement Delivery Preferences Header */}
-                    <div className="flex flex-col gap-1">
-                      <div className="flex items-center justify-between">
-                        <h3 className="text-xl font-bold leading-8 tracking-[-0.34px] text-[#243746]">
-                          Statement delivery preferences
-                        </h3>
-                        <div className="flex items-center gap-2">
-                          <WexSwitch
-                            checked={goPaperless}
-                            onCheckedChange={setGoPaperless}
-                            switchSize="sm"
-                            className="!h-[21px] !w-[35px]"
-                            style={{ height: "21px", width: "35px" }}
-                          />
-                          <span className="text-sm font-normal text-[#243746]">Go paperless</span>
-                        </div>
-                      </div>
+                    <div className="flex flex-col gap-1 px-6 md:px-0">
+                      <h3 className="text-xl font-bold leading-8 tracking-[-0.34px] text-[#243746]">
+                        Statement delivery preferences
+                      </h3>
                       <p className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#1d2c38] max-w-[1094px]">
                         Set how you want to receive your account documents. Select either Paper, Email, and/or Text for each statement type. Standard text message rates may apply. Disable text alerts by unchecking the boxes below. By opting into our text alerts, you agree to our{" "}
                         <a href="#" className="text-[#0058a3] hover:underline">terms of service</a>. Please review our{" "}
                         <a href="#" className="text-[#0058a3] hover:underline">privacy policy</a> for more information.
                       </p>
+                      <div className="flex items-center justify-end gap-2 mt-2">
+                        <span className="text-sm font-normal text-[#243746]">Go paperless</span>
+                        <WexCheckbox
+                          checked={goPaperless}
+                          onCheckedChange={(checked) => setGoPaperless(checked === true)}
+                        />
+                      </div>
                     </div>
 
-                    {/* Table Header */}
-                    <div className="h-6">
-                      <div className="flex items-center justify-between h-full px-6">
-                        <div style={{ width: "493px" }}>
-                          <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Statements</span>
+                    {/* Desktop Table View */}
+                    <div className="hidden md:block">
+                      {/* Table Header */}
+                      <div className="h-6 pb-6">
+                        <div className="flex items-center justify-between h-full px-6">
+                          <div style={{ width: "493px" }}>
+                            <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Statements</span>
+                          </div>
+                          <div className="flex items-center" style={{ gap: "153px" }}>
+                            <div style={{ width: "35px" }} className="flex justify-center">
+                              <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Paper</span>
+                            </div>
+                            <div style={{ width: "35px" }} className="flex justify-center">
+                              <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Email</span>
+                            </div>
+                            <div style={{ width: "80px" }} className="flex justify-center">
+                              <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Text</span>
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex items-center" style={{ gap: "153px" }}>
-                          <div style={{ width: "35px" }}>
-                            <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Paper</span>
+                      </div>
+
+                      {/* HSA Account Summary Row */}
+                      <div className="border-t border-[#e4e6e9]">
+                        <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
+                          <div className="flex flex-col gap-1" style={{ width: "493px" }}>
+                            <div className="flex flex-col gap-1">
+                              <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
+                                HSA Account Summary
+                              </h4>
+                              <p className="text-sm font-normal italic leading-6 tracking-[-0.084px] text-[#1d2c38]">
+                                $1.50 fee per printed summary
+                              </p>
+                              <p className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#1d2c38]">
+                                Automatically emailed based on whether or not you have an email address.
+                              </p>
+                            </div>
                           </div>
-                          <div style={{ width: "35px" }}>
-                            <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Email</span>
+                          <div className="flex items-center" style={{ gap: "153px" }}>
+                            <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
+                              <WexCheckbox
+                                checked={hsaAccountSummaryPaper}
+                                onCheckedChange={handleHsaAccountSummaryPaperChange}
+                              />
+                            </div>
+                            <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
+                              <WexCheckbox
+                                checked={hsaAccountSummaryEmail}
+                                onCheckedChange={(checked) => setHsaAccountSummaryEmail(checked === true)}
+                              />
+                            </div>
+                            <div style={{ width: "80px" }} className="flex justify-center">
+                              <span className="text-xs font-normal leading-6 text-black">Not available</span>
+                            </div>
                           </div>
-                          <div style={{ width: "80px" }}>
-                            <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Text</span>
+                        </div>
+                      </div>
+
+                      {/* HSA Tax Documents Row */}
+                      <div className="border-t border-[#e4e6e9]">
+                        <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
+                          <div className="flex flex-col gap-1" style={{ width: "493px" }}>
+                            <div className="flex flex-col gap-1">
+                              <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
+                                HSA Tax Documents
+                              </h4>
+                              <p className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#1d2c38]">
+                                Automatically emailed based on whether or not you have an email address.
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-center" style={{ gap: "153px" }}>
+                            <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
+                              <WexCheckbox
+                                checked={hsaTaxDocumentsPaper}
+                                onCheckedChange={handleHsaTaxDocumentsPaperChange}
+                              />
+                            </div>
+                            <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
+                              <WexCheckbox
+                                checked={hsaTaxDocumentsEmail}
+                                onCheckedChange={(checked) => setHsaTaxDocumentsEmail(checked === true)}
+                              />
+                            </div>
+                            <div style={{ width: "80px" }} className="flex justify-center">
+                              <span className="text-xs font-normal leading-6 text-black">Not available</span>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    {/* HSA Account Summary Row */}
-                    <div className="border-t border-[#e4e6e9]">
-                      <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
-                        <div className="flex flex-col gap-1" style={{ width: "493px" }}>
-                          <div className="flex flex-col gap-1">
-                            <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
-                              HSA Account Summary
-                            </h4>
-                            <p className="text-sm font-normal italic leading-6 tracking-[-0.084px] text-[#1d2c38]">
-                              $1.50 fee per printed summary
-                            </p>
-                            <p className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#1d2c38]">
-                              Automatically emailed based on whether or not you have an email address.
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex items-center" style={{ gap: "153px" }}>
-                          <div style={{ width: "35px", height: "21px" }}>
-                            <WexSwitch
-                              checked={hsaAccountSummaryPaper}
-                              onCheckedChange={handleHsaAccountSummaryPaperChange}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
-                            />
-                          </div>
-                          <div style={{ width: "35px", height: "21px" }}>
-                            <WexSwitch
-                              checked={hsaAccountSummaryEmail}
-                              onCheckedChange={setHsaAccountSummaryEmail}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
-                            />
-                          </div>
-                          <span className="text-xs font-normal leading-6 text-black" style={{ width: "80px" }}>Not available</span>
-                        </div>
-                      </div>
-                    </div>
+                    {/* Mobile Card View */}
+                    <div className="md:hidden flex flex-col gap-2 px-4">
+                      {/* HSA Account Summary Card */}
+                      <div className="flex flex-col gap-2">
+                        <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-[#243746]">
+                          HSA Account Summary
+                        </h4>
+                        <p className="text-sm font-normal italic leading-6 tracking-[-0.084px] text-[#1d2c38]">
+                          $1.50 fee per printed summary
+                        </p>
+                        <p className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#1d2c38]">
+                          Automatically emailed based on whether or not you have an email address.
+                        </p>
+                  <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Paper</span>
+                          <WexCheckbox
+                            checked={hsaAccountSummaryPaper}
+                            onCheckedChange={handleHsaAccountSummaryPaperChange}
+                          />
+                  </div>
+                  <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Email</span>
+                          <WexCheckbox
+                            checked={hsaAccountSummaryEmail}
+                            onCheckedChange={(checked) => setHsaAccountSummaryEmail(checked === true)}
+                          />
+                  </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Text</span>
+                          <span className="text-xs font-normal leading-6 text-black">Not available</span>
+                </div>
+                        <WexSeparator className="my-2" />
+              </div>
 
-                    {/* HSA Tax Documents Row */}
-                    <div className="border-t border-[#e4e6e9]">
-                      <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
-                        <div className="flex flex-col gap-1" style={{ width: "493px" }}>
-                          <div className="flex flex-col gap-1">
-                            <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
-                              HSA Tax Documents
-                            </h4>
-                            <p className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#1d2c38]">
-                              Automatically emailed based on whether or not you have an email address.
-                            </p>
-                          </div>
+                      {/* HSA Tax Documents Card */}
+                      <div className="flex flex-col gap-2">
+                        <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-[#243746]">
+                          HSA Tax Documents
+                        </h4>
+                        <p className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#1d2c38]">
+                          Automatically emailed based on whether or not you have an email address.
+                        </p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Paper</span>
+                          <WexCheckbox
+                            checked={hsaTaxDocumentsPaper}
+                            onCheckedChange={handleHsaTaxDocumentsPaperChange}
+                          />
                         </div>
-                        <div className="flex items-center" style={{ gap: "153px" }}>
-                          <div style={{ width: "35px", height: "21px" }}>
-                            <WexSwitch
-                              checked={hsaTaxDocumentsPaper}
-                              onCheckedChange={handleHsaTaxDocumentsPaperChange}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
-                            />
-                          </div>
-                          <div style={{ width: "35px", height: "21px" }}>
-                            <WexSwitch
-                              checked={hsaTaxDocumentsEmail}
-                              onCheckedChange={setHsaTaxDocumentsEmail}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
-                            />
-                          </div>
-                          <span className="text-xs font-normal leading-6 text-black" style={{ width: "80px" }}>Not available</span>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Email</span>
+                          <WexCheckbox
+                            checked={hsaTaxDocumentsEmail}
+                            onCheckedChange={(checked) => setHsaTaxDocumentsEmail(checked === true)}
+                          />
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Text</span>
+                          <span className="text-xs font-normal leading-6 text-black">Not available</span>
                         </div>
                       </div>
                     </div>
                   </div>
+
+                  {/* Footer Actions */}
+                  <div className="flex flex-col md:flex-row items-stretch md:items-center justify-end gap-2 md:gap-3 pt-6 mt-6 border-t border-[#e4e6e9] px-4 md:px-0">
+                  <WexButton
+                      intent="primary"
+                      onClick={() => {
+                        // Save preferences action
+                        setSavedState({
+                          hsaAccountSummaryPaper,
+                          hsaAccountSummaryEmail,
+                          hsaTaxDocumentsPaper,
+                          hsaTaxDocumentsEmail,
+                          goPaperless,
+                          contributionPostedEmail,
+                          balanceBelowAmount,
+                          balanceBelowEmail,
+                          contributionsWithinAmount,
+                          contributionsWithinEmail,
+                          paymentIssuedEmail,
+                          withdrawalExceedsAmount,
+                          withdrawalExceedsEmail,
+                          cardMailedEmail,
+                          cardMailedText,
+                          followUpNoticeText,
+                          purchaseMadeEmail,
+                          purchaseMadeText,
+                          cardSuspendedText,
+                          cardPurseSuspendedText,
+                        });
+                        wexToast.success("Communication preferences saved successfully");
+                      }}
+                      className="w-full md:min-w-[100px] md:w-auto bg-[#0058a3] text-white hover:bg-[#0058a3]/90 order-1 md:order-2"
+                    >
+                      Save Preferences
+                  </WexButton>
+                    <WexButton
+                      intent="secondary"
+                      variant="outline"
+                      onClick={() => {
+                        // Cancel action - reset to saved values
+                        setHsaAccountSummaryPaper(savedState.hsaAccountSummaryPaper);
+                        setHsaAccountSummaryEmail(savedState.hsaAccountSummaryEmail);
+                        setHsaTaxDocumentsPaper(savedState.hsaTaxDocumentsPaper);
+                        setHsaTaxDocumentsEmail(savedState.hsaTaxDocumentsEmail);
+                        setGoPaperless(savedState.goPaperless);
+                        setContributionPostedEmail(savedState.contributionPostedEmail);
+                        setBalanceBelowAmount(savedState.balanceBelowAmount);
+                        setBalanceBelowEmail(savedState.balanceBelowEmail);
+                        setContributionsWithinAmount(savedState.contributionsWithinAmount);
+                        setContributionsWithinEmail(savedState.contributionsWithinEmail);
+                        setPaymentIssuedEmail(savedState.paymentIssuedEmail);
+                        setWithdrawalExceedsAmount(savedState.withdrawalExceedsAmount);
+                        setWithdrawalExceedsEmail(savedState.withdrawalExceedsEmail);
+                        setCardMailedEmail(savedState.cardMailedEmail);
+                        setCardMailedText(savedState.cardMailedText);
+                        setFollowUpNoticeText(savedState.followUpNoticeText);
+                        setPurchaseMadeEmail(savedState.purchaseMadeEmail);
+                        setPurchaseMadeText(savedState.purchaseMadeText);
+                        setCardSuspendedText(savedState.cardSuspendedText);
+                        setCardPurseSuspendedText(savedState.cardPurseSuspendedText);
+                      }}
+                      className="w-full md:min-w-[100px] md:w-auto order-2 md:order-1"
+                    >
+                      Cancel
+                  </WexButton>
+                </div>
                 </WexTabs.Content>
 
                 {/* Contributions Tab Content */}
-                <WexTabs.Content value="contributions" className="pt-6">
+                <WexTabs.Content value="contributions" className="pt-6 pb-6">
                   <div className="flex flex-col gap-6">
                     {/* Notification Preferences Header */}
-                    <div className="flex flex-col gap-1 px-6">
+                    <div className="flex flex-col gap-1 px-6 md:px-6">
                       <h3 className="text-xl font-bold leading-8 tracking-[-0.34px] text-[#243746]">
                         Notification preferences
                       </h3>
@@ -3793,137 +4119,313 @@ export default function MyProfile() {
                         <a href="#" className="text-[#0058a3] hover:underline">terms of service</a>. Please review our{" "}
                         <a href="#" className="text-[#0058a3] hover:underline">privacy policy</a> for more information.
                       </p>
-                    </div>
+                  </div>
 
-                    {/* Table Header */}
-                    <div className="h-6">
-                      <div className="flex items-center justify-between h-full px-6">
-                        <div style={{ width: "493px" }}>
-                          <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Notification type</span>
-                        </div>
-                        <div className="flex items-center" style={{ gap: "153px" }}>
-                          <div style={{ width: "35px" }}>
-                            <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Paper</span>
-                          </div>
-                          <div style={{ width: "35px" }}>
-                            <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Email</span>
-                          </div>
-                          <div style={{ width: "80px" }}>
-                            <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Text</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Contribution Posted Row */}
-                    <div className="border-t border-[#e4e6e9]">
-                      <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
-                        <div style={{ width: "493px" }}>
-                          <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
-                            Contribution posted to your HSA
-                          </h4>
-                        </div>
-                        <div className="flex items-center" style={{ gap: "153px" }}>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
-                          <div style={{ width: "35px", height: "21px" }}>
-                            <WexSwitch
-                              checked={contributionPostedEmail}
-                              onCheckedChange={setContributionPostedEmail}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
-                            />
-                          </div>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "80px" }}>Not available</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Balance Below Row */}
-                    <div className="border-t border-[#e4e6e9]">
-                      <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
-                        <div className="flex flex-col gap-1" style={{ width: "493px" }}>
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
-                              HSA available cash balance is below
-                            </span>
-                            <div className="flex items-center border border-[#a5aeb4] rounded-md overflow-hidden shadow-[0px_1px_2px_0px_rgba(18,18,23,0.05)]">
-                              <div className="bg-white border-r border-[#a5aeb4] px-2 py-2 text-sm text-[#a5aeb4] flex items-center justify-center min-w-[35px]">
-                                $
-                              </div>
-                              <input
-                                type="text"
-                                value={balanceBelowAmount}
-                                onChange={(e) => setBalanceBelowAmount(e.target.value)}
-                                className="px-3 py-2 text-sm border-0 focus:outline-none focus:ring-0 bg-white"
-                                style={{ minWidth: "80px", width: "80px" }}
-                              />
+                    {/* Desktop Table View */}
+                    <div className="hidden md:block">
+                      {/* Table Header */}
+                      <div className="h-6 pb-6">
+                        <div className="flex items-center justify-between h-full px-6">
+                          <div style={{ width: "493px" }}>
+                            <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Notification type</span>
+                  </div>
+                          <div className="flex items-center" style={{ gap: "153px" }}>
+                            <div style={{ width: "35px" }} className="flex justify-center">
+                              <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Paper</span>
+                </div>
+                            <div style={{ width: "35px" }} className="flex justify-center">
+                              <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Email</span>
+              </div>
+                            <div style={{ width: "80px" }} className="flex justify-center">
+                              <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Text</span>
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center" style={{ gap: "153px" }}>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
-                          <div style={{ width: "35px", height: "21px" }}>
-                            <WexSwitch
-                              checked={balanceBelowEmail}
-                              onCheckedChange={setBalanceBelowEmail}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
-                            />
+                      </div>
+
+                      {/* Contribution Posted Row */}
+                      <div className="border-t border-[#e4e6e9]">
+                        <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
+                          <div style={{ width: "493px" }}>
+                            <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
+                              Contribution posted to your HSA
+                            </h4>
                           </div>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "80px" }}>Not available</span>
+                          <div className="flex items-center" style={{ gap: "153px" }}>
+                            <div style={{ width: "35px" }} className="flex justify-center">
+                              <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                            </div>
+                            <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
+                              <WexCheckbox
+                                checked={contributionPostedEmail}
+                                onCheckedChange={(checked) => setContributionPostedEmail(checked === true)}
+                              />
+                            </div>
+                            <div style={{ width: "80px" }} className="flex justify-center">
+                              <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Balance Below Row */}
+                      <div className="border-t border-[#e4e6e9]">
+                        <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
+                          <div className="flex flex-col gap-1" style={{ width: "493px" }}>
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
+                                HSA available cash balance is below
+                              </span>
+                              <div className="flex items-center border border-[#a5aeb4] rounded-md overflow-hidden shadow-[0px_1px_2px_0px_rgba(18,18,23,0.05)]">
+                                <div className="bg-white border-r border-[#a5aeb4] px-2 py-2 text-sm text-[#a5aeb4] flex items-center justify-center min-w-[35px]">
+                                  $
+                                </div>
+                                <input
+                                  type="text"
+                                  value={balanceBelowAmount}
+                                  onChange={(e) => setBalanceBelowAmount(e.target.value)}
+                                  className="px-3 py-2 text-sm border-0 focus:outline-none focus:ring-0 bg-white"
+                                  style={{ minWidth: "80px", width: "80px" }}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex items-center" style={{ gap: "153px" }}>
+                            <div style={{ width: "35px" }} className="flex justify-center">
+                              <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                            </div>
+                            <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
+                              <WexCheckbox
+                                checked={balanceBelowEmail}
+                                onCheckedChange={(checked) => setBalanceBelowEmail(checked === true)}
+                              />
+                            </div>
+                            <div style={{ width: "80px" }} className="flex justify-center">
+                              <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Contributions Within Row */}
+                      <div className="border-t border-[#e4e6e9]">
+                        <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
+                          <div className="flex flex-col gap-1" style={{ width: "493px" }}>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
+                                HSA contributions year-to-date are within
+                              </span>
+                              <div className="flex items-center border border-[#a5aeb4] rounded-md overflow-hidden shadow-[0px_1px_2px_0px_rgba(18,18,23,0.05)]">
+                                <div className="bg-white border-r border-[#a5aeb4] px-2 py-2 text-sm text-[#a5aeb4] flex items-center justify-center min-w-[35px]">
+                                  $
+                                </div>
+                                <input
+                                  type="text"
+                                  value={contributionsWithinAmount}
+                                  onChange={(e) => setContributionsWithinAmount(e.target.value)}
+                                  className="px-3 py-2 text-sm border-0 focus:outline-none focus:ring-0 bg-white"
+                                  style={{ minWidth: "80px", width: "80px" }}
+                                />
+                              </div>
+                              <span className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
+                                of the IRS maximum
+                              </span>
+                            </div>
+                          </div>
+                          <div className="flex items-center" style={{ gap: "153px" }}>
+                            <div style={{ width: "35px" }} className="flex justify-center">
+                              <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                            </div>
+                            <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
+                              <WexCheckbox
+                                checked={contributionsWithinEmail}
+                                onCheckedChange={(checked) => setContributionsWithinEmail(checked === true)}
+                              />
+                            </div>
+                            <div style={{ width: "80px" }} className="flex justify-center">
+                              <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
 
-                    {/* Contributions Within Row */}
-                    <div className="border-t border-[#e4e6e9]">
-                      <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
-                        <div className="flex flex-col gap-1" style={{ width: "493px" }}>
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
-                              HSA contributions year-to-date are within
-                            </span>
-                            <div className="flex items-center border border-[#a5aeb4] rounded-md overflow-hidden shadow-[0px_1px_2px_0px_rgba(18,18,23,0.05)]">
-                              <div className="bg-white border-r border-[#a5aeb4] px-2 py-2 text-sm text-[#a5aeb4] flex items-center justify-center min-w-[35px]">
-                                $
-                              </div>
-                              <input
-                                type="text"
-                                value={contributionsWithinAmount}
-                                onChange={(e) => setContributionsWithinAmount(e.target.value)}
-                                className="px-3 py-2 text-sm border-0 focus:outline-none focus:ring-0 bg-white"
-                                style={{ minWidth: "80px", width: "80px" }}
-                              />
+                    {/* Mobile Card View */}
+                    <div className="md:hidden flex flex-col gap-2 px-4">
+                      {/* Contribution Posted Card */}
+                      <div className="flex flex-col gap-2">
+                        <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-[#243746]">
+                          Contribution posted to your HSA
+                        </h4>
+                  <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Paper</span>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Email</span>
+                          <WexCheckbox
+                            checked={contributionPostedEmail}
+                            onCheckedChange={(checked) => setContributionPostedEmail(checked === true)}
+                          />
+                  </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Text</span>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                </div>
+                        <WexSeparator className="my-2" />
+              </div>
+
+                      {/* Balance Below Card */}
+                      <div className="flex flex-col gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-sm font-medium leading-6 tracking-[-0.084px] text-[#243746]">
+                            HSA available cash balance is below
+                          </span>
+                          <div className="flex items-center border border-[#a5aeb4] rounded-md overflow-hidden shadow-[0px_1px_2px_0px_rgba(18,18,23,0.05)]">
+                            <div className="bg-white border-r border-[#a5aeb4] px-2 py-2 text-sm text-[#a5aeb4] flex items-center justify-center min-w-[35px]">
+                              $
                             </div>
-                            <span className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
-                              of the IRS maximum
-                            </span>
-                          </div>
-                        </div>
-                        <div className="flex items-center" style={{ gap: "153px" }}>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
-                          <div style={{ width: "35px", height: "21px" }}>
-                            <WexSwitch
-                              checked={contributionsWithinEmail}
-                              onCheckedChange={setContributionsWithinEmail}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
+                            <input
+                              type="text"
+                              value={balanceBelowAmount}
+                              onChange={(e) => setBalanceBelowAmount(e.target.value)}
+                              className="px-3 py-2 text-sm border-0 focus:outline-none focus:ring-0 bg-white"
+                              style={{ minWidth: "80px", width: "80px" }}
                             />
                           </div>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "80px" }}>Not available</span>
+                        </div>
+                        <WexSeparator className="my-2" />
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Paper</span>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Email</span>
+                          <WexCheckbox
+                            checked={balanceBelowEmail}
+                            onCheckedChange={(checked) => setBalanceBelowEmail(checked === true)}
+                          />
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Text</span>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                        </div>
+                        <WexSeparator className="my-2" />
+                      </div>
+
+                      {/* Contributions Within Card */}
+                      <div className="flex flex-col gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-sm font-medium leading-6 tracking-[-0.084px] text-[#243746]">
+                            HSA contributions year-to-date are within
+                          </span>
+                          <div className="flex items-center border border-[#a5aeb4] rounded-md overflow-hidden shadow-[0px_1px_2px_0px_rgba(18,18,23,0.05)]">
+                            <div className="bg-white border-r border-[#a5aeb4] px-2 py-2 text-sm text-[#a5aeb4] flex items-center justify-center min-w-[35px]">
+                              $
+                            </div>
+                            <input
+                              type="text"
+                              value={contributionsWithinAmount}
+                              onChange={(e) => setContributionsWithinAmount(e.target.value)}
+                              className="px-3 py-2 text-sm border-0 focus:outline-none focus:ring-0 bg-white"
+                              style={{ minWidth: "80px", width: "80px" }}
+                            />
+                          </div>
+                          <span className="text-sm font-medium leading-6 tracking-[-0.084px] text-[#243746]">
+                            of the IRS maximum
+                          </span>
+                        </div>
+                        <WexSeparator className="my-2" />
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Paper</span>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Email</span>
+                          <WexCheckbox
+                            checked={contributionsWithinEmail}
+                            onCheckedChange={(checked) => setContributionsWithinEmail(checked === true)}
+                          />
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Text</span>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
                         </div>
                       </div>
                     </div>
                   </div>
+
+                  {/* Footer Actions */}
+                  <div className="flex flex-col md:flex-row items-stretch md:items-center justify-end gap-2 md:gap-3 pt-6 mt-6 border-t border-[#e4e6e9] px-4 md:px-0">
+                  <WexButton
+                      intent="primary"
+                      onClick={() => {
+                        // Save preferences action
+                        setSavedState({
+                          hsaAccountSummaryPaper,
+                          hsaAccountSummaryEmail,
+                          hsaTaxDocumentsPaper,
+                          hsaTaxDocumentsEmail,
+                          goPaperless,
+                          contributionPostedEmail,
+                          balanceBelowAmount,
+                          balanceBelowEmail,
+                          contributionsWithinAmount,
+                          contributionsWithinEmail,
+                          paymentIssuedEmail,
+                          withdrawalExceedsAmount,
+                          withdrawalExceedsEmail,
+                          cardMailedEmail,
+                          cardMailedText,
+                          followUpNoticeText,
+                          purchaseMadeEmail,
+                          purchaseMadeText,
+                          cardSuspendedText,
+                          cardPurseSuspendedText,
+                        });
+                        wexToast.success("Communication preferences saved successfully");
+                      }}
+                      className="w-full md:min-w-[100px] md:w-auto bg-[#0058a3] text-white hover:bg-[#0058a3]/90 order-1 md:order-2"
+                    >
+                      Save Preferences
+                  </WexButton>
+                    <WexButton
+                      intent="secondary"
+                      variant="outline"
+                      onClick={() => {
+                        // Cancel action - reset to saved values
+                        setHsaAccountSummaryPaper(savedState.hsaAccountSummaryPaper);
+                        setHsaAccountSummaryEmail(savedState.hsaAccountSummaryEmail);
+                        setHsaTaxDocumentsPaper(savedState.hsaTaxDocumentsPaper);
+                        setHsaTaxDocumentsEmail(savedState.hsaTaxDocumentsEmail);
+                        setGoPaperless(savedState.goPaperless);
+                        setContributionPostedEmail(savedState.contributionPostedEmail);
+                        setBalanceBelowAmount(savedState.balanceBelowAmount);
+                        setBalanceBelowEmail(savedState.balanceBelowEmail);
+                        setContributionsWithinAmount(savedState.contributionsWithinAmount);
+                        setContributionsWithinEmail(savedState.contributionsWithinEmail);
+                        setPaymentIssuedEmail(savedState.paymentIssuedEmail);
+                        setWithdrawalExceedsAmount(savedState.withdrawalExceedsAmount);
+                        setWithdrawalExceedsEmail(savedState.withdrawalExceedsEmail);
+                        setCardMailedEmail(savedState.cardMailedEmail);
+                        setCardMailedText(savedState.cardMailedText);
+                        setFollowUpNoticeText(savedState.followUpNoticeText);
+                        setPurchaseMadeEmail(savedState.purchaseMadeEmail);
+                        setPurchaseMadeText(savedState.purchaseMadeText);
+                        setCardSuspendedText(savedState.cardSuspendedText);
+                        setCardPurseSuspendedText(savedState.cardPurseSuspendedText);
+                      }}
+                      className="w-full md:min-w-[100px] md:w-auto order-2 md:order-1"
+                    >
+                      Cancel
+                  </WexButton>
+                </div>
                 </WexTabs.Content>
                 {/* Payments Tab Content */}
-                <WexTabs.Content value="payments" className="pt-6">
+                <WexTabs.Content value="payments" className="pt-6 pb-6">
                   <div className="flex flex-col gap-6">
                     {/* Notification Preferences Header */}
-                    <div className="flex flex-col gap-1 px-6">
+                    <div className="flex flex-col gap-1 px-6 md:px-6">
                       <h3 className="text-xl font-bold leading-8 tracking-[-0.34px] text-[#243746]">
                         Notification preferences
                       </h3>
@@ -3932,99 +4434,236 @@ export default function MyProfile() {
                         <a href="#" className="text-[#0058a3] hover:underline">terms of service</a>. Please review our{" "}
                         <a href="#" className="text-[#0058a3] hover:underline">privacy policy</a> for more information.
                       </p>
-                    </div>
+                  </div>
 
-                    {/* Table Header */}
-                    <div className="h-6">
-                      <div className="flex items-center justify-between h-full px-6">
-                        <div style={{ width: "493px" }}>
-                          <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Notification type</span>
-                        </div>
-                        <div className="flex items-center" style={{ gap: "153px" }}>
-                          <div style={{ width: "35px" }}>
-                            <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Paper</span>
-                          </div>
-                          <div style={{ width: "35px" }}>
-                            <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Email</span>
-                          </div>
-                          <div style={{ width: "80px" }}>
-                            <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Text</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Payment Issued Row */}
-                    <div className="border-t border-[#e4e6e9]">
-                      <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
-                        <div className="flex flex-col gap-1" style={{ width: "493px" }}>
-                          <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
-                            Payment issued out of your HSA
-                          </h4>
-                          <p className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#1d2c38]">
-                            Automatically emailed based on whether or not you have an email address.
-                          </p>
-                        </div>
-                        <div className="flex items-center" style={{ gap: "153px" }}>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
-                          <div style={{ width: "35px", height: "21px" }}>
-                            <WexSwitch
-                              checked={paymentIssuedEmail}
-                              onCheckedChange={setPaymentIssuedEmail}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
-                            />
-                          </div>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "80px" }}>Not available</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Withdrawal Exceeds Row */}
-                    <div className="border-t border-[#e4e6e9]">
-                      <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
-                        <div className="flex flex-col gap-1" style={{ width: "493px" }}>
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
-                              Withdrawal from your HSA exceeds
-                            </span>
-                            <div className="flex items-center border border-[#a5aeb4] rounded-md overflow-hidden shadow-[0px_1px_2px_0px_rgba(18,18,23,0.05)]">
-                              <div className="bg-white border-r border-[#a5aeb4] px-2 py-2 text-sm text-[#a5aeb4] flex items-center justify-center min-w-[35px]">
-                                $
-                              </div>
-                              <input
-                                type="text"
-                                value={withdrawalExceedsAmount}
-                                onChange={(e) => setWithdrawalExceedsAmount(e.target.value)}
-                                className="px-3 py-2 text-sm border-0 focus:outline-none focus:ring-0 bg-white"
-                                style={{ minWidth: "80px", width: "80px" }}
-                              />
+                    {/* Desktop Table View */}
+                    <div className="hidden md:block">
+                      {/* Table Header */}
+                      <div className="h-6 pb-6">
+                        <div className="flex items-center justify-between h-full px-6">
+                          <div style={{ width: "493px" }}>
+                            <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Notification type</span>
+                </div>
+                          <div className="flex items-center" style={{ gap: "153px" }}>
+                            <div style={{ width: "35px" }} className="flex justify-center">
+                              <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Paper</span>
+              </div>
+                            <div style={{ width: "35px" }} className="flex justify-center">
+                              <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Email</span>
+            </div>
+                            <div style={{ width: "80px" }} className="flex justify-center">
+                              <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Text</span>
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center" style={{ gap: "153px" }}>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
-                          <div style={{ width: "35px", height: "21px" }}>
-                            <WexSwitch
-                              checked={withdrawalExceedsEmail}
-                              onCheckedChange={setWithdrawalExceedsEmail}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
-                            />
+                      </div>
+
+                      {/* Payment Issued Row */}
+                      <div className="border-t border-[#e4e6e9]">
+                        <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
+                          <div className="flex flex-col gap-1" style={{ width: "493px" }}>
+                            <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
+                              Payment issued out of your HSA
+                            </h4>
+                            <p className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#1d2c38]">
+                              Automatically emailed based on whether or not you have an email address.
+                            </p>
                           </div>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "80px" }}>Not available</span>
+                          <div className="flex items-center" style={{ gap: "153px" }}>
+                            <div style={{ width: "35px" }} className="flex justify-center">
+                              <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                            </div>
+                            <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
+                              <WexCheckbox
+                                checked={paymentIssuedEmail}
+                                onCheckedChange={(checked) => setPaymentIssuedEmail(checked === true)}
+                              />
+                            </div>
+                            <div style={{ width: "80px" }} className="flex justify-center">
+                              <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Withdrawal Exceeds Row */}
+                      <div className="border-t border-[#e4e6e9]">
+                        <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
+                          <div className="flex flex-col gap-1" style={{ width: "493px" }}>
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
+                                Withdrawal from your HSA exceeds
+                              </span>
+                              <div className="flex items-center border border-[#a5aeb4] rounded-md overflow-hidden shadow-[0px_1px_2px_0px_rgba(18,18,23,0.05)]">
+                                <div className="bg-white border-r border-[#a5aeb4] px-2 py-2 text-sm text-[#a5aeb4] flex items-center justify-center min-w-[35px]">
+                                  $
+                                </div>
+                                <input
+                                  type="text"
+                                  value={withdrawalExceedsAmount}
+                                  onChange={(e) => setWithdrawalExceedsAmount(e.target.value)}
+                                  className="px-3 py-2 text-sm border-0 focus:outline-none focus:ring-0 bg-white"
+                                  style={{ minWidth: "80px", width: "80px" }}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex items-center" style={{ gap: "153px" }}>
+                            <div style={{ width: "35px" }} className="flex justify-center">
+                              <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                            </div>
+                            <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
+                              <WexCheckbox
+                                checked={withdrawalExceedsEmail}
+                                onCheckedChange={(checked) => setWithdrawalExceedsEmail(checked === true)}
+                              />
+                            </div>
+                            <div style={{ width: "80px" }} className="flex justify-center">
+                              <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
+
+                    {/* Mobile Card View */}
+                    <div className="md:hidden flex flex-col gap-2 px-4">
+                      {/* Payment Issued Card */}
+                      <div className="flex flex-col gap-2">
+                        <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-[#243746]">
+                          Payment issued out of your HSA
+                        </h4>
+                        <p className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#1d2c38]">
+                          Automatically emailed based on whether or not you have an email address.
+                        </p>
+                  <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Paper</span>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                  </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Email</span>
+                          <WexCheckbox
+                            checked={paymentIssuedEmail}
+                            onCheckedChange={(checked) => setPaymentIssuedEmail(checked === true)}
+                          />
+                </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Text</span>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+              </div>
+                        <WexSeparator className="my-2" />
+            </div>
+
+                      {/* Withdrawal Exceeds Card */}
+                      <div className="flex flex-col gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-sm font-medium leading-6 tracking-[-0.084px] text-[#243746]">
+                            Withdrawal from your HSA exceeds
+                          </span>
+                          <div className="flex items-center border border-[#a5aeb4] rounded-md overflow-hidden shadow-[0px_1px_2px_0px_rgba(18,18,23,0.05)]">
+                            <div className="bg-white border-r border-[#a5aeb4] px-2 py-2 text-sm text-[#a5aeb4] flex items-center justify-center min-w-[35px]">
+                              $
+                            </div>
+                            <input
+                              type="text"
+                              value={withdrawalExceedsAmount}
+                              onChange={(e) => setWithdrawalExceedsAmount(e.target.value)}
+                              className="px-3 py-2 text-sm border-0 focus:outline-none focus:ring-0 bg-white"
+                              style={{ minWidth: "80px", width: "80px" }}
+                            />
+                          </div>
+                        </div>
+                        <WexSeparator className="my-2" />
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Paper</span>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Email</span>
+                          <WexCheckbox
+                            checked={withdrawalExceedsEmail}
+                            onCheckedChange={(checked) => setWithdrawalExceedsEmail(checked === true)}
+                          />
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Text</span>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Footer Actions */}
+                  <div className="flex flex-col md:flex-row items-stretch md:items-center justify-end gap-2 md:gap-3 pt-6 mt-6 border-t border-[#e4e6e9] px-4 md:px-0">
+                    <WexButton
+                      intent="primary"
+                      onClick={() => {
+                        // Save preferences action
+                        setSavedState({
+                          hsaAccountSummaryPaper,
+                          hsaAccountSummaryEmail,
+                          hsaTaxDocumentsPaper,
+                          hsaTaxDocumentsEmail,
+                          goPaperless,
+                          contributionPostedEmail,
+                          balanceBelowAmount,
+                          balanceBelowEmail,
+                          contributionsWithinAmount,
+                          contributionsWithinEmail,
+                          paymentIssuedEmail,
+                          withdrawalExceedsAmount,
+                          withdrawalExceedsEmail,
+                          cardMailedEmail,
+                          cardMailedText,
+                          followUpNoticeText,
+                          purchaseMadeEmail,
+                          purchaseMadeText,
+                          cardSuspendedText,
+                          cardPurseSuspendedText,
+                        });
+                        wexToast.success("Communication preferences saved successfully");
+                      }}
+                      className="w-full md:min-w-[100px] md:w-auto bg-[#0058a3] text-white hover:bg-[#0058a3]/90"
+                    >
+                      Save Preferences
+                  </WexButton>
+                    <WexButton
+                      intent="secondary"
+                      variant="outline"
+                      onClick={() => {
+                        // Cancel action - reset to saved values
+                        setHsaAccountSummaryPaper(savedState.hsaAccountSummaryPaper);
+                        setHsaAccountSummaryEmail(savedState.hsaAccountSummaryEmail);
+                        setHsaTaxDocumentsPaper(savedState.hsaTaxDocumentsPaper);
+                        setHsaTaxDocumentsEmail(savedState.hsaTaxDocumentsEmail);
+                        setGoPaperless(savedState.goPaperless);
+                        setContributionPostedEmail(savedState.contributionPostedEmail);
+                        setBalanceBelowAmount(savedState.balanceBelowAmount);
+                        setBalanceBelowEmail(savedState.balanceBelowEmail);
+                        setContributionsWithinAmount(savedState.contributionsWithinAmount);
+                        setContributionsWithinEmail(savedState.contributionsWithinEmail);
+                        setPaymentIssuedEmail(savedState.paymentIssuedEmail);
+                        setWithdrawalExceedsAmount(savedState.withdrawalExceedsAmount);
+                        setWithdrawalExceedsEmail(savedState.withdrawalExceedsEmail);
+                        setCardMailedEmail(savedState.cardMailedEmail);
+                        setCardMailedText(savedState.cardMailedText);
+                        setFollowUpNoticeText(savedState.followUpNoticeText);
+                        setPurchaseMadeEmail(savedState.purchaseMadeEmail);
+                        setPurchaseMadeText(savedState.purchaseMadeText);
+                        setCardSuspendedText(savedState.cardSuspendedText);
+                        setCardPurseSuspendedText(savedState.cardPurseSuspendedText);
+                      }}
+                      className="w-full md:min-w-[100px] md:w-auto"
+                    >
+                      Cancel
+                    </WexButton>
                   </div>
                 </WexTabs.Content>
                 {/* WEX Benefits Card Tab Content */}
-                <WexTabs.Content value="wex-benefits-card" className="pt-6">
+                <WexTabs.Content value="wex-benefits-card" className="pt-6 pb-6">
                   <div className="flex flex-col gap-6">
                     {/* Notification Preferences Header */}
-                    <div className="flex flex-col gap-1 px-6">
+                    <div className="flex flex-col gap-1 px-6 md:px-6">
                       <h3 className="text-xl font-bold leading-8 tracking-[-0.34px] text-[#243746]">
                         Notification preferences
                       </h3>
@@ -4035,171 +4674,393 @@ export default function MyProfile() {
                       </p>
                     </div>
 
-                    {/* Table Header */}
-                    <div className="h-6">
-                      <div className="flex items-center justify-between h-full px-6">
-                        <div style={{ width: "493px" }}>
-                          <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Notification type</span>
+                    {/* Desktop Table View */}
+                    <div className="hidden md:block">
+                      {/* Table Header */}
+                      <div className="h-6 pb-6">
+                        <div className="flex items-center justify-between h-full px-6">
+                          <div style={{ width: "493px" }}>
+                            <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Notification type</span>
+                          </div>
+                          <div className="flex items-center" style={{ gap: "153px" }}>
+                            <div style={{ width: "35px" }} className="flex justify-center">
+                              <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Paper</span>
+                            </div>
+                            <div style={{ width: "35px" }} className="flex justify-center">
+                              <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Email</span>
+                            </div>
+                            <div style={{ width: "80px" }} className="flex justify-center">
+                              <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Text</span>
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex items-center" style={{ gap: "153px" }}>
-                          <div style={{ width: "35px" }}>
-                            <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Paper</span>
+                      </div>
+
+                      {/* Card Mailed Row */}
+                      <div className="border-t border-[#e4e6e9]">
+                        <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
+                          <div style={{ width: "493px" }}>
+                            <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
+                              WEX Benefit Card has been mailed
+                            </h4>
                           </div>
-                          <div style={{ width: "35px" }}>
-                            <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Email</span>
+                          <div className="flex items-center" style={{ gap: "153px" }}>
+                            <div style={{ width: "35px" }} className="flex justify-center">
+                              <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                            </div>
+                            <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
+                              <WexCheckbox
+                                checked={cardMailedEmail}
+                                onCheckedChange={(checked) => setCardMailedEmail(checked === true)}
+                              />
+                            </div>
+                            <div style={{ width: "80px", height: "21px" }} className="flex justify-center">
+                              <WexCheckbox
+                                checked={cardMailedText}
+                                onCheckedChange={(checked) => setCardMailedText(checked === true)}
+                              />
+                            </div>
                           </div>
-                          <div style={{ width: "80px" }}>
-                            <span className="text-lg font-medium leading-6 tracking-[-0.252px] text-[#243746]">Text</span>
+                        </div>
+                      </div>
+
+                      {/* Follow Up Notice Row */}
+                      <div className="border-t border-[#e4e6e9]">
+                        <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
+                          <div className="flex flex-col gap-1" style={{ width: "493px" }}>
+                            <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
+                              WEX Benefit Card follow up notice has been sent
+                            </h4>
+                            <p className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#1d2c38]">
+                              Automatically alert when a debit card follow up notice has been sent about on of your purchases. Helps to quickly know when a receipt needs to be supplied.
+                            </p>
+                          </div>
+                          <div className="flex items-center" style={{ gap: "153px" }}>
+                            <div style={{ width: "35px" }} className="flex justify-center">
+                              <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                            </div>
+                            <div style={{ width: "35px" }} className="flex justify-center">
+                              <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                            </div>
+                            <div style={{ width: "80px", height: "21px" }} className="flex justify-center">
+                              <WexCheckbox
+                                checked={followUpNoticeText}
+                                onCheckedChange={(checked) => setFollowUpNoticeText(checked === true)}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Purchase Made Row */}
+                      <div className="border-t border-[#e4e6e9]">
+                        <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
+                          <div className="flex flex-col gap-1" style={{ width: "493px" }}>
+                            <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
+                              WEX Benefit Card purchase has been made
+                            </h4>
+                            <p className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#1d2c38]">
+                              Automatically alert when a debit card purchase has been made on one of your accounts. Helps to quickly identify possible fraudulent activity.
+                            </p>
+                          </div>
+                          <div className="flex items-center" style={{ gap: "153px" }}>
+                            <div style={{ width: "35px" }} className="flex justify-center">
+                              <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                            </div>
+                            <div style={{ width: "35px", height: "21px" }} className="flex justify-center">
+                              <WexCheckbox
+                                checked={purchaseMadeEmail}
+                                onCheckedChange={(checked) => setPurchaseMadeEmail(checked === true)}
+                              />
+                            </div>
+                            <div style={{ width: "80px", height: "21px" }} className="flex justify-center">
+                              <WexCheckbox
+                                checked={purchaseMadeText}
+                                onCheckedChange={(checked) => setPurchaseMadeText(checked === true)}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Card Suspended Row */}
+                      <div className="border-t border-[#e4e6e9]">
+                        <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
+                          <div style={{ width: "493px" }}>
+                            <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
+                              WEX Benefits Card has been suspended or unsuspended
+                            </h4>
+                          </div>
+                          <div className="flex items-center" style={{ gap: "153px" }}>
+                            <div style={{ width: "35px" }} className="flex justify-center">
+                              <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                            </div>
+                            <div style={{ width: "35px" }} className="flex justify-center">
+                              <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                            </div>
+                            <div style={{ width: "80px", height: "21px" }} className="flex justify-center">
+                              <WexCheckbox
+                                checked={cardSuspendedText}
+                                onCheckedChange={(checked) => setCardSuspendedText(checked === true)}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Card Purse Suspended Row */}
+                      <div className="border-t border-[#e4e6e9]">
+                        <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
+                          <div style={{ width: "493px" }}>
+                            <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
+                              WEX Benefit Card Purse has been suspended or unsuspended
+                            </h4>
+                          </div>
+                          <div className="flex items-center" style={{ gap: "153px" }}>
+                            <div style={{ width: "35px" }} className="flex justify-center">
+                              <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                            </div>
+                            <div style={{ width: "35px" }} className="flex justify-center">
+                              <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                            </div>
+                            <div style={{ width: "80px", height: "21px" }} className="flex justify-center">
+                              <WexCheckbox
+                                checked={cardPurseSuspendedText}
+                                onCheckedChange={(checked) => setCardPurseSuspendedText(checked === true)}
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    {/* Card Mailed Row */}
-                    <div className="border-t border-[#e4e6e9]">
-                      <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
-                        <div style={{ width: "493px" }}>
-                          <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
-                            WEX Benefit Card has been mailed
-                          </h4>
+                    {/* Mobile Card View */}
+                    <div className="md:hidden flex flex-col gap-2 px-4">
+                      {/* Card Mailed Card */}
+                      <div className="flex flex-col gap-2">
+                        <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-[#243746]">
+                          WEX Benefit Card has been mailed
+                        </h4>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Paper</span>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
                         </div>
-                        <div className="flex items-center" style={{ gap: "153px" }}>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
-                          <div style={{ width: "35px", height: "21px" }}>
-                            <WexSwitch
-                              checked={cardMailedEmail}
-                              onCheckedChange={setCardMailedEmail}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
-                            />
-                          </div>
-                          <div style={{ width: "80px", height: "21px" }}>
-                            <WexSwitch
-                              checked={cardMailedText}
-                              onCheckedChange={setCardMailedText}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
-                            />
-                          </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Email</span>
+                          <WexCheckbox
+                            checked={cardMailedEmail}
+                            onCheckedChange={(checked) => setCardMailedEmail(checked === true)}
+                          />
                         </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Text</span>
+                          <WexCheckbox
+                            checked={cardMailedText}
+                            onCheckedChange={(checked) => setCardMailedText(checked === true)}
+                          />
+                        </div>
+                        <WexSeparator className="my-2" />
                       </div>
-                    </div>
 
-                    {/* Follow Up Notice Row */}
-                    <div className="border-t border-[#e4e6e9]">
-                      <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
-                        <div className="flex flex-col gap-1" style={{ width: "493px" }}>
-                          <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
-                            WEX Benefit Card follow up notice has been sent
-                          </h4>
-                          <p className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#1d2c38]">
-                            Automatically alert when a debit card follow up notice has been sent about on of your purchases. Helps to quickly know when a receipt needs to be supplied.
-                          </p>
+                      {/* Follow Up Notice Card */}
+                      <div className="flex flex-col gap-2">
+                        <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-[#243746]">
+                          WEX Benefit Card follow up notice has been sent
+                        </h4>
+                        <p className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#1d2c38]">
+                          Automatically alert when a debit card follow up notice has been sent about on of your purchases. Helps to quickly know when a receipt needs to be supplied.
+                        </p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Paper</span>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
                         </div>
-                        <div className="flex items-center" style={{ gap: "153px" }}>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
-                          <div style={{ width: "80px", height: "21px" }}>
-                            <WexSwitch
-                              checked={followUpNoticeText}
-                              onCheckedChange={setFollowUpNoticeText}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
-                            />
-                          </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Email</span>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
                         </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Text</span>
+                          <WexCheckbox
+                            checked={followUpNoticeText}
+                            onCheckedChange={(checked) => setFollowUpNoticeText(checked === true)}
+                          />
+                        </div>
+                        <WexSeparator className="my-2" />
                       </div>
-                    </div>
 
-                    {/* Purchase Made Row */}
-                    <div className="border-t border-[#e4e6e9]">
-                      <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
-                        <div className="flex flex-col gap-1" style={{ width: "493px" }}>
-                          <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
-                            WEX Benefit Card purchase has been made
-                          </h4>
-                          <p className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#1d2c38]">
-                            Automatically alert when a debit card purchase has been made on one of your accounts. Helps to quickly identify possible fraudulent activity.
-                          </p>
+                      {/* Purchase Made Card */}
+                      <div className="flex flex-col gap-2">
+                        <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-[#243746]">
+                          WEX Benefit Card purchase has been made
+                        </h4>
+                        <p className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#1d2c38]">
+                          Automatically alert when a debit card purchase has been made on one of your accounts. Helps to quickly identify possible fraudulent activity.
+                        </p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Paper</span>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
                         </div>
-                        <div className="flex items-center" style={{ gap: "153px" }}>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
-                          <div style={{ width: "35px", height: "21px" }}>
-                            <WexSwitch
-                              checked={purchaseMadeEmail}
-                              onCheckedChange={setPurchaseMadeEmail}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
-                            />
-                          </div>
-                          <div style={{ width: "80px", height: "21px" }}>
-                            <WexSwitch
-                              checked={purchaseMadeText}
-                              onCheckedChange={setPurchaseMadeText}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
-                            />
-                          </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Email</span>
+                          <WexCheckbox
+                            checked={purchaseMadeEmail}
+                            onCheckedChange={(checked) => setPurchaseMadeEmail(checked === true)}
+                          />
                         </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Text</span>
+                          <WexCheckbox
+                            checked={purchaseMadeText}
+                            onCheckedChange={(checked) => setPurchaseMadeText(checked === true)}
+                          />
+                        </div>
+                        <WexSeparator className="my-2" />
                       </div>
-                    </div>
 
-                    {/* Card Suspended Row */}
-                    <div className="border-t border-[#e4e6e9]">
-                      <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
-                        <div style={{ width: "493px" }}>
-                          <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
-                            WEX Benefits Card has been suspended or unsuspended
-                          </h4>
+                      {/* Card Suspended Card */}
+                      <div className="flex flex-col gap-2">
+                        <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-[#243746]">
+                          WEX Benefits Card has been suspended or unsuspended
+                        </h4>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Paper</span>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
                         </div>
-                        <div className="flex items-center" style={{ gap: "153px" }}>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
-                          <div style={{ width: "80px", height: "21px" }}>
-                            <WexSwitch
-                              checked={cardSuspendedText}
-                              onCheckedChange={setCardSuspendedText}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
-                            />
-                          </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Email</span>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
                         </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Text</span>
+                          <WexCheckbox
+                            checked={cardSuspendedText}
+                            onCheckedChange={(checked) => setCardSuspendedText(checked === true)}
+                          />
+                        </div>
+                        <WexSeparator className="my-2" />
                       </div>
-                    </div>
 
-                    {/* Card Purse Suspended Row */}
-                    <div className="border-t border-[#e4e6e9]">
-                      <div className="flex items-center justify-between px-6 py-4 min-h-[90px]">
-                        <div style={{ width: "493px" }}>
-                          <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-black">
-                            WEX Benefit Card Purse has been suspended or unsuspended
-                          </h4>
+                      {/* Card Purse Suspended Card */}
+                      <div className="flex flex-col gap-2">
+                        <h4 className="text-sm font-medium leading-6 tracking-[-0.084px] text-[#243746]">
+                          WEX Benefit Card Purse has been suspended or unsuspended
+                        </h4>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Paper</span>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
                         </div>
-                        <div className="flex items-center" style={{ gap: "153px" }}>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
-                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap" style={{ width: "35px" }}>Not available</span>
-                          <div style={{ width: "80px", height: "21px" }}>
-                            <WexSwitch
-                              checked={cardPurseSuspendedText}
-                              onCheckedChange={setCardPurseSuspendedText}
-                              switchSize="sm"
-                              className="!h-[21px] !w-[35px]"
-                              style={{ height: "21px", width: "35px" }}
-                            />
-                          </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Email</span>
+                          <span className="text-xs font-normal leading-6 text-black whitespace-nowrap">Not available</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-normal leading-6 tracking-[-0.084px] text-[#243746]">Text</span>
+                          <WexCheckbox
+                            checked={cardPurseSuspendedText}
+                            onCheckedChange={(checked) => setCardPurseSuspendedText(checked === true)}
+                          />
                         </div>
                       </div>
                     </div>
+                  </div>
+
+                  {/* Footer Actions */}
+                  <div className="flex flex-col md:flex-row items-stretch md:items-center justify-end gap-2 md:gap-3 pt-6 mt-6 border-t border-[#e4e6e9] px-4 md:px-0">
+                    <WexButton
+                      intent="primary"
+                      onClick={() => {
+                        // Save preferences action
+                        setSavedState({
+                          hsaAccountSummaryPaper,
+                          hsaAccountSummaryEmail,
+                          hsaTaxDocumentsPaper,
+                          hsaTaxDocumentsEmail,
+                          goPaperless,
+                          contributionPostedEmail,
+                          balanceBelowAmount,
+                          balanceBelowEmail,
+                          contributionsWithinAmount,
+                          contributionsWithinEmail,
+                          paymentIssuedEmail,
+                          withdrawalExceedsAmount,
+                          withdrawalExceedsEmail,
+                          cardMailedEmail,
+                          cardMailedText,
+                          followUpNoticeText,
+                          purchaseMadeEmail,
+                          purchaseMadeText,
+                          cardSuspendedText,
+                          cardPurseSuspendedText,
+                        });
+                        wexToast.success("Communication preferences saved successfully");
+                      }}
+                      className="w-full md:min-w-[100px] md:w-auto bg-[#0058a3] text-white hover:bg-[#0058a3]/90"
+                    >
+                      Save Preferences
+                  </WexButton>
+                    <WexButton
+                      intent="secondary"
+                      variant="outline"
+                      onClick={() => {
+                        // Cancel action - reset to saved values
+                        setHsaAccountSummaryPaper(savedState.hsaAccountSummaryPaper);
+                        setHsaAccountSummaryEmail(savedState.hsaAccountSummaryEmail);
+                        setHsaTaxDocumentsPaper(savedState.hsaTaxDocumentsPaper);
+                        setHsaTaxDocumentsEmail(savedState.hsaTaxDocumentsEmail);
+                        setGoPaperless(savedState.goPaperless);
+                        setContributionPostedEmail(savedState.contributionPostedEmail);
+                        setBalanceBelowAmount(savedState.balanceBelowAmount);
+                        setBalanceBelowEmail(savedState.balanceBelowEmail);
+                        setContributionsWithinAmount(savedState.contributionsWithinAmount);
+                        setContributionsWithinEmail(savedState.contributionsWithinEmail);
+                        setPaymentIssuedEmail(savedState.paymentIssuedEmail);
+                        setWithdrawalExceedsAmount(savedState.withdrawalExceedsAmount);
+                        setWithdrawalExceedsEmail(savedState.withdrawalExceedsEmail);
+                        setCardMailedEmail(savedState.cardMailedEmail);
+                        setCardMailedText(savedState.cardMailedText);
+                        setFollowUpNoticeText(savedState.followUpNoticeText);
+                        setPurchaseMadeEmail(savedState.purchaseMadeEmail);
+                        setPurchaseMadeText(savedState.purchaseMadeText);
+                        setCardSuspendedText(savedState.cardSuspendedText);
+                        setCardPurseSuspendedText(savedState.cardPurseSuspendedText);
+                      }}
+                      className="w-full md:min-w-[100px] md:w-auto"
+                    >
+                      Cancel
+                    </WexButton>
                   </div>
                 </WexTabs.Content>
               </WexTabs>
             </div>
+
+            {/* Unsaved Changes Dialog */}
+            <WexAlertDialog open={isUnsavedChangesDialogOpen} onOpenChange={setIsUnsavedChangesDialogOpen}>
+              <WexAlertDialog.Content>
+                <WexAlertDialog.Header>
+                  <WexAlertDialog.Title>Unsaved Changes</WexAlertDialog.Title>
+                  <WexAlertDialog.Description>
+                    You have unsaved changes to your communication preferences. What would you like to do?
+                  </WexAlertDialog.Description>
+                </WexAlertDialog.Header>
+                <WexAlertDialog.Footer>
+                  <WexAlertDialog.Action
+                    onClick={handleSaveAndSwitch}
+                    className="bg-[#0058a3] text-white hover:bg-[#0058a3]/90"
+                  >
+                    Save preferences
+                  </WexAlertDialog.Action>
+                  <WexAlertDialog.Cancel
+                    onClick={() => {
+                      setIsUnsavedChangesDialogOpen(false);
+                      setPendingTabChange(null);
+                      setPendingNavigation(null);
+                    }}
+                  >
+                    Cancel
+                  </WexAlertDialog.Cancel>
+                </WexAlertDialog.Footer>
+              </WexAlertDialog.Content>
+            </WexAlertDialog>
           </>
         );
 
@@ -4238,9 +5099,9 @@ export default function MyProfile() {
                     <WexSelect.Content>
                       {menuSections.flatMap((section) =>
                         section.items.map((item) => (
-                          <WexSelect.Item key={item.key} value={item.key}>
-                            {item.label}
-                          </WexSelect.Item>
+                        <WexSelect.Item key={item.key} value={item.key}>
+                          {item.label}
+                        </WexSelect.Item>
                         ))
                       )}
                     </WexSelect.Content>
@@ -4274,18 +5135,18 @@ export default function MyProfile() {
                                   const Icon = item.icon;
                                   const isActive = activeSubPage === item.key;
                                   return (
-                                    <WexSidebar.MenuItem key={item.key}>
-                                      <WexSidebar.MenuButton
+                            <WexSidebar.MenuItem key={item.key}>
+                              <WexSidebar.MenuButton
                                         isActive={isActive}
-                                        onClick={() => handleSubPageChange(item.key)}
+                                onClick={() => handleSubPageChange(item.key)}
                                         className="h-[32px] min-h-[32px] whitespace-normal px-3 py-1 rounded-md data-[active=true]:bg-[#E4F5FD] data-[active=true]:text-[#00437c] data-[active=false]:text-[#1d2c38]"
-                                      >
+                              >
                                         <div className="flex items-center gap-2 w-full">
                                           <Icon className={`h-[14px] w-[14px] shrink-0 ${isActive ? 'text-[#00437c]' : 'text-[#1d2c38]'}`} />
                                           <span className="text-sm tracking-[-0.084px]">{item.label}</span>
                                         </div>
-                                      </WexSidebar.MenuButton>
-                                    </WexSidebar.MenuItem>
+                              </WexSidebar.MenuButton>
+                            </WexSidebar.MenuItem>
                                   );
                                 })}
                               </div>

@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useNavigate } from "react-router-dom";
 import { Plus, Trash2, Info } from "lucide-react";
 import { WexButton } from "@/components/wex/wex-button";
 import { WexFloatLabel } from "@/components/wex/wex-float-label";
@@ -7,21 +6,7 @@ import { WexLabel } from "@/components/wex/wex-label";
 import { WexRadioGroup } from "@/components/wex/wex-radio-group";
 import { WexSelect } from "@/components/wex/wex-select";
 import { WexCheckbox } from "@/components/wex/wex-checkbox";
-import { Stepper } from "./components/Stepper";
-import type { Step } from "./components/Stepper";
 import { QuestionOptionCard } from "./components/QuestionOptionCard";
-
-/**
- * Stepper steps configuration
- */
-const enrollmentSteps: Step[] = [
-  { id: "eligibility", label: "Eligibility" },
-  { id: "profile", label: "Profile" },
-  { id: "dependents", label: "Dependents" },
-  { id: "beneficiaries", label: "Beneficiaries" },
-  { id: "reimbursement", label: "Reimbursement" },
-  { id: "review", label: "Review" },
-];
 
 /**
  * Beneficiary data structure
@@ -58,8 +43,6 @@ interface Dependent {
 }
 
 export default function HSABeneficiariesPage() {
-  const navigate = useNavigate();
-
   // Mock dependents data - in real app, this would come from previous page or context
   const availableDependents: Dependent[] = [
     { id: "1", name: "John Doe" },
@@ -150,7 +133,12 @@ export default function HSABeneficiariesPage() {
   };
 
   // Validate share percentages
-  const validateSharePercentages = (): boolean => {
+  const validateSharePercentages = React.useCallback((): void => {
+    if (hasBeneficiaries !== "yes") {
+      setValidationError("");
+      return;
+    }
+
     let total = 0;
 
     // Add dependent beneficiaries
@@ -167,63 +155,22 @@ export default function HSABeneficiariesPage() {
 
     if (total !== 100) {
       setValidationError(`Share percentages must total 100%. Current total: ${total}%`);
-      return false;
+      return;
     }
 
     setValidationError("");
-    return true;
-  };
+  }, [dependentBeneficiaries, newBeneficiaries, hasBeneficiaries]);
 
-  const handleCancel = () => {
-    navigate("/");
-  };
-
-  const handleBack = () => {
-    navigate("/hsa-enrollment/dependents");
-  };
-
-  const handleContinue = () => {
-    // Only validate if user selected "Yes" to having beneficiaries
-    if (hasBeneficiaries === "yes") {
-      if (!validateSharePercentages()) {
-        return;
-      }
-    }
-    
-    // Navigate to Reimbursement step
-    navigate("/hsa-enrollment/reimbursement");
-  };
+  React.useEffect(() => {
+    validateSharePercentages();
+  }, [validateSharePercentages]);
 
   const showForm = hasBeneficiaries === "yes";
   const canRemoveNewBeneficiary = newBeneficiaries.length > 1;
 
   return (
-    <div className="min-h-screen bg-white flex">
-      {/* Left Sidebar */}
-      <div className="w-[240px] bg-[#FAFAFA] min-h-screen overflow-clip relative rounded-tr-[32px] shrink-0">
-        {/* Title */}
-        <p className="absolute font-bold leading-[40px] left-[32px] text-[30px] text-[#243746] top-[56px] tracking-[-0.63px]">
-          Enrollment
-        </p>
-
-        {/* Stepper */}
-        <div className="absolute left-[32px] top-[128px]">
-          <Stepper
-            steps={enrollmentSteps}
-            currentStepId="beneficiaries"
-            onStepChange={() => {
-              // Step navigation disabled for now
-            }}
-          />
-        </div>
-      </div>
-
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-h-screen relative">
-        {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto pb-32">
-          <div className="flex justify-center pt-14 px-8">
-            <div className="w-[362px] flex flex-col gap-12">
+    <div className="flex flex-1 flex-col items-center pt-14 pb-16 px-8">
+      <div className="w-[362px] flex flex-col gap-12">
               {/* Question Section */}
               <div className="flex flex-col gap-4">
                 <h2 className="text-2xl font-bold leading-8 tracking-[-0.456px] text-black">
@@ -622,27 +569,6 @@ export default function HSABeneficiariesPage() {
                   )}
                 </>
               )}
-            </div>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="absolute bottom-[32px] left-[32px] right-[32px] flex items-center justify-between">
-          {/* Cancel Button */}
-          <WexButton variant="ghost" onClick={handleCancel} className="px-4 py-2">
-            Cancel
-          </WexButton>
-
-          {/* Back and Continue Buttons */}
-          <div className="flex gap-2 items-center">
-            <WexButton intent="secondary" variant="outline" onClick={handleBack} className="px-4 py-2">
-              Back
-            </WexButton>
-            <WexButton intent="primary" onClick={handleContinue} className="px-4 py-2">
-              Save & Continue
-            </WexButton>
-          </div>
-        </div>
       </div>
     </div>
   );

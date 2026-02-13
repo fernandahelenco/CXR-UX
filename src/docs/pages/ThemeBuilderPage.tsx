@@ -216,7 +216,7 @@ function ComponentPreview({ component, variant }: ComponentPreviewProps) {
       <div className="space-y-4">
         {component === "button" && variant && (
           <div className="flex flex-wrap gap-4">
-            <WexButton intent={variant as any}>{variant.charAt(0).toUpperCase() + variant.slice(1)}</WexButton>
+            <WexButton intent={variant as React.ComponentProps<typeof WexButton>["intent"]}>{variant.charAt(0).toUpperCase() + variant.slice(1)}</WexButton>
           </div>
         )}
         {component === "card" && (
@@ -238,13 +238,13 @@ function ComponentPreview({ component, variant }: ComponentPreviewProps) {
         )}
         {component === "badge" && variant && (
           <div className="flex flex-wrap gap-4">
-            <WexBadge intent={variant as any}>{variant.charAt(0).toUpperCase() + variant.slice(1)}</WexBadge>
+            <WexBadge intent={variant as React.ComponentProps<typeof WexBadge>["intent"]}>{variant.charAt(0).toUpperCase() + variant.slice(1)}</WexBadge>
           </div>
         )}
         {component === "alert" && variant && (
           <div className="space-y-4 max-w-2xl">
             <WexAlert 
-              intent={variant as any} 
+              intent={variant as React.ComponentProps<typeof WexAlert>["intent"]} 
               style={{
                 borderRadius: 'var(--wex-component-alert-radius)',
               }}

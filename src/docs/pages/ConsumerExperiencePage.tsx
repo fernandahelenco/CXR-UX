@@ -1,3 +1,4 @@
+import * as React from "react";
 import { ConsumerNavigation } from "./consumer/ConsumerNavigation";
 import { AIChatSection } from "./consumer/AIChatSection";
 import { AccountsSection } from "./consumer/AccountsSection";
@@ -8,6 +9,7 @@ import { InfoCardsSection } from "./consumer/InfoCardsSection";
 import { QuickViewSection } from "./consumer/QuickViewSection";
 import { PromoBanner } from "./consumer/PromoBanner";
 import { ConsumerFooter } from "./consumer/Footer";
+import HSAEnrollmentWorkspace from "./consumer/HSAEnrollmentWorkspace";
 
 /**
  * Consumer Experience Page
@@ -26,6 +28,8 @@ import { ConsumerFooter } from "./consumer/Footer";
  * using WEX Design System components with mock data.
  */
 export default function ConsumerExperiencePage() {
+  const [isEnrollmentOpen, setIsEnrollmentOpen] = React.useState(false);
+
   return (
     <div className="min-h-screen bg-[#F1FAFE]">
       {/* Custom Navigation Header */}
@@ -41,7 +45,7 @@ export default function ConsumerExperiencePage() {
         </div>
 
         {/* AI Chat Assistant */}
-        <AIChatSection />
+        <AIChatSection onEnrollInHsa={() => setIsEnrollmentOpen(true)} />
 
         {/* Accounts Overview */}
         <AccountsSection />
@@ -71,6 +75,8 @@ export default function ConsumerExperiencePage() {
       </main>
 
       <ConsumerFooter />
+
+      <HSAEnrollmentWorkspace open={isEnrollmentOpen} onOpenChange={setIsEnrollmentOpen} />
     </div>
   );
 }
