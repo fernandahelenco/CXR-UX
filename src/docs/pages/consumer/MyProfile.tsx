@@ -1121,14 +1121,6 @@ export default function MyProfile() {
     setSplitSharesEqually(false);
   };
 
-  // Calculate total share percentage
-  const calculateTotalShares = () => {
-    return workspaceBeneficiaries.reduce((total, ben) => {
-      const share = parseFloat(ben.sharePercentage) || 0;
-      return total + share;
-    }, 0);
-  };
-
   const calculatePrimaryTotalShares = () => {
     return workspaceBeneficiaries
       .filter((ben) => ben.beneficiaryType === "primary")
