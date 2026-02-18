@@ -23,6 +23,7 @@ import { Stepper } from "./components/Stepper";
 import { Workspace, SelectCard, FloatLabelSelect } from "./components";
 import { ConsumerNavigation } from "./ConsumerNavigation";
 import { Pencil, Info, Plus, Calendar, X, Trash2, MoreVertical, Eye, RefreshCw, AlertCircle, User, Users, HeartPlus, ShieldCheck, Landmark, CreditCard, Bell, UserLock, Lock } from "lucide-react";
+import { WexSwitch } from "@/components/wex/wex-switch";
 import { WexTabs } from "@/components/wex/wex-tabs";
 import { WexTooltip } from "@/components/wex/wex-tooltip";
 
